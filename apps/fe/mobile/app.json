@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Skillsier Mobile",
+    "slug": "skillsier-mobile",
+    "scheme": "skillsier",
+    "plugins": ["expo-router", "expo-web-browser", "expo-secure-store"],
+    "extra": {
+      "keycloak": {
+        "issuer": "https://<host>/realms/<realm>",
+        "clientId": "skillsier-mobile",
+        "scopes": "openid profile email",
+        "kcIdpHintGoogle": "google",
+        "directAccess": true
+      },
+      "eas": {
+        "projectId": "00000000-0000-0000-0000-000000000000"
+      }
+    },
+    "experiments": { "typedRoutes": true },
+    "ios": {
+      "bundleIdentifier": "com.skillsier.app",
+      "infoPlist": {
+        "CADisableMinimumFrameDurationOnPhone": true
+      }
+    },
+    "android": {
+      "package": "com.skillsier.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [{ "scheme": "skillsier" }],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    }
+  },
+  "plugins": [
+    "expo-router",
+    "expo-web-browser",
+    "expo-secure-store"
+  ]
+}

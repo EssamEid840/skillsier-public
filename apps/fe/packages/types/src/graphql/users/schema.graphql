@@ -1,0 +1,4 @@
+# Placeholder schema; real one via codegen in Phase 12.
+type Query {
+  _placeholder: String
+}

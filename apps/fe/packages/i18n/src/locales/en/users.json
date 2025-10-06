@@ -1,0 +1,11 @@
+{
+  "profile": {
+    "title": "Your profile",
+    "edit": "Edit profile",
+    "saved": "Profile saved"
+  },
+  "sessions": {
+    "title": "Active sessions",
+    "current": "Current device"
+  }
+}

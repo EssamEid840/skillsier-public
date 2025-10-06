@@ -1,0 +1,16 @@
+{
+  "name": "@skillsier/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Skillsier frontend SDK (auth + users) for web & mobile",
+  "type": "module",
+  "exports": {
+    ".": "./src/users/index.ts"
+  },
+  "main": "./src/users/index.ts",
+  "types": "./src/users/index.ts",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.2.0"
+  }
+}

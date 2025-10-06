@@ -1,0 +1,14 @@
+{
+  "login": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "google": "Continue with Google"
+  },
+  "register": {
+    "title": "Create account",
+    "name": "Full name",
+    "submit": "Create account"
+  }
+}

@@ -1,0 +1,67 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: kafka-pubsub
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+    # Broker(s)
+    - name: brokers
+      value: "localhost:19094"
+
+    # Consumer group
+    - name: consumerGroup
+      value: "users-consumer"
+
+    # Where to start if no committed offset exists
+    - name: initialOffset
+      value: "newest"   # newest | oldest
+
+    # SASL (password) auth with SCRAM-SHA-512
+    - name: authType
+      value: "password"
+    - name: saslMechanism
+      value: "SCRAM-SHA-512"
+    - name: saslUsername
+      value: "dapr-pubsub"
+    - name: saslPassword
+      value: "AUoBVrCAmTQXeWIBrnxBb7j7AOfvnbMY"
+
+    # TLS transport
+    - name: disableTls
+      value: "false"
+    - name: skipVerify
+      value: "true"
+    - name: caCert
+      value: |
+        -----BEGIN CERTIFICATE-----
+        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
+        -----END CERTIFICATE-----

@@ -1,0 +1,2 @@
+# Placeholder fragment file; to be replaced in Phase 12.
+fragment Placeholder on Query { __typename }

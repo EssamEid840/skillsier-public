@@ -1,0 +1,17 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: kafka-pubsub            # MUST match dapr.pubsub in your config
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+    - name: brokers
+      value: localhost:9092     # adjust if your broker is exposed on another host:port
+    - name: consumerGroup
+      value: users-consumer
+    - name: authType
+      value: none
+    # Optional safety rails during dev
+    - name: allowedTopics
+      value: user
