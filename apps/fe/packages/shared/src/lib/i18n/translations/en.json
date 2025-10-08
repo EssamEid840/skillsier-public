@@ -1,0 +1,145 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "filter": "Filter",
+    "close": "Close"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out",
+    "email": "Email",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInWith": "Or sign in with",
+    "signUpWith": "Or sign up with",
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create your account",
+    "signInToContinue": "Sign in to your account to continue",
+    "startLearningJourney": "Start your learning journey today"
+  },
+  "landing": {
+    "hero": {
+      "title": "Transform Your Workforce with",
+      "titleHighlight": "Enterprise Learning",
+      "subtitle": "Empower your team with cutting-edge skills. Skillsier delivers personalized learning paths, real-time analytics, and industry-leading content to drive organizational growth.",
+      "getStarted": "Get Started Free",
+      "watchDemo": "Watch Demo",
+      "stats": {
+        "learners": "Active Learners",
+        "clients": "Enterprise Clients",
+        "satisfaction": "Satisfaction Rate"
+      }
+    },
+    "features": {
+      "title": "Everything you need to upskill your team",
+      "subtitle": "Powerful features designed for enterprise-scale learning and development",
+      "aiLearning": {
+        "title": "AI-Powered Learning Paths",
+        "description": "Personalized curriculum adapts to each learner's pace and style for maximum retention."
+      },
+      "skillsGap": {
+        "title": "Skills Gap Analysis",
+        "description": "Identify organizational skill gaps and create targeted training programs instantly."
+      },
+      "analytics": {
+        "title": "Real-Time Analytics",
+        "description": "Track progress, engagement, and ROI with comprehensive dashboards and reports."
+      },
+      "collaboration": {
+        "title": "Team Collaboration",
+        "description": "Foster peer learning with discussion forums, group projects, and mentorship programs."
+      },
+      "security": {
+        "title": "Enterprise Security",
+        "description": "Bank-grade encryption, SSO, and compliance with GDPR, CCPA, and SOC 2 standards."
+      },
+      "performance": {
+        "title": "Lightning Fast",
+        "description": "Optimized performance with offline mode and mobile apps for learning anywhere."
+      }
+    },
+    "cta": {
+      "title": "Ready to transform your workforce?",
+      "subtitle": "Join thousands of companies already using Skillsier to build a future-ready team",
+      "startTrial": "Start Free Trial",
+      "scheduleDemo": "Schedule Demo",
+      "noCardRequired": "No credit card required • 14-day free trial • Cancel anytime"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{name}}!",
+    "subtitle": "Here's what's happening with your learning journey today.",
+    "stats": {
+      "coursesEnrolled": "Courses Enrolled",
+      "hoursLearned": "Hours Learned",
+      "skillsAcquired": "Skills Acquired",
+      "completionRate": "Completion Rate"
+    },
+    "continueLearning": "Continue Learning",
+    "recommended": "Recommended for You"
+  },
+  "courses": {
+    "title": "Courses",
+    "search": "Search courses...",
+    "filter": "Filter",
+    "enrolled": "Enrolled",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "notStarted": "Not Started",
+    "level": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "helpSupport": "Help & Support",
+    "signOut": "Sign Out",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "bio": "Bio",
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "authentication": "Authentication failed. Please try again.",
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email",
+      "minLength": "Must be at least {{count}} characters",
+      "maxLength": "Must be at most {{count}} characters",
+      "passwordMismatch": "Passwords do not match"
+    }
+  },
+  "validation": {
+    "password": {
+      "requirements": "Password requirements:",
+      "length": "At least 8 characters",
+      "uppercase": "One uppercase letter",
+      "lowercase": "One lowercase letter",
+      "number": "One number"
+    }
+  }
+}

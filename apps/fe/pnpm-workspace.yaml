@@ -1,6 +1,7 @@
+# ============================================
+# PNPM WORKSPACE CONFIG
+# ============================================
+# File: pnpm-workspace.yaml
 packages:
-  - "web"
-  - "mobile"
-  - "packages/*"
-  - "config"
-  - "tools/*"
+  - 'apps/*'
+  - 'packages/*'

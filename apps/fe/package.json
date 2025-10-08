@@ -1,57 +1,21 @@
 {
   "name": "skillsier-fe",
-  "private": true,
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "workspaces": [
-    "web",
-    "mobile",
-    "packages/*",
-    "config",
-    "tools/*"
-  ],
+  "private": true,
   "scripts": {
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev --filter=web",
+    "dev:mobile": "turbo run dev --filter=mobile",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "test": "turbo run test",
-    "typecheck": "turbo run typecheck",
-    "codegen:openapi:users": "tsx tools/codegen/gen-openapi-users.ts",
-    "codegen:graphql:users": "tsx tools/codegen/gen-graphql-users.ts",
-    "test:web": "jest web/tests",
-    "codegen:graphql:users:prog": "tsx tools/codegen/gen-graphql-users.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.15.1",
-  "engines": {
-    "node": ">=22.19.0"
+    "type-check": "turbo run type-check"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^6.0.0",
-    "@graphql-codegen/typescript": "^5.0.0",
-    "@graphql-codegen/typescript-operations": "^5.0.0",
-    "@graphql-codegen/typescript-react-apollo": "^4.3.3",
-    "@swc/jest": "^0.2.39",
-    "@types/node": "^24.5.2",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "@types/react-test-renderer": "^19.1.0",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.35.0",
-    "graphql": "^16.11.0",
-    "identity-obj-proxy": "^3.0.0",
-    "openapi-typescript": "^7.9.1",
-    "postcss": "^8.5.6",
-    "prettier": "^3.6.2",
-    "tailwindcss": "^3.4.13",
-    "tsx": "^4.20.5",
-    "turbo": "^2.5.6",
-    "typescript": "^5.9.2"
+    "@turbo/gen": "^2.3.3",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "turbo": "^2.3.3",
+    "typescript": "^5.6.3"
   },
-  "dependencies": {
-    "@apollo/client": "^4.0.5"
-  }
+  "packageManager": "pnpm@9.15.0"
 }

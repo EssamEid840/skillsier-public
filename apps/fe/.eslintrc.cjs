@@ -1,9 +1,0 @@
-/* eslint-env node */
-module.exports = {
-  root: true,
-  env: { es2022: true, node: true, browser: true },
-  parserOptions: { ecmaVersion: "latest", sourceType: "module" },
-  extends: ["eslint:recommended"],
-  ignorePatterns: ["node_modules/", "dist/", "build/", ".turbo/"],
-  rules: {}
-};
