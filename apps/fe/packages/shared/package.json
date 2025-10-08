@@ -1,0 +1,25 @@
+{
+  "name": "@skillsier/shared",
+  "version": "1.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.62.14",
+    "zustand": "^4.5.5",
+    "axios": "^1.7.9",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@skillsier/types": "workspace:*",
+    "typescript": "^5.6.3",
+    "@types/react": "^19.0.0",
+    "eslint": "^8.57.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

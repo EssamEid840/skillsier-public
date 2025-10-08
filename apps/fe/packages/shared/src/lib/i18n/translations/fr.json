@@ -1,0 +1,115 @@
+{
+  "common": {
+    "welcome": "Bienvenue",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "close": "Fermer",
+    "view": "Voir",
+    "add": "Ajouter",
+    "update": "Mettre à jour",
+    "submit": "Soumettre"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "logout": "Se déconnecter",
+    "email": "E-mail",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "rememberMe": "Se souvenir de moi",
+    "dontHaveAccount": "Vous n'avez pas de compte ?",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "welcomeBack": "Bon retour",
+    "createAccount": "Créer votre compte",
+    "startLearningJourney": "Commencez votre parcours d'apprentissage aujourd'hui",
+    "firstName": "Prénom",
+    "lastName": "Nom"
+  },
+  "dashboard": {
+    "welcome": "Bon retour, {{name}} !",
+    "subtitle": "Voici ce qui se passe dans votre parcours d'apprentissage aujourd'hui",
+    "stats": {
+      "coursesEnrolled": "Cours inscrits",
+      "hoursLearned": "Heures apprises",
+      "skillsAcquired": "Compétences acquises",
+      "completionRate": "Taux d'achèvement",
+      "totalEarned": "Total gagné",
+      "jobsCompleted": "Missions terminées",
+      "rating": "Évaluation",
+      "successRate": "Taux de réussite"
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "editProfile": "Modifier le profil",
+    "settings": "Paramètres",
+    "notifications": "Notifications",
+    "helpSupport": "Aide et support",
+    "signOut": "Se déconnecter",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "bio": "Biographie",
+    "language": "Langue",
+    "professionalTitle": "Titre professionnel",
+    "hourlyRate": "Taux horaire",
+    "availability": "Disponibilité",
+    "available": "Disponible",
+    "busy": "Occupé",
+    "notAvailable": "Non disponible",
+    "skills": "Compétences",
+    "experience": "Expérience professionnelle",
+    "education": "Formation",
+    "portfolio": "Portfolio",
+    "verified": "Vérifié"
+  },
+  "skills": {
+    "title": "Compétences",
+    "addNew": "Ajouter une nouvelle compétence",
+    "level": "Niveau",
+    "levels": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé",
+      "expert": "Expert"
+    }
+  },
+  "jobs": {
+    "title": "Missions",
+    "findWork": "Trouver du travail",
+    "myJobs": "Mes missions",
+    "postJob": "Publier une mission",
+    "budget": "Budget",
+    "deadline": "Date limite",
+    "proposals": "Propositions",
+    "completed": "Terminé"
+  },
+  "errors": {
+    "generic": "Quelque chose s'est mal passé. Veuillez réessayer.",
+    "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "authentication": "Échec de l'authentification. Veuillez réessayer.",
+    "validation": {
+      "required": "Ce champ est requis",
+      "email": "Veuillez entrer un e-mail valide",
+      "passwordMismatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "validation": {
+    "password": {
+      "requirements": "Exigences du mot de passe :",
+      "length": "Au moins 8 caractères",
+      "uppercase": "Une lettre majuscule",
+      "lowercase": "Une lettre minuscule",
+      "number": "Un chiffre"
+    }
+  }
+}

@@ -11,7 +11,17 @@
     "edit": "تعديل",
     "search": "بحث",
     "filter": "تصفية",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "view": "عرض",
+    "add": "إضافة",
+    "update": "تحديث",
+    "remove": "إزالة",
+    "upload": "رفع",
+    "download": "تحميل",
+    "next": "التالي",
+    "previous": "السابق",
+    "finish": "إنهاء",
+    "submit": "إرسال"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -30,7 +40,10 @@
     "welcomeBack": "مرحباً بعودتك",
     "createAccount": "أنشئ حسابك",
     "signInToContinue": "سجل الدخول إلى حسابك للمتابعة",
-    "startLearningJourney": "ابدأ رحلة التعلم الخاصة بك اليوم"
+    "startLearningJourney": "ابدأ رحلة التعلم الخاصة بك اليوم",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "agreeToTerms": "أوافق على شروط الخدمة وسياسة الخصوصية"
   },
   "landing": {
     "hero": {
@@ -47,38 +60,7 @@
     },
     "features": {
       "title": "كل ما تحتاجه لتطوير مهارات فريقك",
-      "subtitle": "ميزات قوية مصممة للتعلم والتطوير على نطاق المؤسسة",
-      "aiLearning": {
-        "title": "مسارات تعليمية مدعومة بالذكاء الاصطناعي",
-        "description": "منهج مخصص يتكيف مع وتيرة وأسلوب كل متعلم لتحقيق أقصى قدر من الاستيعاب."
-      },
-      "skillsGap": {
-        "title": "تحليل فجوة المهارات",
-        "description": "تحديد فجوات المهارات التنظيمية وإنشاء برامج تدريبية مستهدفة على الفور."
-      },
-      "analytics": {
-        "title": "تحليلات في الوقت الفعلي",
-        "description": "تتبع التقدم والمشاركة والعائد على الاستثمار من خلال لوحات معلومات وتقارير شاملة."
-      },
-      "collaboration": {
-        "title": "تعاون الفريق",
-        "description": "تعزيز التعلم من الأقران من خلال منتديات النقاش والمشاريع الجماعية وبرامج الإرشاد."
-      },
-      "security": {
-        "title": "أمان المؤسسة",
-        "description": "تشفير بمستوى البنوك، وSSO، والامتثال لمعايير GDPR و CCPA و SOC 2."
-      },
-      "performance": {
-        "title": "سريع للغاية",
-        "description": "أداء محسّن مع وضع عدم الاتصال وتطبيقات الجوال للتعلم في أي مكان."
-      }
-    },
-    "cta": {
-      "title": "هل أنت مستعد لتحويل قوتك العاملة؟",
-      "subtitle": "انضم إلى آلاف الشركات التي تستخدم بالفعل Skillsier لبناء فريق جاهز للمستقبل",
-      "startTrial": "ابدأ تجربة مجانية",
-      "scheduleDemo": "جدولة عرض توضيحي",
-      "noCardRequired": "لا يلزم بطاقة ائتمان • تجربة مجانية لمدة 14 يوماً • إلغاء في أي وقت"
+      "subtitle": "ميزات قوية مصممة للتعلم والتطوير على نطاق المؤسسة"
     }
   },
   "dashboard": {
@@ -88,29 +70,19 @@
       "coursesEnrolled": "الدورات المسجلة",
       "hoursLearned": "ساعات التعلم",
       "skillsAcquired": "المهارات المكتسبة",
-      "completionRate": "معدل الإنجاز"
+      "completionRate": "معدل الإنجاز",
+      "totalEarned": "إجمالي الأرباح",
+      "jobsCompleted": "الوظائف المكتملة",
+      "rating": "التقييم",
+      "successRate": "معدل النجاح"
     },
     "continueLearning": "تابع التعلم",
     "recommended": "موصى به لك"
   },
-  "courses": {
-    "title": "الدورات",
-    "search": "ابحث عن الدورات...",
-    "filter": "تصفية",
-    "enrolled": "مسجل",
-    "completed": "مكتمل",
-    "inProgress": "قيد التقدم",
-    "notStarted": "لم يبدأ",
-    "level": {
-      "beginner": "مبتدئ",
-      "intermediate": "متوسط",
-      "advanced": "متقدم",
-      "expert": "خبير"
-    }
-  },
   "profile": {
     "title": "الملف الشخصي",
     "editProfile": "تعديل الملف الشخصي",
+    "viewProfile": "عرض الملف الشخصي",
     "settings": "الإعدادات",
     "notifications": "الإشعارات",
     "helpSupport": "المساعدة والدعم",
@@ -119,18 +91,90 @@
     "lastName": "اسم العائلة",
     "bio": "السيرة الذاتية",
     "language": "اللغة",
-    "theme": "المظهر"
+    "theme": "المظهر",
+    "professionalTitle": "المسمى الوظيفي",
+    "overview": "نظرة عامة مهنية",
+    "hourlyRate": "الأجر بالساعة",
+    "availability": "التوفر",
+    "available": "متاح",
+    "busy": "مشغول",
+    "notAvailable": "غير متاح",
+    "skills": "المهارات",
+    "experience": "الخبرة العملية",
+    "education": "التعليم",
+    "certifications": "الشهادات",
+    "portfolio": "الأعمال",
+    "profileStrength": "قوة الملف الشخصي",
+    "completeProfile": "أكمل ملفك الشخصي للحصول على المزيد من الفرص",
+    "verified": "موثق",
+    "unverified": "غير موثق",
+    "identityVerified": "الهوية موثقة",
+    "paymentVerified": "الدفع موثق",
+    "uploadPhoto": "رفع صورة",
+    "removePhoto": "إزالة الصورة",
+    "viewPublicProfile": "عرض الملف العام"
+  },
+  "skills": {
+    "title": "المهارات",
+    "addNew": "إضافة مهارة جديدة",
+    "skillName": "اسم المهارة",
+    "category": "الفئة",
+    "level": "المستوى",
+    "yearsOfExperience": "سنوات الخبرة",
+    "endorsements": "التأييدات",
+    "levels": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم",
+      "expert": "خبير"
+    }
+  },
+  "jobs": {
+    "title": "الوظائف",
+    "findWork": "البحث عن عمل",
+    "myJobs": "وظائفي",
+    "savedJobs": "الوظائف المحفوظة",
+    "browseJobs": "تصفح الوظائف",
+    "postJob": "نشر وظيفة",
+    "jobDetails": "تفاصيل الوظيفة",
+    "budget": "الميزانية",
+    "deadline": "الموعد النهائي",
+    "proposals": "العروض",
+    "hired": "تم التوظيف",
+    "completed": "مكتمل",
+    "inProgress": "قيد التنفيذ"
+  },
+  "freelancing": {
+    "findWork": "البحث عن عمل",
+    "hireTalent": "توظيف المواهب",
+    "both": "كلاهما",
+    "freelancer": "مستقل",
+    "client": "عميل",
+    "proposals": "العروض",
+    "contracts": "العقود",
+    "earnings": "الأرباح",
+    "reviews": "التقييمات",
+    "totalEarned": "إجمالي الأرباح",
+    "jobsCompleted": "الوظائف المكتملة",
+    "successRate": "معدل النجاح",
+    "responseTime": "وقت الاستجابة",
+    "profileViews": "مشاهدات الملف الشخصي"
   },
   "errors": {
     "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
     "network": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
     "authentication": "فشل المصادقة. يرجى المحاولة مرة أخرى.",
+    "unauthorized": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+    "notFound": "المورد المطلوب غير موجود.",
+    "serverError": "خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً.",
     "validation": {
       "required": "هذا الحقل مطلوب",
       "email": "يرجى إدخال بريد إلكتروني صالح",
       "minLength": "يجب أن يكون {{count}} أحرف على الأقل",
       "maxLength": "يجب أن يكون {{count}} أحرف على الأكثر",
-      "passwordMismatch": "كلمتا المرور غير متطابقتين"
+      "passwordMismatch": "كلمتا المرور غير متطابقتين",
+      "invalidFormat": "تنسيق غير صالح",
+      "invalidUrl": "يرجى إدخال رابط صالح"
     }
   },
   "validation": {
@@ -139,7 +183,17 @@
       "length": "8 أحرف على الأقل",
       "uppercase": "حرف كبير واحد",
       "lowercase": "حرف صغير واحد",
-      "number": "رقم واحد"
+      "number": "رقم واحد",
+      "special": "رمز خاص واحد"
     }
+  },
+  "messages": {
+    "saveSuccess": "تم الحفظ بنجاح",
+    "deleteSuccess": "تم الحذف بنجاح",
+    "uploadSuccess": "تم الرفع بنجاح",
+    "updateSuccess": "تم التحديث بنجاح",
+    "createSuccess": "تم الإنشاء بنجاح",
+    "confirmDelete": "هل أنت متأكد أنك تريد حذف هذا؟",
+    "unsavedChanges": "لديك تغييرات غير محفوظة. هل تريد المغادرة؟"
   }
 }

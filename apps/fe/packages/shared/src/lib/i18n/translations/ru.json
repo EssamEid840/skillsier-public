@@ -1,0 +1,115 @@
+{
+  "common": {
+    "welcome": "Добро пожаловать",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успех",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "save": "Сохранить",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "close": "Закрыть",
+    "view": "Просмотр",
+    "add": "Добавить",
+    "update": "Обновить",
+    "submit": "Отправить"
+  },
+  "auth": {
+    "login": "Войти",
+    "register": "Регистрация",
+    "logout": "Выйти",
+    "email": "Электронная почта",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "forgotPassword": "Забыли пароль?",
+    "rememberMe": "Запомнить меня",
+    "dontHaveAccount": "Нет аккаунта?",
+    "alreadyHaveAccount": "Уже есть аккаунт?",
+    "welcomeBack": "С возвращением",
+    "createAccount": "Создать аккаунт",
+    "startLearningJourney": "Начните свой путь обучения сегодня",
+    "firstName": "Имя",
+    "lastName": "Фамилия"
+  },
+  "dashboard": {
+    "welcome": "С возвращением, {{name}}!",
+    "subtitle": "Вот что происходит в вашем обучении сегодня",
+    "stats": {
+      "coursesEnrolled": "Записанные курсы",
+      "hoursLearned": "Часов изучено",
+      "skillsAcquired": "Полученные навыки",
+      "completionRate": "Процент завершения",
+      "totalEarned": "Всего заработано",
+      "jobsCompleted": "Выполнено работ",
+      "rating": "Рейтинг",
+      "successRate": "Процент успеха"
+    }
+  },
+  "profile": {
+    "title": "Профиль",
+    "editProfile": "Редактировать профиль",
+    "settings": "Настройки",
+    "notifications": "Уведомления",
+    "helpSupport": "Помощь и поддержка",
+    "signOut": "Выйти",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "bio": "Биография",
+    "language": "Язык",
+    "professionalTitle": "Профессия",
+    "hourlyRate": "Почасовая ставка",
+    "availability": "Доступность",
+    "available": "Доступен",
+    "busy": "Занят",
+    "notAvailable": "Недоступен",
+    "skills": "Навыки",
+    "experience": "Опыт работы",
+    "education": "Образование",
+    "portfolio": "Портфолио",
+    "verified": "Подтверждено"
+  },
+  "skills": {
+    "title": "Навыки",
+    "addNew": "Добавить новый навык",
+    "level": "Уровень",
+    "levels": {
+      "beginner": "Начинающий",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый",
+      "expert": "Эксперт"
+    }
+  },
+  "jobs": {
+    "title": "Работы",
+    "findWork": "Найти работу",
+    "myJobs": "Мои работы",
+    "postJob": "Опубликовать работу",
+    "budget": "Бюджет",
+    "deadline": "Крайний срок",
+    "proposals": "Предложения",
+    "completed": "Завершено"
+  },
+  "errors": {
+    "generic": "Что-то пошло не так. Пожалуйста, попробуйте снова.",
+    "network": "Ошибка сети. Пожалуйста, проверьте подключение.",
+    "authentication": "Ошибка аутентификации. Пожалуйста, попробуйте снова.",
+    "validation": {
+      "required": "Это поле обязательно",
+      "email": "Пожалуйста, введите действительный email",
+      "passwordMismatch": "Пароли не совпадают"
+    }
+  },
+  "validation": {
+    "password": {
+      "requirements": "Требования к паролю:",
+      "length": "Минимум 8 символов",
+      "uppercase": "Одна заглавная буква",
+      "lowercase": "Одна строчная буква",
+      "number": "Одна цифра"
+    }
+  }
+}
