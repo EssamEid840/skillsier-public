@@ -21,33 +21,16 @@ skillsier-fe/
 │   │       │       ├── globals.css       # Global styles with CSS variables
 │   │       │       ├── (auth)/           # Auth route group
 │   │       │       │   ├── login/
-│   │       └── components/
-│   │           ├── layout/
-│   │           │   └── MobileNav.tsx     # Mobile navigation
-│   │           └── dashboard/
-│   │               ├── DashboardShell.tsx
-│   │               └── StatsCard.tsx
 │   │
 │   └── mobile/                           # React Native Expo App (React 19)
 │       ├── tsconfig.json
 │       ├── .env
 │       ├── app/                          # Expo Router (file-based)
-│       │   ├── +not-found.tsx            # 404 screen
-│       │   ├── (auth)/                   # Auth stack
-│       │   │   └── register.tsx          # ⭐ UPDATED: Register with i18n & validation
 │       │   ├── (tabs)/                   # Main app tabs
-│       │   │   ├── _layout.tsx           # Tab navigator with icons
 │       │   │   ├── dashboard.tsx         # ⭐ UPDATED: Dashboard with i18n
 │       │   │   ├── courses.tsx           # Browse jobs/gigs (renamed context)
 │       │   │   ├── skills.tsx            # ⭐ UPDATED: Skills with i18n
 │       └── src/
-│           ├── components/
-│           │   ├── landing/
-│           │   │   ├── HeroMobile.tsx
-│           │   │   └── FeaturesMobile.tsx
-│           │   ├── navigation/
-│           │   │   ├── TabBar.tsx
-│           │   │   └── DrawerContent.tsx
 │           ├── lib/
 │           │   ├── keycloak-mobile.ts
 │           │   └── utils.ts
@@ -67,24 +50,6 @@ skillsier-fe/
 │   │       │   │       ├── validation.ts
 │   │       │   │       └── token.ts
 │   │       │   └── user/                   # ⭐ FREELANCING USER FEATURE
-│   │       │       ├── hooks/
-│   │       │       │   ├── useClientProfile.ts            # ⭐ NEW
-│   │       │       │   ├── useDeleteAvatar.ts             # ⭐ NEW
-│   │       │       │   ├── useFreelancerSkills.ts         # ⭐ NEW
-│   │       │       │   ├── useAddSkill.ts                 # ⭐ NEW
-│   │       │       │   ├── useUpdateSkill.ts              # ⭐ NEW
-│   │       │       │   ├── useDeleteSkill.ts              # ⭐ NEW
-│   │       │       │   ├── useWorkExperience.ts           # ⭐ NEW
-│   │       │       │   ├── useAddWorkExperience.ts        # ⭐ NEW
-│   │       │       │   ├── useUpdateWorkExperience.ts     # ⭐ NEW
-│   │       │       │   ├── useDeleteWorkExperience.ts     # ⭐ NEW
-│   │       │       │   ├── useEducation.ts                # ⭐ NEW
-│   │       │       │   ├── useAddEducation.ts             # ⭐ NEW
-│   │       │       │   ├── useCertifications.ts           # ⭐ NEW
-│   │       │       │   ├── useAddCertification.ts         # ⭐ NEW
-│   │       │       │   ├── usePortfolio.ts                # ⭐ NEW
-│   │       │       │   ├── useAddPortfolioItem.ts         # ⭐ NEW
-│   │       │       │   └── useUploadPortfolioImage.ts     # ⭐ NEW
 │   │       │       └── types/
 │   │       │           └── user.types.ts
 │   │       ├── lib/
