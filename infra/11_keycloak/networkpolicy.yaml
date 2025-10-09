@@ -1,0 +1,39 @@
+# A) Allow traffic from any pod in ${NAMESPACE} to the Postgres pod(s) on 5432
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: keycloak-postgresql-allow-from-namespace
+  namespace: ${NAMESPACE}
+spec:
+  podSelector:
+    matchLabels:
+      ${POSTGRES_LABEL_KEY}: ${POSTGRES_LABEL_VALUE}   # resolves to: app: keycloak-postgresql
+  policyTypes:
+  - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ${NAMESPACE}
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+# B) Permissive policy for Keycloak while debugging (selects YOUR pod labels)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: keycloak-allow-all-debug
+  namespace: ${NAMESPACE}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: keycloak
+      app.kubernetes.io/instance: ${RELEASE_NAME}   # typically "keycloak"
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+    - {}     # allow from anywhere
+  egress:
+    - {}     # allow to anywhere

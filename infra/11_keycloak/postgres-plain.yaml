@@ -1,0 +1,212 @@
+# -------------------------------------------
+# Secret: DB credentials for Keycloak
+#   - Keycloak values.yaml already references:
+#       existingSecret: keycloak-postgresql
+#       existingSecretPasswordKey: password
+# -------------------------------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-postgresql
+  namespace: keycloak
+type: Opaque
+stringData:
+  # Password for the Keycloak DB user
+  password: "KeycloakDB2024Secure!"
+---
+# -------------------------------------------
+# ConfigMap: init SQL (runs only on first bootstrap)
+# -------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-pg-init
+  namespace: keycloak
+data:
+  01_extensions.sql: |
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    CREATE EXTENSION IF NOT EXISTS "pg_stat_statements";
+  02_tuning.sql: |
+    -- Basic DB-level settings helpful for Keycloak (applied at DB connect)
+    ALTER DATABASE keycloak SET random_page_cost = 1.1;
+    ALTER DATABASE keycloak SET effective_cache_size = '512MB';
+---
+# -------------------------------------------
+# Service: ClusterIP for Postgres
+# -------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-postgresql
+  namespace: keycloak
+  labels:
+    app: keycloak-postgresql
+spec:
+  type: ClusterIP
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: keycloak-postgresql
+---
+# -------------------------------------------
+# StatefulSet: single-replica Postgres
+#   - Low resource footprint for your small VPS
+#   - Uses official postgres image
+#   - DB name/user both "keycloak"
+#   - Password from secret above (key: password)
+# -------------------------------------------
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: keycloak-postgresql
+  namespace: keycloak
+spec:
+  serviceName: keycloak-postgresql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-postgresql
+  template:
+    metadata:
+      labels:
+        app: keycloak-postgresql
+    spec:
+      securityContext:
+        fsGroup: 999   # postgres image user group
+      containers:
+        - name: keycloak-postgresql
+          image: postgres:15
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: keycloak
+            - name: POSTGRES_USER
+              value: keycloak
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-postgresql
+                  key: password
+          # NEW: point to config files
+          args:
+            - "-c"
+            - "config_file=/etc/postgresql/postgresql.conf"
+            - "-c"
+            - "hba_file=/etc/postgresql/pg_hba.conf"
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+              subPath: data
+            - name: initdb
+              mountPath: /docker-entrypoint-initdb.d
+            # NEW:
+            - name: pg-config
+              mountPath: /etc/postgresql
+          readinessProbe:
+            exec:
+              command: ["pg_isready","-U","keycloak","-d","keycloak"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 12
+          livenessProbe:
+            exec:
+              command: ["pg_isready","-U","keycloak","-d","keycloak"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: keycloak-postgresql
+        - name: initdb
+          configMap:
+            name: keycloak-pg-init
+        # NEW:
+        - name: pg-config
+          configMap:
+            name: keycloak-pg-config
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        # Change this if your cluster uses a different default StorageClass
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 10Gi
+---
+# -------------------------------------------
+# (Optional) NetworkPolicy: only allow Keycloak pods to reach Postgres
+#   - Requires a CNI that enforces NetworkPolicy (e.g., Calico)
+# -------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: keycloak-postgresql-allow-from-keycloak
+  namespace: keycloak
+spec:
+  podSelector:
+    matchLabels:
+      app: keycloak-postgresql
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: keycloak    # <-- FIXED!
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-pg-config
+  namespace: keycloak
+data:
+  # Allow password auth from the cluster (tighten CIDRs later if you want)
+  pg_hba.conf: |
+    # TYPE  DATABASE  USER       ADDRESS        METHOD
+    # Allow local connections (for pg_isready health checks)
+    local   all       all                        trust
+    # Allow network connections with password
+    host    all       all        0.0.0.0/0      md5
+    host    all       all        ::/0           md5
+  postgresql.conf: |
+    listen_addresses = '*'
+    max_connections = 200
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-postgresql-nodeport
+  namespace: keycloak
+  labels:
+    app: keycloak-postgresql
+spec:
+  type: NodePort
+  selector:
+    app: keycloak-postgresql
+  ports:
+    - name: postgres
+      protocol: TCP
+      port: 5432        # Service port
+      targetPort: 5432  # Container port
+      nodePort: 30434   # Pick an unused port in 30000–32767
+

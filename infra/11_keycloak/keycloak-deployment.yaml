@@ -1,0 +1,566 @@
+---
+# ==========================================
+# Keycloak — Plugin Downloader Script (ConfigMap)
+# ==========================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-plugin-downloader
+  namespace: keycloak
+data:
+  download-plugins.sh: |
+    #!/bin/sh
+    set -euo pipefail
+
+    echo "Downloading Keycloak Webhook plugins..."
+    cd /plugins
+
+    WEBHOOK_VERSION="0.9.1"
+    TAG="v${WEBHOOK_VERSION}"
+
+    download_with_retry() {
+      url="$1"
+      output="$2"
+      max_attempts=5
+      attempt=1
+      while [ "$attempt" -le "$max_attempts" ]; do
+        echo "Attempt $attempt/$max_attempts → $output"
+        if curl -fL --connect-timeout 30 --max-time 300 -o "$output" "$url"; then
+          echo "✓ Downloaded $output"
+          return 0
+        fi
+        echo "× Failed, retrying in 5s..."
+        sleep 5
+        attempt=$((attempt+1))
+      done
+      echo "ERROR: Failed to download $output after $max_attempts attempts"
+      exit 1
+    }
+
+    CORE_URL="https://github.com/vymalo/keycloak-webhook/releases/download/${TAG}/keycloak-webhook-provider-core-${WEBHOOK_VERSION}-all.jar"
+    HTTP_URL="https://github.com/vymalo/keycloak-webhook/releases/download/${TAG}/keycloak-webhook-provider-http-${WEBHOOK_VERSION}-all.jar"
+
+    download_with_retry "$CORE_URL" "keycloak-webhook-provider-core.jar"
+    download_with_retry "$HTTP_URL" "keycloak-webhook-provider-http.jar"
+
+    echo "Plugins downloaded successfully:"
+    ls -lh /plugins/
+---
+# ==========================================
+# Kafka Bridge — Secrets (Basic Auth for Webhook)
+# ==========================================
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kafka-bridge-auth
+  namespace: keycloak
+type: Opaque
+data:
+  # ⚠️ CHANGE THESE (base64-encoded):
+  #   echo -n 'keycloak' | base64
+  #   echo -n 'change-me-strong' | base64
+  username: a2V5Y2xvYWs=
+  password: Y2hhbmdlLW1lLXN0cm9uZw==
+---
+# ==========================================
+# Kafka Bridge — Service
+# ==========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-bridge
+  namespace: keycloak
+  labels:
+    app: kafka-bridge
+spec:
+  type: ClusterIP
+  selector:
+    app: kafka-bridge
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+---
+# ==========================================
+# Kafka Bridge — Deployment
+# Notes:
+# - Requires ConfigMap 'kafka-ca-cert' in namespace keycloak with key 'ca.crt'
+# - Requires Secret 'keycloak-user' (password key) in namespace keycloak
+# - Uses SASL SCRAM-SHA-512 on :9094 (SASL_SSL)
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-bridge
+  namespace: keycloak
+  labels:
+    app: kafka-bridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-bridge
+  template:
+    metadata:
+      labels:
+        app: kafka-bridge
+    spec:
+      volumes:
+        - name: kafka-ca
+          configMap:
+            name: kafka-ca-cert        # must exist with key 'ca.crt'
+            items:
+              - key: ca.crt
+                path: ca.crt
+      containers:
+        - name: kafka-bridge
+          image: node:20-alpine
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-lc"]
+          args:
+            - |
+              set -euo pipefail
+              mkdir -p /app
+
+              cat > /app/package.json <<'EOF'
+              {
+                "name": "kafka-bridge",
+                "version": "1.0.0",
+                "dependencies": {
+                  "express": "^4.18.2",
+                  "kafkajs": "^2.2.4"
+                }
+              }
+              EOF
+
+              cat > /app/server.js <<'EOF'
+              const express = require('express');
+              const { Kafka, logLevel } = require('kafkajs');
+
+              const app = express();
+              app.use(express.json({ limit: '10mb' }));
+
+              // Basic auth
+              const auth = (req, res, next) => {
+                const h = req.headers.authorization;
+                if (!h || !h.startsWith('Basic ')) {
+                  return res.status(401).json({ error: 'Unauthorized' });
+                }
+                const [user, pass] = Buffer.from(h.split(' ')[1], 'base64').toString('utf-8').split(':');
+                if (user === process.env.AUTH_USERNAME && pass === process.env.AUTH_PASSWORD) return next();
+                return res.status(401).json({ error: 'Invalid credentials' });
+              };
+
+              // Kafka client (TLS + SCRAM)
+              const kafka = new Kafka({
+                clientId: 'keycloak-bridge',
+                brokers: process.env.KAFKA_BROKERS.split(','),
+                ssl: true, // trust is provided by NODE_EXTRA_CA_CERTS
+                sasl: {
+                  mechanism: 'scram-sha-512',
+                  username: process.env.KAFKA_USERNAME,
+                  password: process.env.KAFKA_PASSWORD,
+                },
+                logLevel: logLevel.INFO,
+              });
+
+              const producer = kafka.producer({ retry: { retries: 3, initialRetryTime: 100, factor: 2 } });
+              let isConnected = false;
+
+              producer.connect()
+                .then(() => {
+                  isConnected = true;
+                  console.log('✅ Kafka producer connected');
+                })
+                .catch(err => {
+                  console.error('❌ Failed to connect to Kafka:', err);
+                  process.exit(1);
+                });
+
+              app.get('/health', (_req, res) => {
+                res.status(isConnected ? 200 : 503).json({ status: isConnected ? 'healthy' : 'unhealthy' });
+              });
+
+              app.post('/events', auth, async (req, res) => {
+                try {
+                  const message = {
+                    ...req.body,
+                    bridgeMetadata: { receivedAt: new Date().toISOString(), source: 'keycloak-webhook' },
+                  };
+                  await producer.send({
+                    topic: process.env.KAFKA_TOPIC,
+                    messages: [{ value: JSON.stringify(message) }],
+                  });
+                  res.status(202).json({ ok: true });
+                } catch (err) {
+                  console.error('❌ Produce failed:', err);
+                  res.status(500).json({ error: 'produce_failed' });
+                }
+              });
+
+              process.on('SIGTERM', async () => {
+                try { await producer.disconnect(); } finally { process.exit(0); }
+              });
+
+              const PORT = process.env.PORT || 3000;
+              app.listen(PORT, () => {
+                console.log(`🚀 Kafka Bridge listening on ${PORT}`);
+                console.log(`🔗 Kafka brokers: ${process.env.KAFKA_BROKERS}`);
+                console.log(`📝 Topic: ${process.env.KAFKA_TOPIC}`);
+              });
+              EOF
+
+              cd /app
+              npm install --omit=dev
+              node server.js
+          env:
+            # Use the SASL listener
+            - name: KAFKA_BROKERS
+              value: "kafka-cluster-kafka-bootstrap.kafka.svc:9094"
+            - name: KAFKA_TOPIC
+              value: "keycloak-events"
+            - name: KAFKA_USERNAME
+              value: "keycloak-user"
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-user
+                  key: password
+            - name: AUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-bridge-auth
+                  key: username
+            - name: AUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-bridge-auth
+                  key: password
+            - name: PORT
+              value: "3000"
+            - name: NODE_ENV
+              value: "production"
+            - name: NODE_EXTRA_CA_CERTS
+              value: "/etc/kafka-ca/ca.crt"
+          volumeMounts:
+            - name: kafka-ca
+              mountPath: /etc/kafka-ca
+              readOnly: true
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet: { path: /health, port: 3000 }
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet: { path: /health, port: 3000 }
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+---
+# ==========================================
+# Keycloak — Service (HTTP 8080)
+# ==========================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app: keycloak
+spec:
+  type: ClusterIP
+  selector:
+    app: keycloak
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+
+---
+# ==========================================
+# Keycloak — StatefulSet (robust startup)
+#  - StatefulSet ensures pod is named keycloak-0
+#  - startupProbe gates liveness/readiness during augmentation
+#  - memory bumped + JVM heap percentages set
+#  - /opt/keycloak/data backed by emptyDir (persists within pod)
+#  - webhook jars downloaded to /opt/keycloak/providers
+# ==========================================
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app: keycloak
+spec:
+  serviceName: keycloak
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      initContainers:
+        - name: download-plugins
+          image: curlimages/curl:8.5.0
+          command: ["/bin/sh", "-c"]
+          args: ["/scripts/download-plugins.sh"]
+          env:
+            - name: CURL_CA_BUNDLE
+              value: /etc/ssl/certs/ca-certificates.crt
+          volumeMounts:
+            - name: plugins
+              mountPath: /plugins
+            - name: plugin-downloader
+              mountPath: /scripts
+        - name: wait-for-postgres
+          image: postgres:15
+          command: ["sh", "-lc"]
+          args:
+            - |
+              echo "Waiting for Postgres at keycloak-postgresql.keycloak.svc:5432..."
+              for i in $(seq 1 120); do
+                pg_isready -h keycloak-postgresql.keycloak.svc -p 5432 -U keycloak && exit 0
+                sleep 2
+              done
+              echo "Postgres not ready after 240s"; exit 1
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-postgresql
+                  key: password
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:26.3.4
+          imagePullPolicy: IfNotPresent
+          command: ["/opt/keycloak/bin/kc.sh"]
+          args:
+            - "start"
+            - "--http-enabled=true"
+            - "--http-port=8080"
+            - "--hostname=keycloak.skillsier.com"
+            - "--proxy-headers=xforwarded"
+            - "--health-enabled=true"
+            - "--metrics-enabled=true"
+            - "--http-management-enabled=true"
+            - "--http-management-port=9000"
+          env:
+            # --- Database ---
+            - name: KC_DB
+              value: postgres
+            - name: KC_DB_URL
+              value: jdbc:postgresql://keycloak-postgresql.keycloak.svc:5432/keycloak
+            - name: KC_DB_USERNAME
+              value: keycloak
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-postgresql
+                  key: password
+
+            # --- Admin bootstrap (replace for prod) ---
+            - name: KEYCLOAK_ADMIN
+              value: admin
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: admin
+
+            # --- Webhook to Kafka Bridge (internal) ---
+            - name: WEBHOOK_HTTP_BASE_PATH
+              value: http://kafka-bridge.keycloak.svc:3000/events
+            - name: WEBHOOK_HTTP_AUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-bridge-auth
+                  key: username
+            - name: WEBHOOK_HTTP_AUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-bridge-auth
+                  key: password
+
+            # --- Cache & JVM tuning for containers ---
+            - name: KC_CACHE
+              value: local
+            - name: JAVA_OPTS_APPEND
+              value: "-XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=75"
+
+            # --- Health/metrics toggles (already enabled by args) ---
+            - name: KC_LOG_LEVEL
+              value: info
+            - name: KC_LOG_CONSOLE_COLOR
+              value: "true"
+            - name: KC_METRICS_ENABLED
+              value: "true"
+            - name: KC_HEALTH_ENABLED
+              value: "true"
+
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: http-management
+              containerPort: 9000
+          # Robust probes for slow first boot (augmentation)
+          startupProbe:
+            httpGet:
+              path: /health/ready
+              port: 9000
+            failureThreshold: 60   # up to ~5 minutes
+            periodSeconds: 5
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 9000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 9000
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "1Gi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+
+          volumeMounts:
+            - name: plugins
+              mountPath: /opt/keycloak/providers
+            - name: kc-data
+              mountPath: /opt/keycloak/data   # persists across container restarts in this pod
+
+      volumes:
+        - name: plugins
+          emptyDir: {}
+        - name: plugin-downloader
+          configMap:
+            name: keycloak-plugin-downloader
+            defaultMode: 0755
+        - name: kc-data
+          emptyDir: {}                        # ephemeral per pod; speeds up subsequent restarts
+
+---
+# ==========================================
+# Keycloak — NetworkPolicy (egress)
+#  - DNS
+#  - PostgreSQL (5432)
+#  - Webhook to Kafka Bridge (3000)
+#  - Internet (80/443) for plugin downloads
+# ==========================================
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: keycloak-to-postgres
+  namespace: keycloak
+spec:
+  podSelector:
+    matchLabels:
+      app: keycloak
+  policyTypes:
+    - Egress
+  egress:
+    # DNS - allow to kube-system namespace where CoreDNS runs
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+        - podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+    # Allow to PostgreSQL pod directly
+    - to:
+        - podSelector:
+            matchLabels:
+              app: keycloak-postgresql
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Call the Kafka bridge inside the namespace
+    - to:
+        - podSelector:
+            matchLabels:
+              app: kafka-bridge
+      ports:
+        - protocol: TCP
+          port: 3000
+
+    # Internet for plugin downloads during init
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+
+---
+# ==========================================
+# Kafka Bridge — NetworkPolicy (egress)
+# - DNS (UDP/53)
+# - HTTPS (TCP/443) for npm install at startup
+# - Kafka SASL_SSL (TCP/9094) to kafka namespace
+# ==========================================
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kafka-bridge-to-kafka
+  namespace: keycloak
+spec:
+  podSelector:
+    matchLabels:
+      app: kafka-bridge
+  policyTypes:
+    - Egress
+  egress:
+    # DNS
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: UDP
+          port: 53
+    # Kafka SASL_SSL (Strimzi bootstrap :9094)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kafka
+      ports:
+        - protocol: TCP
+          port: 9094
+    # HTTPS for npm install
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443

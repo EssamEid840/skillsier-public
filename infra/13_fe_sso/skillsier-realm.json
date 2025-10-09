@@ -1,0 +1,1071 @@
+{
+  "realm": "skillsier",
+  "displayName": "Skillsier Freelancing Platform",
+  "displayNameHtml": "<div class=\"kc-logo-text\"><span>Skillsier</span></div>",
+  "ssoSessionIdleTimeout": 3600,
+  "ssoSessionMaxLifespan": 86400,
+  "enabled": true,
+  "sslRequired": "external",
+  "identityProviders": [
+    {
+      "alias": "google",
+      "providerId": "google",
+      "enabled": true,
+      "updateProfileFirstLoginMode": "on",
+      "trustEmail": true,
+      "storeToken": false,
+      "addReadTokenRoleOnCreate": false,
+      "authenticateByDefault": false,
+      "linkOnly": false,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "clientId": "47852151760-3s8rgj8qpgaev6rcgvh9a3kos35j7ab1.apps.googleusercontent.com",
+        "clientSecret": "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",
+        "hostedDomain": "",
+        "useJwksUrl": "true"
+      }
+    }
+  ],
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "rememberMe": true,
+  "verifyEmail": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 30,
+  "defaultRoles": [
+    "offline_access",
+    "uma_authorization",
+    "default-roles-skillsier"
+  ],
+  "requiredCredentials": [
+    "password"
+  ],
+  "passwordPolicy": "length(8) and notUsername and notEmail and digits(1) and lowerCase(1) and upperCase(1) and specialChars(1)",
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyInitialCounter": 0,
+  "otpPolicyDigits": 6,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyPeriod": 30,
+  "otpPolicyCodeReusable": false,
+  "otpSupportedApplications": [
+    "totpAppFreeOTPName",
+    "totpAppGoogleName",
+    "totpAppMicrosoftAuthenticatorName"
+  ],
+  "webAuthnPolicyRpEntityName": "keycloak",
+  "webAuthnPolicySignatureAlgorithms": [
+    "ES256",
+    "RS256"
+  ],
+  "webAuthnPolicyRpId": "",
+  "webAuthnPolicyAttestationConveyancePreference": "not specified",
+  "webAuthnPolicyAuthenticatorAttachment": "not specified",
+  "webAuthnPolicyRequireResidentKey": "not specified",
+  "webAuthnPolicyUserVerificationRequirement": "not specified",
+  "webAuthnPolicyCreateTimeout": 0,
+  "webAuthnPolicyAvoidSameAuthenticatorRegister": false,
+  "webAuthnPolicyAcceptableAaguids": [],
+  "webAuthnPolicyExtraOrigins": [],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "Skillsier",
+      "email": "admin@skillsier.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Skillsier@admin2025!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin",
+        "user"
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "realm-admin"
+        ]
+      }
+    },
+    {
+      "username": "test-freelancer",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "Test",
+      "lastName": "Freelancer",
+      "email": "freelancer@skillsier.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Freelancer@2025!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "freelancer",
+        "user"
+      ],
+      "groups": ["/Freelancers"]
+    },
+    {
+      "username": "test-client",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "Test",
+      "lastName": "Client",
+      "email": "client@skillsier.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Client@2025!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "client",
+        "user"
+      ],
+      "groups": ["/Clients"]
+    },
+    {
+      "username": "test-agency",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "firstName": "Test",
+      "lastName": "Agency",
+      "email": "agency@skillsier.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Agency@2025!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "agency_owner",
+        "freelancer",
+        "user"
+      ],
+      "groups": ["/Agencies"]
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "Platform administrator with full access",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "user",
+        "description": "Standard user role",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "freelancer",
+        "description": "Freelancer who can bid on projects and offer services",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "client",
+        "description": "Client who can post projects and hire freelancers",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "agency_owner",
+        "description": "Agency owner who can manage teams and bid on projects",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "agency_member",
+        "description": "Agency team member working under an agency",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "moderator",
+        "description": "Platform moderator for dispute resolution and content moderation",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "support_agent",
+        "description": "Customer support agent",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "verified_freelancer",
+        "description": "Verified freelancer with enhanced privileges",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "enterprise_client",
+        "description": "Enterprise client with special features",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+      "name": "payment_processor",
+      "description": "Handles financial transactions and payouts",
+      "composite": false,
+      "clientRole": false
+      },
+      {
+        "name": "uma_authorization",
+        "description": "${role_uma_authorization}",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "offline_access",
+        "description": "${role_offline-access}",
+        "composite": false,
+        "clientRole": false
+      },
+      {
+        "name": "default-roles-skillsier",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "offline_access",
+            "uma_authorization",
+            "user"
+          ]
+        },
+        "clientRole": false
+      }
+    ]
+  },
+  "groups": [
+    {
+      "name": "Administrators",
+      "path": "/Administrators",
+      "realmRoles": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Freelancers",
+      "path": "/Freelancers",
+      "realmRoles": [
+        "freelancer",
+        "user"
+      ]
+    },
+    {
+      "name": "Clients",
+      "path": "/Clients",
+      "realmRoles": [
+        "client",
+        "user"
+      ]
+    },
+    {
+      "name": "Agencies",
+      "path": "/Agencies",
+      "realmRoles": [
+        "agency_owner",
+        "freelancer",
+        "user"
+      ]
+    },
+    {
+      "name": "Moderators",
+      "path": "/Moderators",
+      "realmRoles": [
+        "moderator",
+        "user"
+      ]
+    },
+    {
+      "name": "Support Team",
+      "path": "/Support-Team",
+      "realmRoles": [
+        "support_agent",
+        "user"
+      ]
+    },
+    {
+    "name": "Enterprise Clients",
+    "path": "/Enterprise-Clients",
+    "realmRoles": ["enterprise_client", "client"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "users-be",
+      "name": "Users Backend Service",
+      "description": "Backend API service for user management and authentication",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "skillsier-users-be-2025-secure-secret",
+      "redirectUris": [
+        "https://api.skillsier.com/*",
+        "https://users-be.skillsier.com/*",
+        "http://localhost:8080/*",
+        "http://localhost:3000/*",
+        "http://localhost:8081/*"
+      ],
+      "webOrigins": [
+        "https://skillsier.com",
+        "https://www.skillsier.com",
+        "https://api.skillsier.com",
+        "https://users-be.skillsier.com",
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://localhost:8081"
+      ],
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "frontchannelLogout": true,
+      "attributes": {
+        "access.token.lifespan": "1800",
+        "client.session.idle.timeout": "3600",
+        "client.session.max.lifespan": "86400",
+        "use.refresh.tokens": "true",
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      },
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "clientId": "skillsier-web",
+      "name": "Skillsier Web Application",
+      "description": "Main web application for the Skillsier freelancing platform",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "skillsier-web-2025-secure-secret",
+      "redirectUris": [
+        "https://skillsier.com/*",
+        "https://www.skillsier.com/*",
+        "https://app.skillsier.com/*",
+        "http://localhost:3000/*",
+        "http://localhost:8080/*",
+        "http://localhost:3001/*"
+      ],
+      "webOrigins": [
+        "https://skillsier.com",
+        "https://www.skillsier.com",
+        "https://app.skillsier.com",
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://localhost:3001"
+      ],
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": true,
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://skillsier.com/logout,https://www.skillsier.com/logout,https://app.skillsier.com/logout,+",
+        "use.refresh.tokens": "true"
+      },
+      "fullScopeAllowed": false,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "clientId": "skillsier-mobile",
+      "name": "Skillsier Mobile Application",
+      "description": "Mobile application for iOS and Android",
+      "enabled": true,
+      "publicClient": true,
+      "redirectUris": [
+        "com.skillsier.app://oauth/callback",
+        "skillsier://oauth/callback",
+        "skillsier://auth",
+        "http://localhost/*"
+      ],
+      "webOrigins": [],
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": true,
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "com.skillsier.app://logout,skillsier://logout,+"
+      },
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "clientId": "skillsier-admin",
+      "name": "Skillsier Admin Panel",
+      "description": "Administrative interface for platform management",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "skillsier-admin-2025-secure-secret",
+      "redirectUris": [
+        "https://admin.skillsier.com/*",
+        "http://localhost:3002/*"
+      ],
+      "webOrigins": [
+        "https://admin.skillsier.com",
+        "http://localhost:3002"
+      ],
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": true,
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "use.refresh.tokens": "true",
+        "post.logout.redirect.uris": "+"
+      },
+      "fullScopeAllowed": false,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access"
+      ]
+    },
+    {
+      "clientId": "account",
+      "name": "${client_account}",
+      "rootUrl": "${authBaseUrl}",
+      "baseUrl": "/realms/skillsier/account/",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "/realms/skillsier/account/*"
+      ],
+      "webOrigins": [],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "post.logout.redirect.uris": "+"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": false,
+      "nodeReRegistrationTimeout": 0,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "clientId": "account-console",
+      "name": "${client_account-console}",
+      "rootUrl": "${authBaseUrl}",
+      "baseUrl": "/realms/skillsier/account/",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "/realms/skillsier/account/*"
+      ],
+      "webOrigins": [],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "post.logout.redirect.uris": "+",
+        "pkce.code.challenge.method": "S256"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": false,
+      "nodeReRegistrationTimeout": 0,
+      "protocolMappers": [
+        {
+          "name": "audience resolve",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-resolve-mapper",
+          "consentRequired": false,
+          "config": {}
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "clientId": "bidding-service",
+      "name": "Project Bidding API",
+      "description": "Handles project bids and proposals",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "bidding-secure-key-2025",
+      "redirectUris": ["https://api.skillsier.com/bidding/*"],
+      "webOrigins": ["https://api.skillsier.com"],
+      "fullScopeAllowed": false,
+      "defaultClientScopes": ["project_bidding", "offline_access"]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "address",
+      "description": "OpenID Connect built-in scope: address",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "consent.screen.text": "${addressScopeConsentText}",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-address-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute.formatted": "formatted",
+            "user.attribute.country": "country",
+            "introspection.token.claim": "true",
+            "user.attribute.postal_code": "postal_code",
+            "userinfo.token.claim": "true",
+            "user.attribute.street": "street",
+            "id.token.claim": "true",
+            "user.attribute.region": "region",
+            "access.token.claim": "true",
+            "user.attribute.locality": "locality"
+          }
+        }
+      ]
+    },
+    {
+      "name": "microprofile-jwt",
+      "description": "Microprofile - JWT built-in scope",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "multivalued": "true",
+            "user.attribute": "foo",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "groups",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "upn",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "upn",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    },
+    {
+      "name": "email",
+      "description": "OpenID Connect built-in scope: email",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "consent.screen.text": "${emailScopeConsentText}",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "email verified",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "emailVerified",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "email_verified",
+            "jsonType.label": "boolean"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "email",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "email",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    },
+    {
+      "name": "web-origins",
+      "description": "OpenID Connect scope for add allowed web origins to the access token",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "consent.screen.text": "",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "allowed web origins",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-allowed-origins-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "offline_access",
+      "description": "OpenID Connect built-in scope: offline_access",
+      "protocol": "openid-connect",
+      "attributes": {
+        "consent.screen.text": "${offlineAccessScopeConsentText}",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "phone",
+      "description": "OpenID Connect built-in scope: phone",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "consent.screen.text": "${phoneScopeConsentText}",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "phone number",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "phoneNumber",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "phone_number",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "phone number verified",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "phoneNumberVerified",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "phone_number_verified",
+            "jsonType.label": "boolean"
+          }
+        }
+      ]
+    },
+    {
+      "name": "acr",
+      "description": "OpenID Connect scope for add acr (authentication context class reference) to the token",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "acr loa level",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-acr-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "introspection.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "roles",
+      "description": "OpenID Connect scope for add user roles to the access token",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "consent.screen.text": "${rolesScopeConsentText}",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "foo",
+            "introspection.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true"
+          }
+        },
+        {
+          "name": "audience resolve",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-resolve-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "profile",
+      "description": "OpenID Connect built-in scope: profile",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "consent.screen.text": "${profileScopeConsentText}",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "full name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-full-name-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "introspection.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "given name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "firstName",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "given_name",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "family name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "lastName",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "family_name",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    },
+    {
+      "name": "project_bidding",
+      "description": "Access to bidding functionality",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "bidding_access",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "config": {
+            "user.attribute": "biddingAccess",
+            "claim.name": "bidding_access",
+            "jsonType.label": "boolean",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultDefaultClientScopes": [
+    "profile",
+    "email",
+    "roles",
+    "web-origins",
+    "acr"
+  ],
+  "defaultOptionalClientScopes": [
+    "offline_access",
+    "address",
+    "phone",
+    "microprofile-jwt"
+  ],
+  "scopeMappings": [
+    {
+      "clientScope": "offline_access",
+      "roles": [
+        "offline_access"
+      ]
+    }
+  ],
+  "browserSecurityHeaders": {
+    "contentSecurityPolicyReportOnly": "",
+    "xContentTypeOptions": "nosniff",
+    "xRobotsTag": "none",
+    "xFrameOptions": "SAMEORIGIN",
+    "contentSecurityPolicy": "frame-src 'self'; frame-ancestors 'self'; object-src 'none';",
+    "xXSSProtection": "1; mode=block",
+    "strictTransportSecurity": "max-age=31536000; includeSubDomains",
+    "referrerPolicy": "strict-origin-when-cross-origin"
+  },
+  "eventsEnabled": true,
+  "eventsListeners": [
+    "jboss-logging"
+  ],
+  "enabledEventTypes": [
+    "SEND_RESET_PASSWORD",
+    "UPDATE_CONSENT_ERROR",
+    "GRANT_CONSENT",
+    "REMOVE_TOTP",
+    "REVOKE_GRANT",
+    "UPDATE_TOTP",
+    "LOGIN_ERROR",
+    "CLIENT_LOGIN",
+    "RESET_PASSWORD_ERROR",
+    "CODE_TO_TOKEN_ERROR",
+    "LOGIN",
+    "UPDATE_PASSWORD_ERROR",
+    "TOKEN_EXCHANGE",
+    "LOGOUT",
+    "REGISTER",
+    "CLIENT_REGISTER",
+    "UPDATE_PASSWORD",
+    "CLIENT_DELETE",
+    "VERIFY_EMAIL",
+    "CLIENT_LOGIN_ERROR",
+    "EXECUTE_ACTIONS",
+    "TOKEN_EXCHANGE_ERROR",
+    "SEND_VERIFY_EMAIL",
+    "RESET_PASSWORD",
+    "UPDATE_CONSENT",
+    "SEND_VERIFY_EMAIL_ERROR",
+    "EXECUTE_ACTIONS_ERROR",
+    "CLIENT_UPDATE_ERROR",
+    "UPDATE_PROFILE",
+    "CLIENT_REGISTER_ERROR",
+    "REVOKE_GRANT_ERROR",
+    "LOGOUT_ERROR",
+    "UPDATE_EMAIL",
+    "CLIENT_UPDATE",
+    "VERIFY_EMAIL_ERROR",
+    "SEND_RESET_PASSWORD_ERROR",
+    "GRANT_CONSENT_ERROR",
+    "REGISTER_ERROR",
+    "UPDATE_TOTP_ERROR",
+    "CODE_TO_TOKEN",
+    "REMOVE_TOTP_ERROR",
+    "UPDATE_EMAIL_ERROR"
+  ],
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": true,
+  "requiredActions": [
+    {
+    "alias": "PAYMENT_SETUP",
+    "name": "Setup Payment Method",
+    "providerId": "CONFIGURE_TOTP", 
+    "enabled": true,
+    "defaultAction": false,
+    "priority": 55,
+    "config": {}
+    }
+  ],
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "en",
+    "es",
+    "fr",
+    "de",
+    "it",
+    "pt-BR",
+    "zh-CN",
+    "ja",
+    "ar",
+    "ru"
+  ],
+  "defaultLocale": "en",
+  "loginTheme": "keycloak.v2",
+  "adminTheme": "keycloak.v2",
+  "accountTheme": "keycloak.v3",
+  "emailTheme": "keycloak",
+  "attributes": {
+    "cibaBackchannelTokenDeliveryMode": "poll",
+    "cibaExpiresIn": "120",
+    "cibaAuthRequestedUserHint": "login_hint",
+    "parRequestUriLifespan": "60",
+    "cibaInterval": "5",
+    "realmReusableOtpCode": "false"
+  },
+  "userManagedAccessAllowed": false,
+  "keycloakVersion": "26.3.1"
+}
