@@ -1,13 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userApi } from '../api/userApi';
 import { queryKeys } from '../../../lib/api/queryClient';
-import type { AddPortfolioItemRequest, PortfolioItem } from '@skillsier/types';
+import type { UpdatePortfolioItemRequest, PortfolioItem } from '@skillsier/types';
 
-export function useAddPortfolioItem() {
+interface UpdatePortfolioItemVariables {
+  itemId: string;
+  data: UpdatePortfolioItemRequest;
+}
+
+export function useUpdatePortfolioItem() {
   const queryClient = useQueryClient();
 
-  return useMutation<PortfolioItem, Error, AddPortfolioItemRequest>({
-    mutationFn: userApi.addPortfolioItem,
+  return useMutation<PortfolioItem, Error, UpdatePortfolioItemVariables>({
+    mutationFn: ({ itemId, data }) => userApi.updatePortfolioItem(itemId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.users.portfolio });
       queryClient.invalidateQueries({ queryKey: queryKeys.users.freelancerProfile });

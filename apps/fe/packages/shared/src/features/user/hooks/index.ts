@@ -1,41 +1,46 @@
-// packages/shared/src/features/user/hooks/index.ts
+// Basic Profile Hooks
+export { useUserProfile } from './useUserProfile';
+export { useFreelancerProfile } from './useFreelancerProfile';
+export { useClientProfile } from './useClientProfile';
+export { useUpdateProfile } from './useUpdateProfile';
+export { useUploadAvatar } from './useUploadAvatar';
+export { useDeleteAvatar } from './useDeleteAvatar';
+export { useChangePassword } from './useChangePassword';
+export { useUpdatePreferences } from './useUpdatePreferences';
+export { useUpdateSocialLinks } from './useUpdateSocialLinks';
 
-// Basic Profile
-export * from './useUserProfile';
-export * from './useUpdateProfile';
-export * from './useUploadAvatar';
-export * from './useDeleteAvatar';
-export * from './useChangePassword';
-export * from './useUpdatePreferences';
-export * from './useUpdateSocialLinks';
+// Skills Hooks
+export { useFreelancerSkills } from './useFreelancerSkills';
+export { useAddSkill } from './useAddSkill';
+export { useUpdateSkill } from './useUpdateSkill';
+export { useDeleteSkill } from './useDeleteSkill';
 
-// Freelancer Profile
-export * from './useFreelancerProfile';
+// Work Experience Hooks
+export { useWorkExperience } from './useWorkExperience';
+export { useAddWorkExperience } from './useAddWorkExperience';
+export { useUpdateWorkExperience } from './useUpdateWorkExperience';
+export { useDeleteWorkExperience } from './useDeleteWorkExperience';
 
-// Client Profile
-export * from './useClientProfile';
+// Education Hooks
+export { useEducation } from './useEducation';
+export { useAddEducation } from './useAddEducation';
+export { useUpdateEducation } from './useUpdateEducation';
+export { useDeleteEducation } from './useDeleteEducation';
 
-// Skills
-export * from './useFreelancerSkills';
-export * from './useAddSkill';
-export * from './useUpdateSkill';
-export * from './useDeleteSkill';
+// Certification Hooks
+export { useCertifications } from './useCertifications';
+export { useAddCertification } from './useAddCertification';
+export { useUpdateCertification } from './useUpdateCertification';
+export { useDeleteCertification } from './useDeleteCertification';
 
-// Work Experience
-export * from './useWorkExperience';
-export * from './useAddWorkExperience';
-export * from './useUpdateWorkExperience';
-export * from './useDeleteWorkExperience';
+// Portfolio Hooks
+export { usePortfolio } from './usePortfolio';
+export { useAddPortfolioItem } from './useAddPortfolioItem';
+export { useUpdatePortfolioItem } from './useUpdatePortfolioItem';
+export { useDeletePortfolioItem } from './useDeletePortfolioItem';
+export { useUploadPortfolioImage } from './useUploadPortfolioImage';
 
-// Education
-export * from './useEducation';
-export * from './useAddEducation';
-
-// Certifications
-export * from './useCertifications';
-export * from './useAddCertification';
-
-// Portfolio
-export * from './usePortfolio';
-export * from './useAddPortfolioItem';
-export * from './useUploadPortfolioImage';
+// Stats & Analytics Hooks
+export { useUserStats } from './useUserStats';
+export { useEarnings } from './useEarnings';
+export { useReviews } from './useReviews';

@@ -1,15 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userApi } from '../api/userApi';
 import { queryKeys } from '../../../lib/api/queryClient';
-import type { AddSkillRequest, FreelancerSkill } from '@skillsier/types';
 
-export function useAddSkill() {
+export function useDeleteEducation() {
   const queryClient = useQueryClient();
 
-  return useMutation<FreelancerSkill, Error, AddSkillRequest>({
-    mutationFn: userApi.addSkill,
+  return useMutation<void, Error, string>({
+    mutationFn: userApi.deleteEducation,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.users.skills });
+      queryClient.invalidateQueries({ queryKey: queryKeys.users.education });
       queryClient.invalidateQueries({ queryKey: queryKeys.users.freelancerProfile });
     },
   });

@@ -1,13 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userApi } from '../api/userApi';
 import { queryKeys } from '../../../lib/api/queryClient';
-import type { AddCertificationRequest, Certification } from '@skillsier/types';
+import type { UpdateCertificationRequest, Certification } from '@skillsier/types';
 
-export function useAddCertification() {
+interface UpdateCertificationVariables {
+  certificationId: string;
+  data: UpdateCertificationRequest;
+}
+
+export function useUpdateCertification() {
   const queryClient = useQueryClient();
 
-  return useMutation<Certification, Error, AddCertificationRequest>({
-    mutationFn: userApi.addCertification,
+  return useMutation<Certification, Error, UpdateCertificationVariables>({
+    mutationFn: ({ certificationId, data }) => userApi.updateCertification(certificationId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.users.certifications });
       queryClient.invalidateQueries({ queryKey: queryKeys.users.freelancerProfile });
