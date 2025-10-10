@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "@skillsier/config/eslint/react-native"
+  ],
+  "rules": {
+    "react/prop-types": "off",
+    "react-native/no-inline-styles": "warn"
+  }
+}

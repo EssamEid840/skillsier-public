@@ -1,0 +1,34 @@
+{
+  "extends": "@skillsier/config/typescript/react-native.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-native",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@skillsier/shared": ["../../packages/shared/src"],
+      "@skillsier/ui": ["../../packages/ui/src"],
+      "@skillsier/types": ["../../packages/types/src"],
+      "@skillsier/config": ["../../packages/config/src"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,39 +1,20 @@
 skillsier-fe/
 
-├── setup-env.sh                          # Environment setup
-├── dev.sh                                # Interactive dev launcher
-├── setup-mobile-dev-client.sh           # Mobile dev client setup
 ├── apps/
 │   ├── web/                              # Next.js 15 Web App (React 19)
-│   │   ├── tsconfig.json
-│   │   ├── postcss.config.js
-│   │   ├── .env.local                    # Environment variables
-│   │   ├── .eslintrc.json
 │   │   ├── public/
 │   │   │   ├── images/
 │   │   │   │   ├── dashboard-preview.png
 │   │   │   │   └── avatars/
 │   │   │   ├── icons/
 │   │   │   └── fonts/
-│   │   └── src/
-│   │       ├── app/
-│   │       │   └── [locale]/             # ⭐ Locale-based routing
-│   │       │       ├── globals.css       # Global styles with CSS variables
-│   │       │       ├── (auth)/           # Auth route group
-│   │       │       │   ├── login/
 │   │
 │   └── mobile/                           # React Native Expo App (React 19)
-│       ├── tsconfig.json
 │       ├── .env
 │       ├── app/                          # Expo Router (file-based)
 │       │   ├── (tabs)/                   # Main app tabs
-│       │   │   ├── dashboard.tsx         # ⭐ UPDATED: Dashboard with i18n
 │       │   │   ├── courses.tsx           # Browse jobs/gigs (renamed context)
-│       │   │   ├── skills.tsx            # ⭐ UPDATED: Skills with i18n
 │       └── src/
-│           ├── lib/
-│           │   ├── keycloak-mobile.ts
-│           │   └── utils.ts
 │           └── assets/
 │               ├── images/
 │               ├── fonts/
@@ -41,13 +22,10 @@ skillsier-fe/
 │
 ├── packages/
 │   ├── shared/                           # Shared business logic
-│   │   ├── tsconfig.json
-│   │   ├── .eslintrc.json
 │   │   └── src/
 │   │       ├── features/
 │   │       │   ├── auth/
 │   │       │   │   └── utils/
-│   │       │   │       ├── validation.ts
 │   │       │   │       └── token.ts
 │   │       │   └── user/                   # ⭐ FREELANCING USER FEATURE
 │   │       │       └── types/

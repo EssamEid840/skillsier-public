@@ -48,7 +48,7 @@ const mockJobs = [
   },
 ];
 
-export default function CoursesScreen() {
+export default function JobsScreen() {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);

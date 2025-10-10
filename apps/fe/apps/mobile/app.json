@@ -6,19 +6,22 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "scheme": "skillsier",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.skillsier.app",
+      "buildNumber": "1",
       "infoPlist": {
-        "CADisableMinimumFrameDurationOnPhone": true,
-        "UIApplicationSupportsIndirectInputEvents": true
+        "NSCameraUsageDescription": "This app uses the camera to take photos for your profile.",
+        "NSPhotoLibraryUsageDescription": "This app accesses your photo library to upload images.",
+        "NSMicrophoneUsageDescription": "This app uses the microphone for video calls."
       }
     },
     "android": {
@@ -27,20 +30,43 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.skillsier.app",
-      "softwareKeyboardLayoutMode": "pan"
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECORD_AUDIO"
+      ]
     },
     "web": {
-      "bundler": "metro",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
-      "expo-dev-client",
-      "react-native-reanimated",
-      "expo-localization"
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": true
+          },
+          "android": {
+            "newArchEnabled": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "scheme": "skillsier",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "your-project-id-here"
+      }
     }
   }
 }

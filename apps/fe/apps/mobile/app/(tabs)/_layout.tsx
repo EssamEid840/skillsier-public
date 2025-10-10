@@ -21,7 +21,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="courses"
+        name="jobs"
         options={{
           title: t('jobs.title'),
           tabBarLabel: t('jobs.title'),

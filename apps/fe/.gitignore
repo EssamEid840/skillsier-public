@@ -23,6 +23,13 @@ web-build/
 # Environment
 .env*.local
 .env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+apps/web/.env.local
+apps/mobile/.env
 
 # Debug
 npm-debug.log*

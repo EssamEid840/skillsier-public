@@ -1,99 +1,163 @@
+// apps/mobile/app/(auth)/login.tsx
+// Mobile login screen with Google SSO
+
 import { useState } from 'react';
-import { View, Text, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
-import { Button, Input } from '@skillsier/ui';
-import { useLogin } from '@skillsier/shared';
-import { Mail, Lock, AlertCircle, ArrowLeft } from 'lucide-react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { loginWithProvider } from '@/lib/keycloak-mobile';
 
 export default function LoginScreen() {
-  const { t } = useTranslation();
-  const { mutate: login, isPending, error } = useLogin();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
   });
 
-  const handleLogin = () => {
-    login(formData, {
-      onSuccess: () => {
-        router.replace('/(tabs)/dashboard');
-      },
-    });
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await loginWithProvider('google');
+      router.replace('/(tabs)/dashboard');
+    } catch (error) {
+      Alert.alert(
+        'Login Failed',
+        error instanceof Error ? error.message : 'Please try again'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailLogin = async () => {
+    if (!formData.email || !formData.password) {
+      Alert.alert('Error', 'Please enter email and password');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await loginWithProvider('local');
+      router.replace('/(tabs)/dashboard');
+    } catch (error) {
+      Alert.alert(
+        'Login Failed',
+        error instanceof Error ? error.message : 'Please try again'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
-      >
-        <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-          <TouchableOpacity onPress={() => router.back()} className="py-4">
-            <ArrowLeft color="#6b7280" size={24} />
-          </TouchableOpacity>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      className="flex-1 bg-white"
+    >
+      <View className="flex-1 justify-center px-6">
+        {/* Header */}
+        <View className="mb-8">
+          <Text className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome Back
+          </Text>
+          <Text className="text-gray-600">
+            Sign in to continue to Skillsier
+          </Text>
+        </View>
 
-          <View className="items-center mb-8">
-            <View className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary-600 to-purple-600 mb-4" />
-            <Text className="text-3xl font-bold text-gray-900">{t('auth.welcomeBack')}</Text>
-            <Text className="text-base text-gray-600 mt-2">{t('auth.signInToContinue')}</Text>
-          </View>
-
-          {error && (
-            <View className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex-row items-start">
-              <AlertCircle color="#dc2626" size={20} />
-              <View className="ml-3 flex-1">
-                <Text className="text-sm font-medium text-red-800">
-                  {t('errors.authentication')}
-                </Text>
-                <Text className="text-sm text-red-700 mt-1">
-                  {error.message || t('errors.authentication')}
-                </Text>
+        {/* Google Sign In Button */}
+        <TouchableOpacity
+          onPress={handleGoogleLogin}
+          disabled={isLoading}
+          className="flex-row items-center justify-center bg-white border-2 border-gray-300 rounded-xl py-4 mb-6 active:bg-gray-50"
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#3B82F6" />
+          ) : (
+            <>
+              <View className="w-6 h-6 mr-3">
+                <Text>🔷</Text>
               </View>
-            </View>
+              <Text className="text-gray-700 font-semibold text-base">
+                Continue with Google
+              </Text>
+            </>
           )}
+        </TouchableOpacity>
 
-          <View className="space-y-6 mb-6">
-            <Input
-              label={t('auth.email')}
-              value={formData.username}
-              onChangeText={(text) => setFormData({ ...formData, username: text })}
-              placeholder={t('auth.email')}
-              autoCapitalize="none"
-              autoComplete="username"
-              leftIcon={<Mail color="#9ca3af" size={20} />}
-            />
+        {/* Divider */}
+        <View className="flex-row items-center mb-6">
+          <View className="flex-1 h-px bg-gray-300" />
+          <Text className="mx-4 text-gray-500">or</Text>
+          <View className="flex-1 h-px bg-gray-300" />
+        </View>
 
-            <Input
-              label={t('auth.password')}
-              type="password"
-              value={formData.password}
-              onChangeText={(text) => setFormData({ ...formData, password: text })}
-              placeholder={t('auth.password')}
-              autoComplete="current-password"
-              leftIcon={<Lock color="#9ca3af" size={20} />}
-            />
-          </View>
+        {/* Email Input */}
+        <View className="mb-4">
+          <Text className="text-sm font-medium text-gray-700 mb-2">
+            Email
+          </Text>
+          <TextInput
+            value={formData.email}
+            onChangeText={(text) =>
+              setFormData((prev) => ({ ...prev, email: text }))
+            }
+            placeholder="you@example.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900"
+          />
+        </View>
 
-          <TouchableOpacity className="mb-6">
-            <Text className="text-sm font-medium text-primary-600 text-right">
-              {t('auth.forgotPassword')}
-            </Text>
-          </TouchableOpacity>
+        {/* Password Input */}
+        <View className="mb-6">
+          <Text className="text-sm font-medium text-gray-700 mb-2">
+            Password
+          </Text>
+          <TextInput
+            value={formData.password}
+            onChangeText={(text) =>
+              setFormData((prev) => ({ ...prev, password: text }))
+            }
+            placeholder="••••••••"
+            secureTextEntry
+            autoComplete="password"
+            className="bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900"
+          />
+        </View>
 
-          <Button onPress={handleLogin} loading={isPending} fullWidth size="lg">
-            {t('auth.login')}
-          </Button>
+        {/* Sign In Button */}
+        <TouchableOpacity
+          onPress={handleEmailLogin}
+          disabled={isLoading}
+          className="bg-blue-600 rounded-xl py-4 mb-4 active:bg-blue-700"
+        >
+          <Text className="text-white text-center font-semibold text-base">
+            {isLoading ? 'Signing in...' : 'Sign In'}
+          </Text>
+        </TouchableOpacity>
 
-          <View className="flex-row justify-center items-center mt-8">
-            <Text className="text-gray-600">{t('auth.dontHaveAccount')} </Text>
-            <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-              <Text className="font-medium text-primary-600">{t('auth.register')}</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        {/* Sign Up Link */}
+        <TouchableOpacity
+          onPress={() => router.push('/(auth)/register')}
+          className="py-2"
+        >
+          <Text className="text-center text-gray-600">
+            Don't have an account?{' '}
+            <Text className="text-blue-600 font-semibold">Sign Up</Text>
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
