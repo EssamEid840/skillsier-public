@@ -1,0 +1,48 @@
+# ==========================================
+# FILE: .github/workflows/all-services.yml
+# Unified workflow for all microservices
+# ==========================================
+
+name: All Services CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      users-be: ${{ steps.filter.outputs.users-be }}
+      jobs-be: ${{ steps.filter.outputs.jobs-be }}
+      proposals-be: ${{ steps.filter.outputs.proposals-be }}
+      contracts-be: ${{ steps.filter.outputs.contracts-be }}
+      reviews-be: ${{ steps.filter.outputs.reviews-be }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            users-be:
+              - 'users-be/**'
+            jobs-be:
+              - 'jobs-be/**'
+            proposals-be:
+              - 'proposals-be/**'
+            contracts-be:
+              - 'contracts-be/**'
+            reviews-be:
+              - 'reviews-be/**'
+
+  test-users-be:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.users-be == 'true'
+    uses: ./.github/workflows/users-be.yml
+
+  test-jobs-be:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.jobs-be == 'true'
+    uses: ./.github/workflows/jobs-be.yml

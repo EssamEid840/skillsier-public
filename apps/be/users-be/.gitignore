@@ -58,3 +58,5 @@ deployments/k8s/secret-*.yaml
 config.local.yaml
 config.*.yaml
 !config.example.yaml
+
+main
