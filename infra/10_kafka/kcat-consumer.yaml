@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kcat-consumer
+  namespace: kafka
+  labels: {app: kcat}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels: {app: kcat}
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: ca
+          secret:
+            secretName: kafka-cluster-cluster-ca-cert
+            items: [{ key: ca.crt, path: ca.crt }]
+        - name: creds
+          secret:
+            secretName: admin-user           # use the superuser you created
+            items: [{ key: password, path: password }]
+      containers:
+        - name: kcat
+          image: edenhill/kcat:1.7.1
+          command: ["sh","-lc"]
+          args:
+            - |
+              PW="$(tr -d '\n\r' </creds/password)"   # strip any newline
+              kcat -C \
+                -b kafka-cluster-kafka-bootstrap.kafka.svc:9094 \
+                -X security.protocol=SASL_SSL \
+                -X sasl.mechanisms=SCRAM-SHA-512 \
+                -X sasl.username=admin-user \
+                -X sasl.password="$PW" \
+                -X ssl.ca.location=/tls/ca.crt \
+                -t keycloak-events \
+                -o beginning \
+                -c 1 -q
+          volumeMounts:
+            - { name: ca,    mountPath: /tls,   readOnly: true }
+            - { name: creds, mountPath: /creds, readOnly: true }

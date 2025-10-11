@@ -1,0 +1,156 @@
+# Dapr Production Configuration for Kubernetes
+# Apply this file AFTER installing the Dapr Helm chart.
+
+---
+# Redis Secret for Dapr Components
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-secret
+  namespace: skillsier
+type: Opaque
+data:
+  password: UmVkaXNAMTIzNDU=  # Base64 encoded "Redis@12345"
+
+---
+# Redis Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-master
+  namespace: skillsier
+  labels:
+    app: redis
+    role: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+      role: master
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+          command:
+            - redis-server
+            - --requirepass
+            - Redis@12345
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-data
+          emptyDir: {}
+
+---
+# Redis Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+  namespace: skillsier
+  labels:
+    app: redis
+    role: master
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis
+    role: master
+
+---
+# Certificate for Dapr Dashboard
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tls-dapr-dashboard
+  namespace: dapr-system
+spec:
+  secretName: tls-dapr-dashboard
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - dapr.skillsier.com
+
+---
+# Dapr Dashboard Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dapr-dashboard-ingress
+  namespace: dapr-system
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - dapr.skillsier.com
+      secretName: tls-dapr-dashboard
+  rules:
+    - host: dapr.skillsier.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dapr-dashboard
+                port:
+                  number: 8080
+
+---
+# Redis State Store Component
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: statestore
+  namespace: skillsier
+spec:
+  type: state.redis
+  version: v1
+  metadata:
+    - name: redisHost
+      value: redis-master:6379
+    - name: redisPassword
+      secretKeyRef:
+        name: redis-secret
+        key: password
+
+---
+# Redis Pub/Sub Component
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pubsub
+  namespace: skillsier
+spec:
+  type: pubsub.redis
+  version: v1
+  metadata:
+    - name: redisHost
+      value: redis-master:6379
+    - name: redisPassword
+      secretKeyRef:
+        name: redis-secret
+        key: password

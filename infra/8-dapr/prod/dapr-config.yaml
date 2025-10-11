@@ -1,0 +1,21 @@
+---
+# Dapr Configuration
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: dapr-config
+  namespace: dapr-system # This configuration is global for the control plane
+spec:
+  tracing:
+    samplingRate: "1"
+  mtls:
+    enabled: true
+    workloadCertTTL: "24h"
+    allowedClockSkew: "15m"
+  httpPipeline:
+    handlers:
+      - name: cors
+        type: middleware.http.cors
+  accessControl:
+    defaultAction: allow
+    trustDomain: cluster.local

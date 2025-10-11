@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kcat-live-consumer
+  namespace: kafka
+  labels: { app: kcat }
+spec:
+  restartPolicy: Never
+  volumes:
+    - name: ca
+      secret:
+        secretName: kafka-cluster-cluster-ca-cert
+        items: [{ key: ca.crt, path: ca.crt }]
+    - name: creds
+      secret:
+        secretName: admin-user
+        items: [{ key: password, path: password }]
+  containers:
+    - name: kcat
+      image: edenhill/kcat:1.7.1
+      command: ["/bin/sh","-ec"]
+      args:
+        - |
+          PW="$(tr -d '\r\n' </creds/password)"
+          exec kcat -C \
+            -b kafka-cluster-kafka-bootstrap.kafka.svc:9094 \
+            -X security.protocol=SASL_SSL \
+            -X sasl.mechanisms=SCRAM-SHA-512 \
+            -X sasl.username=admin-user \
+            -X sasl.password="$PW" \
+            -X ssl.ca.location=/tls/ca.crt \
+            -t keycloak-events -o beginning -u
+      volumeMounts:
+        - { name: ca,    mountPath: /tls,   readOnly: true }
+        - { name: creds, mountPath: /creds, readOnly: true }

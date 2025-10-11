@@ -1,0 +1,24 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaBridge
+metadata:
+  name: kafka-bridge
+  namespace: kafka
+spec:
+  replicas: 1
+  bootstrapServers: kafka-cluster-kafka-bootstrap:9094
+  tls:
+    trustedCertificates:
+      - secretName: kafka-cluster-cluster-ca-cert
+        certificate: ca.crt
+  authentication:
+    type: scram-sha-512
+    username: admin-user
+    passwordSecret:
+      secretName: admin-user
+      password: password
+  http:
+    port: 8080
+  # Optional: make consumer reads start at earliest
+  consumer:
+    config:
+      auto.offset.reset: earliest

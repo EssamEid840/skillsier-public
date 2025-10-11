@@ -1,0 +1,29 @@
+# Strimzi Operator Helm Values - tiny VPS friendly
+replicas: 1
+
+# Limit the operator to only watch the kafka namespace
+watchNamespaces:
+  - kafka
+
+image:
+  registry: quay.io
+  repository: strimzi
+  name: operator
+  # Match the operator version we installed via Helm
+  tag: 0.41.0
+
+# Smaller resource footprint for a small VPS
+resources:
+  requests:
+    cpu: 100m
+    memory: 192Mi
+  limits:
+    cpu: 400m
+    memory: 384Mi
+
+logLevel: INFO
+fullReconciliationIntervalMs: 120000
+operationTimeoutMs: 300000
+
+# Keep KRaft and NodePools on; Topic Operator is unidirectional (created via EO)
+featureGates: "+UseKRaft,+KafkaNodePools,+UnidirectionalTopicOperator"

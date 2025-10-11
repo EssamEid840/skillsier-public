@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata: { name: kcat-producer, namespace: kafka }
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: ca
+          secret: { secretName: kafka-cluster-cluster-ca-cert, items: [{key: ca.crt, path: ca.crt}] }
+        - name: creds
+          secret: { secretName: admin-user, items: [{key: password, path: password}] }
+      containers:
+        - name: kcat
+          image: edenhill/kcat:1.7.1
+          command: ["sh","-lc"]
+          args:
+            - PW="$(tr -d '\n\r' </creds/password)";
+              printf '%s\n' '{"type":"LOGIN","realm":"master","userId":"demo","ts":"'"$(date -Iseconds)"'"}' |
+              kcat -P -b kafka-cluster-kafka-bootstrap.kafka.svc:9094 \
+                -X security.protocol=SASL_SSL -X sasl.mechanisms=SCRAM-SHA-512 \
+                -X sasl.username=admin-user -X sasl.password="$PW" \
+                -X ssl.ca.location=/tls/ca.crt \
+                -t keycloak-events -l
+          volumeMounts:
+            - { name: ca,    mountPath: /tls,   readOnly: true }
+            - { name: creds, mountPath: /creds, readOnly: true }

@@ -1,0 +1,173 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: keycloak-user
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      # --- Keycloak topics (prefix) ---
+      - resource:
+          type: topic
+          name: keycloak-
+          patternType: prefix
+        operations: [Create, Write, Read, Describe]
+
+      # Keep explicit literals too (ok to remove later)
+      - resource:
+          type: topic
+          name: keycloak-events
+          patternType: literal
+        operations: [Create, Write, Read, Describe]
+      - resource:
+          type: topic
+          name: keycloak-admin-events
+          patternType: literal
+        operations: [Create, Write, Read, Describe]
+      - resource:
+          type: topic
+          name: keycloak-user-events
+          patternType: literal
+        operations: [Create, Write, Read, Describe]
+
+      # --- Optional: test topic(s) you used with kcat ---
+      - resource:
+          type: topic
+          name: smoke
+          patternType: literal
+        operations: [Create, Write, Read, Describe]
+
+      # --- Consumer groups for Keycloak apps ---
+      - resource:
+          type: group
+          name: keycloak-
+          patternType: prefix
+        operations: [Read, Describe]
+
+      # Allow groups for the test topic too (optional)
+      - resource:
+          type: group
+          name: smoke-
+          patternType: prefix
+        operations: [Read, Describe]
+
+      # Optional: if you use transactions with a prefix
+      - resource:
+          type: transactionalId
+          name: keycloak-
+          patternType: prefix
+        operations: [Write, Describe]
+
+      # Optional but safe: some clients need this when idempotence is enabled
+      - resource:
+          type: cluster
+          name: kafka-cluster
+          patternType: literal
+        operations: [IdempotentWrite]
+  # (Optional) Light quotas to protect a small VPS; tweak or remove if undesired
+  quotas:
+    producerByteRate: 1048576      # ~1 MiB/s
+    consumerByteRate: 1048576      # ~1 MiB/s
+    requestPercentage: 20          # Up to 20% of broker request capacity
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: admin-user
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  authentication:
+    type: scram-sha-512
+  # admin-user is already a superUser in your Kafka CR, so ACLs are not required.
+  # Keeping minimal, non-restrictive ACLs here (you can remove the whole 'authorization' block if you prefer).
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: cluster
+          name: kafka-cluster
+          patternType: literal
+        operations: [All]
+  # (Optional) Mild quotas even for admin to avoid accidental floods
+  quotas:
+    producerByteRate: 2097152      # ~2 MiB/s
+    consumerByteRate: 2097152      # ~2 MiB/s
+    requestPercentage: 50
+---
+# Existing topics (unchanged, keep as-is)
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: keycloak-events
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 604800000          # 7 days
+    retention.bytes: 1073741824      # 1 GiB cap (saves disk)
+    segment.bytes: 268435456         # 256 MiB (smaller segments)
+    compression.type: snappy
+    min.insync.replicas: 1
+    cleanup.policy: delete
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: keycloak-admin-events
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 604800000          # 7 days
+    segment.bytes: 268435456         # 256 MiB
+    compression.type: snappy
+    min.insync.replicas: 1
+    cleanup.policy: delete
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: keycloak-user-events
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 86400000           # 1 day
+    segment.bytes: 268435456         # 256 MiB
+    compression.type: snappy
+    min.insync.replicas: 1
+    cleanup.policy: delete
+---
+# Optional: add a tiny test topic so your kcat trials don’t hit auth errors
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: smoke
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 3600000            # 1 hour
+    segment.bytes: 134217728         # 128 MiB
+    compression.type: snappy
+    min.insync.replicas: 1
+    cleanup.policy: delete
