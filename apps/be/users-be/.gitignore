@@ -1,63 +1,60 @@
-# Go build artifacts
-/bin/
-/build/
-/dist/
-/*.exe
-/*.out
-/*.test
+# Binaries
+bin/
 *.exe
+*.exe~
 *.dll
 *.so
 *.dylib
 
-# Go module cache
-/pkg/
-/vendor/
-
-# Go coverage & test files
-*.coverprofile
+# Test binary, built with `go test -c`
 *.test
-*.log
 
-# Editor directories and files
-.idea/
+# Output of the go coverage tool
+*.out
+coverage.html
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE specific files
 .vscode/
+.idea/
 *.swp
 *.swo
-*.DS_Store
+*~
 
-# Logs and temp files
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
-*.tmp
-*.bak
+logs/
 
-# Env / secrets
-.env
-.env.*
-secrets.json
-config.yaml
-configs/.env.yml
-
-# Docker-related
-*.pid
-docker-compose.override.yml
-
-# Kafka logs (if any local volumes used)
-kafka-logs/
-redpanda-data/
-
-# Output directories
-data/
+# Temporary files
 tmp/
-node_modules/
+temp/
 
-# Git
-*.orig
+# Air (hot reload) temporary files
+.air.toml
+tmp/
 
-# Ignore everything in Docker volume mounts
-volumes/
+# Build artifacts
+dist/
 
+# Kubernetes secrets (should never be committed)
+deployments/k8s/secret-*.yaml
+*-secret.yaml
 
-# remote dev secrets
-remote-dev/kafka-ca.crt
-remote-dev/dapr-kafka-creds.txt
+# Local configuration
+config.local.yaml
+config.*.yaml
+!config.example.yaml

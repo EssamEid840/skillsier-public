@@ -1,166 +1,148 @@
-# Makefile — Infra in Docker, app locally
-# Usage: `make help`
+.PHONY: help build run test clean docker-build docker-push k8s-deploy k8s-delete deps migrate
 
-# ---------- Config (override via env or `make VAR=value`) ----------
-PROJECT_NAME ?= users-outbox
-COMPOSE_FILE ?= docker-compose.yml
-DC ?= docker compose -f $(COMPOSE_FILE)
+# Variables
+APP_NAME=users-be
+VERSION?=latest
+DOCKER_REGISTRY?=your-registry
+DOCKER_IMAGE=$(DOCKER_REGISTRY)/$(APP_NAME):$(VERSION)
+GO_VERSION=1.23
+KNS ?= skillsier
 
-INFRA_SERVICES ?= postgres redpanda kafka-ui
+help: ## Display this help screen
+	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-GO ?= go
+deps: ## Install dependencies
+	@echo "Installing dependencies..."
+	@go mod download
+	@go mod tidy
+	@go mod verify
+	@echo "✓ Dependencies installed"
 
-# Database (matches docker-compose defaults)
-DB_USER ?= user
-DB_PASS ?= pass
-DB_HOST ?= localhost          # talk to Postgres from host
-DB_PORT ?= 5432
-DB_NAME ?= users
-DB_SSLMODE ?= disable
-DB_DSN ?= postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=$(DB_SSLMODE)
+db.apply:
+	kubectl apply -f deployments/db/postgres-secret.yaml
+	kubectl apply -f deployments/db/postgres-statefulset.yaml
+	kubectl apply -f deployments/db/postgres-service.yaml
+	kubectl apply -f deployments/db/postgres-nodeport.yaml
+	@kubectl -n $(KNS) rollout status sts/users-be-postgres
 
-# Kafka (Redpanda) broker from host
-KAFKA_BROKER ?= localhost:9092
+build: ## Build the application binary
+	@echo "Building $(APP_NAME)..."
+	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/$(APP_NAME) -ldflags="-w -s" cmd/api/main.go
+	@echo "✓ Build complete: bin/$(APP_NAME)"
 
-# ---------- Phony ----------
-.PHONY: help create-config \
-        start-infra stop-infra down-infra logs-infra \
-        db-shell db-pgcrypto \
-        migrate-up-local migrate-down-1 migrate-steps migrate-version migrate-force \
-        run-app-local run-consumer-local env \
-        start build up
+build-local: ## Build for local OS
+	@echo "Building $(APP_NAME) for local..."
+	@go build -o bin/$(APP_NAME) cmd/api/main.go
+	@echo "✓ Build complete: bin/$(APP_NAME)"
 
-# ---------- Help ----------
-help: ## Show this help
-	@awk 'BEGIN {FS = ":.*##"; printf "\n\033[1mTargets\033[0m\n"} /^[a-zA-Z0-9_.-]+:.*?##/ { printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
-	@echo ""
-	@echo "Key vars: DB_DSN=$(DB_DSN)  KAFKA_BROKER=$(KAFKA_BROKER)"
+run: ## Run the application locally
+	@echo "Running $(APP_NAME)..."
+	@go run cmd/api/main.go
 
-# ---------- Config ----------
-create-config: ## Copy sample config to configs/.env.yml (idempotent)
-	@[ -f configs/.env.yml ] || cp configs/.env.yml.dist configs/.env.yml
-	@echo "✔ configs/.env.yml ready"
+run-local: setup-local build-local ## Setup local environment and run
+	@echo "Starting $(APP_NAME) in local mode..."
+	@./scripts/get-secrets.sh
+	@./bin/$(APP_NAME)
 
-# ---------- Infra (Docker) ----------
-start-infra: create-config ## Up Postgres, Redpanda, Kafka UI
-	$(DC) up -d $(INFRA_SERVICES)
+test: ## Run tests
+	@echo "Running tests..."
+	@go test -v -race -coverprofile=coverage.out ./...
+	@go tool cover -func=coverage.out
+	@echo "✓ Tests complete"
 
-stop-infra: ## Stop Postgres, Redpanda, Kafka UI (containers kept)
-	$(DC) stop $(INFRA_SERVICES)
+test-integration: ## Run integration tests
+	@echo "Running integration tests..."
+	@go test -v -tags=integration ./tests/integration/...
+	@echo "✓ Integration tests complete"
 
-down-infra: ## Down & remove volumes for all services (careful)
-	$(DC) down -v
+clean: ## Clean build artifacts
+	@echo "Cleaning..."
+	@rm -rf bin/
+	@rm -f coverage.out
+	@echo "✓ Clean complete"
 
-logs-infra: ## Follow logs for infra
-	$(DC) logs -f $(INFRA_SERVICES)
+docker-build: ## Build Docker image
+	@echo "Building Docker image: $(DOCKER_IMAGE)"
+	@docker build -t $(DOCKER_IMAGE) -f Dockerfile .
+	@echo "✓ Docker image built: $(DOCKER_IMAGE)"
 
-# ---------- Database helpers ----------
-db-shell: ## psql shell into Postgres
-	$(DC) exec postgres psql -U $(DB_USER) -d $(DB_NAME)
+docker-push: docker-build ## Push Docker image to registry
+	@echo "Pushing Docker image: $(DOCKER_IMAGE)"
+	@docker push $(DOCKER_IMAGE)
+	@echo "✓ Docker image pushed"
 
-db-pgcrypto: ## Ensure pgcrypto extension (gen_random_uuid)
-	$(DC) exec postgres psql -U $(DB_USER) -d $(DB_NAME) -c 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";'
+docker-run: ## Run application in Docker locally
+	@echo "Running Docker container..."
+	@docker run --rm -p 8080:8080 \
+		-e DB_PASSWORD=${DB_PASSWORD} \
+		-e KAFKA_PASSWORD=${KAFKA_PASSWORD} \
+		$(DOCKER_IMAGE)
 
-# ---------- Migrations (run from local Go) ----------
-migrate-up-local: ## Apply all up migrations using local Go migrator
-	@echo "Using DB_DSN=$(DB_DSN)"
-	DB_DSN='$(DB_DSN)' $(GO) run ./cmd/migrator -action up
+# Kubernetes commands
+k8s-deploy: ## Deploy to Kubernetes
+	@echo "Deploying to Kubernetes..."
+	@kubectl apply -f deployments/k8s/namespace.yaml
+	@kubectl apply -f deployments/k8s/secret.yaml
+	@kubectl apply -f deployments/k8s/configmap.yaml
+	@kubectl apply -f deployments/k8s/deployment.yaml
+	@kubectl apply -f deployments/k8s/service.yaml
+	@kubectl apply -f deployments/k8s/dapr-component-kafka.yaml
+	@kubectl apply -f deployments/k8s/dapr-component-state.yaml
+	@echo "✓ Deployed to Kubernetes"
 
-migrate-down-1: ## Roll back one migration
-	@echo "Using DB_DSN=$(DB_DSN)"
-	DB_DSN='$(DB_DSN)' $(GO) run ./cmd/migrator -action down
+k8s-delete: ## Delete from Kubernetes
+	@echo "Deleting from Kubernetes..."
+	@kubectl delete -f deployments/k8s/ --ignore-not-found=true
+	@echo "✓ Deleted from Kubernetes"
 
-migrate-steps: ## Run N steps (use: make migrate-steps N=-2)
-	@echo "Using DB_DSN=$(DB_DSN)  steps=$(N)"
-	DB_DSN='$(DB_DSN)' $(GO) run ./cmd/migrator -action steps -n $(N)
+k8s-logs: ## View Kubernetes logs
+	@kubectl logs -f -n skillsier -l app=$(APP_NAME)
 
-migrate-version: ## Show current migration version
-	@echo "Using DB_DSN=$(DB_DSN)"
-	DB_DSN='$(DB_DSN)' $(GO) run ./cmd/migrator -action version
+k8s-status: ## Check Kubernetes deployment status
+	@kubectl get all -n skillsier -l app=$(APP_NAME)
 
-migrate-force: ## Force version (use: make migrate-force V=20250504001817)
-	@echo "Using DB_DSN=$(DB_DSN)  version=$(V)"
-	DB_DSN='$(DB_DSN)' $(GO) run ./cmd/migrator -action force -version $(V)
+k8s-restart: ## Restart Kubernetes deployment
+	@kubectl rollout restart deployment/$(APP_NAME) -n skillsier
 
-# ---------- Run locally ----------
-run-app-local: ## Run API locally against Docker infra
-	@echo "KAFKA_BROKER=$(KAFKA_BROKER)  DB_DSN=$(DB_DSN)"
-	KAFKA_BROKER='$(KAFKA_BROKER)' DATABASE_URL='$(DB_DSN)' $(GO) run ./cmd/app
+# Database commands
+db-reset: ## Reset database (drop and recreate)
+	@echo "Resetting database..."
+	@PGPASSWORD=${DB_PASSWORD} psql -h 173.212.218.251 -p 30432 -U usersuser -d usersdb -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+	@echo "✓ Database reset complete"
 
-run-consumer-local: ## Run consumer locally against Docker infra
-	@echo "KAFKA_BROKER=$(KAFKA_BROKER)  DB_DSN=$(DB_DSN)"
-	KAFKA_BROKER='$(KAFKA_BROKER)' DATABASE_URL='$(DB_DSN)' $(GO) run ./cmd/consumer
+# Local development setup
+setup-local: ## Setup local development environment
+	@echo "Setting up local development environment..."
+	@chmod +x scripts/setup-local.sh
+	@chmod +x scripts/get-secrets.sh
+	@./scripts/setup-local.sh
+	@echo "✓ Local environment setup complete"
 
-env: ## Print key env exports to use in your shell
-	@echo "export DATABASE_URL='$(DB_DSN)'"
-	@echo "export KAFKA_BROKER='$(KAFKA_BROKER)'"
+# Code quality
+lint: ## Run linter
+	@echo "Running linter..."
+	@golangci-lint run ./...
+	@echo "✓ Linting complete"
 
-# ---------- Back-compat targets (deprecated) ----------
-start: ## (Deprecated) Old target; use start-infra
-	@$(MAKE) start-infra
+fmt: ## Format code
+	@echo "Formatting code..."
+	@go fmt ./...
+	@echo "✓ Code formatted"
 
-build: ## (Deprecated) Old target; prefer start-infra then run-app-local
-	$(DC) up -d --build
+vet: ## Run go vet
+	@echo "Running go vet..."
+	@go vet ./...
+	@echo "✓ Vet complete"
 
-up: ## (Deprecated) Old target; prefer start-infra
-	$(DC) up -d
+# Development helpers
+dev: ## Run in development mode with hot reload (requires air)
+	@air
 
-# ----------------- Local DAPR ---------------------------
-DAPR_RES ?= ./deploy/local-dapr
+install-tools: ## Install development tools
+	@echo "Installing development tools..."
+	@go install github.com/cosmtrek/air@latest
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	@echo "✓ Tools installed"
 
-dapr-run-app-local:
-	APP_OUTBOX__MODE=cdc APP_DAPR__ENABLED=true \
-	dapr run --app-id users-outbox \
-	  --app-port 8080 \
-	  --dapr-http-port 3501 \
-	  --resources-path $(DAPR_RES) \
-	  -- go run ./cmd/app
-
-dapr-run-consumer-local:
-	APP_DAPR__ENABLED=true \
-	APP_DAPR__CONSUMER__APP_PORT=8082 \
-	dapr run --app-id users-outbox-consumer \
-	  --app-port 8082 \
-	  --dapr-http-port 3502 \
-	  --resources-path $(DAPR_RES) \
-	  -- go run ./cmd/consumer
-
-# ----------------- Remote Development ---------------------------
-PF_NS ?= kafka
-PF_CTX ?= skillsier-prod
-
-.PHONY: remote-dev-pf-kafka
-remote-dev-pf-kafka:
-	kubectl config use-context $(PF_CTX)
-	@echo "Port-forwarding prod Kafka 9094 → localhost:19094..."
-	kubectl -n $(PF_NS) port-forward svc/kafka-cluster-kafka-bootstrap 19094:9094
-
-.PHONY: remote-dev-api
-remote-dev-api:
-	CONFIG_ENV=prod-local \
-	APP_DAPR__ENABLED=true \
-	APP_DAPR__PUBSUB=kafka-pubsub \
-	APP_KAFKA__ENABLED=false \
-	dapr run \
-	  --app-id users-api \
-	  --app-port 8080 \
-	  --dapr-http-port 3500 \
-	  --components-path ./remote-dev \
-	  -- \
-	  go run ./cmd/app
-
-.PHONY: remote-dev-consumer
-remote-dev-consumer:
-	CONFIG_ENV=prod-local \
-	APP_DAPR__ENABLED=true \
-	APP_DAPR__PUBSUB=kafka-pubsub \
-	APP_DAPR__HTTP_PORT=3501 \
-	APP_DAPR__CONSUMER__APP_PORT=8082 \
-	APP_KAFKA__ENABLED=false \
-	dapr run \
-	  --app-id users-consumer \
-	  --app-port 8082 \
-	  --dapr-http-port 3501 \
-	  --components-path ./remote-dev \
-	  -- \
-	  go run ./cmd/consumer
+# Default target
+.DEFAULT_GOAL := help

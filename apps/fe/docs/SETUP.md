@@ -58,10 +58,10 @@ cat > package.json << 'EOF'
     "turbo": "^2.3.3",
     "typescript": "^5.6.3"
   },
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@10.18.1",0",
   "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=9.0.0"
+    "node": ">=22.20.0",
+    "pnpm": ">=10.0.0"
   }
 }
 EOF
