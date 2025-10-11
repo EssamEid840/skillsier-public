@@ -1,49 +1,37 @@
 package http
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"jobs-be/internal/interfaces/http/handlers"
 	"jobs-be/internal/interfaces/http/middleware"
-	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(
-	jobHandler *handlers.JobHandler,
-	healthHandler *handlers.HealthHandler,
-) *gin.Engine {
+func SetupRouter(jobHandler *handlers.JobHandler) *gin.Engine {
 	router := gin.Default()
 
-	// CORS middleware
-	router.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		
-		c.Next()
+	router.Use(middleware.CORS())
+	router.Use(middleware.Logger())
+
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "healthy"})
 	})
 
-	// Health endpoints (no auth required)
-	router.GET("/health", healthHandler.Health)
-	router.GET("/live", healthHandler.Liveness)
-	router.GET("/ready", healthHandler.Readiness)
-
-	// API routes
-	v1 := router.Group("/api/v1")
+	api := router.Group("/api/v1")
 	{
-		// Jobs routes (with authentication)
-		jobs := v1.Group("/jobs")
-		jobs.Use(middleware.AuthMiddleware())
+		jobs := api.Group("/jobs")
 		{
-			jobs.GET("", jobHandler.ListJobs)           // GET /api/v1/jobs
-			jobs.POST("", jobHandler.CreateJob)         // POST /api/v1/jobs
-			jobs.GET("/my-jobs", jobHandler.GetMyJobs)  // GET /api/v1/jobs/my-jobs
-			jobs.GET("/:id", jobHandler.GetJob)         // GET /api/v1/jobs/:id
-			jobs.PATCH("/:id", jobHandler.UpdateJob)    // PATCH /api/v1/jobs/:id
-			jobs.DELETE("/:id", jobHandler.DeleteJob)   // DELETE /api/v1/jobs/:id
+			jobs.GET("", jobHandler.GetAll)
+			jobs.GET("/:id", jobHandler.Get)
+		}
+
+		authenticated := api.Group("")
+		authenticated.Use(middleware.AuthMiddleware())
+		{
+			authenticated.POST("/jobs", jobHandler.Create)
+			authenticated.PATCH("/jobs/:id", jobHandler.Update)
+			authenticated.DELETE("/jobs/:id", jobHandler.Delete)
+			authenticated.GET("/jobs/my-jobs", jobHandler.GetMyJobs)
 		}
 	}
 

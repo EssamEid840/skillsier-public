@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"jobs-be/internal/domain/job"
-	"jobs-be/internal/domain/outbox"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+
+	"jobs-be/internal/domain/job"
+	"jobs-be/internal/domain/outbox"
 )
 
 type Service struct {
@@ -25,12 +27,12 @@ func NewService(jobRepo job.Repository, outboxRepo outbox.Repository, db *gorm.D
 }
 
 func (s *Service) CreateJob(ctx context.Context, clientID uuid.UUID, dto *CreateJobDTO) (*JobResponseDTO, error) {
-	newJob := &job.Job{
+	j := &job.Job{
 		ClientID:        clientID,
 		Title:           dto.Title,
 		Description:     dto.Description,
 		Category:        dto.Category,
-		BudgetType:      job.BudgetType(dto.BudgetType),
+		BudgetType:      dto.BudgetType,
 		BudgetAmount:    dto.BudgetAmount,
 		HourlyRateMin:   dto.HourlyRateMin,
 		HourlyRateMax:   dto.HourlyRateMax,
@@ -39,25 +41,23 @@ func (s *Service) CreateJob(ctx context.Context, clientID uuid.UUID, dto *Create
 		Status:          job.JobStatusOpen,
 	}
 
-	// Add required skills
-	for _, skillDTO := range dto.RequiredSkills {
-		newJob.RequiredSkills = append(newJob.RequiredSkills, job.JobSkill{
-			Name:  skillDTO.Name,
-			Level: skillDTO.Level,
+	for _, skillDTO := range dto.Skills {
+		j.Skills = append(j.Skills, job.JobSkill{
+			Name:     skillDTO.Name,
+			Required: skillDTO.Required,
 		})
 	}
 
-	if err := newJob.Validate(); err != nil {
+	if err := j.Validate(); err != nil {
 		return nil, err
 	}
 
-	// Transaction: Create job + outbox event
 	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := s.jobRepo.Create(ctx, newJob); err != nil {
+		if err := s.jobRepo.Create(ctx, j); err != nil {
 			return err
 		}
 
-		event, err := s.createJobEvent("job.created", newJob)
+		event, err := s.createJobEvent("job.created", j)
 		if err != nil {
 			return err
 		}
@@ -69,7 +69,7 @@ func (s *Service) CreateJob(ctx context.Context, clientID uuid.UUID, dto *Create
 		return nil, err
 	}
 
-	return ToResponseDTO(newJob), nil
+	return ToResponseDTO(j), nil
 }
 
 func (s *Service) GetJob(ctx context.Context, id uuid.UUID) (*JobResponseDTO, error) {
@@ -80,7 +80,7 @@ func (s *Service) GetJob(ctx context.Context, id uuid.UUID) (*JobResponseDTO, er
 	return ToResponseDTO(j), nil
 }
 
-func (s *Service) ListJobs(ctx context.Context, filters *job.ListFilters, page, pageSize int) (*ListJobsResponseDTO, error) {
+func (s *Service) GetAllJobs(ctx context.Context, page, pageSize int, filters map[string]interface{}) (*ListJobsResponseDTO, error) {
 	if page < 1 {
 		page = 1
 	}
@@ -90,7 +90,7 @@ func (s *Service) ListJobs(ctx context.Context, filters *job.ListFilters, page, 
 
 	offset := (page - 1) * pageSize
 
-	jobs, total, err := s.jobRepo.List(ctx, filters, pageSize, offset)
+	jobs, total, err := s.jobRepo.GetAll(ctx, pageSize, offset, filters)
 	if err != nil {
 		return nil, err
 	}
@@ -98,18 +98,16 @@ func (s *Service) ListJobs(ctx context.Context, filters *job.ListFilters, page, 
 	return ToListResponse(jobs, total, page, pageSize), nil
 }
 
-func (s *Service) UpdateJob(ctx context.Context, id uuid.UUID, clientID uuid.UUID, dto *UpdateJobDTO) (*JobResponseDTO, error) {
+func (s *Service) UpdateJob(ctx context.Context, id, clientID uuid.UUID, dto *UpdateJobDTO) (*JobResponseDTO, error) {
 	j, err := s.jobRepo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	// Verify ownership
 	if j.ClientID != clientID {
 		return nil, job.ErrUnauthorized
 	}
 
-	// Update fields
 	if dto.Title != nil {
 		j.Title = *dto.Title
 	}
@@ -117,11 +115,24 @@ func (s *Service) UpdateJob(ctx context.Context, id uuid.UUID, clientID uuid.UUI
 		j.Description = *dto.Description
 	}
 	if dto.Status != nil {
-		j.Status = job.JobStatus(*dto.Status)
+		j.Status = *dto.Status
 	}
-	// ... update other fields ...
+	if dto.BudgetAmount != nil {
+		j.BudgetAmount = *dto.BudgetAmount
+	}
+	if dto.HourlyRateMin != nil {
+		j.HourlyRateMin = *dto.HourlyRateMin
+	}
+	if dto.HourlyRateMax != nil {
+		j.HourlyRateMax = *dto.HourlyRateMax
+	}
+	if dto.Duration != nil {
+		j.Duration = *dto.Duration
+	}
+	if dto.ExperienceLevel != nil {
+		j.ExperienceLevel = *dto.ExperienceLevel
+	}
 
-	// Transaction: Update + event
 	err = s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := s.jobRepo.Update(ctx, j); err != nil {
 			return err
@@ -142,7 +153,7 @@ func (s *Service) UpdateJob(ctx context.Context, id uuid.UUID, clientID uuid.UUI
 	return ToResponseDTO(j), nil
 }
 
-func (s *Service) DeleteJob(ctx context.Context, id uuid.UUID, clientID uuid.UUID) error {
+func (s *Service) DeleteJob(ctx context.Context, id, clientID uuid.UUID) error {
 	j, err := s.jobRepo.GetByID(ctx, id)
 	if err != nil {
 		return err
@@ -212,6 +223,3 @@ func (s *Service) createJobEvent(eventType string, j *job.Job) (*outbox.Event, e
 		Metadata:      metadataBytes,
 	}, nil
 }
-
-// Continue with HTTP handlers, router, main.go, config, etc.
-// Similar to users-be structure

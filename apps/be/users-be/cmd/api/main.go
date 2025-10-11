@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,171 +9,129 @@ import (
 	"syscall"
 	"time"
 
+	"users-be/internal/application/certification"
+	"users-be/internal/application/client"
+	"users-be/internal/application/education"
+	"users-be/internal/application/eventhandler"
+	"users-be/internal/application/experience"
+	"users-be/internal/application/freelancer"
+	"users-be/internal/application/portfolio"
+	"users-be/internal/application/skill"
 	"users-be/internal/application/user"
+	"users-be/internal/config"
 	"users-be/internal/infrastructure/messaging/kafka"
 	"users-be/internal/infrastructure/outbox"
 	"users-be/internal/infrastructure/persistence/postgres"
 	httpInterface "users-be/internal/interfaces/http"
 	"users-be/internal/interfaces/http/handlers"
-	"users-be/internal/application/eventhandler"
-	"users-be/internal/config"
 )
 
 func main() {
-	// Load configuration
-	cfg, err := config.Load()
-	if err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
-	}
+	cfg := config.Load()
 
-	log.Printf("Starting %s service in %s mode...", cfg.App.Name, cfg.App.Environment)
-
-	// Setup database connection
-	db, err := postgres.NewConnection(&cfg.Database)
+	db, err := postgres.NewConnection(cfg.Database)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer postgres.Close(db)
 
-	log.Println("✓ Database connected successfully")
-
-	// Run auto-migrations
 	if err := postgres.AutoMigrate(db); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)
 	}
-	log.Println("✓ Database migrations completed")
 
-	// Initialize repositories
+	// Initialize all repositories
 	userRepo := postgres.NewUserRepository(db)
 	outboxRepo := postgres.NewOutboxRepository(db)
+	skillRepo := postgres.NewSkillRepository(db)
+	experienceRepo := postgres.NewExperienceRepository(db)
+	educationRepo := postgres.NewEducationRepository(db)
+	certificationRepo := postgres.NewCertificationRepository(db)
+	portfolioRepo := postgres.NewPortfolioRepository(db)
+	freelancerRepo := postgres.NewFreelancerRepository(db)
+	clientRepo := postgres.NewClientRepository(db)
 
-	// Initialize services
+	// Initialize all services
 	userService := user.NewService(userRepo, outboxRepo, db)
+	skillService := skill.NewService(skillRepo, outboxRepo, db)
+	experienceService := experience.NewService(experienceRepo, outboxRepo, db)
+	educationService := education.NewService(educationRepo, outboxRepo, db)
+	certificationService := certification.NewService(certificationRepo, outboxRepo, db)
+	portfolioService := portfolio.NewService(portfolioRepo, outboxRepo, db)
+	freelancerService := freelancer.NewService(freelancerRepo, outboxRepo, db)
+	clientService := client.NewService(clientRepo, outboxRepo, db)
 
-	// Initialize Kafka producer for outbox
-	kafkaProducer, err := kafka.NewProducer(&cfg.Kafka)
+	// Initialize all handlers
+	userHandler := handlers.NewUserHandler(userService)
+	skillHandler := handlers.NewSkillHandler(skillService)
+	experienceHandler := handlers.NewExperienceHandler(experienceService)
+	educationHandler := handlers.NewEducationHandler(educationService)
+	certificationHandler := handlers.NewCertificationHandler(certificationService)
+	portfolioHandler := handlers.NewPortfolioHandler(portfolioService)
+	freelancerHandler := handlers.NewFreelancerHandler(freelancerService)
+	clientHandler := handlers.NewClientHandler(clientService)
+
+	// Setup router with all handlers
+	router := httpInterface.SetupRouter(
+		userHandler,
+		skillHandler,
+		experienceHandler,
+		educationHandler,
+		certificationHandler,
+		portfolioHandler,
+		freelancerHandler,
+		clientHandler,
+	)
+
+	// Initialize Kafka producer
+	producer, err := kafka.NewProducer(cfg.Kafka)
 	if err != nil {
 		log.Fatalf("Failed to create Kafka producer: %v", err)
 	}
-	defer kafkaProducer.Close()
-	log.Println("✓ Kafka producer initialized")
+	defer producer.Close()
 
-	// Initialize outbox processor
-	outboxProcessor := outbox.NewProcessor(
-		outboxRepo,
-		kafkaProducer,
-		5*time.Second,  // Poll every 5 seconds
-		100,            // Batch size
-		5,              // Max retries
-	)
-
-	// Start outbox processor in background
-	outboxCtx, cancelOutbox := context.WithCancel(context.Background())
-	defer cancelOutbox()
-	
-	go func() {
-		if err := outboxProcessor.Start(outboxCtx); err != nil && err != context.Canceled {
-			log.Printf("Outbox processor error: %v", err)
-		}
-	}()
-	log.Println("✓ Outbox processor started")
-
-	// Initialize Keycloak event handler
-	keycloakHandler := eventhandler.NewKeycloakEventHandler(userService)
+	// Start outbox processor
+	outboxProcessor := outbox.NewProcessor(db, producer, outboxRepo)
+	go outboxProcessor.Start(context.Background())
 
 	// Initialize Kafka consumer for Keycloak events
-	kafkaConsumer, err := kafka.NewConsumer(
-		&cfg.Kafka,
-		[]string{cfg.Kafka.KeycloakEventsTopic},
-		keycloakHandler.HandleMessage,
-	)
+	consumer, err := kafka.NewConsumer(cfg.Kafka, "users-service-group")
 	if err != nil {
 		log.Fatalf("Failed to create Kafka consumer: %v", err)
 	}
-	defer kafkaConsumer.Close()
-	log.Println("✓ Kafka consumer initialized")
+	defer consumer.Close()
 
-	// Start Kafka consumer in background
-	consumerCtx, cancelConsumer := context.WithCancel(context.Background())
-	defer cancelConsumer()
-	
+	// Start event handler
+	keycloakHandler := eventhandler.NewKeycloakEventHandler(userService)
 	go func() {
-		if err := kafkaConsumer.Start(consumerCtx); err != nil && err != context.Canceled {
-			log.Printf("Kafka consumer error: %v", err)
+		if err := consumer.Subscribe([]string{"keycloak-events"}, keycloakHandler.HandleEvent); err != nil {
+			log.Fatalf("Failed to subscribe to Keycloak events: %v", err)
 		}
 	}()
-	log.Printf("✓ Kafka consumer started (topic: %s)", cfg.Kafka.KeycloakEventsTopic)
 
-	// Initialize HTTP handlers
-	userHandler := handlers.NewUserHandler(userService)
-	healthHandler := handlers.NewHealthHandler(db)
-
-	// Setup router
-	router := httpInterface.SetupRouter(userHandler, healthHandler)
-
-	// Create HTTP server
-	addr := fmt.Sprintf(":%d", cfg.App.Port)
-	server := &http.Server{
-		Addr:           addr,
-		Handler:        router,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20, // 1 MB
+	// Start HTTP server
+	srv := &http.Server{
+		Addr:    ":" + cfg.Server.Port,
+		Handler: router,
 	}
 
-	// Start HTTP server in background
 	go func() {
-		log.Printf("✓ HTTP server listening on %s", addr)
-		log.Println("===========================================")
-		log.Println("Users-BE Service is Ready!")
-		log.Println("===========================================")
-		log.Println("")
-		log.Println("API Endpoints:")
-		log.Println("  GET    /health                          - Health check")
-		log.Println("  GET    /ready                           - Readiness probe")
-		log.Println("  GET    /live                            - Liveness probe")
-		log.Println("  POST   /api/v1/users                    - Create user")
-		log.Println("  GET    /api/v1/users                    - List users")
-		log.Println("  GET    /api/v1/users/:id                - Get user by ID")
-		log.Println("  GET    /api/v1/users/keycloak/:id       - Get user by Keycloak ID")
-		log.Println("  PUT    /api/v1/users/:id                - Update user")
-		log.Println("  DELETE /api/v1/users/:id                - Delete user")
-		log.Println("")
-		log.Println("Event Sources:")
-		log.Printf("  Kafka Consumer: %s\n", cfg.Kafka.KeycloakEventsTopic)
-		log.Printf("  Kafka Producer: %s\n", cfg.Kafka.UserEventsTopic)
-		log.Println("")
-
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Failed to start HTTP server: %v", err)
+		log.Printf("Starting server on port %s", cfg.Server.Port)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Failed to start server: %v", err)
 		}
 	}()
 
-	// Wait for interrupt signal to gracefully shutdown
+	// Wait for interrupt signal
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-
 	log.Println("Shutting down server...")
 
-	// Shutdown HTTP server
+	// Graceful shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	
-	if err := server.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown: %v", err)
-	}
 
-	// Cancel background workers
-	cancelOutbox()
-	cancelConsumer()
-
-	// Cleanup outbox (remove old published events)
-	cleanupCtx, cleanupCancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cleanupCancel()
-	
-	if err := outboxProcessor.CleanupPublishedEvents(cleanupCtx, 7); err != nil {
-		log.Printf("Failed to cleanup outbox: %v", err)
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown:", err)
 	}
 
 	log.Println("Server exited")

@@ -3,9 +3,11 @@ package handlers
 import (
 	"net/http"
 	"strconv"
-	"jobs-be/internal/application/job"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
+	"jobs-be/internal/application/job"
 )
 
 type JobHandler struct {
@@ -16,13 +18,9 @@ func NewJobHandler(jobService *job.Service) *JobHandler {
 	return &JobHandler{jobService: jobService}
 }
 
-// CreateJob handles POST /jobs
-func (h *JobHandler) CreateJob(c *gin.Context) {
-	clientID, err := uuid.Parse(c.GetString("user_id"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user"})
-		return
-	}
+func (h *JobHandler) Create(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	clientID, _ := uuid.Parse(userID.(string))
 
 	var dto job.CreateJobDTO
 	if err := c.ShouldBindJSON(&dto); err != nil {
@@ -39,46 +37,22 @@ func (h *JobHandler) CreateJob(c *gin.Context) {
 	c.JSON(http.StatusCreated, result)
 }
 
-// ListJobs handles GET /jobs with filters
-func (h *JobHandler) ListJobs(c *gin.Context) {
-	filters := &job.ListFilters{}
-	
-	// Parse query parameters
-	if category := c.Query("category"); category != "" {
-		filters.Category = &category
-	}
-	if budgetType := c.Query("budget_type"); budgetType != "" {
-		bt := job.BudgetType(budgetType)
-		filters.BudgetType = &bt
-	}
-	if status := c.Query("status"); status != "" {
-		st := job.JobStatus(status)
-		filters.Status = &st
-	}
-	if level := c.Query("experience_level"); level != "" {
-		filters.ExperienceLevel = &level
-	}
-	if search := c.Query("search"); search != "" {
-		filters.SearchTerm = &search
-	}
-	if minBudget := c.Query("min_budget"); minBudget != "" {
-		if val, err := strconv.ParseFloat(minBudget, 64); err == nil {
-			filters.MinBudget = &val
-		}
-	}
-	if maxBudget := c.Query("max_budget"); maxBudget != "" {
-		if val, err := strconv.ParseFloat(maxBudget, 64); err == nil {
-			filters.MaxBudget = &val
-		}
-	}
-	if skills := c.QueryArray("skills[]"); len(skills) > 0 {
-		filters.Skills = skills
-	}
-
+func (h *JobHandler) GetAll(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
 
-	result, err := h.jobService.ListJobs(c.Request.Context(), filters, page, pageSize)
+	filters := make(map[string]interface{})
+	if category := c.Query("category"); category != "" {
+		filters["category"] = category
+	}
+	if status := c.Query("status"); status != "" {
+		filters["status"] = status
+	}
+	if search := c.Query("search"); search != "" {
+		filters["search"] = search
+	}
+
+	result, err := h.jobService.GetAllJobs(c.Request.Context(), page, pageSize, filters)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -87,36 +61,27 @@ func (h *JobHandler) ListJobs(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// GetJob handles GET /jobs/:id
-func (h *JobHandler) GetJob(c *gin.Context) {
-	jobID, err := uuid.Parse(c.Param("id"))
+func (h *JobHandler) Get(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid job ID"})
 		return
 	}
 
-	result, err := h.jobService.GetJob(c.Request.Context(), jobID)
+	result, err := h.jobService.GetJob(c.Request.Context(), id)
 	if err != nil {
-		statusCode := http.StatusInternalServerError
-		if err == job.ErrJobNotFound {
-			statusCode = http.StatusNotFound
-		}
-		c.JSON(statusCode, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, result)
 }
 
-// UpdateJob handles PATCH /jobs/:id
-func (h *JobHandler) UpdateJob(c *gin.Context) {
-	clientID, err := uuid.Parse(c.GetString("user_id"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user"})
-		return
-	}
+func (h *JobHandler) Update(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	clientID, _ := uuid.Parse(userID.(string))
 
-	jobID, err := uuid.Parse(c.Param("id"))
+	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid job ID"})
 		return
@@ -128,56 +93,36 @@ func (h *JobHandler) UpdateJob(c *gin.Context) {
 		return
 	}
 
-	result, err := h.jobService.UpdateJob(c.Request.Context(), jobID, clientID, &dto)
+	result, err := h.jobService.UpdateJob(c.Request.Context(), id, clientID, &dto)
 	if err != nil {
-		statusCode := http.StatusInternalServerError
-		if err == job.ErrJobNotFound {
-			statusCode = http.StatusNotFound
-		} else if err == job.ErrUnauthorized {
-			statusCode = http.StatusForbidden
-		}
-		c.JSON(statusCode, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, result)
 }
 
-// DeleteJob handles DELETE /jobs/:id
-func (h *JobHandler) DeleteJob(c *gin.Context) {
-	clientID, err := uuid.Parse(c.GetString("user_id"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user"})
-		return
-	}
+func (h *JobHandler) Delete(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	clientID, _ := uuid.Parse(userID.(string))
 
-	jobID, err := uuid.Parse(c.Param("id"))
+	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid job ID"})
 		return
 	}
 
-	if err := h.jobService.DeleteJob(c.Request.Context(), jobID, clientID); err != nil {
-		statusCode := http.StatusInternalServerError
-		if err == job.ErrJobNotFound {
-			statusCode = http.StatusNotFound
-		} else if err == job.ErrUnauthorized {
-			statusCode = http.StatusForbidden
-		}
-		c.JSON(statusCode, gin.H{"error": err.Error()})
+	if err := h.jobService.DeleteJob(c.Request.Context(), id, clientID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "job deleted successfully"})
+	c.JSON(http.StatusNoContent, nil)
 }
 
-// GetMyJobs handles GET /jobs/my-jobs
 func (h *JobHandler) GetMyJobs(c *gin.Context) {
-	clientID, err := uuid.Parse(c.GetString("user_id"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user"})
-		return
-	}
+	userID, _ := c.Get("user_id")
+	clientID, _ := uuid.Parse(userID.(string))
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))

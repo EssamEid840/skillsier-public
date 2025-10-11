@@ -2,9 +2,11 @@ package postgres
 
 import (
 	"context"
-	"users-be/internal/domain/certification"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+
+	"users-be/internal/domain/certification"
 )
 
 type certificationRepository struct {
@@ -22,34 +24,28 @@ func (r *certificationRepository) Create(ctx context.Context, cert *certificatio
 func (r *certificationRepository) GetByID(ctx context.Context, id uuid.UUID) (*certification.Certification, error) {
 	var cert certification.Certification
 	err := r.db.WithContext(ctx).Where("id = ?", id).First(&cert).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, certification.ErrCertificationNotFound
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, certification.ErrCertificationNotFound
+		}
+		return nil, err
 	}
-	return &cert, err
+	return &cert, nil
 }
 
 func (r *certificationRepository) GetByUserID(ctx context.Context, userID uuid.UUID) ([]*certification.Certification, error) {
-	var certs []*certification.Certification
-	err := r.db.WithContext(ctx).Where("user_id = ?", userID).
-		Order("issue_date DESC").Find(&certs).Error
-	return certs, err
+	var certifications []*certification.Certification
+	err := r.db.WithContext(ctx).
+		Where("user_id = ?", userID).
+		Order("issue_date DESC").
+		Find(&certifications).Error
+	return certifications, err
 }
 
 func (r *certificationRepository) Update(ctx context.Context, cert *certification.Certification) error {
-	return r.db.WithContext(ctx).Model(cert).Updates(cert).Error
+	return r.db.WithContext(ctx).Save(cert).Error
 }
 
 func (r *certificationRepository) Delete(ctx context.Context, id uuid.UUID) error {
-	result := r.db.WithContext(ctx).Delete(&certification.Certification{}, "id = ?", id)
-	if result.RowsAffected == 0 {
-		return certification.ErrCertificationNotFound
-	}
-	return result.Error
-}
-
-func (r *certificationRepository) CountByUserID(ctx context.Context, userID uuid.UUID) (int64, error) {
-	var count int64
-	err := r.db.WithContext(ctx).Model(&certification.Certification{}).
-		Where("user_id = ?", userID).Count(&count).Error
-	return count, err
+	return r.db.WithContext(ctx).Delete(&certification.Certification{}, "id = ?", id).Error
 }

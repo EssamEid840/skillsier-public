@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-	"contracts-be/internal/domain/contract"
-	"contracts-be/internal/domain/outbox"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+
+	"contracts-be/internal/domain/contract"
+	"contracts-be/internal/domain/outbox"
 )
 
 type Service struct {
@@ -18,244 +20,129 @@ type Service struct {
 }
 
 func NewService(contractRepo contract.Repository, outboxRepo outbox.Repository, db *gorm.DB) *Service {
-	return &Service{
-		contractRepo: contractRepo,
-		outboxRepo:   outboxRepo,
-		db:           db,
-	}
+	return &Service{contractRepo: contractRepo, outboxRepo: outboxRepo, db: db}
 }
 
-func (s *Service) CreateContract(ctx context.Context, dto *CreateContractDTO) (*ContractResponseDTO, error) {
-	now := time.Now()
-	
-	newContract := &contract.Contract{
-		JobID:        dto.JobID,
-		ProposalID:   dto.ProposalID,
-		ClientID:     dto.ClientID,
-		FreelancerID: dto.FreelancerID,
-		Title:        dto.Title,
-		Description:  dto.Description,
-		TotalAmount:  dto.TotalAmount,
-		Status:       contract.ContractStatusActive,
-		StartDate:    now,
-		Terms:        dto.Terms,
-	}
-
-	// Create milestones
-	for _, m := range dto.Milestones {
-		newContract.Milestones = append(newContract.Milestones, contract.Milestone{
-			Description: m.Description,
-			Amount:      m.Amount,
-			DueDate:     m.DueDate,
-			Status:      contract.MilestoneStatusPending,
-			PaymentStatus: contract.PaymentStatusPending,
-		})
-	}
-
-	if err := newContract.Validate(); err != nil {
-		return nil, err
-	}
-
-	// Transaction: Create contract + outbox event
-	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := s.contractRepo.Create(ctx, newContract); err != nil {
-			return err
-		}
-
-		event, err := s.createContractEvent("contract.created", newContract)
-		if err != nil {
-			return err
-		}
-
-		return s.outboxRepo.Create(ctx, event)
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ToResponseDTO(newContract), nil
-}
-
-func (s *Service) GetContract(ctx context.Context, id uuid.UUID) (*ContractResponseDTO, error) {
-	c, err := s.contractRepo.GetByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return ToResponseDTO(c), nil
-}
-
-func (s *Service) GetMyContracts(ctx context.Context, userID uuid.UUID, role string, page, pageSize int) (*ListContractsResponseDTO, error) {
-	if page < 1 {
-		page = 1
-	}
-	if pageSize < 1 || pageSize > 100 {
-		pageSize = 20
-	}
-
-	offset := (page - 1) * pageSize
+func (s *Service) GetMyContracts(ctx context.Context, userID uuid.UUID, userType string) ([]*ContractResponseDTO, error) {
 	var contracts []*contract.Contract
-	var total int64
 	var err error
 
-	if role == "freelancer" {
-		contracts, total, err = s.contractRepo.GetByFreelancerID(ctx, userID, pageSize, offset)
+	if userType == "freelancer" {
+		contracts, err = s.contractRepo.GetByFreelancerID(ctx, userID)
 	} else {
-		contracts, total, err = s.contractRepo.GetByClientID(ctx, userID, pageSize, offset)
+		contracts, err = s.contractRepo.GetByClientID(ctx, userID)
 	}
 
 	if err != nil {
 		return nil, err
 	}
 
-	return ToListResponse(contracts, total, page, pageSize), nil
+	dtos := make([]*ContractResponseDTO, len(contracts))
+	for i, c := range contracts {
+		dtos[i] = ToResponseDTO(c)
+	}
+	return dtos, nil
 }
 
-func (s *Service) SubmitMilestone(ctx context.Context, contractID uuid.UUID, milestoneID uuid.UUID, freelancerID uuid.UUID, dto *SubmitMilestoneDTO) (*MilestoneResponseDTO, error) {
-	// Verify contract ownership
+func (s *Service) SubmitMilestone(ctx context.Context, contractID, milestoneID, freelancerID uuid.UUID) error {
 	c, err := s.contractRepo.GetByID(ctx, contractID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if c.FreelancerID != freelancerID {
-		return nil, contract.ErrUnauthorized
+		return contract.ErrUnauthorized
 	}
 
-	// Get milestone
-	milestone, err := s.contractRepo.GetMilestone(ctx, milestoneID)
-	if err != nil {
-		return nil, err
+	var milestone *contract.ContractMilestone
+	for i := range c.Milestones {
+		if c.Milestones[i].ID == milestoneID {
+			milestone = &c.Milestones[i]
+			break
+		}
 	}
-	if milestone.ContractID != contractID {
-		return nil, contract.ErrMilestoneNotFound
+	if milestone == nil {
+		return contract.ErrMilestoneNotFound
 	}
 
-	// Update milestone
 	now := time.Now()
 	milestone.Status = contract.MilestoneStatusSubmitted
-	milestone.Deliverables = &dto.Deliverables
 	milestone.SubmittedAt = &now
 
-	err = s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := s.contractRepo.UpdateMilestone(ctx, milestone); err != nil {
 			return err
 		}
-
-		event, err := s.createMilestoneEvent("milestone.submitted", milestone)
-		if err != nil {
-			return err
-		}
-
+		event, _ := s.createContractEvent("milestone.submitted", c)
 		return s.outboxRepo.Create(ctx, event)
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ToMilestoneResponseDTO(milestone), nil
 }
 
-func (s *Service) ApproveMilestone(ctx context.Context, contractID uuid.UUID, milestoneID uuid.UUID, clientID uuid.UUID, dto *ApproveMilestoneDTO) (*MilestoneResponseDTO, error) {
-	// Verify contract ownership
+func (s *Service) ApproveMilestone(ctx context.Context, contractID, milestoneID, clientID uuid.UUID) error {
 	c, err := s.contractRepo.GetByID(ctx, contractID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if c.ClientID != clientID {
-		return nil, contract.ErrUnauthorized
+		return contract.ErrUnauthorized
 	}
 
-	// Get milestone
-	milestone, err := s.contractRepo.GetMilestone(ctx, milestoneID)
-	if err != nil {
-		return nil, err
+	var milestone *contract.ContractMilestone
+	for i := range c.Milestones {
+		if c.Milestones[i].ID == milestoneID {
+			milestone = &c.Milestones[i]
+			break
+		}
 	}
-	if milestone.ContractID != contractID {
-		return nil, contract.ErrMilestoneNotFound
+	if milestone == nil {
+		return contract.ErrMilestoneNotFound
 	}
 
-	// Update milestone
 	now := time.Now()
 	milestone.Status = contract.MilestoneStatusApproved
-	milestone.Feedback = dto.Feedback
 	milestone.ApprovedAt = &now
 
-	err = s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := s.contractRepo.UpdateMilestone(ctx, milestone); err != nil {
 			return err
 		}
-
-		event, err := s.createMilestoneEvent("milestone.approved", milestone)
-		if err != nil {
-			return err
-		}
-
+		event, _ := s.createContractEvent("milestone.approved", c)
 		return s.outboxRepo.Create(ctx, event)
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ToMilestoneResponseDTO(milestone), nil
 }
 
-func (s *Service) CompleteContract(ctx context.Context, id uuid.UUID, clientID uuid.UUID) (*ContractResponseDTO, error) {
-	c, err := s.contractRepo.GetByID(ctx, id)
+func (s *Service) CompleteContract(ctx context.Context, contractID, clientID uuid.UUID) error {
+	c, err := s.contractRepo.GetByID(ctx, contractID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if c.ClientID != clientID {
-		return nil, contract.ErrUnauthorized
-	}
-
-	// Check all milestones are approved
-	for _, m := range c.Milestones {
-		if m.Status != contract.MilestoneStatusApproved && m.Status != contract.MilestoneStatusPaid {
-			return nil, fmt.Errorf("all milestones must be approved before completing contract")
-		}
+		return contract.ErrUnauthorized
 	}
 
 	now := time.Now()
 	c.Status = contract.ContractStatusCompleted
 	c.EndDate = &now
 
-	err = s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := s.contractRepo.Update(ctx, c); err != nil {
 			return err
 		}
-
-		event, err := s.createContractEvent("contract.completed", c)
-		if err != nil {
-			return err
-		}
-
+		event, _ := s.createContractEvent("contract.completed", c)
 		return s.outboxRepo.Create(ctx, event)
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ToResponseDTO(c), nil
 }
 
 func (s *Service) createContractEvent(eventType string, c *contract.Contract) (*outbox.Event, error) {
 	payload := map[string]interface{}{
 		"contract_id":   c.ID.String(),
 		"job_id":        c.JobID.String(),
-		"proposal_id":   c.ProposalID.String(),
 		"client_id":     c.ClientID.String(),
 		"freelancer_id": c.FreelancerID.String(),
-		"total_amount":  c.TotalAmount,
 		"status":        string(c.Status),
 	}
-
 	payloadBytes, _ := json.Marshal(payload)
 	metadata := map[string]interface{}{"source": "contracts-be"}
 	metadataBytes, _ := json.Marshal(metadata)
-
 	return &outbox.Event{
 		AggregateID:   c.ID.String(),
 		AggregateType: "contract",
@@ -265,23 +152,46 @@ func (s *Service) createContractEvent(eventType string, c *contract.Contract) (*
 	}, nil
 }
 
-func (s *Service) createMilestoneEvent(eventType string, m *contract.Milestone) (*outbox.Event, error) {
-	payload := map[string]interface{}{
-		"milestone_id": m.ID.String(),
-		"contract_id":  m.ContractID.String(),
-		"amount":       m.Amount,
-		"status":       string(m.Status),
+type ContractResponseDTO struct {
+	ID           uuid.UUID               `json:"id"`
+	JobID        uuid.UUID               `json:"job_id"`
+	ClientID     uuid.UUID               `json:"client_id"`
+	FreelancerID uuid.UUID               `json:"freelancer_id"`
+	TotalAmount  float64                 `json:"total_amount"`
+	Status       contract.ContractStatus `json:"status"`
+	StartDate    time.Time               `json:"start_date"`
+	EndDate      *time.Time              `json:"end_date"`
+	Milestones   []MilestoneDTO          `json:"milestones"`
+}
+
+type MilestoneDTO struct {
+	ID          uuid.UUID                `json:"id"`
+	Description string                   `json:"description"`
+	Amount      float64                  `json:"amount"`
+	DueDate     time.Time                `json:"due_date"`
+	Status      contract.MilestoneStatus `json:"status"`
+}
+
+func ToResponseDTO(c *contract.Contract) *ContractResponseDTO {
+	milestones := make([]MilestoneDTO, len(c.Milestones))
+	for i, m := range c.Milestones {
+		milestones[i] = MilestoneDTO{
+			ID:          m.ID,
+			Description: m.Description,
+			Amount:      m.Amount,
+			DueDate:     m.DueDate,
+			Status:      m.Status,
+		}
 	}
-
-	payloadBytes, _ := json.Marshal(payload)
-	metadata := map[string]interface{}{"source": "contracts-be"}
-	metadataBytes, _ := json.Marshal(metadata)
-
-	return &outbox.Event{
-		AggregateID:   m.ContractID.String(),
-		AggregateType: "milestone",
-		EventType:     eventType,
-		Payload:       payloadBytes,
-		Metadata:      metadataBytes,
-	}, nil
+	return &ContractResponseDTO{
+		ID:           c.ID,
+		JobID:        c.JobID,
+		ClientID:     c.ClientID,
+		FreelancerID: c.FreelancerID,
+		TotalAmount:  c.TotalAmount,
+		Status:       c.Status,
+		StartDate:    c.StartDate,
+		EndDate:      c.EndDate,
+		Milestones:   milestones,
+	}
 }

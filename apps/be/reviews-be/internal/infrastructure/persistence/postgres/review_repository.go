@@ -2,89 +2,90 @@ package postgres
 
 import (
 	"context"
-	"reviews-be/internal/domain/review"
+	"fmt"
+	"time"
+
+	"reviews-be/internal/domain/outbox"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
-type reviewRepository struct {
+type outboxRepository struct {
 	db *gorm.DB
 }
 
-func NewReviewRepository(db *gorm.DB) review.Repository {
-	return &reviewRepository{db: db}
+func NewOutboxRepository(db *gorm.DB) outbox.Repository {
+	return &outboxRepository{db: db}
 }
 
-func (r *reviewRepository) Create(ctx context.Context, rev *review.Review) error {
-	return r.db.WithContext(ctx).Create(rev).Error
-}
-
-func (r *reviewRepository) GetByID(ctx context.Context, id uuid.UUID) (*review.Review, error) {
-	var rev review.Review
-	err := r.db.WithContext(ctx).Where("id = ?", id).First(&rev).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, review.ErrReviewNotFound
+func (r *outboxRepository) Create(ctx context.Context, event *outbox.Event) error {
+	if err := r.db.WithContext(ctx).Create(event).Error; err != nil {
+		return fmt.Errorf("failed to create outbox event: %w", err)
 	}
-	return &rev, err
+	return nil
 }
 
-func (r *reviewRepository) GetByContractID(ctx context.Context, contractID uuid.UUID) ([]*review.Review, error) {
-	var reviews []*review.Review
-	err := r.db.WithContext(ctx).Where("contract_id = ?", contractID).
-		Order("created_at DESC").Find(&reviews).Error
-	return reviews, err
-}
-
-func (r *reviewRepository) GetByRevieweeID(ctx context.Context, revieweeID uuid.UUID, limit, offset int) ([]*review.Review, int64, error) {
-	var reviews []*review.Review
-	var total int64
-
-	query := r.db.WithContext(ctx).Model(&review.Review{}).Where("reviewee_id = ?", revieweeID)
-
-	if err := query.Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-
-	err := query.Order("created_at DESC").Limit(limit).Offset(offset).Find(&reviews).Error
-	return reviews, total, err
-}
-
-func (r *reviewRepository) GetByReviewerID(ctx context.Context, reviewerID uuid.UUID, limit, offset int) ([]*review.Review, int64, error) {
-	var reviews []*review.Review
-	var total int64
-
-	query := r.db.WithContext(ctx).Model(&review.Review{}).Where("reviewer_id = ?", reviewerID)
-
-	if err := query.Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-
-	err := query.Order("created_at DESC").Limit(limit).Offset(offset).Find(&reviews).Error
-	return reviews, total, err
-}
-
-func (r *reviewRepository) CheckExisting(ctx context.Context, contractID uuid.UUID, reviewerID uuid.UUID) (bool, error) {
-	var count int64
-	err := r.db.WithContext(ctx).Model(&review.Review{}).
-		Where("contract_id = ? AND reviewer_id = ?", contractID, reviewerID).
-		Count(&count).Error
-	return count > 0, err
-}
-
-func (r *reviewRepository) CalculateAverageRating(ctx context.Context, userID uuid.UUID) (float64, int64, error) {
-	var result struct {
-		AvgRating float64
-		Count     int64
-	}
-
-	err := r.db.WithContext(ctx).Model(&review.Review{}).
-		Select("AVG(rating) as avg_rating, COUNT(*) as count").
-		Where("reviewee_id = ?", userID).
-		Scan(&result).Error
-
+func (r *outboxRepository) FindPendingEvents(ctx context.Context, limit int) ([]*outbox.Event, error) {
+	var events []*outbox.Event
+	now := time.Now()
+	
+	err := r.db.WithContext(ctx).
+		Where("status = ?", outbox.EventStatusPending).
+		Or("(status = ? AND (next_retry_at IS NULL OR next_retry_at <= ?))", 
+			outbox.EventStatusFailed, now).
+		Order("created_at ASC").
+		Limit(limit).
+		Find(&events).Error
+	
 	if err != nil {
-		return 0, 0, err
+		return nil, fmt.Errorf("failed to find pending events: %w", err)
 	}
+	
+	return events, nil
+}
 
-	return result.AvgRating, result.Count, nil
+func (r *outboxRepository) Update(ctx context.Context, event *outbox.Event) error {
+	if err := r.db.WithContext(ctx).Save(event).Error; err != nil {
+		return fmt.Errorf("failed to update outbox event: %w", err)
+	}
+	return nil
+}
+
+func (r *outboxRepository) Delete(ctx context.Context, id uuid.UUID) error {
+	if err := r.db.WithContext(ctx).Delete(&outbox.Event{}, id).Error; err != nil {
+		return fmt.Errorf("failed to delete outbox event: %w", err)
+	}
+	return nil
+}
+
+func (r *outboxRepository) FindByAggregateID(ctx context.Context, aggregateID string, limit, offset int) ([]*outbox.Event, error) {
+	var events []*outbox.Event
+	
+	err := r.db.WithContext(ctx).
+		Where("aggregate_id = ?", aggregateID).
+		Order("created_at DESC").
+		Limit(limit).
+		Offset(offset).
+		Find(&events).Error
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed to find events by aggregate ID: %w", err)
+	}
+	
+	return events, nil
+}
+
+func (r *outboxRepository) DeletePublished(ctx context.Context, olderThanDays int) (int64, error) {
+	cutoffDate := time.Now().AddDate(0, 0, -olderThanDays)
+	
+	result := r.db.WithContext(ctx).
+		Where("status = ? AND published_at < ?", outbox.EventStatusPublished, cutoffDate).
+		Delete(&outbox.Event{})
+	
+	if result.Error != nil {
+		return 0, fmt.Errorf("failed to delete published events: %w", result.Error)
+	}
+	
+	return result.RowsAffected, nil
 }

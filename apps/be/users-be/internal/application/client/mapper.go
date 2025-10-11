@@ -3,17 +3,21 @@ package client
 import "users-be/internal/domain/client"
 
 func ToResponseDTO(profile *client.ClientProfile) *ClientProfileResponseDTO {
+	if profile == nil {
+		return nil
+	}
 	return &ClientProfileResponseDTO{
-		ID:              profile.ID,
-		UserID:          profile.UserID,
-		CompanyName:     profile.CompanyName,
-		CompanySize:     profile.CompanySize,
-		Industry:        profile.Industry,
-		TotalSpent:      profile.TotalSpent,
-		TotalJobsPosted: profile.TotalJobsPosted,
-		TotalHired:      profile.TotalHired,
-		PaymentVerified: profile.PaymentVerified,
-		CreatedAt:       profile.CreatedAt,
-		UpdatedAt:       profile.UpdatedAt,
+		ID:          profile.ID,
+		UserID:      profile.UserID,
+		CompanyName: profile.CompanyName,
+		CompanySize: profile.CompanySize,
+		Industry:    profile.Industry,
+		Website:     profile.Website,
+		TotalSpent:  profile.TotalSpent,
+		JobsPosted:  profile.JobsPosted,
+		HireRate:    profile.HireRate,
+		Rating:      profile.Rating,
+		ReviewCount: profile.ReviewCount,
+		IsVerified:  profile.IsVerified,
 	}
 }

@@ -3,52 +3,42 @@ package handlers
 import (
 	"net/http"
 	"users-be/internal/application/freelancer"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
 type FreelancerHandler struct {
-	service *freelancer.Service
+	freelancerService *freelancer.Service
 }
 
-func NewFreelancerHandler(service *freelancer.Service) *FreelancerHandler {
-	return &FreelancerHandler{service: service}
+func NewFreelancerHandler(freelancerService *freelancer.Service) *FreelancerHandler {
+	return &FreelancerHandler{freelancerService: freelancerService}
 }
 
 func (h *FreelancerHandler) GetProfile(c *gin.Context) {
-	userID, err := uuid.Parse(c.GetString("user_id"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user"})
-		return
-	}
-
-	profile, err := h.service.GetProfile(c.Request.Context(), userID)
+	userID, _ := c.Get("user_id")
+	uid, _ := uuid.Parse(userID.(string))
+	result, err := h.freelancerService.GetProfile(c.Request.Context(), uid)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, profile)
+	c.JSON(http.StatusOK, result)
 }
 
 func (h *FreelancerHandler) UpdateProfile(c *gin.Context) {
-	userID, err := uuid.Parse(c.GetString("user_id"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user"})
-		return
-	}
-
+	userID, _ := c.Get("user_id")
+	uid, _ := uuid.Parse(userID.(string))
 	var dto freelancer.UpdateFreelancerProfileDTO
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	profile, err := h.service.UpdateProfile(c.Request.Context(), userID, &dto)
+	result, err := h.freelancerService.UpdateProfile(c.Request.Context(), uid, &dto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, profile)
+	c.JSON(http.StatusOK, result)
 }

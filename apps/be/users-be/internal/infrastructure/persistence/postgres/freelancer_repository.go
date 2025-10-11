@@ -2,9 +2,11 @@ package postgres
 
 import (
 	"context"
-	"users-be/internal/domain/freelancer"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+
+	"users-be/internal/domain/freelancer"
 )
 
 type freelancerRepository struct {
@@ -22,22 +24,19 @@ func (r *freelancerRepository) Create(ctx context.Context, profile *freelancer.F
 func (r *freelancerRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (*freelancer.FreelancerProfile, error) {
 	var profile freelancer.FreelancerProfile
 	err := r.db.WithContext(ctx).Where("user_id = ?", userID).First(&profile).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, freelancer.ErrProfileNotFound
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, freelancer.ErrFreelancerProfileNotFound
+		}
+		return nil, err
 	}
-	return &profile, err
+	return &profile, nil
 }
 
 func (r *freelancerRepository) Update(ctx context.Context, profile *freelancer.FreelancerProfile) error {
-	return r.db.WithContext(ctx).Model(profile).Updates(profile).Error
+	return r.db.WithContext(ctx).Save(profile).Error
 }
 
-func (r *freelancerRepository) UpdateStats(ctx context.Context, userID uuid.UUID, totalJobs int, totalEarnings float64, successRate float64) error {
-	return r.db.WithContext(ctx).Model(&freelancer.FreelancerProfile{}).
-		Where("user_id = ?", userID).
-		Updates(map[string]interface{}{
-			"total_jobs":     totalJobs,
-			"total_earnings": totalEarnings,
-			"success_rate":   successRate,
-		}).Error
+func (r *freelancerRepository) Delete(ctx context.Context, userID uuid.UUID) error {
+	return r.db.WithContext(ctx).Delete(&freelancer.FreelancerProfile{}, "user_id = ?", userID).Error
 }

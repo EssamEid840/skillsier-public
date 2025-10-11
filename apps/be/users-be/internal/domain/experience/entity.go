@@ -4,45 +4,55 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
+	"gorm.io/gorm"
 )
 
-// WorkExperience represents a freelancer's work experience
 type WorkExperience struct {
-	ID          uuid.UUID  `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	UserID      uuid.UUID  `gorm:"type:uuid;not null;index" json:"user_id"`
-	Title       string     `gorm:"type:varchar(200);not null" json:"title"`
-	Company     string     `gorm:"type:varchar(200);not null" json:"company"`
-	Location    *string    `gorm:"type:varchar(200)" json:"location,omitempty"`
-	StartDate   time.Time  `gorm:"type:date;not null" json:"start_date"`
-	EndDate     *time.Time `gorm:"type:date" json:"end_date,omitempty"`
-	IsCurrent   bool       `gorm:"type:boolean;default:false" json:"is_current"`
-	Description *string    `gorm:"type:text" json:"description,omitempty"`
-	CreatedAt   time.Time  `gorm:"type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt   time.Time  `gorm:"type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID          uuid.UUID      `gorm:"type:uuid;primary_key" json:"id"`
+	UserID      uuid.UUID      `gorm:"type:uuid;not null;index" json:"user_id"`
+	Title       string         `gorm:"type:varchar(200);not null" json:"title"`
+	Company     string         `gorm:"type:varchar(200);not null" json:"company"`
+	Location    string         `gorm:"type:varchar(200)" json:"location"`
+	StartDate   time.Time      `gorm:"not null" json:"start_date"`
+	EndDate     *time.Time     `json:"end_date"`
+	IsCurrent   bool           `gorm:"default:false" json:"is_current"`
+	Description string         `gorm:"type:text" json:"description"`
+	Skills      pq.StringArray `gorm:"type:text[]" json:"skills"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
-// TableName specifies the table name for GORM
 func (WorkExperience) TableName() string {
 	return "work_experiences"
 }
 
-// Validate checks if the work experience data is valid
-func (we *WorkExperience) Validate() error {
-	if we.Title == "" {
+func (w *WorkExperience) BeforeCreate(tx *gorm.DB) error {
+	if w.ID == uuid.Nil {
+		w.ID = uuid.New()
+	}
+	return nil
+}
+
+func (w *WorkExperience) Validate() error {
+	if w.UserID == uuid.Nil {
+		return ErrInvalidUserID
+	}
+	if w.Title == "" {
 		return ErrTitleRequired
 	}
-
-	if we.Company == "" {
+	if w.Company == "" {
 		return ErrCompanyRequired
 	}
-
-	if we.EndDate != nil && !we.IsCurrent && we.EndDate.Before(we.StartDate) {
+	if w.StartDate.IsZero() {
+		return ErrStartDateRequired
+	}
+	if !w.IsCurrent && w.EndDate == nil {
+		return ErrEndDateRequired
+	}
+	if w.EndDate != nil && w.EndDate.Before(w.StartDate) {
 		return ErrInvalidDateRange
 	}
-
-	if we.IsCurrent && we.EndDate != nil {
-		return ErrCurrentWithEndDate
-	}
-
 	return nil
 }
