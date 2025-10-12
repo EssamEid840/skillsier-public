@@ -2279,6 +2279,1895 @@ apps/be/communications-be/
 ├── .gitignore
 └── README.md
 ```
+---
+
+## **📦 7️⃣ storage-be (UPDATED)**
+```
+apps/be/storage-be/
+│
+├── cmd/
+│   └── api/
+│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
+│
+├── internal/
+│   ├── domain/
+│   │   ├── file/
+│   │   │   ├── entity.go              # File metadata
+│   │   │   ├── enums.go               # FileType, Status, Visibility
+│   │   │   ├── metadata.go            # File metadata
+│   │   │   └── repository.go
+│   │   ├── folder/
+│   │   │   ├── entity.go              # Folder structure
+│   │   │   └── repository.go
+│   │   ├── upload/
+│   │   │   ├── entity.go              # Upload sessions
+│   │   │   ├── chunk.go               # Chunked uploads
+│   │   │   ├── resumable.go           # Resumable upload support
+│   │   │   └── repository.go
+│   │   ├── media/
+│   │   │   ├── entity.go              # Media processing records
+│   │   │   ├── thumbnail.go           # Thumbnail generation
+│   │   │   ├── variant.go             # Image variants
+│   │   │   └── repository.go
+│   │   ├── access_control/
+│   │   │   ├── entity.go              # File access permissions
+│   │   │   └── repository.go
+│   │   ├── version/
+│   │   │   ├── entity.go              # File versioning
+│   │   │   └── repository.go
+│   │   ├── share/
+│   │   │   ├── entity.go              # File sharing
+│   │   │   ├── link.go                # Share links
+│   │   │   └── repository.go
+│   │   ├── file_flag/
+│   │   │   ├── entity.go              # Flagged files
+│   │   │   ├── reason.go              # Flag reasons
+│   │   │   ├── status.go              # Flag status
+│   │   │   └── repository.go
+│   │   └── outbox/
+│   │       ├── entity.go              # ❌ REMOVED (use platform-shared/outbox/entity.go)
+│   │       └── repository.go          # ❌ REMOVED (use platform-shared/outbox/repository.go)
+│   │
+│   ├── application/
+│   │   ├── file/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Upload, Delete, Move, Copy
+│   │   │   ├── queries.go             # Get, List, Search
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── validators.go
+│   │   ├── upload/
+│   │   │   ├── service.go
+│   │   │   ├── chunked_upload.go
+│   │   │   ├── resumable.go
+│   │   │   └── dto.go
+│   │   ├── media/
+│   │   │   ├── service.go
+│   │   │   ├── image_processor.go
+│   │   │   ├── video_processor.go
+│   │   │   ├── thumbnail_generator.go
+│   │   │   └── dto.go
+│   │   ├── folder/
+│   │   │   ├── service.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── share/
+│   │   │   ├── service.go
+│   │   │   ├── link_generator.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── version/
+│   │   │   ├── service.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── flag/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Flag, Unflag file
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   └── eventhandler/
+│   │       ├── user_handler.go        # 📝 UPDATED: Handle user events (now uses contracts/events for event types)
+│   │       ├── contract_handler.go    # 📝 UPDATED: Handle contract events (now uses contracts/events)
+│   │       ├── portfolio_handler.go   # 📝 UPDATED: Handle portfolio events (now uses contracts/events)
+│   │       └── admin_handler.go       # 📝 UPDATED: Handle admin actions on files (now uses contracts/events)
+│   │
+│   ├── infrastructure/
+│   │   ├── persistence/
+│   │   │   └── postgres/
+│   │   │       ├── connection.go      # PostgreSQL connection setup (DSN from config, connection pooling)
+│   │   │       ├── transaction.go     # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
+│   │   │       ├── migrations.go      # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
+│   │   │       ├── version.go         # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
+│   │   │       ├── safety.go          # 🆕 Pre-migration safety checks (environment validation, disk space check)
+│   │   │       ├── file_repository.go # FileRepository implementation with GORM
+│   │   │       ├── folder_repository.go
+│   │   │       ├── upload_repository.go
+│   │   │       ├── media_repository.go
+│   │   │       ├── access_control_repository.go
+│   │   │       ├── version_repository.go
+│   │   │       ├── share_repository.go
+│   │   │       ├── file_flag_repository.go
+│   │   │       └── outbox_repository.go # ❌ REMOVED (use platform-shared/outbox/postgres/repository.go)
+│   │   ├── cache/
+│   │   │   └── redis/
+│   │   │       ├── connection.go      # Redis connection setup (connection pooling, retry logic)
+│   │   │       └── file_cache.go      # File metadata caching (Get, Set, Invalidate with TTL)
+│   │   ├── messaging/
+│   │   │   └── kafka/
+│   │   │       ├── consumer.go        # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
+│   │   │       ├── producer.go        # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
+│   │   │       ├── topics.go          # 📝 UPDATED: Topic constants (now imported from contracts/events - file.uploaded, file.deleted, media.processed)
+│   │   │       └── scram.go           # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
+│   │   ├── object_storage/
+│   │   │   ├── local/
+│   │   │   │   ├── storage.go         # Local file system storage
+│   │   │   │   └── config.go          # Local storage config
+│   │   │   ├── minio/
+│   │   │   │   ├── client.go          # Self-hosted MinIO client (upload, download, presigned URLs)
+│   │   │   │   └── config.go          # MinIO configuration (endpoint, credentials, bucket names)
+│   │   │   └── provider.go            # Storage provider abstraction
+│   │   ├── media_processing/
+│   │   │   ├── image/
+│   │   │   │   ├── resizer.go         # Image resizing logic
+│   │   │   │   ├── optimizer.go       # Image optimization (compression)
+│   │   │   │   └── watermark.go       # Watermarking images
+│   │   │   ├── video/
+│   │   │   │   ├── transcoder.go      # Video transcoding
+│   │   │   │   └── thumbnail.go       # Video thumbnail generation
+│   │   │   └── processor.go           # General media processor
+│   │   ├── virus_scan/
+│   │   │   └── clamav.go              # ClamAV integration for virus scanning
+│   │   └── outbox/
+│   │       ├── processor.go           # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
+│   │       └── scheduler.go           # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
+│   │
+│   ├── interfaces/
+│   │   └── http/
+│   │       ├── handlers/
+│   │       │   ├── file_handler.go    # File HTTP handlers (GET, POST, DELETE /files)
+│   │       │   ├── upload_handler.go  # Upload handlers (POST /upload, chunked support)
+│   │       │   ├── download_handler.go # Download handlers (GET /download/:id)
+│   │       │   ├── folder_handler.go  # Folder handlers
+│   │       │   ├── share_handler.go   # Share handlers
+│   │       │   ├── media_handler.go   # Media processing handlers
+│   │       │   ├── flag_handler.go    # Flag handlers
+│   │       │   └── health_handler.go  # Health check endpoints (/health, /ready, /live)
+│   │       ├── middleware/
+│   │       │   ├── auth.go            # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
+│   │       │   ├── rbac.go            # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
+│   │       │   ├── cors.go            # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
+│   │       │   ├── rate_limit.go      # Rate limiting middleware (token bucket algorithm)
+│   │       │   ├── logging.go         # 📝 UPDATED: Logging middleware (uses platform-shared/ginx/logging)
+│   │       │   ├── error_handler.go   # Error handling middleware
+│   │       │   ├── request_id.go      # 📝 UPDATED: Request ID middleware (uses platform-shared/ginx/requestid)
+│   │       │   └── file_size_limit.go # File size limit middleware
+│   │       ├── responses/
+│   │       │   ├── success.go         # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
+│   │       │   ├── error.go           # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
+│   │       │   └── pagination.go      # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
+│   │       └── router.go              # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
+│   │
+│   └── config/                               # 🆕 MEDIUM - Standardized configuration
+│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, MinIO, Storage)
+│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
+│       └── docs/
+│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
+│
+├── config/                                   # 🆕 MEDIUM - Configuration files
+│   ├── default.yaml                          # 🆕 Default configuration
+│   ├── dev.yaml                              # 🆕 Development overrides
+│   └── prod.yaml                             # 🆕 Production overrides
+│
+├── dapr/                                     # 🆕 MEDIUM - Dapr components split by environment
+│   ├── local/                                # 🆕 For dapr run
+│   │   ├── pubsub.yaml                       # Kafka pub/sub component
+│   │   └── statestore.yaml                   # State store component
+│   └── k8s/                                  # 🆕 For kubectl apply
+│       ├── pubsub.yaml                       # Kafka with scopes: ["storage-be"]
+│       ├── statestore.yaml                   # State store with scopes
+│       └── secrets.yaml                      # Dapr secret store
+│
+├── pkg/
+│   ├── errors/
+│   │   ├── errors.go                         # Service-specific errors
+│   │   └── codes.go                          # Error codes
+│   ├── logger/
+│   │   └── logger.go                         # ❌ REMOVED: Use platform-shared/logging
+│   ├── utils/
+│   │   ├── validator.go                      # Local validation utilities
+│   │   ├── file_utils.go                     # File utilities (path manipulation, extension extraction)
+│   │   ├── mime_detector.go                  # MIME type detection
+│   │   └── hash.go                           # File hash calculation (MD5, SHA256)
+│   └── constants/
+│       ├── events.go                         # ❌ REMOVED: Use contracts/events
+│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
+│       └── mime_types.go                     # Supported MIME types
+│
+├── deployments/
+│   └── k8s/
+│       ├── deployment.yaml                   # Kubernetes Deployment
+│       ├── service.yaml                      # Kubernetes Service
+│       ├── configmap.yaml                    # ConfigMap
+│       ├── secrets.yaml                      # Secrets
+│       ├── hpa.yaml                          # HPA
+│       ├── pdb.yaml                          # PDB
+│       ├── pvc.yaml                          # Persistent Volume Claim
+│       └── servicemonitor.yaml               # Prometheus ServiceMonitor
+│
+├── scripts/
+│   ├── setup-local.sh                        # Setup local environment
+│   ├── get-secrets.sh                        # Fetch secrets
+│   ├── seed-data.sh                          # Seed test data
+│   └── cleanup-orphaned.sh                   # Cleanup orphaned files
+│
+├── tests/
+│   ├── unit/                                 # Unit tests
+│   ├── integration/                          # Integration tests
+│   └── e2e/                                  # End-to-end tests
+│
+├── docs/
+│   ├── README.md                             # Service overview
+│   ├── api.md                                # API documentation
+│   ├── events.md                             # 📝 UPDATED: Events (published: file.uploaded, file.deleted, consumed: user.created, etc.)
+│   ├── upload-flow.md                        # Upload flow documentation
+│   ├── media-processing.md                   # Media processing guide
+│   ├── MIGRATIONS.md                         # 🆕 Migration history
+│   ├── SCHEMA.md                             # 🆕 Database schema
+│   └── RUNBOOK.md                            # 🆕 Operational procedures
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                            # CI workflow
+│       └── cd.yml                            # CD workflow
+│
+├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
+├── go.sum
+├── .env.example
+├── Makefile
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+└── README.md
+```
+---
+
+## **📦8️⃣ search-be (UPDATED WITH ENHANCED RECOMMENDATIONS)**
+
+```
+apps/be/search-be/
+│
+├── cmd/
+│   └── api/
+│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Elasticsearch (now uses loadConfig from internal/config, platform-shared/logging)
+│
+├── internal/
+│   ├── domain/
+│   │   ├── search_index/
+│   │   │   ├── entity.go              # Search index metadata
+│   │   │   ├── job_index.go           # Job search document
+│   │   │   ├── user_index.go          # User/Freelancer document
+│   │   │   └── repository.go
+│   │   ├── search_query/
+│   │   │   ├── entity.go              # Search query logs
+│   │   │   ├── filters.go             # Search filters
+│   │   │   └── repository.go
+│   │   ├── recommendation/
+│   │   │   ├── entity.go              # Recommendation records
+│   │   │   ├── score.go               # Scoring algorithm
+│   │   │   ├── reason.go              # Recommendation reasons
+│   │   │   ├── feedback.go            # User feedback on recommendations
+│   │   │   └── repository.go
+│   │   ├── recommendation_model/
+│   │   │   ├── entity.go              # ML model metadata
+│   │   │   ├── feature.go             # Feature vectors
+│   │   │   ├── training_data.go       # Training data
+│   │   │   └── repository.go
+│   │   ├── user_preference/
+│   │   │   ├── entity.go              # User preferences for recommendations
+│   │   │   ├── implicit_signals.go    # Implicit user signals (clicks, views)
+│   │   │   ├── explicit_preferences.go # Explicit preferences
+│   │   │   └── repository.go
+│   │   ├── matching/
+│   │   │   ├── entity.go              # Job-Freelancer matches
+│   │   │   ├── criteria.go            # Matching criteria
+│   │   │   ├── score_breakdown.go     # Detailed match scoring
+│   │   │   └── repository.go
+│   │   ├── feed/
+│   │   │   ├── entity.go              # User feeds
+│   │   │   ├── item.go                # Feed items
+│   │   │   ├── personalization.go     # Personalization data
+│   │   │   └── repository.go
+│   │   ├── trending/
+│   │   │   ├── entity.go              # Trending jobs/skills
+│   │   │   ├── calculator.go          # Calculate trending items
+│   │   │   └── repository.go
+│   │   ├── saved_search/
+│   │   │   ├── entity.go              # Saved searches
+│   │   │   ├── alert.go               # Search alerts
+│   │   │   └── repository.go
+│   │   ├── similarity/
+│   │   │   ├── entity.go              # Similar jobs/users
+│   │   │   ├── vector.go              # Similarity vectors
+│   │   │   └── repository.go
+│   │   └── outbox/
+│   │       ├── entity.go              # ❌ REMOVED (use platform-shared/outbox/entity.go)
+│   │       └── repository.go          # ❌ REMOVED (use platform-shared/outbox/repository.go)
+│   │
+│   ├── application/
+│   │   ├── search/
+│   │   │   ├── service.go
+│   │   │   ├── job_search.go
+│   │   │   ├── freelancer_search.go
+│   │   │   ├── query_builder.go
+│   │   │   ├── facet_builder.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── indexing/
+│   │   │   ├── service.go
+│   │   │   ├── job_indexer.go
+│   │   │   ├── user_indexer.go
+│   │   │   ├── bulk_indexer.go
+│   │   │   └── dto.go
+│   │   ├── recommendation/
+│   │   │   ├── service.go
+│   │   │   ├── job_recommender.go     # Recommend jobs to freelancers
+│   │   │   ├── freelancer_recommender.go # Recommend freelancers to clients
+│   │   │   ├── collaborative_filtering.go # Collaborative filtering algorithm
+│   │   │   ├── content_based.go       # Content-based filtering
+│   │   │   ├── hybrid_recommender.go  # Hybrid recommendation approach
+│   │   │   ├── scoring_engine.go      # Calculate recommendation scores
+│   │   │   ├── personalization.go     # Personalization logic
+│   │   │   ├── diversity_optimizer.go # Ensure diverse recommendations
+│   │   │   ├── cold_start_handler.go  # Handle new users/jobs
+│   │   │   ├── dto.go
+│   │   │   └── ml_model.go            # ML model integration
+│   │   ├── matching/
+│   │   │   ├── service.go
+│   │   │   ├── matcher.go             # Job-Freelancer matching
+│   │   │   ├── criteria_evaluator.go  # Evaluate match criteria
+│   │   │   ├── skill_matcher.go       # Match based on skills
+│   │   │   ├── experience_matcher.go  # Match based on experience
+│   │   │   ├── rate_matcher.go        # Match based on rates
+│   │   │   ├── availability_matcher.go # Match based on availability
+│   │   │   ├── score_calculator.go    # Calculate match score
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── feed/
+│   │   │   ├── service.go
+│   │   │   ├── generator.go           # Generate personalized feed
+│   │   │   ├── ranking.go             # Rank feed items
+│   │   │   ├── freshness_scorer.go    # Score by freshness
+│   │   │   ├── relevance_scorer.go    # Score by relevance
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── trending/
+│   │   │   ├── service.go
+│   │   │   ├── calculator.go          # Calculate trending items
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── similarity/
+│   │   │   ├── service.go
+│   │   │   ├── job_similarity.go      # Find similar jobs
+│   │   │   ├── user_similarity.go     # Find similar users
+│   │   │   ├── vector_calculator.go   # Calculate similarity vectors
+│   │   │   └── dto.go
+│   │   ├── suggestion/
+│   │   │   ├── service.go             # Autocomplete suggestions
+│   │   │   ├── dto.go
+│   │   │   └── cache_warmer.go
+│   │   └── eventhandler/
+│   │       ├── job_handler.go         # 📝 UPDATED: Handle job events (now uses contracts/events for event types)
+│   │       ├── user_handler.go        # 📝 UPDATED: Handle user events (now uses contracts/events)
+│   │       ├── proposal_handler.go    # 📝 UPDATED: Handle proposal events (now uses contracts/events)
+│   │       ├── contract_handler.go    # 📝 UPDATED: Handle contract events (now uses contracts/events)
+│   │       ├── review_handler.go      # 📝 UPDATED: Handle review events (now uses contracts/events)
+│   │       ├── skill_handler.go       # 📝 UPDATED: Handle skill events (now uses contracts/events)
+│   │       ├── interaction_handler.go # 📝 UPDATED: Track user interactions (now uses contracts/events)
+│   │       └── admin_handler.go       # 📝 UPDATED: Handle content removal from index (now uses contracts/events)
+│   │
+│   ├── infrastructure/
+│   │   ├── persistence/
+│   │   │   └── postgres/
+│   │   │       ├── connection.go      # PostgreSQL connection setup (DSN from config, connection pooling)
+│   │   │       ├── transaction.go     # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
+│   │   │       ├── migrations.go      # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
+│   │   │       ├── version.go         # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
+│   │   │       ├── safety.go          # 🆕 Pre-migration safety checks (environment validation, disk space check)
+│   │   │       ├── search_query_repository.go
+│   │   │       ├── recommendation_repository.go
+│   │   │       ├── recommendation_model_repository.go
+│   │   │       ├── user_preference_repository.go
+│   │   │       ├── matching_repository.go
+│   │   │       ├── feed_repository.go
+│   │   │       ├── trending_repository.go
+│   │   │       ├── saved_search_repository.go
+│   │   │       ├── similarity_repository.go
+│   │   │       └── outbox_repository.go # ❌ REMOVED (use platform-shared/outbox/postgres/repository.go)
+│   │   ├── elasticsearch/
+│   │   │   ├── client.go              # Elasticsearch client
+│   │   │   ├── index_manager.go       # Index management
+│   │   │   ├── job_mapper.go          # Job mapping to ES document
+│   │   │   ├── user_mapper.go         # User mapping to ES document
+│   │   │   └── config.go              # ES configuration (hosts, auth)
+│   │   ├── cache/
+│   │   │   └── redis/
+│   │   │       ├── connection.go      # Redis connection setup (connection pooling, retry logic)
+│   │   │       ├── search_cache.go    # Cache search results (Get, Set, Invalidate with TTL)
+│   │   │       ├── suggestion_cache.go # Cache autocomplete suggestions
+│   │   │       ├── feed_cache.go      # Cache user feeds
+│   │   │       ├── recommendation_cache.go # Cache recommendations
+│   │   │       └── trending_cache.go  # Cache trending items
+│   │   ├── messaging/
+│   │   │   └── kafka/
+│   │   │       ├── consumer.go        # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
+│   │   │       ├── producer.go        # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
+│   │   │       ├── topics.go          # 📝 UPDATED: Topic constants (now imported from contracts/events - job.indexed, user.indexed, recommendation.generated)
+│   │   │       └── scram.go           # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
+│   │   ├── ml/
+│   │   │   ├── model_loader.go        # Load ML models
+│   │   │   ├── predictor.go           # Make predictions
+│   │   │   ├── feature_extractor.go   # Extract features
+│   │   │   ├── trainer.go             # Train models
+│   │   │   └── evaluator.go           # Evaluate model performance
+│   │   └── outbox/
+│   │       ├── processor.go           # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
+│   │       └── scheduler.go           # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
+│   │
+│   ├── interfaces/
+│   │   └── http/
+│   │       ├── handlers/
+│   │       │   ├── search_handler.go  # Search HTTP handlers (POST /search/jobs, /search/freelancers)
+│   │       │   ├── recommendation_handler.go # Recommendation handlers (GET /recommendations/jobs, /recommendations/freelancers)
+│   │       │   ├── matching_handler.go # Matching handlers
+│   │       │   ├── feed_handler.go    # Feed handlers
+│   │       │   ├── trending_handler.go # Trending handlers
+│   │       │   ├── similarity_handler.go # Similarity handlers
+│   │       │   ├── suggestion_handler.go # Autocomplete handlers
+│   │       │   ├── indexing_handler.go # Admin endpoint for indexing
+│   │       │   └── health_handler.go  # Health check endpoints (/health, /ready, /live)
+│   │       ├── middleware/
+│   │       │   ├── auth.go            # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
+│   │       │   ├── rbac.go            # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
+│   │       │   ├── cors.go            # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
+│   │       │   ├── rate_limit.go      # Rate limiting middleware (token bucket algorithm)
+│   │       │   ├── logging.go         # 📝 UPDATED: Logging middleware (structured logs per request, uses platform-shared/ginx/logging)
+│   │       │   ├── error_handler.go   # Error handling middleware
+│   │       │   └── request_id.go      # 📝 UPDATED: Request ID middleware (X-Request-ID header, uses platform-shared/ginx/requestid)
+│   │       ├── responses/
+│   │       │   ├── success.go         # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
+│   │       │   ├── error.go           # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
+│   │       │   └── pagination.go      # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
+│   │       └── router.go              # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
+│   │
+│   └── config/                               # 🆕 MEDIUM - Standardized configuration
+│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, Elasticsearch, ML)
+│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
+│       └── docs/
+│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
+│
+├── config/                                   # 🆕 MEDIUM - Configuration files
+│   ├── default.yaml                          # 🆕 Default configuration
+│   ├── dev.yaml                              # 🆕 Development overrides
+│   └── prod.yaml                             # 🆕 Production overrides
+│
+├── dapr/                                     # 🆕 MEDIUM - Dapr components split by environment
+│   ├── local/                                # 🆕 For dapr run
+│   │   ├── pubsub.yaml                       # Kafka pub/sub component
+│   │   └── statestore.yaml                   # State store component
+│   └── k8s/                                  # 🆕 For kubectl apply
+│       ├── pubsub.yaml                       # Kafka with scopes: ["search-be"]
+│       ├── statestore.yaml                   # State store with scopes
+│       └── secrets.yaml                      # Dapr secret store
+│
+├── pkg/
+│   ├── errors/
+│   │   ├── errors.go                         # Service-specific errors
+│   │   └── codes.go                          # Error codes
+│   ├── logger/
+│   │   └── logger.go                         # ❌ REMOVED: Use platform-shared/logging
+│   ├── utils/
+│   │   ├── validator.go                      # Local validation utilities
+│   │   ├── text_analyzer.go                  # Text analysis utilities
+│   │   ├── normalizer.go                     # Data normalization
+│   │   └── vector_math.go                    # Vector math for similarity
+│   └── constants/
+│       ├── events.go                         # ❌ REMOVED: Use contracts/events
+│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
+│       └── indices.go                        # Index names constants
+│
+├── elasticsearch/
+│   ├── mappings/
+│   │   ├── jobs.json                         # Job index mapping
+│   │   └── users.json                        # User index mapping
+│   └── analyzers/
+│       └── custom_analyzers.json             # Custom analyzers
+│
+├── ml_models/
+│   ├── job_recommendation/
+│   │   ├── model.pkl                         # ML model for job recommendations
+│   │   ├── features.json                     # Features list
+│   │   └── metadata.json                     # Model metadata
+│   ├── freelancer_recommendation/
+│   │   ├── model.pkl                         # ML model for freelancer recommendations
+│   │   ├── features.json                     # Features list
+│   │   └── metadata.json                     # Model metadata
+│   └── matching/
+│       ├── model.pkl                         # ML model for matching
+│       ├── features.json                     # Features list
+│       └── metadata.json                     # Model metadata
+│
+├── deployments/
+│   └── k8s/
+│       ├── deployment.yaml                   # Kubernetes Deployment
+│       ├── service.yaml                      # Kubernetes Service
+│       ├── configmap.yaml                    # ConfigMap
+│       ├── secrets.yaml                      # Secrets
+│       ├── hpa.yaml                          # HPA
+│       ├── pdb.yaml                          # PDB
+│       └── servicemonitor.yaml               # Prometheus ServiceMonitor
+│
+├── scripts/
+│   ├── setup-local.sh                        # Setup local environment
+│   ├── get-secrets.sh                        # Fetch secrets
+│   ├── seed-data.sh                          # Seed test data
+│   ├── create-indices.sh                     # Create ES indices
+│   ├── reindex-all.sh                        # Reindex all data
+│   └── train-models.sh                       # Train ML models
+│
+├── tests/
+│   ├── unit/                                 # Unit tests
+│   ├── integration/                          # Integration tests
+│   └── e2e/                                  # End-to-end tests
+│
+├── docs/
+│   ├── README.md                             # Service overview
+│   ├── api.md                                # API documentation
+│   ├── events.md                             # 📝 UPDATED: Events (published: job.indexed, user.indexed, recommendation.generated, consumed: job.posted, user.updated, etc.)
+│   ├── search-algorithms.md                  # Search algorithms
+│   ├── recommendation-engine.md              # Recommendation engine details
+│   ├── recommendation-types.md               # Recommendation types
+│   ├── matching-algorithm.md                 # Matching algorithm
+│   ├── ml-models.md                          # ML models documentation
+│   ├── elasticsearch-setup.md                # Elasticsearch setup
+│   ├── MIGRATIONS.md                         # 🆕 Migration history
+│   ├── SCHEMA.md                             # 🆕 Database schema
+│   └── RUNBOOK.md                            # 🆕 Operational procedures
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                            # CI workflow
+│       └── cd.yml                            # CD workflow
+│
+├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
+├── go.sum
+├── .env.example
+├── Makefile
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+└── README.md
+```
 
 ---
-*Continuing with the remaining 5 services...*
+
+## **📦9️⃣ reviews-be (UPDATED - COVERS RATINGS)**
+
+```
+apps/be/reviews-be/
+│
+├── cmd/
+│   └── api/
+│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
+│
+├── internal/
+│   ├── domain/
+│   │   ├── review/
+│   │   │   ├── entity.go              # Review aggregate root
+│   │   │   ├── rating.go              # Rating breakdown (overall, quality, communication, etc.)
+│   │   │   ├── enums.go               # ReviewType, Status, ReviewCategory
+│   │   │   ├── response.go            # Review responses
+│   │   │   ├── helpful.go             # Helpful votes
+│   │   │   └── repository.go
+│   │   ├── rating/
+│   │   │   ├── entity.go              # Rating system
+│   │   │   ├── criteria.go            # Rating criteria
+│   │   │   ├── aggregation.go         # Aggregate ratings
+│   │   │   └── repository.go
+│   │   ├── badge/
+│   │   │   ├── entity.go              # Achievement badges
+│   │   │   ├── criteria.go            # Badge criteria
+│   │   │   ├── types.go               # Badge types (Top Rated, Rising Talent, etc.)
+│   │   │   ├── level.go               # Badge levels
+│   │   │   └── repository.go
+│   │   ├── user_badge/
+│   │   │   ├── entity.go              # User badge assignments
+│   │   │   ├── achievement_date.go    # When badge was earned
+│   │   │   └── repository.go
+│   │   ├── reputation/
+│   │   │   ├── entity.go              # Reputation scores
+│   │   │   ├── score_calculator.go    # Score calculation
+│   │   │   ├── history.go             # Reputation history
+│   │   │   └── repository.go
+│   │   ├── feedback/
+│   │   │   ├── entity.go              # Private feedback
+│   │   │   ├── category.go            # Feedback categories
+│   │   │   └── repository.go
+│   │   ├── flag/
+│   │   │   ├── entity.go              # Flagged reviews
+│   │   │   ├── reason.go              # Flag reasons
+│   │   │   └── repository.go
+│   │   ├── stats/
+│   │   │   ├── entity.go              # Review statistics
+│   │   │   ├── aggregates.go          # Aggregated stats
+│   │   │   └── repository.go
+│   │   ├── review_reminder/
+│   │   │   ├── entity.go              # Review reminders
+│   │   │   └── repository.go
+│   │   └── outbox/
+│   │       ├── entity.go              # ❌ REMOVED (use platform-shared/outbox/entity.go)
+│   │       └── repository.go          # ❌ REMOVED (use platform-shared/outbox/repository.go)
+│   │
+│   ├── application/
+│   │   ├── review/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Create, Update, Delete, Respond
+│   │   │   ├── queries.go             # Get, List, Filter
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   └── business_rules.go
+│   │   ├── rating/
+│   │   │   ├── service.go
+│   │   │   ├── aggregator.go          # Aggregate ratings
+│   │   │   ├── calculator.go          # Calculate average ratings
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── badge/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Award, Revoke badges
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── achievement_checker.go # Check badge criteria
+│   │   ├── reputation/
+│   │   │   ├── service.go
+│   │   │   ├── calculator.go          # Calculate reputation
+│   │   │   ├── updater.go             # Update reputation
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── feedback/
+│   │   │   ├── service.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── stats/
+│   │   │   ├── service.go
+│   │   │   ├── aggregator.go          # Aggregate stats
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   └── eventhandler/
+│   │       ├── contract_handler.go    # 📝 UPDATED: Enable review after contract (now uses contracts/events)
+│   │       ├── user_handler.go        # 📝 UPDATED: Handle user events (now uses contracts/events)
+│   │       ├── job_handler.go         # 📝 UPDATED: Update job stats (now uses contracts/events)
+│   │       ├── proposal_handler.go    # 📝 UPDATED: Update proposal stats (now uses contracts/events)
+│   │       ├── payment_handler.go     # 📝 UPDATED: Ensure payment before review (now uses contracts/events)
+│   │       └── admin_handler.go       # 📝 UPDATED: Handle admin actions on reviews (now uses contracts/events)
+│   │
+│   ├── infrastructure/
+│   │   ├── persistence/
+│   │   │   └── postgres/
+│   │   │       ├── connection.go      # PostgreSQL connection setup (DSN from config, connection pooling)
+│   │   │       ├── transaction.go     # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
+│   │   │       ├── migrations.go      # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
+│   │   │       ├── version.go         # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
+│   │   │       ├── safety.go          # 🆕 Pre-migration safety checks (environment validation, disk space check)
+│   │   │       ├── review_repository.go
+│   │   │       ├── rating_repository.go
+│   │   │       ├── badge_repository.go
+│   │   │       ├── user_badge_repository.go
+│   │   │       ├── reputation_repository.go
+│   │   │       ├── feedback_repository.go
+│   │   │       ├── flag_repository.go
+│   │   │       ├── stats_repository.go
+│   │   │       ├── review_reminder_repository.go
+│   │   │       └── outbox_repository.go # ❌ REMOVED (use platform-shared/outbox/postgres/repository.go)
+│   │   ├── cache/
+│   │   │   └── redis/
+│   │   │       ├── connection.go      # Redis connection setup (connection pooling, retry logic)
+│   │   │       ├── review_cache.go    # Cache reviews (Get, Set, Invalidate with TTL)
+│   │   │       ├── badge_cache.go     # Cache badges
+│   │   │       ├── reputation_cache.go # Cache reputation scores
+│   │   │       └── stats_cache.go     # Cache stats
+│   │   ├── messaging/
+│   │   │   └── kafka/
+│   │   │       ├── consumer.go        # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
+│   │   │       ├── producer.go        # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
+│   │   │       ├── topics.go          # 📝 UPDATED: Topic constants (now imported from contracts/events - review.submitted, review.responded, badge.awarded)
+│   │   │       └── scram.go           # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
+│   │   └── outbox/
+│   │       ├── processor.go           # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
+│   │       └── scheduler.go           # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
+│   │
+│   ├── interfaces/
+│   │   └── http/
+│   │       ├── handlers/
+│   │       │   ├── review_handler.go  # Review HTTP handlers (POST /reviews, GET /reviews/:id)
+│   │       │   ├── rating_handler.go  # Rating handlers
+│   │       │   ├── badge_handler.go   # Badge handlers
+│   │       │   ├── reputation_handler.go # Reputation handlers
+│   │       │   ├── feedback_handler.go # Feedback handlers
+│   │       │   ├── stats_handler.go   # Stats handlers
+│   │       │   ├── flag_handler.go    # Flag handlers
+│   │       │   └── health_handler.go  # Health check endpoints (/health, /ready, /live)
+│   │       ├── middleware/
+│   │       │   ├── auth.go            # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
+│   │       │   ├── rbac.go            # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
+│   │       │   ├── cors.go            # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
+│   │       │   ├── rate_limit.go      # Rate limiting middleware (token bucket algorithm)
+│   │       │   ├── logging.go         # 📝 UPDATED: Logging middleware (structured logs per request, uses platform-shared/ginx/logging)
+│   │       │   ├── error_handler.go   # Error handling middleware
+│   │       │   └── request_id.go      # 📝 UPDATED: Request ID middleware (X-Request-ID header, uses platform-shared/ginx/requestid)
+│   │       ├── responses/
+│   │       │   ├── success.go         # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
+│   │       │   ├── error.go           # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
+│   │       │   └── pagination.go      # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
+│   │       └── router.go              # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
+│   │
+│   └── config/                               # 🆕 MEDIUM - Standardized configuration
+│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis)
+│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
+│       └── docs/
+│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
+│
+├── config/                                   # 🆕 MEDIUM - Configuration files
+│   ├── default.yaml                          # 🆕 Default configuration
+│   ├── dev.yaml                              # 🆕 Development overrides
+│   └── prod.yaml                             # 🆕 Production overrides
+│
+├── dapr/                                     # 🆕 MEDIUM - Dapr components split by environment
+│   ├── local/                                # 🆕 For dapr run
+│   │   ├── pubsub.yaml                       # Kafka pub/sub component
+│   │   └── statestore.yaml                   # State store component
+│   └── k8s/                                  # 🆕 For kubectl apply
+│       ├── pubsub.yaml                       # Kafka with scopes: ["reviews-be"]
+│       ├── statestore.yaml                   # State store with scopes
+│       └── secrets.yaml                      # Dapr secret store
+│
+├── pkg/
+│   ├── errors/
+│   │   ├── errors.go                         # Service-specific errors
+│   │   └── codes.go                          # Error codes
+│   ├── logger/
+│   │   └── logger.go                         # ❌ REMOVED: Use platform-shared/logging
+│   ├── utils/
+│   │   ├── validator.go                      # Local validation utilities
+│   │   ├── sanitizer.go                      # Sanitize review content (prevent XSS)
+│   │   └── sentiment_analyzer.go             # Sentiment analysis for reviews
+│   └── constants/
+│       ├── events.go                         # ❌ REMOVED: Use contracts/events
+│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
+│       └── badges.go                         # Badge constants
+│
+├── seeds/
+│   └── badges.sql                            # Seed initial badges
+│
+├── deployments/
+│   └── k8s/
+│       ├── deployment.yaml                   # Kubernetes Deployment
+│       ├── service.yaml                      # Kubernetes Service
+│       ├── configmap.yaml                    # ConfigMap
+│       ├── secrets.yaml                      # Secrets
+│       ├── hpa.yaml                          # HPA
+│       ├── pdb.yaml                          # PDB
+│       └── servicemonitor.yaml               # Prometheus ServiceMonitor
+│
+├── scripts/
+│   ├── setup-local.sh                        # Setup local environment
+│   ├── get-secrets.sh                        # Fetch secrets
+│   ├── seed-badges.sh                        # Seed badges
+│   └── recalculate-reputation.sh             # Recalculate reputation
+│
+├── tests/
+│   ├── unit/                                 # Unit tests
+│   ├── integration/                          # Integration tests
+│   └── e2e/                                  # End-to-end tests
+│
+├── docs/
+│   ├── README.md                             # Service overview
+│   ├── api.md                                # API documentation
+│   ├── events.md                             # 📝 UPDATED: Events (published: review.submitted, badge.awarded, reputation.updated, consumed: contract.ended, etc.)
+│   ├── badge-system.md                       # Badge system
+│   ├── reputation-algorithm.md               # Reputation algorithm
+│   ├── rating-system.md                      # Rating system
+│   ├── review-guidelines.md                  # Review guidelines
+│   ├── MIGRATIONS.md                         # 🆕 Migration history
+│   ├── SCHEMA.md                             # 🆕 Database schema
+│   └── RUNBOOK.md                            # 🆕 Operational procedures
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                            # CI workflow
+│       └── cd.yml                            # CD workflow
+│
+├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
+├── go.sum
+├── .env.example
+├── Makefile
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+└── README.md
+```
+
+
+---
+
+## **📦🔟 subscriptions-be (UPDATED)**
+
+```
+apps/be/subscriptions-be/
+│
+├── cmd/
+│   └── api/
+│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
+│
+├── internal/
+│   ├── domain/
+│   │   ├── plan/
+│   │   │   ├── entity.go              # Subscription plans
+│   │   │   ├── features.go            # Plan features
+│   │   │   ├── pricing.go             # Pricing tiers
+│   │   │   ├── limits.go              # Plan limits
+│   │   │   └── repository.go
+│   │   ├── subscription/
+│   │   │   ├── entity.go              # User subscriptions
+│   │   │   ├── billing_cycle.go       # Billing cycle management
+│   │   │   ├── enums.go               # Status, Type
+│   │   │   ├── auto_renewal.go        # Auto-renewal logic
+│   │   │   └── repository.go
+│   │   ├── connect/
+│   │   │   ├── entity.go              # Connects/Credits
+│   │   │   ├── package.go             # Connect packages
+│   │   │   ├── transaction.go         # Connect transactions
+│   │   │   ├── balance.go             # Balance tracking
+│   │   │   └── repository.go
+│   │   ├── usage/
+│   │   │   ├── entity.go              # Usage tracking
+│   │   │   ├── quota.go               # Usage quotas
+│   │   │   ├── limit.go               # Usage limits
+│   │   │   └── repository.go
+│   │   ├── addon/
+│   │   │   ├── entity.go              # Plan add-ons
+│   │   │   └── repository.go
+│   │   ├── promotion/
+│   │   │   ├── entity.go              # Promotional codes
+│   │   │   ├── discount.go            # Discount rules
+│   │   │   ├── usage_limit.go         # Usage limits for promos
+│   │   │   └── repository.go
+│   │   ├── trial/
+│   │   │   ├── entity.go              # Free trials
+│   │   │   ├── eligibility.go         # Trial eligibility
+│   │   │   └── repository.go
+│   │   ├── billing_history/
+│   │   │   ├── entity.go              # Billing history
+│   │   │   └── repository.go
+│   │   ├── feature_toggle/
+│   │   │   ├── entity.go              # Feature toggles per plan
+│   │   │   └── repository.go
+│   │   └── outbox/
+│   │       ├── entity.go              # ❌ REMOVED (use platform-shared/outbox/entity.go)
+│   │       └── repository.go          # ❌ REMOVED (use platform-shared/outbox/repository.go)
+│   │
+│   ├── application/
+│   │   ├── plan/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Create, Update plans
+│   │   │   ├── queries.go             # Get, List plans
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── subscription/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Subscribe, Cancel, Change, Pause
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── lifecycle_manager.go   # Manage subscription lifecycle
+│   │   │   └── renewal_manager.go     # Handle renewals
+│   │   ├── connect/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Purchase, Use, Transfer, Refund
+│   │   │   ├── queries.go             # Get balance, History
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── calculator.go          # Calculate connect costs
+│   │   ├── usage/
+│   │   │   ├── service.go
+│   │   │   ├── tracker.go             # Track usage
+│   │   │   ├── quota_checker.go       # Check quotas
+│   │   │   ├── limiter.go             # Enforce limits
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── addon/
+│   │   │   ├── service.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── promotion/
+│   │   │   ├── service.go
+│   │   │   ├── validator.go           # Validate promo codes
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── trial/
+│   │   │   ├── service.go
+│   │   │   ├── eligibility_checker.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── billing/
+│   │   │   ├── service.go
+│   │   │   ├── invoice_generator.go   # Generate invoices
+│   │   │   ├── payment_processor.go   # Process payments
+│   │   │   └── dto.go
+│   │   ├── feature_toggle/
+│   │   │   ├── service.go
+│   │   │   ├── checker.go             # Check feature access
+│   │   │   └── dto.go
+│   │   └── eventhandler/
+│   │       ├── user_handler.go        # 📝 UPDATED: Handle new user events (now uses contracts/events)
+│   │       ├── payment_handler.go     # 📝 UPDATED: Handle payment events (now uses contracts/events)
+│   │       ├── proposal_handler.go    # 📝 UPDATED: Deduct connects on proposal (now uses contracts/events)
+│   │       ├── job_handler.go         # 📝 UPDATED: Check posting limits (now uses contracts/events)
+│   │       └── admin_handler.go       # 📝 UPDATED: Handle admin subscription actions (now uses contracts/events)
+│   │
+│   ├── infrastructure/
+│   │   ├── persistence/
+│   │   │   └── postgres/
+│   │   │       ├── connection.go      # PostgreSQL connection setup (DSN from config, connection pooling)
+│   │   │       ├── transaction.go     # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
+│   │   │       ├── migrations.go      # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
+│   │   │       ├── version.go         # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
+│   │   │       ├── safety.go          # 🆕 Pre-migration safety checks (environment validation, disk space check)
+│   │   │       ├── plan_repository.go
+│   │   │       ├── subscription_repository.go
+│   │   │       ├── connect_repository.go
+│   │   │       ├── usage_repository.go
+│   │   │       ├── addon_repository.go
+│   │   │       ├── promotion_repository.go
+│   │   │       ├── trial_repository.go
+│   │   │       ├── billing_history_repository.go
+│   │   │       ├── feature_toggle_repository.go
+│   │   │       └── outbox_repository.go # ❌ REMOVED (use platform-shared/outbox/postgres/repository.go)
+│   │   ├── cache/
+│   │   │   └── redis/
+│   │   │       ├── connection.go      # Redis connection setup (connection pooling, retry logic)
+│   │   │       ├── subscription_cache.go # Cache user subscriptions (Get, Set, Invalidate with TTL)
+│   │   │       ├── plan_cache.go      # Cache plans
+│   │   │       ├── connect_cache.go   # Cache connect balances
+│   │   │       └── feature_toggle_cache.go # Cache feature toggles
+│   │   ├── messaging/
+│   │   │   └── kafka/
+│   │   │       ├── consumer.go        # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
+│   │   │       ├── producer.go        # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
+│   │   │       ├── topics.go          # 📝 UPDATED: Topic constants (now imported from contracts/events - subscription.created, subscription.renewed, usage.limit.reached)
+│   │   │       └── scram.go           # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
+│   │   ├── scheduler/
+│   │   │   ├── cron.go                # Cron jobs for renewals
+│   │   │   └── jobs.go                # Scheduled jobs
+│   │   ├── payment/
+│   │   │   └── client.go              # Financial service client for payments
+│   │   └── outbox/
+│   │       ├── processor.go           # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
+│   │       └── scheduler.go           # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
+│   │
+│   ├── interfaces/
+│   │   └── http/
+│   │       ├── handlers/
+│   │       │   ├── plan_handler.go    # Plan HTTP handlers (GET /plans)
+│   │       │   ├── subscription_handler.go # Subscription handlers (POST /subscribe)
+│   │       │   ├── connect_handler.go # Connect handlers (POST /connects/purchase)
+│   │       │   ├── usage_handler.go   # Usage handlers
+│   │       │   ├── addon_handler.go   # Addon handlers
+│   │       │   ├── promotion_handler.go # Promotion handlers
+│   │       │   ├── trial_handler.go   # Trial handlers
+│   │       │   ├── billing_handler.go # Billing handlers
+│   │       │   ├── feature_toggle_handler.go # Feature toggle handlers
+│   │       │   └── health_handler.go  # Health check endpoints (/health, /ready, /live)
+│   │       ├── middleware/
+│   │       │   ├── auth.go            # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
+│   │       │   ├── rbac.go            # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
+│   │       │   ├── cors.go            # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
+│   │       │   ├── rate_limit.go      # Rate limiting middleware (token bucket algorithm)
+│   │       │   ├── logging.go         # 📝 UPDATED: Logging middleware (structured logs per request, uses platform-shared/ginx/logging)
+│   │       │   ├── error_handler.go   # Error handling middleware
+│   │       │   ├── request_id.go      # 📝 UPDATED: Request ID middleware (X-Request-ID header, uses platform-shared/ginx/requestid)
+│   │       │   └── feature_gate.go    # Feature access control middleware
+│   │       ├── responses/
+│   │       │   ├── success.go         # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
+│   │       │   ├── error.go           # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
+│   │       │   └── pagination.go      # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
+│   │       └── router.go              # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
+│   │
+│   └── config/                               # 🆕 MEDIUM - Standardized configuration
+│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis)
+│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
+│       └── docs/
+│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
+│
+├── config/                                   # 🆕 MEDIUM - Configuration files
+│   ├── default.yaml                          # 🆕 Default configuration
+│   ├── dev.yaml                              # 🆕 Development overrides
+│   └── prod.yaml                             # 🆕 Production overrides
+│
+├── dapr/                                     # 🆕 MEDIUM - Dapr components split by environment
+│   ├── local/                                # 🆕 For dapr run
+│   │   ├── pubsub.yaml                       # Kafka pub/sub component
+│   │   └── statestore.yaml                   # State store component
+│   └── k8s/                                  # 🆕 For kubectl apply
+│       ├── pubsub.yaml                       # Kafka with scopes: ["subscriptions-be"]
+│       ├── statestore.yaml                   # State store with scopes
+│       └── secrets.yaml                      # Dapr secret store
+│
+├── pkg/
+│   ├── errors/
+│   │   ├── errors.go                         # Service-specific errors
+│   │   └── codes.go                          # Error codes
+│   ├── logger/
+│   │   └── logger.go                         # ❌ REMOVED: Use platform-shared/logging
+│   ├── utils/
+│   │   ├── validator.go                      # Local validation utilities
+│   │   ├── billing_calculator.go             # Billing calculation utilities
+│   │   └── proration.go                      # Proration logic
+│   └── constants/
+│       ├── events.go                         # ❌ REMOVED: Use contracts/events
+│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
+│       ├── plans.go                          # Plan constants
+│       └── features.go                       # Feature constants
+│
+├── seeds/
+│   ├── plans.sql                             # Seed subscription plans
+│   └── connect_packages.sql                  # Seed connect packages
+│
+├── deployments/
+│   └── k8s/
+│       ├── deployment.yaml                   # Kubernetes Deployment
+│       ├── service.yaml                      # Kubernetes Service
+│       ├── configmap.yaml                    # ConfigMap
+│       ├── secrets.yaml                      # Secrets
+│       ├── hpa.yaml                          # HPA
+│       ├── pdb.yaml                          # PDB
+│       ├── cronjob-renewal.yaml              # Renewal cron job
+│       └── servicemonitor.yaml               # Prometheus ServiceMonitor
+│
+├── scripts/
+│   ├── setup-local.sh                        # Setup local environment
+│   ├── get-secrets.sh                        # Fetch secrets
+│   ├── seed-plans.sh                         # Seed plans
+│   ├── seed-data.sh                          # Seed test data
+│   └── process-renewals.sh                   # Process renewals
+│
+├── tests/
+│   ├── unit/                                 # Unit tests
+│   ├── integration/                          # Integration tests
+│   └── e2e/                                  # End-to-end tests
+│
+├── docs/
+│   ├── README.md                             # Service overview
+│   ├── api.md                                # API documentation
+│   ├── events.md                             # 📝 UPDATED: Events (published: subscription.created, connects.purchased, usage.limit.reached, consumed: payment.processed, proposal.submitted, etc.)
+│   ├── subscription-plans.md                 # Subscription plans details
+│   ├── connects-system.md                    # Connects system
+│   ├── billing-logic.md                      # Billing logic
+│   ├── feature-toggles.md                    # Feature toggles
+│   ├── MIGRATIONS.md                         # 🆕 Migration history
+│   ├── SCHEMA.md                             # 🆕 Database schema
+│   └── RUNBOOK.md                            # 🆕 Operational procedures
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                            # CI workflow
+│       └── cd.yml                            # CD workflow
+│
+├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
+├── go.sum
+├── .env.example
+├── Makefile
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+└── README.md
+```
+
+
+---
+
+## **📦1️⃣1️⃣ admin-be (NEW - COMPREHENSIVE**
+
+```
+apps/be/admin-be/
+│
+├── cmd/
+│   └── api/
+│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
+│
+├── internal/
+│   ├── domain/
+│   │   ├── admin_user/
+│   │   │   ├── entity.go              # Admin user accounts
+│   │   │   ├── role.go                # Admin roles (SuperAdmin, Moderator, Support)
+│   │   │   ├── permission.go          # Granular permissions
+│   │   │   ├── activity_log.go        # Admin activity tracking
+│   │   │   └── repository.go
+│   │   ├── support_ticket/
+│   │   │   ├── entity.go              # Support tickets
+│   │   │   ├── priority.go            # Priority levels (Low, Medium, High, Urgent)
+│   │   │   ├── status.go              # Status (Open, InProgress, Resolved, Closed)
+│   │   │   ├── category.go            # Ticket categories
+│   │   │   ├── assignment.go          # Agent assignment
+│   │   │   └── repository.go
+│   │   ├── ticket_message/
+│   │   │   ├── entity.go              # Ticket conversation messages
+│   │   │   ├── attachment.go          # Message attachments
+│   │   │   └── repository.go
+│   │   ├── support_agent/
+│   │   │   ├── entity.go              # Support agent profiles
+│   │   │   ├── availability.go        # Agent availability/online status
+│   │   │   ├── stats.go               # Agent performance stats
+│   │   │   └── repository.go
+│   │   ├── canned_response/
+│   │   │   ├── entity.go              # Predefined responses
+│   │   │   ├── category.go            # Response categories
+│   │   │   └── repository.go
+│   │   ├── knowledge_base/
+│   │   │   ├── entity.go              # KB articles
+│   │   │   ├── category.go            # Article categories
+│   │   │   ├── tag.go                 # Article tags
+│   │   │   ├── version.go             # Article versioning
+│   │   │   └── repository.go
+│   │   ├── faq/
+│   │   │   ├── entity.go              # Frequently asked questions
+│   │   │   ├── category.go            # FAQ categories
+│   │   │   └── repository.go
+│   │   ├── moderation_queue/
+│   │   │   ├── entity.go              # Moderation queue items
+│   │   │   ├── content_type.go        # Job, User, Review, Message, etc.
+│   │   │   ├── flag_reason.go         # Reasons for flagging
+│   │   │   ├── action.go              # Moderation actions taken
+│   │   │   └── repository.go
+│   │   ├── user_action/
+│   │   │   ├── entity.go              # Admin actions on users
+│   │   │   ├── action_type.go         # Suspend, Ban, Verify, Warn, etc.
+│   │   │   ├── reason.go              # Action reasons
+│   │   │   └── repository.go
+│   │   ├── content_action/
+│   │   │   ├── entity.go              # Admin actions on content
+│   │   │   ├── action_type.go         # Remove, Hide, Approve, Reject
+│   │   │   └── repository.go
+│   │   ├── dispute_resolution/
+│   │   │   ├── entity.go              # Dispute cases
+│   │   │   ├── evidence.go            # Evidence submitted
+│   │   │   ├── decision.go            # Admin decision
+│   │   │   └── repository.go
+│   │   ├── system_config/
+│   │   │   ├── entity.go              # System configuration
+│   │   │   ├── feature_flag.go        # Feature flags
+│   │   │   ├── maintenance.go         # Maintenance mode settings
+│   │   │   └── repository.go
+│   │   ├── announcement/
+│   │   │   ├── entity.go              # Platform announcements
+│   │   │   ├── target.go              # Target audience (All, Freelancers, Clients)
+│   │   │   ├── schedule.go            # Scheduled announcements
+│   │   │   └── repository.go
+│   │   ├── report/
+│   │   │   ├── entity.go              # Generated reports
+│   │   │   ├── report_type.go         # Report types (Users, Revenue, Activity)
+│   │   │   ├── schedule.go            # Scheduled reports
+│   │   │   └── repository.go
+│   │   ├── analytics_dashboard/
+│   │   │   ├── entity.go              # Dashboard configurations
+│   │   │   ├── widget.go              # Dashboard widgets
+│   │   │   ├── metric.go              # Custom metrics
+│   │   │   └── repository.go
+│   │   ├── audit_log/
+│   │   │   ├── entity.go              # Complete audit trail
+│   │   │   ├── action.go              # Actions performed
+│   │   │   ├── resource.go            # Resources affected
+│   │   │   └── repository.go
+│   │   ├── notification_blast/
+│   │   │   ├── entity.go              # Bulk notifications/emails
+│   │   │   ├── audience.go            # Target audience
+│   │   │   ├── schedule.go            # Scheduled blasts
+│   │   │   └── repository.go
+│   │   ├── platform_stats/
+│   │   │   ├── entity.go              # Platform statistics
+│   │   │   ├── realtime.go            # Real-time stats
+│   │   │   └── repository.go
+│   │   └── outbox/
+│   │       ├── entity.go              # ❌ REMOVED (use platform-shared/outbox/entity.go)
+│   │       └── repository.go          # ❌ REMOVED (use platform-shared/outbox/repository.go)
+│   │
+│   ├── application/
+│   │   ├── admin_user/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Create, Update, Deactivate
+│   │   │   ├── queries.go             # Get, List admins
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   └── permission_manager.go  # Manage permissions
+│   │   ├── support_ticket/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Create, Assign, Resolve, Close
+│   │   │   ├── queries.go             # Get, List, Search tickets
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   ├── assignment_engine.go   # Auto-assign tickets
+│   │   │   ├── escalation_manager.go  # Escalate urgent tickets
+│   │   │   └── sla_tracker.go         # Track SLA compliance
+│   │   ├── ticket_message/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   └── mapper.go
+│   │   ├── support_agent/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   └── stats_calculator.go    # Calculate agent stats
+│   │   ├── canned_response/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── validators.go
+│   │   ├── knowledge_base/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Create, Update, Publish
+│   │   │   ├── queries.go             # Search, Get articles
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   └── search_service.go      # KB search
+│   │   ├── faq/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── validators.go
+│   │   ├── moderation/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Approve, Reject, Remove
+│   │   │   ├── queries.go             # Get queue, Filter
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   ├── queue_manager.go       # Manage moderation queue
+│   │   │   ├── auto_moderator.go      # Automatic moderation rules
+│   │   │   └── content_scanner.go     # Scan for violations
+│   │   ├── user_management/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Suspend, Ban, Verify, Warn
+│   │   │   ├── queries.go             # Search users, Get details
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   └── action_validator.go    # Validate admin actions
+│   │   ├── content_management/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Remove, Hide, Feature
+│   │   │   ├── queries.go             # List content, Search
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── validators.go
+│   │   ├── dispute_resolution/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Review, Decide, Close
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   └── decision_engine.go     # Help make decisions
+│   │   ├── system_config/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Update configs
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── validators.go
+│   │   ├── announcement/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Create, Schedule, Send
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── validators.go
+│   │   ├── report/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   ├── generator.go           # Generate reports
+│   │   │   ├── scheduler.go           # Schedule reports
+│   │   │   └── exporters/
+│   │   │       ├── pdf_exporter.go    # PDF exporter
+│   │   │       ├── csv_exporter.go    # CSV exporter
+│   │   │       └── excel_exporter.go  # Excel exporter
+│   │   ├── analytics/
+│   │   │   ├── service.go
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── aggregator.go          # Aggregate analytics
+│   │   │   ├── metrics_calculator.go  # Calculate KPIs
+│   │   │   └── dashboard_builder.go   # Build dashboards
+│   │   ├── notification_blast/
+│   │   │   ├── service.go
+│   │   │   ├── commands.go            # Create, Schedule, Send
+│   │   │   ├── queries.go
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   ├── validators.go
+│   │   │   └── audience_selector.go   # Select target users
+│   │   ├── audit/
+│   │   │   ├── service.go
+│   │   │   ├── queries.go             # Query audit logs
+│   │   │   ├── dto.go
+│   │   │   ├── mapper.go
+│   │   │   └── logger.go              # Log admin actions
+│   │   └── eventhandler/
+│   │       ├── user_handler.go        # 📝 UPDATED: Handle user events (now uses contracts/events)
+│   │       ├── job_handler.go         # 📝 UPDATED: Handle job events (now uses contracts/events)
+│   │       ├── proposal_handler.go    # 📝 UPDATED: Handle proposal events (now uses contracts/events)
+│   │       ├── contract_handler.go    # 📝 UPDATED: Handle contract events (now uses contracts/events)
+│   │       ├── payment_handler.go     # 📝 UPDATED: Handle payment events (now uses contracts/events)
+│   │       ├── review_handler.go      # 📝 UPDATED: Handle review flags (now uses contracts/events)
+│   │       ├── message_handler.go     # 📝 UPDATED: Handle message flags (now uses contracts/events)
+│   │       ├── file_handler.go        # 📝 UPDATED: Handle file flags (now uses contracts/events)
+│   │       └── system_handler.go      # 📝 UPDATED: Handle system events (now uses contracts/events)
+│   │
+│   ├── infrastructure/
+│   │   ├── persistence/
+│   │   │   └── postgres/
+│   │   │       ├── connection.go      # PostgreSQL connection setup (DSN from config, connection pooling)
+│   │   │       ├── transaction.go     # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
+│   │   │       ├── migrations.go      # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
+│   │   │       ├── version.go         # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
+│   │   │       ├── safety.go          # 🆕 Pre-migration safety checks (environment validation, disk space check)
+│   │   │       ├── admin_user_repository.go
+│   │   │       ├── support_ticket_repository.go
+│   │   │       ├── ticket_message_repository.go
+│   │   │       ├── support_agent_repository.go
+│   │   │       ├── canned_response_repository.go
+│   │   │       ├── knowledge_base_repository.go
+│   │   │       ├── faq_repository.go
+│   │   │       ├── moderation_queue_repository.go
+│   │   │       ├── user_action_repository.go
+│   │   │       ├── content_action_repository.go
+│   │   │       ├── dispute_resolution_repository.go
+│   │   │       ├── system_config_repository.go
+│   │   │       ├── announcement_repository.go
+│   │   │       ├── report_repository.go
+│   │   │       ├── analytics_dashboard_repository.go
+│   │   │       ├── audit_log_repository.go
+│   │   │       ├── notification_blast_repository.go
+│   │   │       ├── platform_stats_repository.go
+│   │   │       └── outbox_repository.go # ❌ REMOVED (use platform-shared/outbox/postgres/repository.go)
+│   │   ├── cache/
+│   │   │   └── redis/
+│   │   │       ├── connection.go      # Redis connection setup (connection pooling, retry logic)
+│   │   │       ├── admin_cache.go     # Cache admin data (Get, Set, Invalidate with TTL)
+│   │   │       ├── ticket_cache.go    # Cache tickets
+│   │   │       ├── stats_cache.go     # Cache stats
+│   │   │       └── config_cache.go    # Cache configs
+│   │   ├── messaging/
+│   │   │   └── kafka/
+│   │   │       ├── consumer.go        # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
+│   │   │       ├── producer.go        # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
+│   │   │       ├── topics.go          # 📝 UPDATED: Topic constants (now imported from contracts/events - admin.user.suspended, admin.dispute.resolved)
+│   │   │       └── scram.go           # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
+│   │   ├── external_services/
+│   │   │   ├── users_client.go        # Users service client
+│   │   │   ├── jobs_client.go         # Jobs service client
+│   │   │   ├── proposals_client.go    # Proposals service client
+│   │   │   ├── contracts_client.go    # Contracts service client
+│   │   │   ├── financial_client.go    # Financial service client
+│   │   │   ├── reviews_client.go      # Reviews service client
+│   │   │   ├── communications_client.go # Communications service client
+│   │   │   ├── search_client.go       # Search service client
+│   │   │   ├── storage_client.go      # Storage service client
+│   │   │   └── subscriptions_client.go # Subscriptions service client
+│   │   ├── keycloak/
+│   │   │   ├── admin_client.go        # Keycloak admin operations
+│   │   │   └── user_manager.go        # Manage users via Keycloak
+│   │   ├── reporting/
+│   │   │   ├── pdf_generator.go       # PDF generator
+│   │   │   ├── csv_generator.go       # CSV generator
+│   │   │   └── excel_generator.go     # Excel generator
+│   │   └── outbox/
+│   │       ├── processor.go           # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
+│   │       └── scheduler.go           # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
+│   │
+│   ├── interfaces/
+│   │   └── http/
+│   │       ├── handlers/
+│   │       │   ├── admin_user_handler.go # Admin user handlers
+│   │       │   ├── support_ticket_handler.go # Ticket handlers
+│   │       │   ├── ticket_message_handler.go # Message handlers
+│   │       │   ├── support_agent_handler.go # Agent handlers
+│   │       │   ├── canned_response_handler.go # Canned response handlers
+│   │       │   ├── knowledge_base_handler.go # KB handlers
+│   │       │   ├── faq_handler.go     # FAQ handlers
+│   │       │   ├── moderation_handler.go # Moderation handlers
+│   │       │   ├── user_management_handler.go # User management handlers
+│   │       │   ├── content_management_handler.go # Content management handlers
+│   │       │   ├── dispute_resolution_handler.go # Dispute handlers
+│   │       │   ├── system_config_handler.go # Config handlers
+│   │       │   ├── announcement_handler.go # Announcement handlers
+│   │       │   ├── report_handler.go  # Report handlers
+│   │       │   ├── analytics_handler.go # Analytics handlers
+│   │       │   ├── notification_blast_handler.go # Blast handlers
+│   │       │   ├── audit_log_handler.go # Audit handlers
+│   │       │   ├── dashboard_handler.go # Dashboard handlers
+│   │       │   └── health_handler.go  # Health check endpoints (/health, /ready, /live)
+│   │       ├── middleware/
+│   │       │   ├── auth.go            # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
+│   │       │   ├── admin_auth.go      # 📝 UPDATED: Admin-specific auth (uses pkg/auth)
+│   │       │   ├── permission_check.go # 📝 UPDATED: Check admin permissions (uses pkg/auth)
+│   │       │   ├── audit_logger.go    # Auto-log all admin actions # 📝 UPDATED: Uses platform-shared/logging
+│   │       │   ├── cors.go            # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
+│   │       │   ├── rate_limit.go      # Rate limiting middleware (token bucket algorithm)
+│   │       │   ├── logging.go         # 📝 UPDATED: Logging middleware (structured logs per request, uses platform-shared/ginx/logging)
+│   │       │   ├── error_handler.go   # Error handling middleware
+│   │       │   └── request_id.go      # 📝 UPDATED: Request ID middleware (X-Request-ID header, uses platform-shared/ginx/requestid)
+│   │       ├── responses/
+│   │       │   ├── success.go         # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
+│   │       │   ├── error.go           # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
+│   │       │   └── pagination.go      # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
+│   │       └── router.go              # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
+│   │
+│   └── config/                               # 🆕 MEDIUM - Standardized configuration
+│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, Keycloak)
+│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
+│       └── docs/
+│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
+│
+├── config/                                   # 🆕 MEDIUM - Configuration files
+│   ├── default.yaml                          # 🆕 Default configuration
+│   ├── dev.yaml                              # 🆕 Development overrides
+│   └── prod.yaml                             # 🆕 Production overrides
+│
+├── dapr/                                     # 🆕 MEDIUM - Dapr components split by environment
+│   ├── local/                                # 🆕 For dapr run
+│   │   ├── pubsub.yaml                       # Kafka pub/sub component
+│   │   └── statestore.yaml                   # State store component
+│   └── k8s/                                  # 🆕 For kubectl apply
+│       ├── pubsub.yaml                       # Kafka with scopes: ["admin-be"]
+│       ├── statestore.yaml                   # State store with scopes
+│       └── secrets.yaml                      # Dapr secret store
+│
+├── pkg/
+│   ├── errors/
+│   │   ├── errors.go                         # Service-specific errors
+│   │   └── codes.go                          # Error codes
+│   ├── logger/
+│   │   └── logger.go                         # ❌ REMOVED: Use platform-shared/logging
+│   ├── utils/
+│   │   ├── validator.go                      # Local validation utilities
+│   │   ├── sanitizer.go                      # Sanitize input
+│   │   ├── permission_checker.go             # Permission checking utilities
+│   │   └── report_formatter.go               # Report formatting
+│   └── constants/
+│       ├── events.go                         # ❌ REMOVED: Use contracts/events
+│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
+│       ├── permissions.go                    # Permissions constants
+│       └── moderation_actions.go             # Moderation actions constants
+│
+├── deployments/
+│   └── k8s/
+│       ├── deployment.yaml                   # Kubernetes Deployment
+│       ├── service.yaml                      # Kubernetes Service
+│       ├── configmap.yaml                    # ConfigMap
+│       ├── secrets.yaml                      # Secrets
+│       ├── hpa.yaml                          # HPA
+│       ├── pdb.yaml                          # PDB
+│       ├── rbac.yaml                         # Admin RBAC policies
+│       └── servicemonitor.yaml               # Prometheus ServiceMonitor
+│
+├── scripts/
+│   ├── setup-local.sh                        # Setup local environment
+│   ├── get-secrets.sh                        # Fetch secrets
+│   ├── seed-admin-users.sh                   # Seed admin users
+│   ├── seed-canned-responses.sh              # Seed canned responses
+│   └── seed-data.sh                          # Seed test data
+│
+├── tests/
+│   ├── unit/
+│   │   ├── domain/
+│   │   │   ├── admin_user_test.go     # Admin user tests
+│   │   │   ├── support_ticket_test.go # Support ticket tests
+│   │   │   └── moderation_queue_test.go # Moderation queue tests
+│   │   ├── application/
+│   │   │   ├── admin_user_service_test.go # Admin user service tests
+│   │   │   ├── support_ticket_service_test.go # Support ticket service tests
+│   │   │   └── moderation_service_test.go # Moderation service tests
+│   │   └── infrastructure/
+│   │       ├── postgres_repository_test.go # Postgres repository tests
+│   │       └── kafka_producer_test.go # Kafka producer tests
+│   ├── integration/
+│   │   ├── handlers/
+│   │   │   ├── admin_user_handler_test.go # Admin user handler tests
+│   │   │   ├── support_ticket_handler_test.go # Support ticket handler tests
+│   │   │   └── moderation_handler_test.go # Moderation handler tests
+│   │   └── repositories/
+│   │       ├── admin_user_repository_test.go # Admin user repository tests
+│   │       └── support_ticket_repository_test.go # Support ticket repository tests
+│   └── e2e/
+│       └── scenarios/
+│           ├── ticket_workflow_test.go # Ticket workflow tests
+│           ├── moderation_workflow_test.go # Moderation workflow tests
+│           └── dispute_resolution_test.go # Dispute resolution tests
+│
+├── docs/
+│   ├── README.md                             # Service overview
+│   ├── api.md                                # API documentation
+│   ├── events.md                             # 📝 UPDATED: Events (published: admin.user.suspended, admin.dispute.resolved, consumed: user.flagged, contract.dispute.opened, etc.)
+│   ├── admin-roles.md                        # Admin roles
+│   ├── permissions.md                        # Permissions
+│   ├── moderation-guide.md                   # Moderation guide
+│   ├── support-workflows.md                  # Support workflows
+│   ├── reporting.md                          # Reporting
+│   ├── MIGRATIONS.md                         # 🆕 Migration history
+│   ├── SCHEMA.md                             # 🆕 Database schema
+│   └── RUNBOOK.md                            # 🆕 Operational procedures
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                            # CI workflow
+│       └── cd.yml                            # CD workflow
+│
+├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
+├── go.sum
+├── .env.example
+├── Makefile
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+└── README.md
+```
+
+
+---
+
+# Complete Event Flow & Integration Map
+
+## Key Events Between Services
+
+### 1. User Lifecycle Events
+```
+users-be → All Services
+- UserCreated
+- UserUpdated
+- UserVerified
+- FreelancerProfileCompleted
+- ClientProfileCompleted
+```
+
+### 2. Job Lifecycle Events
+```
+jobs-be → proposals-be, search-be, communications-be, subscriptions-be
+- JobPosted
+- JobUpdated
+- JobClosed
+- JobInvitationSent
+```
+
+### 3. Proposal & Bidding Events
+```
+proposals-be → jobs-be, contracts-be, communications-be, subscriptions-be, financial-be
+- ProposalSubmitted
+- ProposalAccepted
+- ProposalRejected
+- BidPlaced
+- BidUpdated
+- OutbidAlert
+- ConnectUsed
+```
+
+### 4. Contract Events
+```
+contracts-be → financial-be, communications-be, reviews-be, users-be
+- ContractCreated
+- ContractStarted
+- MilestoneCreated
+- MilestoneCompleted
+- MilestoneApproved
+- TimesheetSubmitted
+- ContractPaused
+- ContractEnded
+```
+
+### 5. Financial Events
+```
+financial-be → contracts-be, users-be, communications-be, subscriptions-be
+- PaymentProcessed
+- PaymentFailed
+- EscrowHeld
+- EscrowReleased
+- PayoutRequested
+- PayoutProcessed
+- InvoiceGenerated
+```
+
+### 6. Communication Events
+```
+communications-be → All Services
+- MessageSent
+- NotificationDelivered
+- EmailSent
+- InAppNotificationSent
+```
+
+### 7. Review & Rating Events
+```
+reviews-be → users-be, search-be, communications-be
+- ReviewSubmitted
+- ReviewResponded
+- BadgeAwarded
+- ReputationUpdated
+- RatingCalculated
+```
+
+### 8. Search & Recommendation Events
+```
+search-be → communications-be
+- JobIndexed
+- UserIndexed
+- RecommendationGenerated
+- MatchFound
+```
+
+### 9. Subscription Events
+```
+subscriptions-be → users-be, jobs-be, proposals-be, communications-be, financial-be
+- SubscriptionCreated
+- SubscriptionRenewed
+- SubscriptionCancelled
+- ConnectsPurchased
+- ConnectsUsed
+- UsageLimitReached
+```
+
+### 10. Storage Events
+```
+storage-be → users-be, jobs-be, contracts-be, proposals-be
+- FileUploaded
+- FileDeleted
+- MediaProcessed
+```
+
+## 11. Events Published by admin-be
+
+```
+// User Actions
+- admin.user.suspended
+- admin.user.unsuspended
+- admin.user.banned
+- admin.user.unbanned
+- admin.user.warned
+- admin.user.verified
+
+// Content Actions
+- admin.job.removed
+- admin.job.hidden
+- admin.job.featured
+- admin.proposal.removed
+- admin.review.removed
+- admin.message.removed
+- admin.file.removed
+
+// Moderation
+- admin.moderation.approved
+- admin.moderation.rejected
+- admin.flag.resolved
+
+// Disputes
+- admin.dispute.resolved
+- admin.dispute.escalated
+
+// Financial
+- admin.payment.refunded
+- admin.chargeback.resolved
+
+// Subscriptions
+- admin.subscription.cancelled
+- admin.subscription.extended
+- admin.connects.added
+
+// System
+- admin.config.updated
+- admin.announcement.published
+- admin.maintenance.scheduled
+```
+
+---
+
+## Events Subscribed by admin-be
+
+```
+// Flagging Events
+- user.flagged
+- job.flagged
+- proposal.flagged
+- contract.dispute.opened
+- payment.disputed
+- review.flagged
+- message.flagged
+- file.flagged
+
+// System Events
+- system.error
+- system.alert
+- system.abuse.detected
+
+// Support Events
+- support.ticket.created
+- support.ticket.escalated
+```
+
+
+
+---
+
+## In-App Notification Types (communications-be)
+
+### Job-Related Notifications
+1. **New Job Posted** (matching your skills)
+2. **Job Invitation Received**
+3. **Job You Applied To Closed**
+4. **Similar Jobs Available**
+
+### Proposal & Bidding Notifications
+1. **Your Proposal Was Viewed**
+2. **Your Proposal Was Accepted**
+3. **Your Proposal Was Rejected**
+4. **New Bid Placed on Your Job**
+5. **You've Been Outbid**
+6. **Bid Accepted**
+
+### Contract Notifications
+1. **New Contract Created**
+2. **Contract Started**
+3. **Milestone Completed**
+4. **Milestone Approved**
+5. **Timesheet Submitted**
+6. **Work Diary Updated**
+7. **Contract Ending Soon**
+
+### Financial Notifications
+1. **Payment Received**
+2. **Payment Sent**
+3. **Funds in Escrow**
+4. **Escrow Released**
+5. **Payout Processed**
+6. **Invoice Generated**
+7. **Low Balance Alert**
+
+### Message Notifications
+1. **New Message Received**
+2. **Message Read**
+3. **User Is Typing**
+
+### Review Notifications
+1. **New Review Received**
+2. **Review Response Posted**
+3. **Badge Earned**
+
+### Subscription Notifications
+1. **Subscription Expiring Soon**
+2. **Subscription Renewed**
+3. **Connects Running Low**
+4. **New Connects Purchased**
+
+### System Notifications
+1. **Profile Verification Approved/Rejected**
+2. **Account Security Alert**
+3. **Terms of Service Updated**
+
+---
+
+## Technology Stack Summary
+
+### Backend
+- **Language**: Go
+- **Framework**: Standard library + Gin/Echo/Chi
+- **Architecture**: Clean Architecture (DDD)
+
+### Data Layer
+- **Primary DB**: PostgreSQL (per service)
+- **Caching**: Redis
+- **Search**: Elasticsearch/OpenSearch
+- **Object Storage**: MinIO (self-hosted)
+
+### Messaging & Events
+- **Event Bus**: Apache Kafka
+- **Patterns**: Outbox Pattern, Event Sourcing, CQRS
+
+### Authentication & Authorization
+- **Auth Service**: Keycloak
+- **Token**: JWT
+
+### Communication
+- **Email**: WildDuck (self-hosted SMTP)
+- **WebSocket**: Native Go WebSocket
+- **Real-time**: Server-Sent Events (SSE)
+
+### Infrastructure
+- **Container**: Docker
+- **Orchestration**: Kubernetes
+- **Service Mesh**: Istio/Linkerd (optional)
+- **API Gateway**: Kong/NGINX
+
+### Observability
+- **Logging**: ELK Stack or Grafana Loki
+- **Monitoring**: Prometheus + Grafana
+- **Tracing**: Jaeger
+
+### CI/CD
+- **Version Control**: Git
+- **CI/CD**: GitHub Actions / GitLab CI
+- **GitOps**: ArgoCD
+
+---
+
+## Resource Estimation (Minimum K8s Cluster)
+
+```yaml
+# Minimal Production Setup
+Nodes: 3 nodes × 8GB RAM = 24GB total
+
+Application Services (10 services):
+- users-be: 2 replicas × 512MB = 1GB
+- jobs-be: 2 replicas × 512MB = 1GB
+- proposals-be: 2 replicas × 512MB = 1GB
+- contracts-be: 2 replicas × 512MB = 1GB
+- financial-be: 3 replicas × 1GB = 3GB (critical)
+- communications-be: 2 replicas × 512MB = 1GB
+- storage-be: 2 replicas × 512MB = 1GB
+- search-be: 2 replicas × 1GB = 2GB
+- reviews-be: 2 replicas × 512MB = 1GB
+- subscriptions-be: 2 replicas × 512MB = 1GB
+
+Subtotal: ~14GB
+
+Infrastructure:
+- PostgreSQL: 2GB
+- Redis: 1GB
+- Elasticsearch: 2GB
+- Kafka: 2GB
+- Keycloak: 1GB
+- MinIO: 1GB
+
+Subtotal: ~9GB
+
+Total: ~23GB (fits in 24GB cluster)
+```
+
+---
+
+This completes the comprehensive microservices architecture for your Skillsier platform! All services now include:
+
+✅ **Bidding system** in proposals-be
+✅ **In-app notifications** with comprehensive coverage in communications-be
+✅ **Free & self-hosted** communications (WildDuck, WebSocket, SSE)
+✅ **Auto-migrations** following your users-be pattern
+✅ **Enhanced recommendation system** in search-be with ML models
+✅ **Reviews covering ratings** in reviews-be
+✅ Complete event flows between all services
+✅ Enterprise-level folder structures
+
+Each service is production-ready and follows Go best practices with Clean Architecture!
