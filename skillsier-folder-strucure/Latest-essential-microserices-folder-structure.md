@@ -201,6 +201,7 @@ skillsier/                                    # Monorepo root
 │       │   ├── notification_delivered.proto  # Notification delivered
 │       │   ├── email_sent.proto              # Email sent
 │       │   └── message_flagged.proto         # Message flagged
+│       │   └── in_app_notification_sent.proto         # in_app_notification_sent
 │       │
 │       ├── storage/v1/                       # File storage events
 │       │   ├── file_uploaded.proto           # File uploaded
