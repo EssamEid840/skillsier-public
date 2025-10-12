@@ -1,0 +1,539 @@
+syntax = "proto3";
+
+package skillsier.common.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/common/v1;commonv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/enums.proto";
+
+// ============================================================================
+// MONEY & FINANCIAL VALUE OBJECTS
+// ============================================================================
+
+// Money represents a monetary amount with currency
+message Money {
+  // Amount as a decimal value (e.g., 100.50)
+  double value = 1;
+  
+  // Currency code (ISO 4217)
+  Currency currency = 2;
+  
+  // Formatted string representation (e.g., "$100.50", "€100,50")
+  string formatted = 3;
+}
+
+// MoneyRange represents a range of monetary values
+message MoneyRange {
+  Money min = 1;
+  Money max = 2;
+  bool is_flexible = 3;
+}
+
+// Budget represents job or project budget
+message Budget {
+  Money amount = 1;
+  Currency currency = 2;
+  bool is_flexible = 3;
+  BudgetType budget_type = 4;
+  Money min_amount = 5;
+  Money max_amount = 6;
+}
+
+enum BudgetType {
+  BUDGET_TYPE_UNSPECIFIED = 0;
+  BUDGET_TYPE_FIXED = 1;
+  BUDGET_TYPE_RANGE = 2;
+  BUDGET_TYPE_NOT_SPECIFIED = 3;
+}
+
+// Rate represents hourly or per-unit rate
+message Rate {
+  double amount = 1;
+  Currency currency = 2;
+  RateType type = 3;
+}
+
+enum RateType {
+  RATE_TYPE_UNSPECIFIED = 0;
+  RATE_TYPE_HOURLY = 1;
+  RATE_TYPE_DAILY = 2;
+  RATE_TYPE_WEEKLY = 3;
+  RATE_TYPE_MONTHLY = 4;
+  RATE_TYPE_FIXED = 5;
+  RATE_TYPE_PER_WORD = 6;
+  RATE_TYPE_PER_PAGE = 7;
+}
+
+// ============================================================================
+// LOCATION VALUE OBJECTS
+// ============================================================================
+
+// Location represents a geographic location
+message Location {
+  string country = 1;
+  string country_code = 2;      // ISO 3166-1 alpha-2
+  string state = 3;
+  string state_code = 4;
+  string city = 5;
+  string postal_code = 6;
+  string address_line1 = 7;
+  string address_line2 = 8;
+  double latitude = 9;
+  double longitude = 10;
+  string timezone = 11;
+  string region = 12;            // e.g., "North America", "Europe"
+  string continent = 13;
+}
+
+// Address represents a mailing address
+message Address {
+  string address_line1 = 1;
+  string address_line2 = 2;
+  string city = 3;
+  string state = 4;
+  string postal_code = 5;
+  string country = 6;
+  string country_code = 7;       // ISO 3166-1 alpha-2
+  AddressType type = 8;
+  bool is_primary = 9;
+  bool is_verified = 10;
+}
+
+enum AddressType {
+  ADDRESS_TYPE_UNSPECIFIED = 0;
+  ADDRESS_TYPE_HOME = 1;
+  ADDRESS_TYPE_WORK = 2;
+  ADDRESS_TYPE_BILLING = 3;
+  ADDRESS_TYPE_SHIPPING = 4;
+  ADDRESS_TYPE_OTHER = 5;
+}
+
+// GeoPoint represents a geographic point
+message GeoPoint {
+  double latitude = 1;
+  double longitude = 2;
+  string geo_hash = 3;           // For indexing
+}
+
+// ============================================================================
+// TIME & DATE VALUE OBJECTS
+// ============================================================================
+
+// DateRange represents a range of dates
+message DateRange {
+  google.protobuf.Timestamp start_date = 1;
+  google.protobuf.Timestamp end_date = 2;
+  bool is_current = 3;           // For "present" end dates
+  int32 duration_days = 4;
+}
+
+// TimeRange represents a time range within a day
+message TimeRange {
+  string start_time = 1;         // HH:MM format (e.g., "09:00")
+  string end_time = 2;           // HH:MM format (e.g., "17:00")
+  string timezone = 3;
+}
+
+// WorkingHours represents working hours schedule
+message WorkingHours {
+  map<string, TimeRange> schedule = 1;  // day_of_week -> time_range
+  string timezone = 2;
+  repeated string holidays = 3;         // ISO date strings
+}
+
+// Duration represents a time duration
+message Duration {
+  int32 value = 1;
+  DurationUnit unit = 2;
+  int32 total_days = 3;          // Normalized to days
+  int32 total_hours = 4;         // Normalized to hours
+}
+
+enum DurationUnit {
+  DURATION_UNIT_UNSPECIFIED = 0;
+  DURATION_UNIT_HOURS = 1;
+  DURATION_UNIT_DAYS = 2;
+  DURATION_UNIT_WEEKS = 3;
+  DURATION_UNIT_MONTHS = 4;
+  DURATION_UNIT_YEARS = 5;
+}
+
+// ============================================================================
+// CONTACT VALUE OBJECTS
+// ============================================================================
+
+// ContactInfo represents contact information
+message ContactInfo {
+  string email = 1;
+  string phone_number = 2;
+  string country_code = 3;       // Phone country code
+  string website = 4;
+  repeated SocialLink social_links = 5;
+  ContactPreference preferred_method = 6;
+}
+
+enum ContactPreference {
+  CONTACT_PREFERENCE_UNSPECIFIED = 0;
+  CONTACT_PREFERENCE_EMAIL = 1;
+  CONTACT_PREFERENCE_PHONE = 2;
+  CONTACT_PREFERENCE_SMS = 3;
+  CONTACT_PREFERENCE_IN_APP = 4;
+  CONTACT_PREFERENCE_VIDEO_CALL = 5;
+}
+
+// SocialLink represents a social media profile
+message SocialLink {
+  string platform = 1;           // linkedin, github, twitter, etc.
+  string url = 2;
+  string username = 3;
+  bool is_verified = 4;
+}
+
+// ============================================================================
+// SKILL VALUE OBJECTS
+// ============================================================================
+
+// Skill represents a skill with proficiency
+message Skill {
+  string skill_id = 1;
+  string skill_name = 2;
+  ProficiencyLevel proficiency_level = 3;
+  int32 years_of_experience = 4;
+  bool verified = 5;
+  repeated string certifications = 6;
+  repeated Endorsement endorsements = 7;
+}
+
+// Endorsement represents a skill endorsement
+message Endorsement {
+  string endorser_id = 1;
+  string endorser_name = 2;
+  string skill = 3;
+  string comment = 4;
+  google.protobuf.Timestamp endorsed_at = 5;
+}
+
+// ============================================================================
+// FILE VALUE OBJECTS
+// ============================================================================
+
+// FileInfo represents file metadata
+message FileInfo {
+  string file_id = 1;
+  string file_name = 2;
+  string file_url = 3;
+  string file_type = 4;
+  string mime_type = 5;
+  int64 file_size_bytes = 6;
+  string thumbnail_url = 7;
+  FileMetadata metadata = 8;
+}
+
+// FileMetadata represents detailed file metadata
+message FileMetadata {
+  int32 width = 1;
+  int32 height = 2;
+  int32 duration_seconds = 3;
+  int32 pages_count = 4;
+  int32 bit_rate = 5;
+  double frame_rate = 6;
+  string codec = 7;
+  string resolution = 8;
+  string color_space = 9;
+  bool has_transparency = 10;
+  bool has_audio = 11;
+  map<string, string> exif_data = 12;
+}
+
+// Attachment represents an attached file
+message Attachment {
+  string file_id = 1;
+  string file_name = 2;
+  string file_url = 3;
+  string file_type = 4;
+  int64 file_size_bytes = 5;
+  string thumbnail_url = 6;
+  VirusScanStatus virus_scan_status = 7;
+  string virus_scan_result = 8;
+}
+
+// ============================================================================
+// NOTIFICATION VALUE OBJECTS
+// ============================================================================
+
+// NotificationPreferences represents user notification settings
+message NotificationPreferences {
+  bool email = 1;
+  bool push = 2;
+  bool sms = 3;
+  bool in_app = 4;
+  bool job_alerts = 5;
+  bool proposal_updates = 6;
+  bool message_alerts = 7;
+  bool payment_updates = 8;
+  bool marketing_emails = 9;
+  bool product_updates = 10;
+  repeated string muted_conversations = 11;
+  QuietHours quiet_hours = 12;
+}
+
+// QuietHours represents do-not-disturb hours
+message QuietHours {
+  bool enabled = 1;
+  string start_time = 2;         // HH:MM format
+  string end_time = 3;           // HH:MM format
+  string timezone = 4;
+  repeated string days_of_week = 5;  // mon, tue, wed, etc.
+}
+
+// ============================================================================
+// STATISTICS VALUE OBJECTS
+// ============================================================================
+
+// FreelancerStats represents freelancer statistics
+message FreelancerStats {
+  double job_success_score = 1;
+  double total_earnings = 2;
+  int32 total_jobs = 3;
+  double repeat_client_rate = 4;
+  double on_time_delivery_rate = 5;
+  int32 response_time_avg_minutes = 6;
+  double client_satisfaction_score = 7;
+  int32 total_reviews = 8;
+  double average_rating = 9;
+  int32 active_contracts = 10;
+  int32 completed_contracts = 11;
+}
+
+// ClientStats represents client statistics
+message ClientStats {
+  double total_spent = 1;
+  int32 total_jobs_posted = 2;
+  int32 total_hires = 3;
+  double average_rating_given = 4;
+  int32 active_jobs = 5;
+  int32 completed_jobs = 6;
+  double payment_promptness_score = 7;
+  int32 total_reviews_given = 8;
+  double repeat_hire_rate = 9;
+}
+
+// ============================================================================
+// RATING VALUE OBJECTS
+// ============================================================================
+
+// Rating represents a rating with criteria
+message Rating {
+  double overall_rating = 1;
+  repeated CriterionRating criteria_ratings = 2;
+  int32 total_reviews = 3;
+  RatingDistribution distribution = 4;
+}
+
+// CriterionRating represents a rating for a specific criterion
+message CriterionRating {
+  string criterion = 1;
+  double score = 2;
+  double weight = 3;
+}
+
+// RatingDistribution shows rating breakdown
+message RatingDistribution {
+  int32 five_stars = 1;
+  int32 four_stars = 2;
+  int32 three_stars = 3;
+  int32 two_stars = 4;
+  int32 one_star = 5;
+}
+
+// ============================================================================
+// SEARCH VALUE OBJECTS
+// ============================================================================
+
+// SearchMetadata represents search-related metadata
+message SearchMetadata {
+  repeated VectorEmbedding vector_embeddings = 1;
+  GeoPoint geo_index = 2;
+  repeated string indexed_fields = 3;
+  string searchable_text = 4;
+  double search_rank_score = 5;
+  double boost_factor = 6;
+}
+
+// VectorEmbedding represents ML embeddings for semantic search
+message VectorEmbedding {
+  string field = 1;
+  repeated double vector_data = 2;
+  string model_name = 3;
+  string model_version = 4;
+}
+
+// ============================================================================
+// PAYMENT VALUE OBJECTS
+// ============================================================================
+
+// PaymentDetails represents payment information
+message PaymentDetails {
+  string payment_method_id = 1;
+  PaymentMethod payment_method = 2;
+  string last4 = 3;              // Last 4 digits of card/account
+  string brand = 4;              // Visa, Mastercard, etc.
+  int32 exp_month = 5;
+  int32 exp_year = 6;
+  BillingAddress billing_address = 7;
+}
+
+// BillingAddress represents billing address
+message BillingAddress {
+  string name = 1;
+  string address_line1 = 2;
+  string address_line2 = 3;
+  string city = 4;
+  string state = 5;
+  string postal_code = 6;
+  string country = 7;
+  string country_code = 8;
+}
+
+// Invoice represents an invoice
+message Invoice {
+  string invoice_id = 1;
+  string invoice_number = 2;
+  Money subtotal = 3;
+  Money tax_amount = 4;
+  Money total_amount = 5;
+  google.protobuf.Timestamp invoice_date = 6;
+  google.protobuf.Timestamp due_date = 7;
+  string invoice_url = 8;
+  string pdf_url = 9;
+  repeated InvoiceLineItem line_items = 10;
+}
+
+// InvoiceLineItem represents a line item in an invoice
+message InvoiceLineItem {
+  string description = 1;
+  double quantity = 2;
+  Money unit_price = 3;
+  Money total = 4;
+  string tax_rate = 5;
+}
+
+// ============================================================================
+// ERROR VALUE OBJECTS
+// ============================================================================
+
+// ErrorInfo represents error details
+message ErrorInfo {
+  string error_code = 1;
+  string error_message = 2;
+  string error_type = 3;
+  repeated string stack_trace = 4;
+  map<string, string> context = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+}
+
+// ============================================================================
+// PAGINATION VALUE OBJECTS
+// ============================================================================
+
+// PageInfo represents pagination information
+message PageInfo {
+  int32 page = 1;
+  int32 page_size = 2;
+  int32 total_items = 3;
+  int32 total_pages = 4;
+  bool has_next_page = 5;
+  bool has_previous_page = 6;
+  string next_cursor = 7;
+  string previous_cursor = 8;
+}
+
+// ============================================================================
+// MILESTONE VALUE OBJECTS
+// ============================================================================
+
+// Milestone represents a project milestone
+message Milestone {
+  string milestone_id = 1;
+  string title = 2;
+  string description = 3;
+  Money amount = 4;
+  google.protobuf.Timestamp due_date = 5;
+  repeated string deliverable_requirements = 6;
+  repeated string acceptance_criteria = 7;
+  MilestoneStatus status = 8;
+}
+
+// ============================================================================
+// EXPERIENCE VALUE OBJECTS
+// ============================================================================
+
+// Experience represents work experience
+message Experience {
+  string company = 1;
+  string title = 2;
+  string description = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+  bool is_current = 6;
+  repeated string achievements = 7;
+  repeated string skills_used = 8;
+  repeated string references = 9;
+  Location location = 10;
+}
+
+// Education represents educational background
+message Education {
+  string institution = 1;
+  string degree = 2;
+  string field_of_study = 3;
+  google.protobuf.Timestamp start_date = 4;
+  google.protobuf.Timestamp end_date = 5;
+  double gpa = 6;
+  repeated string honors = 7;
+  repeated Certification certifications = 8;
+  Location location = 9;
+}
+
+// Certification represents a professional certification
+message Certification {
+  string name = 1;
+  string issuer = 2;
+  google.protobuf.Timestamp date_obtained = 3;
+  google.protobuf.Timestamp expiry_date = 4;
+  bool verified = 5;
+  string certificate_url = 6;
+  string credential_id = 7;
+}
+
+// ============================================================================
+// LANGUAGE VALUE OBJECTS
+// ============================================================================
+
+// Language represents language proficiency
+message Language {
+  string language = 1;
+  string language_code = 2;      // ISO 639-1
+  LanguageProficiency proficiency_level = 3;
+  bool certified = 4;
+  repeated string certifications = 5;
+}
+
+// ============================================================================
+// PORTFOLIO VALUE OBJECTS
+// ============================================================================
+
+// PortfolioItem represents a portfolio item
+message PortfolioItem {
+  string item_id = 1;
+  string title = 2;
+  string description = 3;
+  string url = 4;
+  repeated string images = 5;
+  repeated string videos = 6;
+  repeated string tags = 7;
+  repeated string skills_used = 8;
+  google.protobuf.Timestamp created_at = 9;
+  bool is_featured = 10;
+}

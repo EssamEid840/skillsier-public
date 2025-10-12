@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package skillsier.subscription.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/subscription/v1;subscriptionv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// ConnectsPurchased event
+// Topic: subscription.connects_purchased
+// Owner: subscription-be
+message ConnectsPurchased {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string purchase_id = 2;
+  string user_id = 3;
+  int32 connects_amount = 4;
+  string package_id = 5;
+  skillsier.common.v1.Money cost = 6;
+  double cost_per_connect = 7;
+  int32 previous_connects_balance = 8;
+  int32 new_connects_balance = 9;
+  string transaction_id = 10;
+  google.protobuf.Timestamp purchased_at = 11;
+}

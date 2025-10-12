@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package skillsier.admin.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/admin/v1;adminv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// FlagReviewed event
+// Topic: admin.flag_reviewed
+// Owner: admin-be
+message FlagReviewed {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Flag details
+  string flag_id = 2;
+  string content_id = 3;
+  string content_type = 4;
+  string content_owner_user_id = 5;
+  string flagger_user_id = 6;
+  skillsier.common.v1.FlagReason flag_reason = 7;
+  
+  // Review details
+  string reviewed_by_admin_id = 8;
+  string reviewed_by_admin_name = 9;
+  string review_decision = 10;
+  string review_reasoning = 11;
+  
+  // Action taken
+  string action_taken = 12;
+  string action_details = 13;
+  
+  // Content handling
+  bool content_removed = 14;
+  bool content_hidden = 15;
+  
+  // User actions
+  bool content_owner_warned = 16;
+  bool content_owner_suspended = 17;
+  int32 suspension_duration_days = 18;
+  
+  // Flag validity
+  bool flag_valid = 19;
+  bool false_flag = 20;
+  
+  // Quality metrics
+  int32 review_time_minutes = 21;
+  bool ai_assisted = 22;
+  double ai_confidence_score = 23;
+  
+  // Notifications
+  bool content_owner_notified = 24;
+  bool flagger_notified = 25;
+  
+  google.protobuf.Timestamp reviewed_at = 26;
+}

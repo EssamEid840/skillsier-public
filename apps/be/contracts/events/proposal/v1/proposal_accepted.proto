@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package skillsier.proposal.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/proposal/v1;proposalv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// ProposalAccepted event
+// Topic: proposal.proposal_accepted
+// Owner: proposal-be
+message ProposalAccepted {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Proposal identification
+  string proposal_id = 2;
+  string job_id = 3;
+  string freelancer_id = 4;
+  string client_id = 5;
+  string accepted_by_user_id = 6;
+  string acceptance_message = 7;
+  string contract_id = 8;
+  google.protobuf.Timestamp accepted_at = 9;
+  int32 time_to_accept_hours = 10;
+}

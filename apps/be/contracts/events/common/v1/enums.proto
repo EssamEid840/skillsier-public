@@ -1,0 +1,585 @@
+syntax = "proto3";
+
+package skillsier.common.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/common/v1;commonv1";
+
+// ============================================================================
+// USER ENUMS
+// ============================================================================
+
+// UserType defines the type of user account
+enum UserType {
+  USER_TYPE_UNSPECIFIED = 0;
+  USER_TYPE_FREELANCER = 1;
+  USER_TYPE_CLIENT = 2;
+  USER_TYPE_BOTH = 3;           // Can be both freelancer and client
+  USER_TYPE_ADMIN = 4;
+  USER_TYPE_SUPPORT = 5;
+}
+
+// AccountStatus defines the current status of a user account
+enum AccountStatus {
+  ACCOUNT_STATUS_UNSPECIFIED = 0;
+  ACCOUNT_STATUS_ACTIVE = 1;
+  ACCOUNT_STATUS_INACTIVE = 2;
+  ACCOUNT_STATUS_SUSPENDED = 3;
+  ACCOUNT_STATUS_BANNED = 4;
+  ACCOUNT_STATUS_PENDING_VERIFICATION = 5;
+  ACCOUNT_STATUS_DEACTIVATED = 6;
+  ACCOUNT_STATUS_DELETED = 7;
+}
+
+// VerificationType defines what is being verified
+enum VerificationType {
+  VERIFICATION_TYPE_UNSPECIFIED = 0;
+  VERIFICATION_TYPE_EMAIL = 1;
+  VERIFICATION_TYPE_PHONE = 2;
+  VERIFICATION_TYPE_IDENTITY_DOCUMENT = 3;
+  VERIFICATION_TYPE_PAYMENT_METHOD = 4;
+  VERIFICATION_TYPE_ADDRESS = 5;
+  VERIFICATION_TYPE_BUSINESS = 6;
+  VERIFICATION_TYPE_TAX_ID = 7;
+}
+
+// VerificationMethod defines how verification was performed
+enum VerificationMethod {
+  VERIFICATION_METHOD_UNSPECIFIED = 0;
+  VERIFICATION_METHOD_SMS_CODE = 1;
+  VERIFICATION_METHOD_EMAIL_LINK = 2;
+  VERIFICATION_METHOD_DOCUMENT_UPLOAD = 3;
+  VERIFICATION_METHOD_MANUAL_REVIEW = 4;
+  VERIFICATION_METHOD_THIRD_PARTY = 5;
+  VERIFICATION_METHOD_BIOMETRIC = 6;
+}
+
+// VerificationLevel defines the level of verification achieved
+enum VerificationLevel {
+  VERIFICATION_LEVEL_UNSPECIFIED = 0;
+  VERIFICATION_LEVEL_BASIC = 1;
+  VERIFICATION_LEVEL_INTERMEDIATE = 2;
+  VERIFICATION_LEVEL_ADVANCED = 3;
+  VERIFICATION_LEVEL_FULL = 4;
+}
+
+// ProficiencyLevel defines skill proficiency
+enum ProficiencyLevel {
+  PROFICIENCY_LEVEL_UNSPECIFIED = 0;
+  PROFICIENCY_LEVEL_BEGINNER = 1;
+  PROFICIENCY_LEVEL_INTERMEDIATE = 2;
+  PROFICIENCY_LEVEL_ADVANCED = 3;
+  PROFICIENCY_LEVEL_EXPERT = 4;
+}
+
+// LanguageProficiency defines language skill level
+enum LanguageProficiency {
+  LANGUAGE_PROFICIENCY_UNSPECIFIED = 0;
+  LANGUAGE_PROFICIENCY_BASIC = 1;
+  LANGUAGE_PROFICIENCY_CONVERSATIONAL = 2;
+  LANGUAGE_PROFICIENCY_FLUENT = 3;
+  LANGUAGE_PROFICIENCY_NATIVE = 4;
+}
+
+// AvailabilityStatus defines freelancer availability
+enum AvailabilityStatus {
+  AVAILABILITY_STATUS_UNSPECIFIED = 0;
+  AVAILABILITY_STATUS_AVAILABLE = 1;
+  AVAILABILITY_STATUS_BUSY = 2;
+  AVAILABILITY_STATUS_NOT_AVAILABLE = 3;
+  AVAILABILITY_STATUS_VACATION = 4;
+}
+
+// ============================================================================
+// JOB ENUMS
+// ============================================================================
+
+// JobType defines the type of job posting
+enum JobType {
+  JOB_TYPE_UNSPECIFIED = 0;
+  JOB_TYPE_FIXED_PRICE = 1;
+  JOB_TYPE_HOURLY = 2;
+  JOB_TYPE_PROJECT_BASED = 3;
+  JOB_TYPE_RETAINER = 4;
+}
+
+// JobStatus defines the current status of a job
+enum JobStatus {
+  JOB_STATUS_UNSPECIFIED = 0;
+  JOB_STATUS_DRAFT = 1;
+  JOB_STATUS_OPEN = 2;
+  JOB_STATUS_IN_PROGRESS = 3;
+  JOB_STATUS_CLOSED = 4;
+  JOB_STATUS_FILLED = 5;
+  JOB_STATUS_CANCELLED = 6;
+  JOB_STATUS_EXPIRED = 7;
+}
+
+// ExperienceLevel defines required experience level for a job
+enum ExperienceLevel {
+  EXPERIENCE_LEVEL_UNSPECIFIED = 0;
+  EXPERIENCE_LEVEL_ENTRY = 1;
+  EXPERIENCE_LEVEL_INTERMEDIATE = 2;
+  EXPERIENCE_LEVEL_EXPERT = 3;
+}
+
+// DurationType defines the duration of a job
+enum DurationType {
+  DURATION_TYPE_UNSPECIFIED = 0;
+  DURATION_TYPE_SHORT_TERM = 1;    // Less than 1 month
+  DURATION_TYPE_MEDIUM_TERM = 2;   // 1-3 months
+  DURATION_TYPE_LONG_TERM = 3;     // 3-6 months
+  DURATION_TYPE_ONGOING = 4;       // 6+ months or indefinite
+}
+
+// JobVisibility defines who can see the job
+enum JobVisibility {
+  JOB_VISIBILITY_UNSPECIFIED = 0;
+  JOB_VISIBILITY_PUBLIC = 1;
+  JOB_VISIBILITY_PRIVATE = 2;
+  JOB_VISIBILITY_INVITE_ONLY = 3;
+}
+
+// CompetitionLevel defines competition for a job
+enum CompetitionLevel {
+  COMPETITION_LEVEL_UNSPECIFIED = 0;
+  COMPETITION_LEVEL_LOW = 1;
+  COMPETITION_LEVEL_MEDIUM = 2;
+  COMPETITION_LEVEL_HIGH = 3;
+  COMPETITION_LEVEL_VERY_HIGH = 4;
+}
+
+// ============================================================================
+// PROPOSAL/BID ENUMS
+// ============================================================================
+
+// ProposalStatus defines the status of a proposal
+enum ProposalStatus {
+  PROPOSAL_STATUS_UNSPECIFIED = 0;
+  PROPOSAL_STATUS_DRAFT = 1;
+  PROPOSAL_STATUS_SUBMITTED = 2;
+  PROPOSAL_STATUS_UNDER_REVIEW = 3;
+  PROPOSAL_STATUS_ACCEPTED = 4;
+  PROPOSAL_STATUS_REJECTED = 5;
+  PROPOSAL_STATUS_WITHDRAWN = 6;
+  PROPOSAL_STATUS_EXPIRED = 7;
+}
+
+// BidType defines the type of bid
+enum BidType {
+  BID_TYPE_UNSPECIFIED = 0;
+  BID_TYPE_INITIAL = 1;
+  BID_TYPE_UPDATE = 2;
+  BID_TYPE_AUTO = 3;
+}
+
+// BidStrategy defines automated bidding strategy
+enum BidStrategy {
+  BID_STRATEGY_UNSPECIFIED = 0;
+  BID_STRATEGY_MANUAL = 1;
+  BID_STRATEGY_AUTO_LOWEST = 2;
+  BID_STRATEGY_AUTO_COMPETITIVE = 3;
+  BID_STRATEGY_AUTO_PREMIUM = 4;
+}
+
+// ============================================================================
+// CONTRACT ENUMS
+// ============================================================================
+
+// ContractType defines the type of contract
+enum ContractType {
+  CONTRACT_TYPE_UNSPECIFIED = 0;
+  CONTRACT_TYPE_FIXED_PRICE = 1;
+  CONTRACT_TYPE_HOURLY = 2;
+  CONTRACT_TYPE_MILESTONE_BASED = 3;
+  CONTRACT_TYPE_RETAINER = 4;
+}
+
+// ContractStatus defines the current status of a contract
+enum ContractStatus {
+  CONTRACT_STATUS_UNSPECIFIED = 0;
+  CONTRACT_STATUS_PENDING_ACCEPTANCE = 1;
+  CONTRACT_STATUS_ACTIVE = 2;
+  CONTRACT_STATUS_PAUSED = 3;
+  CONTRACT_STATUS_COMPLETED = 4;
+  CONTRACT_STATUS_TERMINATED = 5;
+  CONTRACT_STATUS_DISPUTED = 6;
+  CONTRACT_STATUS_CANCELLED = 7;
+}
+
+// MilestoneStatus defines the status of a milestone
+enum MilestoneStatus {
+  MILESTONE_STATUS_UNSPECIFIED = 0;
+  MILESTONE_STATUS_PENDING = 1;
+  MILESTONE_STATUS_IN_PROGRESS = 2;
+  MILESTONE_STATUS_SUBMITTED = 3;
+  MILESTONE_STATUS_UNDER_REVIEW = 4;
+  MILESTONE_STATUS_REVISION_REQUESTED = 5;
+  MILESTONE_STATUS_APPROVED = 6;
+  MILESTONE_STATUS_PAID = 7;
+  MILESTONE_STATUS_CANCELLED = 8;
+}
+
+// DisputeCategory defines the category of a dispute
+enum DisputeCategory {
+  DISPUTE_CATEGORY_UNSPECIFIED = 0;
+  DISPUTE_CATEGORY_PAYMENT = 1;
+  DISPUTE_CATEGORY_QUALITY = 2;
+  DISPUTE_CATEGORY_SCOPE_CREEP = 3;
+  DISPUTE_CATEGORY_COMMUNICATION = 4;
+  DISPUTE_CATEGORY_BREACH_OF_CONTRACT = 5;
+  DISPUTE_CATEGORY_NON_DELIVERY = 6;
+  DISPUTE_CATEGORY_INTELLECTUAL_PROPERTY = 7;
+}
+
+// DisputeResolutionMethod defines how disputes are resolved
+enum DisputeResolutionMethod {
+  DISPUTE_RESOLUTION_METHOD_UNSPECIFIED = 0;
+  DISPUTE_RESOLUTION_METHOD_MEDIATION = 1;
+  DISPUTE_RESOLUTION_METHOD_ARBITRATION = 2;
+  DISPUTE_RESOLUTION_METHOD_LEGAL_ACTION = 3;
+  DISPUTE_RESOLUTION_METHOD_ADMIN_DECISION = 4;
+  DISPUTE_RESOLUTION_METHOD_MUTUAL_AGREEMENT = 5;
+}
+
+// ============================================================================
+// PAYMENT ENUMS
+// ============================================================================
+
+// PaymentMethod defines how payment is made
+enum PaymentMethod {
+  PAYMENT_METHOD_UNSPECIFIED = 0;
+  PAYMENT_METHOD_CREDIT_CARD = 1;
+  PAYMENT_METHOD_DEBIT_CARD = 2;
+  PAYMENT_METHOD_PAYPAL = 3;
+  PAYMENT_METHOD_BANK_TRANSFER = 4;
+  PAYMENT_METHOD_WALLET = 5;
+  PAYMENT_METHOD_CRYPTO = 6;
+  PAYMENT_METHOD_WIRE_TRANSFER = 7;
+  PAYMENT_METHOD_ACH = 8;
+}
+
+// PaymentGateway defines which payment gateway is used
+enum PaymentGateway {
+  PAYMENT_GATEWAY_UNSPECIFIED = 0;
+  PAYMENT_GATEWAY_STRIPE = 1;
+  PAYMENT_GATEWAY_PAYPAL = 2;
+  PAYMENT_GATEWAY_WISE = 3;
+  PAYMENT_GATEWAY_BANK_DIRECT = 4;
+  PAYMENT_GATEWAY_CRYPTO_EXCHANGE = 5;
+}
+
+// PaymentStatus defines the status of a payment
+enum PaymentStatus {
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_PENDING = 1;
+  PAYMENT_STATUS_PROCESSING = 2;
+  PAYMENT_STATUS_SUCCESS = 3;
+  PAYMENT_STATUS_FAILED = 4;
+  PAYMENT_STATUS_CANCELLED = 5;
+  PAYMENT_STATUS_REFUNDED = 6;
+  PAYMENT_STATUS_PARTIALLY_REFUNDED = 7;
+}
+
+// PaymentFailureReason defines why a payment failed
+enum PaymentFailureReason {
+  PAYMENT_FAILURE_REASON_UNSPECIFIED = 0;
+  PAYMENT_FAILURE_REASON_INSUFFICIENT_FUNDS = 1;
+  PAYMENT_FAILURE_REASON_CARD_DECLINED = 2;
+  PAYMENT_FAILURE_REASON_EXPIRED_CARD = 3;
+  PAYMENT_FAILURE_REASON_INVALID_ACCOUNT = 4;
+  PAYMENT_FAILURE_REASON_FRAUD_SUSPECTED = 5;
+  PAYMENT_FAILURE_REASON_GATEWAY_ERROR = 6;
+  PAYMENT_FAILURE_REASON_NETWORK_ERROR = 7;
+  PAYMENT_FAILURE_REASON_LIMIT_EXCEEDED = 8;
+  PAYMENT_FAILURE_REASON_AUTHENTICATION_FAILED = 9;
+}
+
+// ============================================================================
+// SUBSCRIPTION ENUMS
+// ============================================================================
+
+// SubscriptionPlanTier defines subscription tiers
+enum SubscriptionPlanTier {
+  SUBSCRIPTION_PLAN_TIER_UNSPECIFIED = 0;
+  SUBSCRIPTION_PLAN_TIER_FREE = 1;
+  SUBSCRIPTION_PLAN_TIER_BASIC = 2;
+  SUBSCRIPTION_PLAN_TIER_PLUS = 3;
+  SUBSCRIPTION_PLAN_TIER_PROFESSIONAL = 4;
+  SUBSCRIPTION_PLAN_TIER_ENTERPRISE = 5;
+}
+
+// BillingCycle defines how often billing occurs
+enum BillingCycle {
+  BILLING_CYCLE_UNSPECIFIED = 0;
+  BILLING_CYCLE_MONTHLY = 1;
+  BILLING_CYCLE_QUARTERLY = 2;
+  BILLING_CYCLE_SEMI_ANNUAL = 3;
+  BILLING_CYCLE_ANNUAL = 4;
+  BILLING_CYCLE_LIFETIME = 5;
+}
+
+// SubscriptionStatus defines the status of a subscription
+enum SubscriptionStatus {
+  SUBSCRIPTION_STATUS_UNSPECIFIED = 0;
+  SUBSCRIPTION_STATUS_TRIAL = 1;
+  SUBSCRIPTION_STATUS_ACTIVE = 2;
+  SUBSCRIPTION_STATUS_PAST_DUE = 3;
+  SUBSCRIPTION_STATUS_CANCELLED = 4;
+  SUBSCRIPTION_STATUS_EXPIRED = 5;
+  SUBSCRIPTION_STATUS_SUSPENDED = 6;
+}
+
+// ============================================================================
+// MESSAGE/NOTIFICATION ENUMS
+// ============================================================================
+
+// MessageType defines the type of message
+enum MessageType {
+  MESSAGE_TYPE_UNSPECIFIED = 0;
+  MESSAGE_TYPE_TEXT = 1;
+  MESSAGE_TYPE_FILE = 2;
+  MESSAGE_TYPE_IMAGE = 3;
+  MESSAGE_TYPE_VIDEO = 4;
+  MESSAGE_TYPE_VOICE = 5;
+  MESSAGE_TYPE_SYSTEM_NOTIFICATION = 6;
+  MESSAGE_TYPE_CALL_INVITE = 7;
+}
+
+// MessageStatus defines the status of a message
+enum MessageStatus {
+  MESSAGE_STATUS_UNSPECIFIED = 0;
+  MESSAGE_STATUS_SENDING = 1;
+  MESSAGE_STATUS_SENT = 2;
+  MESSAGE_STATUS_DELIVERED = 3;
+  MESSAGE_STATUS_READ = 4;
+  MESSAGE_STATUS_FAILED = 5;
+  MESSAGE_STATUS_DELETED = 6;
+}
+
+// NotificationChannel defines where notifications are sent
+enum NotificationChannel {
+  NOTIFICATION_CHANNEL_UNSPECIFIED = 0;
+  NOTIFICATION_CHANNEL_IN_APP = 1;
+  NOTIFICATION_CHANNEL_EMAIL = 2;
+  NOTIFICATION_CHANNEL_SMS = 3;
+  NOTIFICATION_CHANNEL_PUSH = 4;
+  NOTIFICATION_CHANNEL_WEBHOOK = 5;
+}
+
+// NotificationPriority defines notification priority
+enum NotificationPriority {
+  NOTIFICATION_PRIORITY_UNSPECIFIED = 0;
+  NOTIFICATION_PRIORITY_LOW = 1;
+  NOTIFICATION_PRIORITY_NORMAL = 2;
+  NOTIFICATION_PRIORITY_HIGH = 3;
+  NOTIFICATION_PRIORITY_URGENT = 4;
+}
+
+// ============================================================================
+// STORAGE ENUMS
+// ============================================================================
+
+// FileType defines the general type of file
+enum FileType {
+  FILE_TYPE_UNSPECIFIED = 0;
+  FILE_TYPE_DOCUMENT = 1;
+  FILE_TYPE_IMAGE = 2;
+  FILE_TYPE_VIDEO = 3;
+  FILE_TYPE_AUDIO = 4;
+  FILE_TYPE_ARCHIVE = 5;
+  FILE_TYPE_CODE = 6;
+  FILE_TYPE_OTHER = 7;
+}
+
+// AccessLevel defines who can access a file
+enum AccessLevel {
+  ACCESS_LEVEL_UNSPECIFIED = 0;
+  ACCESS_LEVEL_PUBLIC = 1;
+  ACCESS_LEVEL_PRIVATE = 2;
+  ACCESS_LEVEL_RESTRICTED = 3;
+  ACCESS_LEVEL_SIGNED_URL = 4;
+}
+
+// StorageProvider defines where files are stored
+enum StorageProvider {
+  STORAGE_PROVIDER_UNSPECIFIED = 0;
+  STORAGE_PROVIDER_MINIO = 1;
+  STORAGE_PROVIDER_S3 = 2;
+  STORAGE_PROVIDER_AZURE = 3;
+  STORAGE_PROVIDER_GOOGLE_CLOUD = 4;
+}
+
+// ProcessingStatus defines file processing status
+enum ProcessingStatus {
+  PROCESSING_STATUS_UNSPECIFIED = 0;
+  PROCESSING_STATUS_PENDING = 1;
+  PROCESSING_STATUS_PROCESSING = 2;
+  PROCESSING_STATUS_COMPLETED = 3;
+  PROCESSING_STATUS_FAILED = 4;
+}
+
+// VirusScanStatus defines virus scan status
+enum VirusScanStatus {
+  VIRUS_SCAN_STATUS_UNSPECIFIED = 0;
+  VIRUS_SCAN_STATUS_PENDING = 1;
+  VIRUS_SCAN_STATUS_SCANNING = 2;
+  VIRUS_SCAN_STATUS_CLEAN = 3;
+  VIRUS_SCAN_STATUS_INFECTED = 4;
+  VIRUS_SCAN_STATUS_SCAN_FAILED = 5;
+}
+
+// ============================================================================
+// REVIEW ENUMS
+// ============================================================================
+
+// ReviewType defines who is reviewing whom
+enum ReviewType {
+  REVIEW_TYPE_UNSPECIFIED = 0;
+  REVIEW_TYPE_CLIENT_TO_FREELANCER = 1;
+  REVIEW_TYPE_FREELANCER_TO_CLIENT = 2;
+}
+
+// BadgeType defines types of badges users can earn
+enum BadgeType {
+  BADGE_TYPE_UNSPECIFIED = 0;
+  BADGE_TYPE_TOP_RATED = 1;
+  BADGE_TYPE_RISING_TALENT = 2;
+  BADGE_TYPE_EXPERT_VETTED = 3;
+  BADGE_TYPE_TOP_RATED_PLUS = 4;
+  BADGE_TYPE_SPECIALIZED_PROFILE = 5;
+  BADGE_TYPE_CLIENT_FAVORITE = 6;
+  BADGE_TYPE_RELIABLE = 7;
+  BADGE_TYPE_COMMUNICATOR = 8;
+}
+
+// BadgeLevel defines badge tier
+enum BadgeLevel {
+  BADGE_LEVEL_UNSPECIFIED = 0;
+  BADGE_LEVEL_BRONZE = 1;
+  BADGE_LEVEL_SILVER = 2;
+  BADGE_LEVEL_GOLD = 3;
+  BADGE_LEVEL_PLATINUM = 4;
+}
+
+// ============================================================================
+// ADMIN ENUMS
+// ============================================================================
+
+// AdminActionType defines types of admin actions
+enum AdminActionType {
+  ADMIN_ACTION_TYPE_UNSPECIFIED = 0;
+  ADMIN_ACTION_TYPE_SUSPEND = 1;
+  ADMIN_ACTION_TYPE_BAN = 2;
+  ADMIN_ACTION_TYPE_WARN = 3;
+  ADMIN_ACTION_TYPE_VERIFY = 4;
+  ADMIN_ACTION_TYPE_RESTRICT = 5;
+  ADMIN_ACTION_TYPE_UNVERIFY = 6;
+  ADMIN_ACTION_TYPE_REINSTATE = 7;
+  ADMIN_ACTION_TYPE_DELETE_CONTENT = 8;
+  ADMIN_ACTION_TYPE_RESOLVE_DISPUTE = 9;
+}
+
+// ViolationSeverity defines how severe a violation is
+enum ViolationSeverity {
+  VIOLATION_SEVERITY_UNSPECIFIED = 0;
+  VIOLATION_SEVERITY_MINOR = 1;
+  VIOLATION_SEVERITY_MODERATE = 2;
+  VIOLATION_SEVERITY_SEVERE = 3;
+  VIOLATION_SEVERITY_CRITICAL = 4;
+}
+
+// FlagReason defines why content was flagged
+enum FlagReason {
+  FLAG_REASON_UNSPECIFIED = 0;
+  FLAG_REASON_SPAM = 1;
+  FLAG_REASON_INAPPROPRIATE = 2;
+  FLAG_REASON_SCAM = 3;
+  FLAG_REASON_FRAUD = 4;
+  FLAG_REASON_HARASSMENT = 5;
+  FLAG_REASON_HATE_SPEECH = 6;
+  FLAG_REASON_VIOLENCE = 7;
+  FLAG_REASON_COPYRIGHT = 8;
+  FLAG_REASON_ILLEGAL_CONTENT = 9;
+  FLAG_REASON_MISLEADING = 10;
+  FLAG_REASON_DUPLICATE = 11;
+  FLAG_REASON_LOW_QUALITY = 12;
+  FLAG_REASON_PERSONAL_INFO = 13;
+  FLAG_REASON_OTHER = 14;
+}
+
+// ============================================================================
+// GENERAL ENUMS
+// ============================================================================
+
+// Currency defines supported currencies
+enum Currency {
+  CURRENCY_UNSPECIFIED = 0;
+  CURRENCY_USD = 1;
+  CURRENCY_EUR = 2;
+  CURRENCY_GBP = 3;
+  CURRENCY_CAD = 4;
+  CURRENCY_AUD = 5;
+  CURRENCY_JPY = 6;
+  CURRENCY_CNY = 7;
+  CURRENCY_INR = 8;
+  CURRENCY_BRL = 9;
+  CURRENCY_MXN = 10;
+  CURRENCY_EGP = 11;
+  CURRENCY_AED = 12;
+  CURRENCY_SAR = 13;
+}
+
+// Platform defines which platform the event originated from
+enum Platform {
+  PLATFORM_UNSPECIFIED = 0;
+  PLATFORM_WEB = 1;
+  PLATFORM_IOS = 2;
+  PLATFORM_ANDROID = 3;
+  PLATFORM_API = 4;
+  PLATFORM_ADMIN = 5;
+  PLATFORM_SYSTEM = 6;
+}
+
+// Environment defines the deployment environment
+enum Environment {
+  ENVIRONMENT_UNSPECIFIED = 0;
+  ENVIRONMENT_DEVELOPMENT = 1;
+  ENVIRONMENT_STAGING = 2;
+  ENVIRONMENT_PRODUCTION = 3;
+  ENVIRONMENT_TEST = 4;
+}
+
+// Visibility defines content visibility
+enum Visibility {
+  VISIBILITY_UNSPECIFIED = 0;
+  VISIBILITY_PUBLIC = 1;
+  VISIBILITY_PRIVATE = 2;
+  VISIBILITY_CONTACTS_ONLY = 3;
+  VISIBILITY_RESTRICTED = 4;
+}
+
+// Priority defines general priority levels
+enum Priority {
+  PRIORITY_UNSPECIFIED = 0;
+  PRIORITY_LOW = 1;
+  PRIORITY_MEDIUM = 2;
+  PRIORITY_HIGH = 3;
+  PRIORITY_CRITICAL = 4;
+}
+
+// ApprovalType defines how something was approved
+enum ApprovalType {
+  APPROVAL_TYPE_UNSPECIFIED = 0;
+  APPROVAL_TYPE_MANUAL = 1;
+  APPROVAL_TYPE_AUTOMATIC = 2;
+  APPROVAL_TYPE_SYSTEM = 3;
+  APPROVAL_TYPE_ADMIN = 4;
+}
+
+// YesNoUnknown is a tri-state boolean
+enum YesNoUnknown {
+  YES_NO_UNKNOWN_UNSPECIFIED = 0;
+  YES_NO_UNKNOWN_YES = 1;
+  YES_NO_UNKNOWN_NO = 2;
+  YES_NO_UNKNOWN_UNKNOWN = 3;
+}

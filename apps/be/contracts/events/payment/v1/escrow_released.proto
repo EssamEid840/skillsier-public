@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package skillsier.payment.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/payment/v1;paymentv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// EscrowReleased event
+// Topic: payment.escrow_released
+// Owner: payment-be
+message EscrowReleased {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Escrow identification
+  string escrow_id = 2;
+  string contract_id = 3;
+  string milestone_id = 4;
+  skillsier.common.v1.Money released_amount = 5;
+  string released_to = 6;
+  google.protobuf.Timestamp released_at = 7;
+  string release_reason = 8;
+  bool full_release = 9;
+  double partial_release_percentage = 10;
+  double remaining_in_escrow = 11;
+  string approved_by_user_id = 12;
+  skillsier.common.v1.ApprovalType approval_type = 13;
+}

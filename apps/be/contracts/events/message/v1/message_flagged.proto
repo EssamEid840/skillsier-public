@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package skillsier.message.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/message/v1;messagev1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// MessageFlagged event
+// Topic: message.message_flagged
+// Owner: message-be
+message MessageFlagged {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Flag details
+  string flag_id = 2;
+  string message_id = 3;
+  string conversation_id = 4;
+  string message_sender_id = 5;
+  string flagged_by_user_id = 6;
+  
+  // Flag reason
+  skillsier.common.v1.FlagReason flag_reason = 7;
+  string flag_reason_details = 8;
+  repeated string specific_issues = 9;
+  
+  // Message context
+  string message_content_summary = 10;
+  skillsier.common.v1.MessageType message_type = 11;
+  google.protobuf.Timestamp message_sent_at = 12;
+  
+  // Severity
+  string severity_level = 13;
+  bool requires_immediate_action = 14;
+  
+  // Pattern detection
+  int32 similar_flags_count = 15;
+  bool pattern_detected = 16;
+  
+  // AI analysis
+  bool ai_flagged = 17;
+  double ai_confidence_score = 18;
+  
+  // Actions
+  bool message_hidden = 19;
+  bool user_warned = 20;
+  
+  google.protobuf.Timestamp flagged_at = 21;
+}

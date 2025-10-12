@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package skillsier.review.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/review/v1;reviewv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// ReputationUpdated event
+// Topic: review.reputation_updated
+// Owner: review-be
+message ReputationUpdated {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string user_id = 2;
+  skillsier.common.v1.UserType user_type = 3;
+  double new_job_success_score = 4;
+  double previous_job_success_score = 5;
+  double new_overall_rating = 6;
+  double previous_overall_rating = 7;
+  int32 total_reviews = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}

@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package skillsier.contract.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/contract/v1;contractv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// ContractCreated event
+// Topic: contract.contract_created
+// Owner: contract-be
+message ContractCreated {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Contract identification
+  string contract_id = 2;
+  string proposal_id = 3;
+  string job_id = 4;
+  string freelancer_id = 5;
+  string client_id = 6;
+  
+  // Contract type & terms
+  skillsier.common.v1.ContractType contract_type = 7;
+  string contract_title = 8;
+  string description = 9;
+  
+  // Contract value
+  skillsier.common.v1.Money total_amount = 10;
+  
+  // Payment terms
+  string payment_method = 11;
+  int32 payment_hold_days = 12;
+  
+  // Milestones (simplified)
+  int32 total_milestones = 13;
+  
+  // For hourly contracts
+  double hourly_rate = 14;
+  int32 estimated_hours = 15;
+  int32 max_hours_per_week = 16;
+  bool work_diary_required = 17;
+  
+  // Timeline
+  google.protobuf.Timestamp start_date = 18;
+  google.protobuf.Timestamp end_date = 19;
+  
+  // Escrow
+  bool escrow_enabled = 20;
+  skillsier.common.v1.Money escrow_amount = 21;
+  
+  // Platform fees
+  double freelancer_fee_percentage = 22;
+  double client_fee_percentage = 23;
+  
+  // Status
+  skillsier.common.v1.ContractStatus contract_status = 24;
+  
+  // Legal
+  bool nda_signed = 25;
+  bool ip_agreement_signed = 26;
+  
+  google.protobuf.Timestamp created_at = 27;
+}

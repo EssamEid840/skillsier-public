@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package skillsier.payment.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/payment/v1;paymentv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// PayoutProcessed event
+// Topic: payment.payout_processed
+// Owner: payment-be
+message PayoutProcessed {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Payout identification
+  string payout_id = 2;
+  string freelancer_id = 3;
+  skillsier.common.v1.Money amount = 4;
+  skillsier.common.v1.PaymentMethod payout_method = 5;
+  google.protobuf.Timestamp processed_at = 6;
+  int32 processing_time_hours = 7;
+  skillsier.common.v1.PaymentStatus status = 8;
+  string failure_reason = 9;
+  string gateway_transaction_id = 10;
+  string receipt_url = 11;
+  bool confirmation_email_sent = 12;
+}

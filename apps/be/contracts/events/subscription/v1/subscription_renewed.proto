@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package skillsier.subscription.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/subscription/v1;subscriptionv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// SubscriptionRenewed event
+// Topic: subscription.subscription_renewed
+// Owner: subscription-be
+message SubscriptionRenewed {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string subscription_id = 2;
+  string user_id = 3;
+  string plan_id = 4;
+  skillsier.common.v1.Money renewal_amount = 5;
+  string invoice_id = 6;
+  google.protobuf.Timestamp renewed_at = 7;
+  google.protobuf.Timestamp next_renewal_date = 8;
+  bool payment_successful = 9;
+}

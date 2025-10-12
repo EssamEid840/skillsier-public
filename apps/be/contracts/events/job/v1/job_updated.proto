@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package skillsier.job.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/job/v1;jobv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// JobUpdated event
+// Topic: job.job_updated
+// Owner: job-be
+message JobUpdated {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Job identification
+  string job_id = 2;
+  string client_id = 3;
+  
+  // Change tracking
+  repeated string changed_fields = 4;
+  map<string, string> previous_values = 5;
+  string update_reason = 6;
+  
+  // Updated fields
+  string job_title = 7;
+  string job_description = 8;
+  skillsier.common.v1.Money budget_amount = 9;
+  skillsier.common.v1.ExperienceLevel experience_level = 10;
+  
+  google.protobuf.Timestamp updated_at = 11;
+}

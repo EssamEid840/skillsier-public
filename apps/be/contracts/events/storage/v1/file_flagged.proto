@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package skillsier.storage.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/storage/v1;storagev1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// FileFlagged event
+// Topic: storage.file_flagged
+// Owner: storage-be
+message FileFlagged {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string flag_id = 2;
+  string file_id = 3;
+  string file_owner_user_id = 4;
+  string flagged_by_user_id = 5;
+  skillsier.common.v1.FlagReason flag_reason = 6;
+  string flag_details = 7;
+  google.protobuf.Timestamp flagged_at = 8;
+  bool auto_flagged = 9;
+  double ai_confidence_score = 10;
+}

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package skillsier.contract.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/contract/v1;contractv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// MilestoneCompleted event
+// Topic: contract.milestone_completed
+// Owner: contract-be
+message MilestoneCompleted {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Milestone identification
+  string milestone_id = 2;
+  string contract_id = 3;
+  string freelancer_id = 4;
+  string client_id = 5;
+  int32 milestone_number = 6;
+  string completion_description = 7;
+  int32 attachments_count = 8;
+  google.protobuf.Timestamp completed_at = 9;
+  google.protobuf.Timestamp due_date = 10;
+  int32 days_early_late = 11;
+  google.protobuf.Timestamp auto_approval_deadline = 12;
+  bool revision_requested = 13;
+}

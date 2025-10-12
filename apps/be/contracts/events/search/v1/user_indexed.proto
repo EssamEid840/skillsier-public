@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package skillsier.search.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/search/v1;searchv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// UserIndexed event
+// Topic: search.user_indexed
+// Owner: search-be
+message UserIndexed {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string user_id = 2;
+  string username = 3;
+  skillsier.common.v1.UserType user_type = 4;
+  string professional_title = 5;
+  string index_name = 6;
+  google.protobuf.Timestamp indexed_at = 7;
+}

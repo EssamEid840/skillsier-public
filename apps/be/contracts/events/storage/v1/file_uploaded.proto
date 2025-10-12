@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package skillsier.storage.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/storage/v1;storagev1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// FileUploaded event
+// Topic: storage.file_uploaded
+// Owner: storage-be
+message FileUploaded {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string file_id = 2;
+  string user_id = 3;
+  string file_name = 4;
+  string original_file_name = 5;
+  skillsier.common.v1.FileType file_type = 6;
+  string mime_type = 7;
+  int64 file_size_bytes = 8;
+  string file_url = 9;
+  string cdn_url = 10;
+  skillsier.common.v1.StorageProvider storage_provider = 11;
+  skillsier.common.v1.AccessLevel access_level = 12;
+  string uploaded_for_entity_type = 13;
+  string uploaded_for_entity_id = 14;
+  skillsier.common.v1.ProcessingStatus processing_status = 15;
+  skillsier.common.v1.VirusScanStatus virus_scan_status = 16;
+  google.protobuf.Timestamp uploaded_at = 17;
+}

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package skillsier.admin.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/admin/v1;adminv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// AnnouncementPublished event
+// Topic: admin.announcement_published
+// Owner: admin-be
+message AnnouncementPublished {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Announcement details
+  string announcement_id = 2;
+  string announcement_title = 3;
+  string announcement_content = 4;
+  string announcement_summary = 5;
+  string announcement_type = 6;
+  
+  // Publishing admin
+  string published_by_admin_id = 7;
+  string published_by_admin_name = 8;
+  
+  // Target audience
+  string target_audience = 9;
+  repeated skillsier.common.v1.UserType target_user_types = 10;
+  repeated string target_countries = 11;
+  
+  // Delivery settings
+  repeated string delivery_channels = 12;
+  skillsier.common.v1.Priority priority = 13;
+  bool is_dismissible = 14;
+  bool require_acknowledgment = 15;
+  
+  // Display settings
+  string display_location = 16;
+  string cta_text = 17;
+  string cta_url = 18;
+  
+  // Scheduling
+  bool publish_immediately = 19;
+  google.protobuf.Timestamp scheduled_publish_at = 20;
+  google.protobuf.Timestamp scheduled_unpublish_at = 21;
+  
+  // Tracking
+  bool track_opens = 22;
+  bool track_clicks = 23;
+  int32 estimated_recipients = 24;
+  
+  google.protobuf.Timestamp published_at = 25;
+}
