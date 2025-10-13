@@ -1,109 +1,118 @@
+// internal/interfaces/http/handlers/skill_handler.go
 package handlers
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-
-	"users-be/internal/application/skill"
+    "net/http"
+    "github.com/gin-gonic/gin"
+    "skillsier.dev/platform-shared/httpx"
+    "users-be/internal/application/skill"
 )
 
 type SkillHandler struct {
-	skillService *skill.Service
+    service *skill.Service
 }
 
-func NewSkillHandler(skillService *skill.Service) *SkillHandler {
-	return &SkillHandler{skillService: skillService}
+func NewSkillHandler(service *skill.Service) *SkillHandler {
+    return &SkillHandler{service: service}
 }
 
-func (h *SkillHandler) Create(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid, err := uuid.Parse(userID.(string))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user ID"})
-		return
-	}
-
-	var dto skill.CreateSkillDTO
-	if err := c.ShouldBindJSON(&dto); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	result, err := h.skillService.CreateSkill(c.Request.Context(), uid, &dto)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusCreated, result)
+func (h *SkillHandler) AddSkill(c *gin.Context) {
+    userID := c.Param("user_id")
+    
+    var req skill.AddSkillDTO
+    if err := c.ShouldBindJSON(&req); err != nil {
+        httpx.Error(c, http.StatusBadRequest, "Invalid request", err)
+        return
+    }
+    
+    req.UserID = userID
+    
+    dto, err := h.service.AddSkill(c.Request.Context(), req)
+    if err != nil {
+        httpx.Error(c, http.StatusInternalServerError, "Failed to add skill", err)
+        return
+    }
+    
+    httpx.Success(c, http.StatusCreated, dto)
 }
 
-func (h *SkillHandler) GetAll(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid, err := uuid.Parse(userID.(string))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user ID"})
-		return
-	}
-
-	result, err := h.skillService.GetAllSkills(c.Request.Context(), uid)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, result)
+func (h *SkillHandler) GetSkills(c *gin.Context) {
+    userID := c.Param("user_id")
+    
+    dtos, err := h.service.GetUserSkills(c.Request.Context(), userID)
+    if err != nil {
+        httpx.Error(c, http.StatusInternalServerError, "Failed to get skills", err)
+        return
+    }
+    
+    httpx.Success(c, http.StatusOK, dtos)
 }
 
-func (h *SkillHandler) Update(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid, err := uuid.Parse(userID.(string))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user ID"})
-		return
-	}
-
-	id, err := uuid.Parse(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid skill ID"})
-		return
-	}
-
-	var dto skill.UpdateSkillDTO
-	if err := c.ShouldBindJSON(&dto); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	result, err := h.skillService.UpdateSkill(c.Request.Context(), id, uid, &dto)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, result)
+func (h *SkillHandler) GetPrimarySkills(c *gin.Context) {
+    userID := c.Param("user_id")
+    
+    dtos, err := h.service.GetPrimarySkills(c.Request.Context(), userID)
+    if err != nil {
+        httpx.Error(c, http.StatusInternalServerError, "Failed to get primary skills", err)
+        return
+    }
+    
+    httpx.Success(c, http.StatusOK, dtos)
 }
 
-func (h *SkillHandler) Delete(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid, err := uuid.Parse(userID.(string))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user ID"})
-		return
-	}
+func (h *SkillHandler) UpdateSkill(c *gin.Context) {
+    id := c.Param("id")
+    
+    var req skill.UpdateSkillDTO
+    if err := c.ShouldBindJSON(&req); err != nil {
+        httpx.Error(c, http.StatusBadRequest, "Invalid request", err)
+        return
+    }
+    
+    dto, err := h.service.UpdateSkill(c.Request.Context(), id, req)
+    if err != nil {
+        httpx.Error(c, http.StatusInternalServerError, "Failed to update skill", err)
+        return
+    }
+    
+    httpx.Success(c, http.StatusOK, dto)
+}
 
-	id, err := uuid.Parse(c.Param("id"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid skill ID"})
-		return
-	}
+func (h *SkillHandler) DeleteSkill(c *gin.Context) {
+    id := c.Param("id")
+    
+    if err := h.service.DeleteSkill(c.Request.Context(), id); err != nil {
+        httpx.Error(c, http.StatusInternalServerError, "Failed to delete skill", err)
+        return
+    }
+    
+    httpx.Success(c, http.StatusNoContent, nil)
+}
 
-	if err := h.skillService.DeleteSkill(c.Request.Context(), id, uid); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+func (h *SkillHandler) ReorderSkills(c *gin.Context) {
+    userID := c.Param("user_id")
+    
+    var req skill.ReorderSkillsDTO
+    if err := c.ShouldBindJSON(&req); err != nil {
+        httpx.Error(c, http.StatusBadRequest, "Invalid request", err)
+        return
+    }
+    
+    if err := h.service.ReorderSkills(c.Request.Context(), userID, req); err != nil {
+        httpx.Error(c, http.StatusInternalServerError, "Failed to reorder skills", err)
+        return
+    }
+    
+    httpx.Success(c, http.StatusOK, gin.H{"message": "Skills reordered successfully"})
+}
 
-	c.JSON(http.StatusNoContent, nil)
+func (h *SkillHandler) EndorseSkill(c *gin.Context) {
+    id := c.Param("id")
+    
+    if err := h.service.EndorseSkill(c.Request.Context(), id); err != nil {
+        httpx.Error(c, http.StatusInternalServerError, "Failed to endorse skill", err)
+        return
+    }
+    
+    httpx.Success(c, http.StatusOK, gin.H{"message": "Skill endorsed successfully"})
 }

@@ -1,181 +1,200 @@
+// internal/application/skill/service.go
 package skill
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-
-	"github.com/google/uuid"
-	"gorm.io/gorm"
-
-	"users-be/internal/domain/outbox"
-	"users-be/internal/domain/skill"
+    "context"
+    "fmt"
+    "gorm.io/gorm"
+    "users-be/internal/domain/skill"
+    "users-be/internal/domain/outbox"
 )
 
 type Service struct {
-	skillRepo  skill.Repository
-	outboxRepo outbox.Repository
-	db         *gorm.DB
+    repo       skill.Repository
+    outboxRepo outbox.Repository
+    db         *gorm.DB
 }
 
-func NewService(skillRepo skill.Repository, outboxRepo outbox.Repository, db *gorm.DB) *Service {
-	return &Service{
-		skillRepo:  skillRepo,
-		outboxRepo: outboxRepo,
-		db:         db,
-	}
+func NewService(repo skill.Repository, outboxRepo outbox.Repository, db *gorm.DB) *Service {
+    return &Service{
+        repo:       repo,
+        outboxRepo: outboxRepo,
+        db:         db,
+    }
 }
 
-func (s *Service) CreateSkill(ctx context.Context, userID uuid.UUID, dto *CreateSkillDTO) (*SkillResponseDTO, error) {
-	existing, _ := s.skillRepo.GetByUserIDAndName(ctx, userID, dto.Name)
-	if existing != nil {
-		return nil, fmt.Errorf("skill already exists")
-	}
-
-	sk := &skill.Skill{
-		UserID:            userID,
-		Name:              dto.Name,
-		Category:          dto.Category,
-		Level:             dto.Level,
-		YearsOfExperience: dto.YearsOfExperience,
-	}
-
-	if err := sk.Validate(); err != nil {
-		return nil, err
-	}
-
-	err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := s.skillRepo.Create(ctx, sk); err != nil {
-			return err
-		}
-
-		event, err := s.createSkillEvent("skill.added", sk)
-		if err != nil {
-			return err
-		}
-
-		return s.outboxRepo.Create(ctx, event)
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ToResponseDTO(sk), nil
+func (s *Service) AddSkill(ctx context.Context, dto AddSkillDTO) (*SkillDTO, error) {
+    existing, _ := s.repo.FindByUserIDAndName(ctx, dto.UserID, dto.SkillName)
+    if existing != nil {
+        return nil, fmt.Errorf("skill already exists")
+    }
+    
+    sk := &skill.Skill{
+        UserID:            dto.UserID,
+        SkillName:         dto.SkillName,
+        Proficiency:       skill.Proficiency(dto.Proficiency),
+        YearsOfExperience: dto.YearsOfExperience,
+        LastUsedYear:      dto.LastUsedYear,
+        IsPrimary:         dto.IsPrimary,
+    }
+    
+    err := s.db.Transaction(func(tx *gorm.DB) error {
+        if err := s.repo.Create(ctx, sk); err != nil {
+            return err
+        }
+        
+        event := &outbox.Event{
+            AggregateID:   dto.UserID,
+            AggregateType: "skill",
+            EventType:     "skill.added",
+            Payload:       fmt.Sprintf(`{"user_id":"%s","skill_name":"%s"}`, dto.UserID, dto.SkillName),
+        }
+        
+        return s.outboxRepo.Create(ctx, event)
+    })
+    
+    if err != nil {
+        return nil, err
+    }
+    
+    return ToSkillDTO(sk), nil
 }
 
-func (s *Service) GetAllSkills(ctx context.Context, userID uuid.UUID) (*ListSkillsResponseDTO, error) {
-	skills, err := s.skillRepo.GetByUserID(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
-	return ToListResponse(skills), nil
+func (s *Service) UpdateSkill(ctx context.Context, id string, dto UpdateSkillDTO) (*SkillDTO, error) {
+    sk, err := s.repo.FindByID(ctx, id)
+    if err != nil {
+        return nil, err
+    }
+    
+    if dto.Proficiency != nil {
+        sk.Proficiency = skill.Proficiency(*dto.Proficiency)
+    }
+    if dto.YearsOfExperience != nil {
+        sk.YearsOfExperience = *dto.YearsOfExperience
+    }
+    if dto.LastUsedYear != nil {
+        sk.LastUsedYear = *dto.LastUsedYear
+    }
+    if dto.IsPrimary != nil {
+        sk.IsPrimary = *dto.IsPrimary
+    }
+    if dto.TestScore != nil {
+        sk.TestScore = *dto.TestScore
+    }
+    
+    if err := s.repo.Update(ctx, sk); err != nil {
+        return nil, err
+    }
+    
+    return ToSkillDTO(sk), nil
 }
 
-func (s *Service) GetSkill(ctx context.Context, id uuid.UUID, userID uuid.UUID) (*SkillResponseDTO, error) {
-	sk, err := s.skillRepo.GetByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	if sk.UserID != userID {
-		return nil, fmt.Errorf("unauthorized")
-	}
-
-	return ToResponseDTO(sk), nil
+func (s *Service) GetUserSkills(ctx context.Context, userID string) ([]*SkillDTO, error) {
+    skills, err := s.repo.FindByUserID(ctx, userID)
+    if err != nil {
+        return nil, err
+    }
+    
+    dtos := make([]*SkillDTO, len(skills))
+    for i, sk := range skills {
+        dtos[i] = ToSkillDTO(sk)
+    }
+    
+    return dtos, nil
 }
 
-func (s *Service) UpdateSkill(ctx context.Context, id uuid.UUID, userID uuid.UUID, dto *UpdateSkillDTO) (*SkillResponseDTO, error) {
-	sk, err := s.skillRepo.GetByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	if sk.UserID != userID {
-		return nil, fmt.Errorf("unauthorized")
-	}
-
-	if dto.Level != nil {
-		sk.Level = *dto.Level
-	}
-	if dto.YearsOfExperience != nil {
-		sk.YearsOfExperience = *dto.YearsOfExperience
-	}
-
-	if err := sk.Validate(); err != nil {
-		return nil, err
-	}
-
-	err = s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := s.skillRepo.Update(ctx, sk); err != nil {
-			return err
-		}
-
-		event, err := s.createSkillEvent("skill.updated", sk)
-		if err != nil {
-			return err
-		}
-
-		return s.outboxRepo.Create(ctx, event)
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return ToResponseDTO(sk), nil
+func (s *Service) GetPrimarySkills(ctx context.Context, userID string) ([]*SkillDTO, error) {
+    skills, err := s.repo.FindPrimarySkills(ctx, userID)
+    if err != nil {
+        return nil, err
+    }
+    
+    dtos := make([]*SkillDTO, len(skills))
+    for i, sk := range skills {
+        dtos[i] = ToSkillDTO(sk)
+    }
+    
+    return dtos, nil
 }
 
-func (s *Service) DeleteSkill(ctx context.Context, id uuid.UUID, userID uuid.UUID) error {
-	sk, err := s.skillRepo.GetByID(ctx, id)
-	if err != nil {
-		return err
-	}
-
-	if sk.UserID != userID {
-		return fmt.Errorf("unauthorized")
-	}
-
-	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err := s.skillRepo.Delete(ctx, id); err != nil {
-			return err
-		}
-
-		event, err := s.createSkillEvent("skill.removed", sk)
-		if err != nil {
-			return err
-		}
-
-		return s.outboxRepo.Create(ctx, event)
-	})
+func (s *Service) GetVerifiedSkills(ctx context.Context, userID string) ([]*SkillDTO, error) {
+    skills, err := s.repo.FindVerifiedSkills(ctx, userID)
+    if err != nil {
+        return nil, err
+    }
+    
+    dtos := make([]*SkillDTO, len(skills))
+    for i, sk := range skills {
+        dtos[i] = ToSkillDTO(sk)
+    }
+    
+    return dtos, nil
 }
 
-func (s *Service) createSkillEvent(eventType string, sk *skill.Skill) (*outbox.Event, error) {
-	payload := map[string]interface{}{
-		"skill_id":            sk.ID.String(),
-		"user_id":             sk.UserID.String(),
-		"name":                sk.Name,
-		"category":            sk.Category,
-		"level":               string(sk.Level),
-		"years_of_experience": sk.YearsOfExperience,
-	}
+func (s *Service) DeleteSkill(ctx context.Context, id string) error {
+    return s.repo.Delete(ctx, id)
+}
 
-	payloadBytes, err := json.Marshal(payload)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal payload: %w", err)
-	}
+func (s *Service) ReorderSkills(ctx context.Context, userID string, dto ReorderSkillsDTO) error {
+    return s.repo.UpdateDisplayOrder(ctx, userID, dto.SkillIDs)
+}
 
-	metadata := map[string]interface{}{"source": "users-be"}
-	metadataBytes, err := json.Marshal(metadata)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal metadata: %w", err)
-	}
+func (s *Service) EndorseSkill(ctx context.Context, id string) error {
+    return s.repo.IncrementEndorsements(ctx, id)
+}
 
-	return &outbox.Event{
-		AggregateID:   sk.UserID.String(),
-		AggregateType: "user",
-		EventType:     eventType,
-		Payload:       payloadBytes,
-		Metadata:      metadataBytes,
-	}, nil
+func (s *Service) VerifySkill(ctx context.Context, id, verifiedBy string) error {
+    sk, err := s.repo.FindByID(ctx, id)
+    if err != nil {
+        return err
+    }
+    
+    sk.IsVerified = true
+    sk.VerifiedBy = verifiedBy
+    now := time.Now()
+    sk.VerifiedAt = &now
+    
+    return s.repo.Update(ctx, sk)
+}
+
+func (s *Service) GetTopSkills(ctx context.Context, limit int) ([]*SkillDTO, error) {
+    skills, err := s.repo.GetTopSkills(ctx, limit)
+    if err != nil {
+        return nil, err
+    }
+    
+    dtos := make([]*SkillDTO, len(skills))
+    for i, sk := range skills {
+        dtos[i] = ToSkillDTO(sk)
+    }
+    
+    return dtos, nil
+}
+
+func (s *Service) GetSkillStatistics(ctx context.Context, skillName string) (map[string]interface{}, error) {
+    return s.repo.GetSkillStats(ctx, skillName)
+}
+
+func ToSkillDTO(s *skill.Skill) *SkillDTO {
+    if s == nil {
+        return nil
+    }
+    
+    return &SkillDTO{
+        ID:                s.ID,
+        UserID:            s.UserID,
+        SkillName:         s.SkillName,
+        Proficiency:       string(s.Proficiency),
+        YearsOfExperience: s.YearsOfExperience,
+        LastUsedYear:      s.LastUsedYear,
+        IsPrimary:         s.IsPrimary,
+        IsVerified:        s.IsVerified,
+        TestScore:         s.TestScore,
+        EndorsementCount:  s.EndorsementCount,
+        ProjectCount:      s.ProjectCount,
+        DisplayOrder:      s.DisplayOrder,
+        SkillScore:        s.CalculateScore(),
+        CreatedAt:         s.CreatedAt,
+        UpdatedAt:         s.UpdatedAt,
+    }
 }

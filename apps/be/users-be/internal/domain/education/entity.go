@@ -1,55 +1,39 @@
+// internal/domain/education/entity.go
 package education
 
 import (
-	"time"
-
-	"github.com/google/uuid"
-	"gorm.io/gorm"
+    "time"
+    "gorm.io/gorm"
 )
 
 type Education struct {
-	ID           uuid.UUID      `gorm:"type:uuid;primary_key" json:"id"`
-	UserID       uuid.UUID      `gorm:"type:uuid;not null;index" json:"user_id"`
-	Degree       string         `gorm:"type:varchar(200);not null" json:"degree"`
-	Institution  string         `gorm:"type:varchar(200);not null" json:"institution"`
-	FieldOfStudy string         `gorm:"type:varchar(200);not null" json:"field_of_study"`
-	StartDate    time.Time      `gorm:"not null" json:"start_date"`
-	EndDate      *time.Time     `json:"end_date"`
-	Description  string         `gorm:"type:text" json:"description"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    time.Time      `json:"updated_at"`
-	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
-}
-
-func (Education) TableName() string {
-	return "educations"
-}
-
-func (e *Education) BeforeCreate(tx *gorm.DB) error {
-	if e.ID == uuid.Nil {
-		e.ID = uuid.New()
-	}
-	return nil
-}
-
-func (e *Education) Validate() error {
-	if e.UserID == uuid.Nil {
-		return ErrInvalidUserID
-	}
-	if e.Degree == "" {
-		return ErrDegreeRequired
-	}
-	if e.Institution == "" {
-		return ErrInstitutionRequired
-	}
-	if e.FieldOfStudy == "" {
-		return ErrFieldOfStudyRequired
-	}
-	if e.StartDate.IsZero() {
-		return ErrStartDateRequired
-	}
-	if e.EndDate != nil && e.EndDate.Before(e.StartDate) {
-		return ErrInvalidDateRange
-	}
-	return nil
+    ID                string         `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+    UserID            string         `gorm:"not null;type:uuid;index"`
+    School            string         `gorm:"not null;type:varchar(200)"`
+    SchoolLogo        string         `gorm:"type:varchar(500)"`
+    Degree            string         `gorm:"not null;type:varchar(200)"`
+    DegreeType        string         `gorm:"type:varchar(50)"` // associate, bachelor, master, doctorate, certificate
+    Field             string         `gorm:"type:varchar(200)"`
+    Grade             string         `gorm:"type:varchar(20)"`
+    GPA               float64        `gorm:"type:decimal(4,2)"`
+    MaxGPA            float64        `gorm:"type:decimal(4,2)"`
+    StartDate         time.Time
+    EndDate           *time.Time
+    GraduationYear    int
+    IsCurrent         bool           `gorm:"default:false"`
+    Description       string         `gorm:"type:text"`
+    Activities        string         `gorm:"type:text"`
+    Honors            string         `gorm:"type:jsonb"` // JSON array
+    Courses           string         `gorm:"type:jsonb"` // JSON array
+    Location          string         `gorm:"type:varchar(200)"`
+    Country           string         `gorm:"type:varchar(2)"`
+    IsVerified        bool           `gorm:"default:false"`
+    VerifiedBy        string         `gorm:"type:varchar(100)"`
+    VerifiedAt        *time.Time
+    CertificateURL    string         `gorm:"type:varchar(500)"`
+    TranscriptURL     string         `gorm:"type:varchar(500)"`
+    DisplayOrder      int            `gorm:"default:0"`
+    CreatedAt         time.Time
+    UpdatedAt         time.Time
+    DeletedAt         gorm.DeletedAt `gorm:"index"`
 }

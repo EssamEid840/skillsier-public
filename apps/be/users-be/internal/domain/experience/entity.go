@@ -1,58 +1,52 @@
+// internal/domain/experience/entity.go
 package experience
 
 import (
-	"time"
-
-	"github.com/google/uuid"
-	"github.com/lib/pq"
-	"gorm.io/gorm"
+    "time"
+    "gorm.io/gorm"
 )
 
 type WorkExperience struct {
-	ID          uuid.UUID      `gorm:"type:uuid;primary_key" json:"id"`
-	UserID      uuid.UUID      `gorm:"type:uuid;not null;index" json:"user_id"`
-	Title       string         `gorm:"type:varchar(200);not null" json:"title"`
-	Company     string         `gorm:"type:varchar(200);not null" json:"company"`
-	Location    string         `gorm:"type:varchar(200)" json:"location"`
-	StartDate   time.Time      `gorm:"not null" json:"start_date"`
-	EndDate     *time.Time     `json:"end_date"`
-	IsCurrent   bool           `gorm:"default:false" json:"is_current"`
-	Description string         `gorm:"type:text" json:"description"`
-	Skills      pq.StringArray `gorm:"type:text[]" json:"skills"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
+    ID              string         `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+    UserID          string         `gorm:"not null;type:uuid;index"`
+    Company         string         `gorm:"not null;type:varchar(200)"`
+    CompanyLogo     string         `gorm:"type:varchar(500)"`
+    Title           string         `gorm:"not null;type:varchar(200)"`
+    EmploymentType  string         `gorm:"type:varchar(50)"` // full-time, part-time, contract, freelance
+    Location        string         `gorm:"type:varchar(200)"`
+    LocationType    string         `gorm:"type:varchar(30)"` // remote, onsite, hybrid
+    Description     string         `gorm:"type:text"`
+    StartDate       time.Time      `gorm:"not null"`
+    EndDate         *time.Time
+    IsCurrent       bool           `gorm:"default:false"`
+    Duration        int            `gorm:"default:0"` // months
+    Industry        string         `gorm:"type:varchar(100)"`
+    Skills          string         `gorm:"type:jsonb"` // JSON array
+    Achievements    string         `gorm:"type:jsonb"` // JSON array
+    TeamSize        int            `gorm:"default:0"`
+    ReportsTo       string         `gorm:"type:varchar(200)"`
+    IsVerified      bool           `gorm:"default:false"`
+    VerifiedBy      string         `gorm:"type:varchar(100)"`
+    VerifiedAt      *time.Time
+    DisplayOrder    int            `gorm:"default:0"`
+    CreatedAt       time.Time
+    UpdatedAt       time.Time
+    DeletedAt       gorm.DeletedAt `gorm:"index"`
 }
 
-func (WorkExperience) TableName() string {
-	return "work_experiences"
-}
-
-func (w *WorkExperience) BeforeCreate(tx *gorm.DB) error {
-	if w.ID == uuid.Nil {
-		w.ID = uuid.New()
-	}
-	return nil
-}
-
-func (w *WorkExperience) Validate() error {
-	if w.UserID == uuid.Nil {
-		return ErrInvalidUserID
-	}
-	if w.Title == "" {
-		return ErrTitleRequired
-	}
-	if w.Company == "" {
-		return ErrCompanyRequired
-	}
-	if w.StartDate.IsZero() {
-		return ErrStartDateRequired
-	}
-	if !w.IsCurrent && w.EndDate == nil {
-		return ErrEndDateRequired
-	}
-	if w.EndDate != nil && w.EndDate.Before(w.StartDate) {
-		return ErrInvalidDateRange
-	}
-	return nil
+func (w *WorkExperience) CalculateDuration() int {
+    endDate := time.Now()
+    if w.EndDate != nil {
+        endDate = *w.EndDate
+    }
+    
+    years := endDate.Year() - w.StartDate.Year()
+    months := int(endDate.Month() - w.StartDate.Month())
+    
+    totalMonths := years*12 + months
+    if totalMonths < 0 {
+        totalMonths = 0
+    }
+    
+    return totalMonths
 }

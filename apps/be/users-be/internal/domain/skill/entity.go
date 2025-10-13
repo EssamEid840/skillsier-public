@@ -1,70 +1,79 @@
+// internal/domain/skill/entity.go
 package skill
 
 import (
-	"time"
-
-	"github.com/google/uuid"
-	"gorm.io/gorm"
-)
-
-type SkillLevel string
-
-const (
-	SkillLevelBeginner     SkillLevel = "BEGINNER"
-	SkillLevelIntermediate SkillLevel = "INTERMEDIATE"
-	SkillLevelAdvanced     SkillLevel = "ADVANCED"
-	SkillLevelExpert       SkillLevel = "EXPERT"
+    "time"
+    "gorm.io/gorm"
 )
 
 type Skill struct {
-	ID                uuid.UUID      `gorm:"type:uuid;primary_key" json:"id"`
-	UserID            uuid.UUID      `gorm:"type:uuid;not null;index" json:"user_id"`
-	Name              string         `gorm:"type:varchar(100);not null" json:"name"`
-	Category          string         `gorm:"type:varchar(50);not null" json:"category"`
-	Level             SkillLevel     `gorm:"type:varchar(20);not null" json:"level"`
-	YearsOfExperience int            `gorm:"not null" json:"years_of_experience"`
-	CreatedAt         time.Time      `json:"created_at"`
-	UpdatedAt         time.Time      `json:"updated_at"`
-	DeletedAt         gorm.DeletedAt `gorm:"index" json:"-"`
+    ID                string         `gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+    UserID            string         `gorm:"not null;type:uuid;index:idx_user_skills"`
+    SkillCategoryID   string         `gorm:"type:uuid"`
+    SkillName         string         `gorm:"not null;type:varchar(100);index"`
+    SkillSlug         string         `gorm:"type:varchar(120);index"`
+    Proficiency       Proficiency    `gorm:"not null;type:varchar(20)"`
+    YearsOfExperience int            `gorm:"default:0"`
+    LastUsedYear      int            `gorm:"default:0"`
+    IsPrimary         bool           `gorm:"default:false"`
+    IsVerified        bool           `gorm:"default:false"`
+    VerifiedBy        string         `gorm:"type:varchar(50)"`
+    VerifiedAt        *time.Time
+    TestScore         float64        `gorm:"type:decimal(5,2);default:0"`
+    TestTakenAt       *time.Time
+    TestProvider      string         `gorm:"type:varchar(100)"`
+    CertificateURL    string         `gorm:"type:varchar(500)"`
+    EndorsementCount  int            `gorm:"default:0"`
+    ProjectCount      int            `gorm:"default:0"`
+    DisplayOrder      int            `gorm:"default:0"`
+    Tags              string         `gorm:"type:jsonb"`
+    CreatedAt         time.Time
+    UpdatedAt         time.Time
+    DeletedAt         gorm.DeletedAt `gorm:"index"`
 }
 
-func (Skill) TableName() string {
-	return "skills"
-}
+type Proficiency string
 
-func (s *Skill) BeforeCreate(tx *gorm.DB) error {
-	if s.ID == uuid.Nil {
-		s.ID = uuid.New()
-	}
-	return nil
-}
+const (
+    ProficiencyBeginner     Proficiency = "beginner"
+    ProficiencyIntermediate Proficiency = "intermediate"
+    ProficiencyAdvanced     Proficiency = "advanced"
+    ProficiencyExpert       Proficiency = "expert"
+)
 
-func (s *Skill) Validate() error {
-	if s.UserID == uuid.Nil {
-		return ErrInvalidUserID
-	}
-	if s.Name == "" {
-		return ErrSkillNameRequired
-	}
-	if s.Category == "" {
-		return ErrCategoryRequired
-	}
-	if s.Level == "" {
-		return ErrLevelRequired
-	}
-	if !s.IsValidLevel() {
-		return ErrInvalidLevel
-	}
-	if s.YearsOfExperience < 0 {
-		return ErrInvalidYearsOfExperience
-	}
-	return nil
-}
-
-func (s *Skill) IsValidLevel() bool {
-	switch s.Level {
-	case SkillLevelBeginner, SkillLevelIntermediate, SkillLevelAdvanced, SkillLevelExpert:
-		return true
-	}
-	return false
+func (s *Skill) CalculateScore() float64 {
+    score := 0.0
+    
+    switch s.Proficiency {
+    case ProficiencyBeginner:
+        score = 25
+    case ProficiencyIntermediate:
+        score = 50
+    case ProficiencyAdvanced:
+        score = 75
+    case ProficiencyExpert:
+        score = 100
+    }
+    
+    if s.YearsOfExperience > 0 {
+        score += float64(s.YearsOfExperience) * 2
+    }
+    
+    if s.IsVerified {
+        score += 10
+    }
+    
+    if s.TestScore > 0 {
+        score += s.TestScore * 0.2
+    }
+    
+    if s.EndorsementCount > 0 {
+        score += float64(s.EndorsementCount) * 0.5
+    }
+    
+    if score > 100 {
+        score = 100
+    }
+    
+    return score
 }
