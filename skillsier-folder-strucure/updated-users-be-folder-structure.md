@@ -1,6 +1,4 @@
 
----
-
 ## 📦 **1️⃣ users-be (User Management Service)**
 
 ```
@@ -12,23 +10,39 @@ apps/be/users-be/
 │
 ├── internal/
 │   ├── domain/                               # 🏛️ Domain Layer - Business logic & entities
+│   │   ├── user/
+│   │   │   ├── entity.go                     # User aggregate root (ID, Username, Email, FirstName, LastName, UserType, Status)
+│   │   │   ├── errors.go                    # Domain-specific errors (UserNotFound, EmailTaken, InvalidEmail)
+│   │   │   └── repository.go                # User repository interface (Create, Update, FindByID, FindByEmail, List)
 │   │   │
 │   │   ├── profile/
+│   │   │   ├── entity.go                     # Extended profile info (Bio, Location, ProfilePictureURL, CompletionPercentage)
 │   │   │   ├── preferences.go               # User preferences and settings (Language, Timezone, Currency)
 │   │   │   ├── availability.go              # Work availability, timezone, working hours
+│   │   │   ├── errors.go                    # Profile-specific errors (ProfileNotFound, InvalidBio)
+│   │   │   └── repository.go                # Profile repository interface
 │   │   │
 │   │   ├── skill/
+│   │   │   ├── entity.go                     # User skills (UserID, SkillID, Proficiency, YearsOfExperience)
 │   │   │   ├── proficiency.go               # Skill level enum (Beginner, Intermediate, Advanced, Expert)
 │   │   │   ├── errors.go                    # Skill-specific errors (SkillNotFound, DuplicateSkill)
+│   │   │   └── repository.go                # Skill repository interface
 │   │   │
 │   │   ├── experience/
+│   │   │   ├── entity.go                     # Work experience (Company, Title, Description, StartDate, EndDate, IsCurrent)
 │   │   │   ├── errors.go                    # Experience-specific errors (InvalidDateRange)
 │   │   │   └── repository.go                # Experience repository interface
 │   │   │
+│   │   ├── education/
+│   │   │   ├── entity.go                     # Educational background (School, Degree, Field, GraduationYear, Description)
+│   │   │   ├── errors.go                    # Education-specific errors (InvalidYear)
+│   │   │   └── repository.go                # Education repository interface
 │   │   │
 │   │   ├── certification/
+│   │   │   ├── entity.go                     # Certifications (Name, IssuingOrganization, IssueDate, ExpiryDate, CredentialID, URL)
 │   │   │   ├── verification.go              # Verification status (Pending, Verified, Rejected, Expired)
-
+│   │   │   ├── errors.go                    # Certification-specific errors (CertificationNotFound, AlreadyVerified)
+│   │   │   └── repository.go                # Certification repository interface
 │   │   │
 │   │   ├── portfolio/
 │   │   │   ├── entity.go                     # Portfolio items (UserID, Title, Description, URL, ThumbnailURL, DisplayOrder)
@@ -104,15 +118,22 @@ apps/be/users-be/
 │   │
 │   ├── application/                          # 📋 Application Layer - Use cases & orchestration
 │   │   ├── user/
+│   │   │   ├── service.go                    # User business logic (Create, Update, Delete, Verify, Search)
 │   │   │   ├── commands.go                  # Command handlers (CreateUser, UpdateUser, DeleteUser, VerifyEmail)
 │   │   │   ├── queries.go                   # Query handlers (GetUser, ListUsers, SearchUsers, GetUserStats)
+│   │   │   ├── dto.go                       # Data transfer objects (UserDTO, CreateUserDTO, UpdateUserDTO, UserListDTO)
+│   │   │   ├── mapper.go                    # Entity-DTO mapping (ToDTO, FromDTO, ToEntity, BulkToDTO)
 │   │   │   └── validators.go                # Input validation (ValidateEmail, ValidateUsername, ValidatePassword, ValidatePhone)
 │   │   │
 │   │   ├── profile/
+│   │   │   ├── service.go                    # Profile business logic (Complete, Update, CalculateCompleteness)
+│   │   │   ├── dto.go                       # Profile DTOs (ProfileDTO, UpdateProfileDTO)
 │   │   │   ├── mapper.go                    # Profile mappers
 │   │   │   └── validators.go                # Profile validators (ValidateBio, ValidateLocation)
 │   │   │
 │   │   ├── skill/
+│   │   │   ├── service.go                    # Skill business logic (Add, Remove, Update, Reorder)
+│   │   │   ├── dto.go                       # Skill DTOs (SkillDTO, AddSkillDTO)
 │   │   │   └── mapper.go                    # Skill mappers
 │   │   │
 │   │   ├── experience/
@@ -121,6 +142,8 @@ apps/be/users-be/
 │   │   │   └── mapper.go                    # Experience mappers
 │   │   │
 │   │   ├── education/
+│   │   │   ├── service.go                    # Education business logic (Add, Update, Delete)
+│   │   │   ├── dto.go                       # Education DTOs (EducationDTO, CreateEducationDTO)
 │   │   │   └── mapper.go                    # Education mappers
 │   │   │
 │   │   ├── certification/
@@ -203,7 +226,11 @@ apps/be/users-be/
 │   │   │       ├── migrations.go            # 📝 UPDATED: Auto-migration logic (now with version tracking, GORM AutoMigrate for all tables)
 │   │   │       ├── version.go               # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
 │   │   │       ├── safety.go                # 🆕 Pre-migration safety checks (environment validation, disk space check, backup verification)
+│   │   │       ├── user_repository.go       # User repository implementation (CRUD operations using GORM)
+│   │   │       ├── profile_repository.go    # Profile repository implementation
+│   │   │       ├── skill_repository.go      # Skill repository implementation
 │   │   │       ├── experience_repository.go # Experience repository implementation
+│   │   │       ├── education_repository.go  # Education repository implementation
 │   │   │       ├── certification_repository.go # Certification repository implementation
 │   │   │       ├── portfolio_repository.go  # Portfolio repository implementation
 │   │   │       ├── language_repository.go   # Language repository implementation
@@ -241,7 +268,11 @@ apps/be/users-be/
 │   ├── interfaces/
 │   │   └── http/
 │   │       ├── handlers/
+│   │       │   ├── user_handler.go          # User HTTP handlers (GET, POST, PUT, DELETE /users, /users/:id, /users/search)
+│   │       │   ├── profile_handler.go       # Profile HTTP handlers (GET, PUT /users/:id/profile, /users/:id/profile/completion)
+│   │       │   ├── skill_handler.go         # Skill HTTP handlers (GET, POST, DELETE /users/:id/skills)
 │   │       │   ├── experience_handler.go    # Experience HTTP handlers (GET, POST, PUT, DELETE /users/:id/experience)
+│   │       │   ├── education_handler.go     # Education HTTP handlers (GET, POST, PUT, DELETE /users/:id/education)
 │   │       │   ├── certification_handler.go # Certification HTTP handlers (GET, POST, PUT, DELETE /users/:id/certifications)
 │   │       │   ├── portfolio_handler.go     # Portfolio HTTP handlers (GET, POST, PUT, DELETE /users/:id/portfolio)
 │   │       │   ├── language_handler.go      # Language HTTP handlers (GET, POST, DELETE /users/:id/languages)

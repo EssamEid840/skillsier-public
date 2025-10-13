@@ -325,6 +325,8 @@ apps/be/users-be/
 │   │   │   ├── enums.go                     # UserType (Freelancer, Client), AccountStatus (Active, Suspended, Banned), VerificationStatus
 │   │   │   ├── errors.go                    # Domain-specific errors (UserNotFound, EmailTaken, InvalidEmail)
 │   │   │   └── repository.go                # User repository interface (Create, Update, FindByID, FindByEmail, List)
+│   │   │   └── list_filter.go                # ListFilter defines filtering options for list queries
+│   │   │   └── statistics.go                # UserStatistics contains comprehensive user statistics
 │   │   │
 │   │   ├── profile/
 │   │   │   ├── entity.go                     # Extended profile info (Bio, Location, ProfilePictureURL, CompletionPercentage)
