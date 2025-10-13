@@ -10,11 +10,6 @@ apps/be/users-be/
 │
 ├── internal/
 │   ├── domain/                               # 🏛️ Domain Layer - Business logic & entities
-│   │   ├── user/
-│   │   │   ├── entity.go                     # User aggregate root (ID, Username, Email, FirstName, LastName, UserType, Status)
-│   │   │   ├── errors.go                    # Domain-specific errors (UserNotFound, EmailTaken, InvalidEmail)
-│   │   │   └── repository.go                # User repository interface (Create, Update, FindByID, FindByEmail, List)
-│   │   │
 │   │   ├── profile/
 │   │   │   ├── entity.go                     # Extended profile info (Bio, Location, ProfilePictureURL, CompletionPercentage)
 │   │   │   ├── preferences.go               # User preferences and settings (Language, Timezone, Currency)
@@ -226,7 +221,6 @@ apps/be/users-be/
 │   │   │       ├── migrations.go            # 📝 UPDATED: Auto-migration logic (now with version tracking, GORM AutoMigrate for all tables)
 │   │   │       ├── version.go               # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
 │   │   │       ├── safety.go                # 🆕 Pre-migration safety checks (environment validation, disk space check, backup verification)
-│   │   │       ├── user_repository.go       # User repository implementation (CRUD operations using GORM)
 │   │   │       ├── profile_repository.go    # Profile repository implementation
 │   │   │       ├── skill_repository.go      # Skill repository implementation
 │   │   │       ├── experience_repository.go # Experience repository implementation
@@ -268,7 +262,6 @@ apps/be/users-be/
 │   ├── interfaces/
 │   │   └── http/
 │   │       ├── handlers/
-│   │       │   ├── user_handler.go          # User HTTP handlers (GET, POST, PUT, DELETE /users, /users/:id, /users/search)
 │   │       │   ├── profile_handler.go       # Profile HTTP handlers (GET, PUT /users/:id/profile, /users/:id/profile/completion)
 │   │       │   ├── skill_handler.go         # Skill HTTP handlers (GET, POST, DELETE /users/:id/skills)
 │   │       │   ├── experience_handler.go    # Experience HTTP handlers (GET, POST, PUT, DELETE /users/:id/experience)
@@ -285,6 +278,9 @@ apps/be/users-be/
 │   │       │   ├── ban_handler.go           # Ban HTTP handlers (POST, DELETE /admin/users/:id/ban) - admin only
 │   │       │   ├── warning_handler.go       # Warning HTTP handlers (POST /admin/users/:id/warn) - admin only
 │   │       │   └── health_handler.go        # Health check endpoints (/health, /ready, /live)
+│   │       │
+│   │       ├── routes/
+│   │       │   ├── user_routes.go       
 │   │       │
 │   │       ├── middleware/                  # 📝 UPDATED: Middleware (now uses platform-shared middleware)
 │   │       │   ├── auth.go                  # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)

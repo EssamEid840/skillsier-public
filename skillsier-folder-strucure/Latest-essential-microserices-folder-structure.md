@@ -599,6 +599,9 @@ apps/be/users-be/
 │   │       │   ├── warning_handler.go       # Warning HTTP handlers (POST /admin/users/:id/warn) - admin only
 │   │       │   └── health_handler.go        # Health check endpoints (/health, /ready, /live)
 │   │       │
+│   │       ├── routes/
+│   │       │   ├── user_routes.go       
+│   │       │
 │   │       ├── middleware/                  # 📝 UPDATED: Middleware (now uses platform-shared middleware)
 │   │       │   ├── auth.go                  # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
 │   │       │   ├── rbac.go                  # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role/permission checks)

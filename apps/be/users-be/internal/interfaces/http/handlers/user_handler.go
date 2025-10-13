@@ -1,23 +1,32 @@
+package handlers
 // internal/interfaces/http/handlers/user_handler.go
 package handlers
 
 import (
-    "net/http"
-    "strconv"
-    
-    "github.com/gin-gonic/gin"
-    "skillsier.dev/platform-shared/httpx"
-    
-    "users-be/internal/application/user"
-    userDomain "users-be/internal/domain/user"
+	"net/http"
+	"strconv"
+	
+	"github.com/gin-gonic/gin"
+	
+	"users-be/internal/application/user"
+	userDomain "users-be/internal/domain/user"
+	"skillsier.dev/platform-shared/httpx"
 )
 
+// UserHandler handles user-related HTTP requests
 type UserHandler struct {
-    service *user.Service
+	service        *user.Service
+	commandHandler *user.CommandHandler
+	queryHandler   *user.QueryHandler
 }
 
+// NewUserHandler creates a new user handler
 func NewUserHandler(service *user.Service) *UserHandler {
-    return &UserHandler{service: service}
+	return &UserHandler{
+		service:        service,
+		commandHandler: user.NewCommandHandler(service),
+		queryHandler:   user.NewQueryHandler(service),
+	}
 }
 
 // ============================================================================
@@ -30,121 +39,88 @@ func NewUserHandler(service *user.Service) *UserHandler {
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param user body user.CreateUserDTO true "User creation data"
+// @Param user body user.CreateUserDTO true "User data"
 // @Success 201 {object} user.UserDTO
 // @Failure 400 {object} httpx.ErrorResponse
 // @Failure 409 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
 // @Router /users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
-    var req user.CreateUserDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    dto, err := h.service.CreateUser(c.Request.Context(), req)
-    if err != nil {
-        if err == userDomain.ErrEmailTaken {
-            httpx.Error(c, http.StatusConflict, "Email already taken", err)
-            return
-        }
-        if err == userDomain.ErrUsernameTaken {
-            httpx.Error(c, http.StatusConflict, "Username already taken", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to create user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusCreated, dto)
-}
-
-// CreateBulkUsers godoc
-// @Summary Create multiple users
-// @Description Bulk create user accounts
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param users body []user.CreateUserDTO true "Array of user creation data"
-// @Success 201 {object} []user.UserDTO
-// @Failure 400 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /users/bulk [post]
-// @Security BearerAuth
-func (h *UserHandler) CreateBulkUsers(c *gin.Context) {
-    var req []user.CreateUserDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    dtos, err := h.service.CreateBulkUsers(c.Request.Context(), req)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to create users", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusCreated, dtos)
+	var dto user.CreateUserDTO
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	// Validate DTO
+	if err := user.ValidateCreateUserDTO(&dto); err != nil {
+		httpx.ValidationError(c, err)
+		return
+	}
+	
+	// Create command
+	cmd := user.CreateUserCommand{
+		KeycloakID:       dto.KeycloakID,
+		Username:         dto.Username,
+		Email:            dto.Email,
+		FirstName:        dto.FirstName,
+		LastName:         dto.LastName,
+		UserType:         dto.UserType,
+		PhoneNumber:      dto.PhoneNumber,
+		PhoneCountryCode: dto.PhoneCountryCode,
+		City:             dto.City,
+		Country:          dto.Country,
+		CountryCode:      dto.CountryCode,
+		Timezone:         dto.Timezone,
+		Bio:              dto.Bio,
+		Tagline:          dto.Tagline,
+	}
+	
+	result, err := h.commandHandler.HandleCreateUser(c.Request.Context(), cmd)
+	if err != nil {
+		if userDomain.IsConflictError(err) {
+			httpx.Error(c, http.StatusConflict, "User already exists", err)
+			return
+		}
+		if userDomain.IsValidationError(err) {
+			httpx.ValidationError(c, err)
+			return
+		}
+		httpx.Error(c, http.StatusInternalServerError, "Failed to create user", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusCreated, result)
 }
 
 // ============================================================================
-// READ OPERATIONS - Single User
+// READ OPERATIONS
 // ============================================================================
 
 // GetUser godoc
 // @Summary Get user by ID
-// @Description Get detailed user information by user ID
+// @Description Get user information by ID
 // @Tags users
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
 // @Success 200 {object} user.UserDTO
 // @Failure 404 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
 // @Router /users/{id} [get]
-// @Security BearerAuth
 func (h *UserHandler) GetUser(c *gin.Context) {
-    id := c.Param("id")
-    
-    dto, err := h.service.GetUserByID(c.Request.Context(), id)
-    if err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to get user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, dto)
-}
-
-// GetCurrentUser godoc
-// @Summary Get current authenticated user
-// @Description Get the currently authenticated user's information
-// @Tags users
-// @Accept json
-// @Produce json
-// @Success 200 {object} user.UserDTO
-// @Failure 401 {object} httpx.ErrorResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Router /users/me [get]
-// @Security BearerAuth
-func (h *UserHandler) GetCurrentUser(c *gin.Context) {
-    userID, exists := c.Get("user_id")
-    if !exists {
-        httpx.Error(c, http.StatusUnauthorized, "Unauthorized", nil)
-        return
-    }
-    
-    dto, err := h.service.GetUserByID(c.Request.Context(), userID.(string))
-    if err != nil {
-        httpx.Error(c, http.StatusNotFound, "User not found", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, dto)
+	id := c.Param("id")
+	
+	query := user.GetUserByIDQuery{UserID: id}
+	result, err := h.queryHandler.HandleGetUserByID(c.Request.Context(), query)
+	if err != nil {
+		if userDomain.IsNotFoundError(err) {
+			httpx.Error(c, http.StatusNotFound, "User not found", err)
+			return
+		}
+		httpx.Error(c, http.StatusInternalServerError, "Failed to get user", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
 // GetUserByUsername godoc
@@ -158,24 +134,25 @@ func (h *UserHandler) GetCurrentUser(c *gin.Context) {
 // @Failure 404 {object} httpx.ErrorResponse
 // @Router /users/username/{username} [get]
 func (h *UserHandler) GetUserByUsername(c *gin.Context) {
-    username := c.Param("username")
-    
-    dto, err := h.service.GetUserByUsername(c.Request.Context(), username)
-    if err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to get user", err)
-        return
-    }
-    
-    // Return public info only
-    publicDTO := user.SanitizeUserDTOForPublic(dto)
-    httpx.Success(c, http.StatusOK, publicDTO)
+	username := c.Param("username")
+	
+	query := user.GetUserByUsernameQuery{Username: username}
+	result, err := h.queryHandler.HandleGetUserByUsername(c.Request.Context(), query)
+	if err != nil {
+		if userDomain.IsNotFoundError(err) {
+			httpx.Error(c, http.StatusNotFound, "User not found", err)
+			return
+		}
+		httpx.Error(c, http.StatusInternalServerError, "Failed to get user", err)
+		return
+	}
+	
+	// Return public info only
+	publicDTO := user.ToPublicUserDTO(result)
+	httpx.Success(c, http.StatusOK, publicDTO)
 }
 
-// GetPublicUserProfile godoc
+// GetPublicProfile godoc
 // @Summary Get public user profile
 // @Description Get public user profile information
 // @Tags users
@@ -185,175 +162,93 @@ func (h *UserHandler) GetUserByUsername(c *gin.Context) {
 // @Success 200 {object} user.PublicUserDTO
 // @Failure 404 {object} httpx.ErrorResponse
 // @Router /users/{id}/public [get]
-func (h *UserHandler) GetPublicUserProfile(c *gin.Context) {
-    id := c.Param("id")
-    
-    dto, err := h.service.GetUserByID(c.Request.Context(), id)
-    if err != nil {
-        httpx.Error(c, http.StatusNotFound, "User not found", err)
-        return
-    }
-    
-    publicDTO := user.SanitizeUserDTOForPublic(dto)
-    httpx.Success(c, http.StatusOK, publicDTO)
+func (h *UserHandler) GetPublicProfile(c *gin.Context) {
+	id := c.Param("id")
+	
+	query := user.GetPublicProfileQuery{UserID: id}
+	result, err := h.queryHandler.HandleGetPublicProfile(c.Request.Context(), query)
+	if err != nil {
+		httpx.Error(c, http.StatusNotFound, "User not found", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
-// ============================================================================
-// READ OPERATIONS - Lists & Search
-// ============================================================================
-
 // ListUsers godoc
-// @Summary List users with filters
-// @Description Get paginated list of users with optional filters
+// @Summary List users
+// @Description List users with filtering and pagination
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param filter query user.UserFilterDTO false "Filter parameters"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Page size" default(20)
+// @Param user_type query string false "User type filter"
+// @Param status query string false "Status filter"
+// @Param country query string false "Country filter"
+// @Param min_rating query number false "Minimum rating"
+// @Param is_featured query bool false "Featured only"
+// @Param is_online query bool false "Online only"
+// @Param sort_by query string false "Sort field" default(created_at)
+// @Param sort_order query string false "Sort order (asc/desc)" default(desc)
 // @Success 200 {object} user.UserListResponseDTO
 // @Failure 400 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
 // @Router /users [get]
-// @Security BearerAuth
 func (h *UserHandler) ListUsers(c *gin.Context) {
-    var filterDTO user.UserFilterDTO
-    if err := c.ShouldBindQuery(&filterDTO); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid filter parameters", err)
-        return
-    }
-    
-    // Set defaults
-    if filterDTO.Page == 0 {
-        filterDTO.Page = 1
-    }
-    if filterDTO.PageSize == 0 {
-        filterDTO.PageSize = 20
-    }
-    
-    filter := user.ToListFilter(filterDTO)
-    
-    response, err := h.service.ListUsers(c.Request.Context(), filter)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to list users", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, response)
+	filter := h.parseListFilter(c)
+	
+	if err := filter.Validate(); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid filter parameters", err)
+		return
+	}
+	
+	query := user.ListUsersQuery{Filter: filter}
+	result, err := h.queryHandler.HandleListUsers(c.Request.Context(), query)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to list users", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
 // SearchUsers godoc
 // @Summary Search users
-// @Description Full-text search across users
+// @Description Search users by query string
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param query query user.UserSearchQueryDTO true "Search parameters"
+// @Param q query string true "Search query"
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Page size" default(20)
 // @Success 200 {object} user.UserListResponseDTO
 // @Failure 400 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
 // @Router /users/search [get]
 func (h *UserHandler) SearchUsers(c *gin.Context) {
-    var searchDTO user.UserSearchQueryDTO
-    if err := c.ShouldBindQuery(&searchDTO); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid search parameters", err)
-        return
-    }
-    
-    // Set defaults
-    if searchDTO.Page == 0 {
-        searchDTO.Page = 1
-    }
-    if searchDTO.PageSize == 0 {
-        searchDTO.PageSize = 20
-    }
-    
-    filter := user.ToSearchFilter(searchDTO)
-    
-    response, err := h.service.SearchUsers(c.Request.Context(), searchDTO.Query, filter)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to search users", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, response)
-}
-
-// GetTopRatedFreelancers godoc
-// @Summary Get top rated freelancers
-// @Description Get list of top rated freelancers
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param limit query int false "Limit" default(10)
-// @Success 200 {object} []user.PublicUserDTO
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /users/top-rated [get]
-func (h *UserHandler) GetTopRatedFreelancers(c *gin.Context) {
-    limitStr := c.DefaultQuery("limit", "10")
-    limit, _ := strconv.Atoi(limitStr)
-    
-    if limit <= 0 || limit > 100 {
-        limit = 10
-    }
-    
-    users, err := h.service.GetTopRatedFreelancers(c.Request.Context(), limit)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to get top rated freelancers", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, users)
-}
-
-// GetFeaturedUsers godoc
-// @Summary Get featured users
-// @Description Get list of featured users
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param user_type query string false "User type filter (freelancer/client)"
-// @Param limit query int false "Limit" default(10)
-// @Success 200 {object} []user.PublicUserDTO
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /users/featured [get]
-func (h *UserHandler) GetFeaturedUsers(c *gin.Context) {
-    userType := c.Query("user_type")
-    limitStr := c.DefaultQuery("limit", "10")
-    limit, _ := strconv.Atoi(limitStr)
-    
-    if limit <= 0 || limit > 100 {
-        limit = 10
-    }
-    
-    users, err := h.service.GetFeaturedUsers(c.Request.Context(), userDomain.UserType(userType), limit)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to get featured users", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, users)
-}
-
-// GetOnlineUsers godoc
-// @Summary Get online users
-// @Description Get list of currently online users
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param user_type query string false "User type filter"
-// @Success 200 {object} []user.UserProfileSummaryDTO
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /users/online [get]
-// @Security BearerAuth
-func (h *UserHandler) GetOnlineUsers(c *gin.Context) {
-    userType := c.Query("user_type")
-    
-    users, err := h.service.GetOnlineUsers(c.Request.Context(), userDomain.UserType(userType))
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to get online users", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, users)
+	searchQuery := c.Query("q")
+	if searchQuery == "" {
+		httpx.Error(c, http.StatusBadRequest, "Search query is required", nil)
+		return
+	}
+	
+	filter := h.parseListFilter(c)
+	if err := filter.Validate(); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid filter parameters", err)
+		return
+	}
+	
+	query := user.SearchUsersQuery{
+		SearchQuery: searchQuery,
+		Filter:      filter,
+	}
+	
+	result, err := h.queryHandler.HandleSearchUsers(c.Request.Context(), query)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to search users", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
 // ============================================================================
@@ -367,150 +262,185 @@ func (h *UserHandler) GetOnlineUsers(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Param user body user.UpdateUserDTO true "User update data"
+// @Param user body user.UpdateUserDTO true "User data"
 // @Success 200 {object} user.UserDTO
 // @Failure 400 {object} httpx.ErrorResponse
-// @Failure 403 {object} httpx.ErrorResponse
 // @Failure 404 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
 // @Router /users/{id} [put]
-// @Security BearerAuth
 func (h *UserHandler) UpdateUser(c *gin.Context) {
-    id := c.Param("id")
-    currentUserID, _ := c.Get("user_id")
-    
-    // Check if user can update (must be owner or admin)
-    if currentUserID != id {
-        // TODO: Check if user is admin
-        httpx.Error(c, http.StatusForbidden, "Cannot update other user's information", nil)
-        return
-    }
-    
-    var req user.UpdateUserDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    dto, err := h.service.UpdateUser(c.Request.Context(), id, req)
-    if err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        if err == userDomain.ErrUserBanned {
-            httpx.Error(c, http.StatusForbidden, "User is banned", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to update user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, dto)
+	id := c.Param("id")
+	
+	var dto user.UpdateUserDTO
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	// Validate DTO
+	if err := user.ValidateUpdateUserDTO(&dto); err != nil {
+		httpx.ValidationError(c, err)
+		return
+	}
+	
+	cmd := user.UpdateUserCommand{
+		UserID:            id,
+		FirstName:         dto.FirstName,
+		LastName:          dto.LastName,
+		DisplayName:       dto.DisplayName,
+		Bio:               dto.Bio,
+		Tagline:           dto.Tagline,
+		Title:             dto.Title,
+		Website:           dto.Website,
+		ProfilePictureURL: dto.ProfilePictureURL,
+		CoverImageURL:     dto.CoverImageURL,
+		PhoneNumber:       dto.PhoneNumber,
+		PhoneCountryCode:  dto.PhoneCountryCode,
+		City:              dto.City,
+		Country:           dto.Country,
+		CountryCode:       dto.CountryCode,
+		Timezone:          dto.Timezone,
+	}
+	
+	result, err := h.commandHandler.HandleUpdateUser(c.Request.Context(), cmd)
+	if err != nil {
+		if userDomain.IsNotFoundError(err) {
+			httpx.Error(c, http.StatusNotFound, "User not found", err)
+			return
+		}
+		if userDomain.IsValidationError(err) {
+			httpx.ValidationError(c, err)
+			return
+		}
+		httpx.Error(c, http.StatusInternalServerError, "Failed to update user", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
-// UpdateCurrentUser godoc
-// @Summary Update current user
-// @Description Update the currently authenticated user's information
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param user body user.UpdateUserDTO true "User update data"
-// @Success 200 {object} user.UserDTO
-// @Failure 400 {object} httpx.ErrorResponse
-// @Failure 401 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /users/me [put]
-// @Security BearerAuth
-func (h *UserHandler) UpdateCurrentUser(c *gin.Context) {
-    userID, exists := c.Get("user_id")
-    if !exists {
-        httpx.Error(c, http.StatusUnauthorized, "Unauthorized", nil)
-        return
-    }
-    
-    var req user.UpdateUserDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    dto, err := h.service.UpdateUser(c.Request.Context(), userID.(string), req)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to update user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, dto)
-}
-
-// UpdateUserStats godoc
-// @Summary Update user statistics
-// @Description Update user statistics (internal use)
+// UpdateProfile godoc
+// @Summary Update user profile
+// @Description Update user profile information
 // @Tags users
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Param stats body user.UpdateUserStatsDTO true "Stats update data"
-// @Success 200 {object} httpx.SuccessResponse
+// @Param profile body user.UpdateProfileDTO true "Profile data"
+// @Success 200 {object} user.UserDTO
 // @Failure 400 {object} httpx.ErrorResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Router /users/{id}/stats [put]
-// @Security BearerAuth
-func (h *UserHandler) UpdateUserStats(c *gin.Context) {
-    id := c.Param("id")
-    
-    var req user.UpdateUserStatsDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    if err := h.service.UpdateUserStats(c.Request.Context(), id, req); err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to update stats", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "Stats updated successfully"})
+// @Router /users/{id}/profile [put]
+func (h *UserHandler) UpdateProfile(c *gin.Context) {
+	id := c.Param("id")
+	
+	var dto user.UpdateProfileDTO
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	if err := user.ValidateUpdateProfileDTO(&dto); err != nil {
+		httpx.ValidationError(c, err)
+		return
+	}
+	
+	cmd := user.UpdateProfileCommand{
+		UserID:  id,
+		Bio:     dto.Bio,
+		Tagline: dto.Tagline,
+		Title:   dto.Title,
+	}
+	
+	result, err := h.commandHandler.HandleUpdateProfile(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to update profile", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
-// UpdateOnlineStatus godoc
-// @Summary Update online status
-// @Description Update user's online/offline status
+// UpdateAvailability godoc
+// @Summary Update user availability
+// @Description Update user availability status
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param status body map[string]bool true "Online status {\"is_online\": true}"
-// @Success 200 {object} httpx.SuccessResponse
+// @Param id path string true "User ID"
+// @Param availability body user.UpdateAvailabilityDTO true "Availability data"
+// @Success 200 {object} user.UserDTO
 // @Failure 400 {object} httpx.ErrorResponse
-// @Failure 401 {object} httpx.ErrorResponse
-// @Router /users/me/online-status [put]
-// @Security BearerAuth
-func (h *UserHandler) UpdateOnlineStatus(c *gin.Context) {
-    userID, exists := c.Get("user_id")
-    if !exists {
-        httpx.Error(c, http.StatusUnauthorized, "Unauthorized", nil)
-        return
-    }
-    
-    var req struct {
-        IsOnline bool `json:"is_online"`
-    }
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    if err := h.service.UpdateOnlineStatus(c.Request.Context(), userID.(string), req.IsOnline); err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to update online status", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "Online status updated"})
+// @Router /users/{id}/availability [put]
+func (h *UserHandler) UpdateAvailability(c *gin.Context) {
+	id := c.Param("id")
+	
+	var dto user.UpdateAvailabilityDTO
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	if err := user.ValidateUpdateAvailabilityDTO(&dto); err != nil {
+		httpx.ValidationError(c, err)
+		return
+	}
+	
+	cmd := user.UpdateAvailabilityCommand{
+		UserID:       id,
+		Status:       dto.Status,
+		HoursPerWeek: dto.HoursPerWeek,
+	}
+	
+	result, err := h.commandHandler.HandleUpdateAvailability(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to update availability", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// UpdateSettings godoc
+// @Summary Update user settings
+// @Description Update user settings and preferences
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param settings body user.UpdateSettingsDTO true "Settings data"
+// @Success 200 {object} user.UserDTO
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /users/{id}/settings [put]
+func (h *UserHandler) UpdateSettings(c *gin.Context) {
+	id := c.Param("id")
+	
+	var dto user.UpdateSettingsDTO
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	if err := user.ValidateUpdateSettingsDTO(&dto); err != nil {
+		httpx.ValidationError(c, err)
+		return
+	}
+	
+	cmd := user.UpdateSettingsCommand{
+		UserID:            id,
+		ProfileVisibility: dto.ProfileVisibility,
+		ShowEmail:         dto.ShowEmail,
+		ShowPhone:         dto.ShowPhone,
+		ShowLocation:      dto.ShowLocation,
+		SearchableProfile: dto.SearchableProfile,
+		AcceptingWork:     dto.AcceptingWork,
+	}
+	
+	result, err := h.commandHandler.HandleUpdateSettings(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to update settings", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
 // ============================================================================
@@ -519,69 +449,395 @@ func (h *UserHandler) UpdateOnlineStatus(c *gin.Context) {
 
 // VerifyEmail godoc
 // @Summary Verify email
-// @Description Verify user's email address
-// @Tags users
+// @Description Mark user email as verified
+// @Tags users,verification
 // @Accept json
 // @Produce json
-// @Param verification body user.VerifyEmailDTO true "Email verification data"
+// @Param id path string true "User ID"
 // @Success 200 {object} user.UserDTO
-// @Failure 400 {object} httpx.ErrorResponse
 // @Failure 404 {object} httpx.ErrorResponse
-// @Router /users/verify-email [post]
+// @Router /users/{id}/verify-email [post]
 func (h *UserHandler) VerifyEmail(c *gin.Context) {
-    var req user.VerifyEmailDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    // TODO: Validate token
-    
-    dto, err := h.service.VerifyEmail(c.Request.Context(), req.UserID)
-    if err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to verify email", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, dto)
+	id := c.Param("id")
+	
+	cmd := user.VerifyEmailCommand{UserID: id}
+	result, err := h.commandHandler.HandleVerifyEmail(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to verify email", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
 // VerifyPhone godoc
 // @Summary Verify phone
-// @Description Verify user's phone number
-// @Tags users
+// @Description Mark user phone as verified
+// @Tags users,verification
 // @Accept json
 // @Produce json
-// @Param verification body user.VerifyPhoneDTO true "Phone verification data"
+// @Param id path string true "User ID"
+// @Success 200 {object} user.UserDTO
+// @Failure 404 {object} httpx.ErrorResponse
+// @Router /users/{id}/verify-phone [post]
+func (h *UserHandler) VerifyPhone(c *gin.Context) {
+	id := c.Param("id")
+	
+	cmd := user.VerifyPhoneCommand{UserID: id}
+	result, err := h.commandHandler.HandleVerifyPhone(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to verify phone", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// VerifyIdentity godoc
+// @Summary Verify identity
+// @Description Mark user identity as verified
+// @Tags users,verification
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} user.UserDTO
+// @Failure 404 {object} httpx.ErrorResponse
+// @Router /users/{id}/verify-identity [post]
+func (h *UserHandler) VerifyIdentity(c *gin.Context) {
+	id := c.Param("id")
+	
+	cmd := user.VerifyIdentityCommand{UserID: id}
+	result, err := h.commandHandler.HandleVerifyIdentity(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to verify identity", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// ============================================================================
+// MODERATION OPERATIONS (Admin only)
+// ============================================================================
+
+// SuspendUser godoc
+// @Summary Suspend user
+// @Description Suspend a user account
+// @Tags users,admin
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param data body object{reason string, suspended_by string} true "Suspension data"
 // @Success 200 {object} user.UserDTO
 // @Failure 400 {object} httpx.ErrorResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Router /users/verify-phone [post]
-// @Security BearerAuth
-func (h *UserHandler) VerifyPhone(c *gin.Context) {
-    var req user.VerifyPhoneDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    // TODO: Validate code
-    
-    dto, err := h.service.VerifyPhone(c.Request.Context(), req.UserID)
-    if err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to verify phone", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, dto)
+// @Router /admin/users/{id}/suspend [post]
+func (h *UserHandler) SuspendUser(c *gin.Context) {
+	id := c.Param("id")
+	
+	var req struct {
+		Reason      string `json:"reason" binding:"required"`
+		SuspendedBy string `json:"suspended_by" binding:"required"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	cmd := user.SuspendUserCommand{
+		UserID:      id,
+		Reason:      req.Reason,
+		SuspendedBy: req.SuspendedBy,
+	}
+	
+	result, err := h.commandHandler.HandleSuspendUser(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to suspend user", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// BanUser godoc
+// @Summary Ban user
+// @Description Ban a user account permanently
+// @Tags users,admin
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param data body object{reason string, banned_by string} true "Ban data"
+// @Success 200 {object} user.UserDTO
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /admin/users/{id}/ban [post]
+func (h *UserHandler) BanUser(c *gin.Context) {
+	id := c.Param("id")
+	
+	var req struct {
+		Reason   string `json:"reason" binding:"required"`
+		BannedBy string `json:"banned_by" binding:"required"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	cmd := user.BanUserCommand{
+		UserID:   id,
+		Reason:   req.Reason,
+		BannedBy: req.BannedBy,
+	}
+	
+	result, err := h.commandHandler.HandleBanUser(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to ban user", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// RestoreUser godoc
+// @Summary Restore user
+// @Description Restore a suspended or banned user
+// @Tags users,admin
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param data body object{restored_by string} true "Restore data"
+// @Success 200 {object} user.UserDTO
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /admin/users/{id}/restore [post]
+func (h *UserHandler) RestoreUser(c *gin.Context) {
+	id := c.Param("id")
+	
+	var req struct {
+		RestoredBy string `json:"restored_by" binding:"required"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	cmd := user.RestoreUserCommand{
+		UserID:     id,
+		RestoredBy: req.RestoredBy,
+	}
+	
+	result, err := h.commandHandler.HandleRestoreUser(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to restore user", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// AddWarning godoc
+// @Summary Add warning
+// @Description Add a warning to user account
+// @Tags users,admin
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param data body object{reason string, issued_by string} true "Warning data"
+// @Success 200 {object} user.UserDTO
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /admin/users/{id}/warn [post]
+func (h *UserHandler) AddWarning(c *gin.Context) {
+	id := c.Param("id")
+	
+	var req struct {
+		Reason   string `json:"reason" binding:"required"`
+		IssuedBy string `json:"issued_by" binding:"required"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	cmd := user.AddWarningCommand{
+		UserID:   id,
+		Reason:   req.Reason,
+		IssuedBy: req.IssuedBy,
+	}
+	
+	result, err := h.commandHandler.HandleAddWarning(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to add warning", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// ============================================================================
+// BADGE OPERATIONS (Admin only)
+// ============================================================================
+
+// AssignBadge godoc
+// @Summary Assign badge
+// @Description Assign a badge to user
+// @Tags users,admin,badges
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param data body object{badge_type string} true "Badge data"
+// @Success 200 {object} user.UserDTO
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /admin/users/{id}/badges [post]
+func (h *UserHandler) AssignBadge(c *gin.Context) {
+	id := c.Param("id")
+	
+	var req struct {
+		BadgeType string `json:"badge_type" binding:"required"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	badgeType := userDomain.BadgeType(req.BadgeType)
+	if !badgeType.Valid() {
+		httpx.Error(c, http.StatusBadRequest, "Invalid badge type", nil)
+		return
+	}
+	
+	cmd := user.AssignBadgeCommand{
+		UserID:    id,
+		BadgeType: badgeType,
+	}
+	
+	result, err := h.commandHandler.HandleAssignBadge(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to assign badge", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// RemoveBadge godoc
+// @Summary Remove badge
+// @Description Remove a badge from user
+// @Tags users,admin,badges
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param badge_type path string true "Badge type"
+// @Success 200 {object} user.UserDTO
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /admin/users/{id}/badges/{badge_type} [delete]
+func (h *UserHandler) RemoveBadge(c *gin.Context) {
+	id := c.Param("id")
+	badgeTypeStr := c.Param("badge_type")
+	
+	badgeType := userDomain.BadgeType(badgeTypeStr)
+	if !badgeType.Valid() {
+		httpx.Error(c, http.StatusBadRequest, "Invalid badge type", nil)
+		return
+	}
+	
+	cmd := user.RemoveBadgeCommand{
+		UserID:    id,
+		BadgeType: badgeType,
+	}
+	
+	result, err := h.commandHandler.HandleRemoveBadge(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to remove badge", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// SetFeatured godoc
+// @Summary Set featured
+// @Description Set user as featured or unfeatured
+// @Tags users,admin
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Param data body object{featured bool} true "Featured data"
+// @Success 200 {object} user.UserDTO
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /admin/users/{id}/featured [put]
+func (h *UserHandler) SetFeatured(c *gin.Context) {
+	id := c.Param("id")
+	
+	var req struct {
+		Featured bool `json:"featured"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	cmd := user.SetFeaturedCommand{
+		UserID:   id,
+		Featured: req.Featured,
+	}
+	
+	result, err := h.commandHandler.HandleSetFeatured(c.Request.Context(), cmd)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to set featured", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// ============================================================================
+// STATISTICS & ANALYTICS
+// ============================================================================
+
+// GetUserStatistics godoc
+// @Summary Get user statistics
+// @Description Get comprehensive user statistics
+// @Tags users,statistics
+// @Accept json
+// @Produce json
+// @Success 200 {object} user.UserStatistics
+// @Failure 500 {object} httpx.ErrorResponse
+// @Router /admin/users/statistics [get]
+func (h *UserHandler) GetUserStatistics(c *gin.Context) {
+	query := user.GetUserStatisticsQuery{}
+	result, err := h.queryHandler.HandleGetUserStatistics(c.Request.Context(), query)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to get statistics", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
+}
+
+// GetUserGrowthStats godoc
+// @Summary Get growth statistics
+// @Description Get user growth statistics for specified period
+// @Tags users,statistics
+// @Accept json
+// @Produce json
+// @Param days query int false "Number of days" default(30)
+// @Success 200 {object} user.UserGrowthStats
+// @Failure 500 {object} httpx.ErrorResponse
+// @Router /admin/users/statistics/growth [get]
+func (h *UserHandler) GetUserGrowthStats(c *gin.Context) {
+	days, _ := strconv.Atoi(c.DefaultQuery("days", "30"))
+	
+	query := user.GetUserGrowthStatsQuery{Days: days}
+	result, err := h.queryHandler.HandleGetUserGrowthStats(c.Request.Context(), query)
+	if err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to get growth statistics", err)
+		return
+	}
+	
+	httpx.Success(c, http.StatusOK, result)
 }
 
 // ============================================================================
@@ -589,354 +845,216 @@ func (h *UserHandler) VerifyPhone(c *gin.Context) {
 // ============================================================================
 
 // DeleteUser godoc
-// @Summary Delete user (soft delete)
+// @Summary Delete user
 // @Description Soft delete a user account
-// @Tags users
+// @Tags users,admin
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Success 200 {object} httpx.SuccessResponse
-// @Failure 403 {object} httpx.ErrorResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /users/{id} [delete]
-// @Security BearerAuth
+// @Param data body object{deleted_by string} true "Delete data"
+// @Success 204
+// @Failure 400 {object} httpx.ErrorResponse
+// @Router /admin/users/{id} [delete]
 func (h *UserHandler) DeleteUser(c *gin.Context) {
-    id := c.Param("id")
-    currentUserID, _ := c.Get("user_id")
-    
-    // Check if user can delete (must be owner or admin)
-    if currentUserID != id {
-        // TODO: Check if user is admin
-        httpx.Error(c, http.StatusForbidden, "Cannot delete other user's account", nil)
-        return
-    }
-    
-    if err := h.service.DeleteUser(c.Request.Context(), id); err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to delete user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "User deleted successfully"})
-}
-
-// DeleteCurrentUser godoc
-// @Summary Delete current user
-// @Description Delete the currently authenticated user's account
-// @Tags users
-// @Accept json
-// @Produce json
-// @Success 200 {object} httpx.SuccessResponse
-// @Failure 401 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /users/me [delete]
-// @Security BearerAuth
-func (h *UserHandler) DeleteCurrentUser(c *gin.Context) {
-    userID, exists := c.Get("user_id")
-    if !exists {
-        httpx.Error(c, http.StatusUnauthorized, "Unauthorized", nil)
-        return
-    }
-    
-    if err := h.service.DeleteUser(c.Request.Context(), userID.(string)); err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to delete user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "Your account has been deleted"})
+	id := c.Param("id")
+	
+	var req struct {
+		DeletedBy string `json:"deleted_by" binding:"required"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	cmd := user.DeleteUserCommand{
+		UserID:    id,
+		DeletedBy: req.DeletedBy,
+	}
+	
+	if err := h.commandHandler.HandleDeleteUser(c.Request.Context(), cmd); err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to delete user", err)
+		return
+	}
+	
+	c.Status(http.StatusNoContent)
 }
 
 // ============================================================================
-// ADMIN OPERATIONS
+// ACTIVITY TRACKING
 // ============================================================================
 
-// SuspendUser godoc
-// @Summary Suspend user (Admin only)
-// @Description Suspend a user account
-// @Tags admin
+// RecordLogin godoc
+// @Summary Record login
+// @Description Record user login activity
+// @Tags users,activity
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Param suspension body user.SuspendUserDTO true "Suspension data"
-// @Success 200 {object} httpx.SuccessResponse
+// @Success 204
 // @Failure 400 {object} httpx.ErrorResponse
-// @Failure 403 {object} httpx.ErrorResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Router /admin/users/{id}/suspend [post]
-// @Security BearerAuth
-func (h *UserHandler) SuspendUser(c *gin.Context) {
-    id := c.Param("id")
-    adminID, _ := c.Get("user_id")
-    
-    var req user.SuspendUserDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    if err := h.service.SuspendUser(c.Request.Context(), id, req.Reason, adminID.(string)); err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to suspend user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "User suspended successfully"})
+// @Router /users/{id}/login [post]
+func (h *UserHandler) RecordLogin(c *gin.Context) {
+	id := c.Param("id")
+	ipAddress := c.ClientIP()
+	userAgent := c.GetHeader("User-Agent")
+	
+	cmd := user.RecordLoginCommand{
+		UserID:    id,
+		IPAddress: ipAddress,
+		UserAgent: userAgent,
+	}
+	
+	if err := h.commandHandler.HandleRecordLogin(c.Request.Context(), cmd); err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to record login", err)
+		return
+	}
+	
+	c.Status(http.StatusNoContent)
 }
 
-// UnsuspendUser godoc
-// @Summary Unsuspend user (Admin only)
-// @Description Remove suspension from a user account
-// @Tags admin
+// UpdateLastSeen godoc
+// @Summary Update last seen
+// @Description Update user's last seen timestamp
+// @Tags users,activity
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Success 200 {object} httpx.SuccessResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /admin/users/{id}/suspend [delete]
-// @Security BearerAuth
-func (h *UserHandler) UnsuspendUser(c *gin.Context) {
-    id := c.Param("id")
-    
-    if err := h.service.UnsuspendUser(c.Request.Context(), id); err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to unsuspend user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "User unsuspended successfully"})
+// @Success 204
+// @Router /users/{id}/last-seen [put]
+func (h *UserHandler) UpdateLastSeen(c *gin.Context) {
+	id := c.Param("id")
+	
+	if err := h.service.UpdateLastSeen(c.Request.Context(), id); err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to update last seen", err)
+		return
+	}
+	
+	c.Status(http.StatusNoContent)
 }
 
-// BanUser godoc
-// @Summary Ban user (Admin only)
-// @Description Ban a user account
-// @Tags admin
+// SetOnlineStatus godoc
+// @Summary Set online status
+// @Description Set user online/offline status
+// @Tags users,activity
 // @Accept json
 // @Produce json
 // @Param id path string true "User ID"
-// @Param ban body user.BanUserDTO true "Ban data"
-// @Success 200 {object} httpx.SuccessResponse
-// @Failure 400 {object} httpx.ErrorResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Router /admin/users/{id}/ban [post]
-// @Security BearerAuth
-func (h *UserHandler) BanUser(c *gin.Context) {
-    id := c.Param("id")
-    adminID, _ := c.Get("user_id")
-    
-    var req user.BanUserDTO
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    if err := h.service.BanUser(c.Request.Context(), id, req.Reason, adminID.(string)); err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to ban user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "User banned successfully"})
-}
-
-// UnbanUser godoc
-// @Summary Unban user (Admin only)
-// @Description Remove ban from a user account
-// @Tags admin
-// @Accept json
-// @Produce json
-// @Param id path string true "User ID"
-// @Success 200 {object} httpx.SuccessResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /admin/users/{id}/ban [delete]
-// @Security BearerAuth
-func (h *UserHandler) UnbanUser(c *gin.Context) {
-    id := c.Param("id")
-    
-    if err := h.service.UnbanUser(c.Request.Context(), id); err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to unban user", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "User unbanned successfully"})
-}
-
-// SetFeatured godoc
-// @Summary Set user as featured (Admin only)
-// @Description Mark/unmark user as featured
-// @Tags admin
-// @Accept json
-// @Produce json
-// @Param id path string true "User ID"
-// @Param featured body map[string]bool true "Featured status {\"featured\": true}"
-// @Success 200 {object} httpx.SuccessResponse
-// @Failure 400 {object} httpx.ErrorResponse
-// @Failure 404 {object} httpx.ErrorResponse
-// @Router /admin/users/{id}/featured [put]
-// @Security BearerAuth
-func (h *UserHandler) SetFeatured(c *gin.Context) {
-    id := c.Param("id")
-    
-    var req struct {
-        Featured bool `json:"featured"`
-    }
-    if err := c.ShouldBindJSON(&req); err != nil {
-        httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
-        return
-    }
-    
-    if err := h.service.MarkAsFeatured(c.Request.Context(), id, req.Featured); err != nil {
-        if err == userDomain.ErrUserNotFound {
-            httpx.Error(c, http.StatusNotFound, "User not found", err)
-            return
-        }
-        httpx.Error(c, http.StatusInternalServerError, "Failed to update featured status", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{"message": "Featured status updated"})
+// @Param data body object{is_online bool} true "Online status"
+// @Success 204
+// @Router /users/{id}/online-status [put]
+func (h *UserHandler) SetOnlineStatus(c *gin.Context) {
+	id := c.Param("id")
+	
+	var req struct {
+		IsOnline bool `json:"is_online"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		httpx.Error(c, http.StatusBadRequest, "Invalid request body", err)
+		return
+	}
+	
+	if err := h.service.SetOnlineStatus(c.Request.Context(), id, req.IsOnline); err != nil {
+		httpx.Error(c, http.StatusInternalServerError, "Failed to set online status", err)
+		return
+	}
+	
+	c.Status(http.StatusNoContent)
 }
 
 // ============================================================================
-// ANALYTICS & STATISTICS
+// HELPER METHODS
 // ============================================================================
 
-// GetUserStatistics godoc
-// @Summary Get platform user statistics (Admin only)
-// @Description Get aggregated user statistics
-// @Tags admin
-// @Accept json
-// @Produce json
-// @Success 200 {object} user.UserStatisticsDTO
-// @Failure 500 {object} httpx.ErrorResponse
-// @Router /admin/users/statistics [get]
-// @Security BearerAuth
-func (h *UserHandler) GetUserStatistics(c *gin.Context) {
-    stats, err := h.service.GetUserStatistics(c.Request.Context())
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to get statistics", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, stats)
-}
-
-// GetUserTrustScore godoc
-// @Summary Get user trust score
-// @Description Get calculated trust score for a user
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param id path string true "User ID"
-// @Success 200 {object} user.UserTrustScoreDTO
-// @Failure 404 {object} httpx.ErrorResponse
-// @Router /users/{id}/trust-score [get]
-// @Security BearerAuth
-func (h *UserHandler) GetUserTrustScore(c *gin.Context) {
-    id := c.Param("id")
-    
-    trustLevel, err := h.service.CheckUserTrustLevel(c.Request.Context(), id)
-    if err != nil {
-        httpx.Error(c, http.StatusNotFound, "User not found", err)
-        return
-    }
-    
-    httpx.Success(c, http.StatusOK, gin.H{
-        "user_id": id,
-        "trust_level": trustLevel,
-    })
-}
-
-// ============================================================================
-// VALIDATION HELPERS
-// ============================================================================
-
-// CheckUsernameAvailability godoc
-// @Summary Check username availability
-// @Description Check if a username is available
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param username query string true "Username to check"
-// @Success 200 {object} user.UsernameAvailabilityResponseDTO
-// @Failure 400 {object} httpx.ErrorResponse
-// @Router /users/check-username [get]
-func (h *UserHandler) CheckUsernameAvailability(c *gin.Context) {
-    username := c.Query("username")
-    if username == "" {
-        httpx.Error(c, http.StatusBadRequest, "Username is required", nil)
-        return
-    }
-    
-    exists, err := h.service.CheckUsernameExists(c.Request.Context(), username)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to check username", err)
-        return
-    }
-    
-    response := user.UsernameAvailabilityResponseDTO{
-        Available: !exists,
-    }
-    
-    if exists {
-        response.Message = "Username is already taken"
-    } else {
-        response.Message = "Username is available"
-    }
-    
-    httpx.Success(c, http.StatusOK, response)
-}
-
-// CheckEmailAvailability godoc
-// @Summary Check email availability
-// @Description Check if an email is available
-// @Tags users
-// @Accept json
-// @Produce json
-// @Param email query string true "Email to check"
-// @Success 200 {object} user.EmailAvailabilityResponseDTO
-// @Failure 400 {object} httpx.ErrorResponse
-// @Router /users/check-email [get]
-func (h *UserHandler) CheckEmailAvailability(c *gin.Context) {
-    email := c.Query("email")
-    if email == "" {
-        httpx.Error(c, http.StatusBadRequest, "Email is required", nil)
-        return
-    }
-    
-    exists, err := h.service.CheckEmailExists(c.Request.Context(), email)
-    if err != nil {
-        httpx.Error(c, http.StatusInternalServerError, "Failed to check email", err)
-        return
-    }
-    
-    response := user.EmailAvailabilityResponseDTO{
-        Available: !exists,
-    }
-    
-    if exists {
-        response.Message = "Email is already registered"
-    } else {
-        response.Message = "Email is available"
-    }
-    
-    httpx.Success(c, http.StatusOK, response)
+// parseListFilter parses query parameters into ListFilter
+func (h *UserHandler) parseListFilter(c *gin.Context) userDomain.ListFilter {
+	filter := userDomain.NewListFilter()
+	
+	// Pagination
+	if page := c.Query("page"); page != "" {
+		if p, err := strconv.Atoi(page); err == nil {
+			filter.Page = p
+		}
+	}
+	if limit := c.Query("limit"); limit != "" {
+		if l, err := strconv.Atoi(limit); err == nil {
+			filter.Limit = l
+		}
+	}
+	
+	// Sorting
+	if sortBy := c.Query("sort_by"); sortBy != "" {
+		filter.SortBy = sortBy
+	}
+	if sortOrder := c.Query("sort_order"); sortOrder != "" {
+		filter.SortOrder = sortOrder
+	}
+	
+	// User type filter
+	if userType := c.Query("user_type"); userType != "" {
+		ut := userDomain.UserType(userType)
+		filter.UserType = &ut
+	}
+	
+	// Status filter
+	if status := c.Query("status"); status != "" {
+		s := userDomain.AccountStatus(status)
+		filter.Status = &s
+	}
+	
+	// Verification status filter
+	if verStatus := c.Query("verification_status"); verStatus != "" {
+		vs := userDomain.VerificationStatus(verStatus)
+		filter.VerificationStatus = &vs
+	}
+	
+	// Location filters
+	if country := c.Query("country"); country != "" {
+		filter.Country = country
+	}
+	if city := c.Query("city"); city != "" {
+		filter.City = city
+	}
+	
+	// Rating filters
+	if minRating := c.Query("min_rating"); minRating != "" {
+		if mr, err := strconv.ParseFloat(minRating, 64); err == nil {
+			filter.MinRating = mr
+		}
+	}
+	if maxRating := c.Query("max_rating"); maxRating != "" {
+		if mr, err := strconv.ParseFloat(maxRating, 64); err == nil {
+			filter.MaxRating = mr
+		}
+	}
+	
+	// Boolean filters
+	if isFeatured := c.Query("is_featured"); isFeatured != "" {
+		if f, err := strconv.ParseBool(isFeatured); err == nil {
+			filter.IsFeatured = &f
+		}
+	}
+	if isTopRated := c.Query("is_top_rated"); isTopRated != "" {
+		if tr, err := strconv.ParseBool(isTopRated); err == nil {
+			filter.IsTopRated = &tr
+		}
+	}
+	if isOnline := c.Query("is_online"); isOnline != "" {
+		if o, err := strconv.ParseBool(isOnline); err == nil {
+			filter.IsOnline = &o
+		}
+	}
+	if emailVerified := c.Query("email_verified"); emailVerified != "" {
+		if ev, err := strconv.ParseBool(emailVerified); err == nil {
+			filter.EmailVerified = &ev
+		}
+	}
+	if identityVerified := c.Query("identity_verified"); identityVerified != "" {
+		if iv, err := strconv.ParseBool(identityVerified); err == nil {
+			filter.IdentityVerified = &iv
+		}
+	}
+	
+	return filter
 }
