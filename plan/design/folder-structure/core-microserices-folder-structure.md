@@ -4314,3897 +4314,1958 @@ apps/be/proposals-be/
 apps/be/contracts-be/
 │
 ├── cmd/
-│   └── api/
-│       └── main.go                           # Entry point - initializes Gin, Dapr, connects to Postgres
+│   ├── api/
+│   │   └── main.go  # 📝 API entrypoint; init Gin, Dapr, Postgres (platform-shared/logging, internal/config); serve /v1/*; ETag behind flag
+│   │
+│   └── worker/  # 🆕 background jobs / cron / outbox dispatcher
+│       └── main.go  # 🆕 boot DI; run cron/bindings; outbox dispatcher; leader election; runs: milestone auto-release, SLA monitors, contract expiry, dispute escalation, inbox consumer, timesheet auto-submit
 │
 ├── internal/
-│   ├── domain/                               # 🏛️ Domain Layer
-│   │   ├── contract/
-│   │   │   ├── entity.go                     # Contract aggregate root (ID, JobID, FreelancerID, ClientID, Terms, Amount, Status)
-│   │   │   ├── terms.go                      # Contract terms (payment terms, deliverables, timeline)
-│   │   │   ├── enums.go                      # Type (Fixed, Hourly), Status (Active, Paused, Completed, Terminated), PaymentType
-│   │   │   ├── value_objects.go              # ContractAmount, ContractDuration
-│   │   │   ├── errors.go                     # Domain errors (ContractNotFound, InvalidTerms)
-│   │   │   ├── repository.go                 # ContractRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: ContractCreated/Activated/Paused/Resumed/Completed/Terminated
-│   │   │
-│   │   ├── milestone/
-│   │   │   ├── entity.go                     # Contract milestones (ContractID, Description, Amount, DueDate, Status)
-│   │   │   ├── delivery.go                   # Milestone deliverables (files, descriptions)
-│   │   │   ├── status.go                     # Milestone status tracking (InProgress, Submitted, UnderReview, Approved, Rejected)
-│   │   │   ├── acceptance_policy.go          # 🆕 Acceptance windows, grace periods, per-milestone rules
-│   │   │   ├── auto_release.go               # 🆕 Auto-release rules (timed release when not reviewed)
-│   │   │   ├── errors.go                     # Milestone errors
-│   │   │   ├── repository.go                 # MilestoneRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: MilestoneCreated/Submitted/Approved/Rejected/Released/AutoReleased
-│   │   │
-│   │   ├── deliverable/
-│   │   │   ├── entity.go                     # Contract deliverables (ContractID, Description, FileURLs, SubmittedAt)
-│   │   │   ├── submission.go                 # Deliverable submissions (version tracking)
-│   │   │   ├── revision.go                   # Revision requests (feedback, changes needed)
-│   │   │   ├── acceptance_link.go            # 🆕 Link deliverables to milestone acceptance state
-│   │   │   ├── errors.go                     # Deliverable errors
-│   │   │   ├── repository.go                 # DeliverableRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: DeliverableSubmitted/Accepted/RevisionRequested/RevisionSubmitted
-│   │   │
-│   │   ├── timesheet/
-│   │   │   ├── entity.go                     # Time entries (ContractID, WeekStartDate, TotalHours, Status)
-│   │   │   ├── week.go                       # Weekly timesheets (aggregated by week)
-│   │   │   ├── time_entry.go                 # Individual time entry (Date, Hours, Description, Manual/Tracked)
-│   │   │   ├── screenshot.go                 # Work diary screenshots (TimeEntryID, URL, Timestamp)
-│   │   │   ├── weekly_caps.go                # 🆕 Weekly approvals & hour caps (rate * cap guardrails)
-│   │   │   ├── errors.go                     # Timesheet errors
-│   │   │   ├── repository.go                 # TimesheetRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: TimesheetSubmitted/Approved/Rejected/Locked/Unlocked
-│   │   │
-│   │   ├── workdiary/
-│   │   │   ├── entity.go                     # Work diary entries (ContractID, Date, Hours, Screenshots, ActivityLevel)
-│   │   │   ├── activity_level.go             # Activity tracking (keyboard/mouse activity percentage)
-│   │   │   ├── policy.go                     # 🆕 Screenshot policy flags (blur/off-hours/manual edits) & compliance
-│   │   │   ├── metrics.go                    # 🆕 Aggregated activity metrics & anomaly flags
-│   │   │   ├── errors.go                     # Work diary errors
-│   │   │   ├── repository.go                 # WorkDiaryRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: ScreenshotCaptured/ActivityRecorded/PolicyViolated
-│   │   │
-│   │   ├── template/
-│   │   │   ├── entity.go                     # Contract templates (Title, Terms, Clauses)
-│   │   │   ├── clause.go                     # Contract clauses (standard terms, custom clauses)
-│   │   │   ├── errors.go                     # Template errors
-│   │   │   ├── repository.go                 # TemplateRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: TemplateCreated/Updated/Archived
-│   │   │
-│   │   ├── amendment/
-│   │   │   ├── entity.go                     # Contract amendments (ContractID, Type, OldValue, NewValue, Status)
-│   │   │   ├── change_request.go             # Change requests (scope, budget, timeline changes)
-│   │   │   ├── rate_change.go                # 🆕 Rate changes with EffectiveDate
-│   │   │   ├── scope_addendum.go             # 🆕 Scope addenda (additional items linked to SOW)
-│   │   │   ├── errors.go                     # Amendment errors
-│   │   │   ├── repository.go                 # AmendmentRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: AmendmentRequested/Approved/Rejected/Applied
-│   │   │
-│   │   ├── pause/
-│   │   │   ├── entity.go                     # Contract pause/resume (ContractID, Reason, PausedAt, ResumedAt)
-│   │   │   ├── policy.go                     # 🆕 Pause policy (max duration, billing behavior during pause)
-│   │   │   ├── errors.go                     # Pause errors
-│   │   │   ├── repository.go                 # PauseRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: ContractPausePlaced/Extended/Resumed
-│   │   │
-│   │   ├── termination/
-│   │   │   ├── entity.go                     # Contract termination (ContractID, Reason, TerminatedBy, TerminatedAt)
-│   │   │   ├── reason.go                     # Termination reasons (Completed, Breach, Mutual, Unilateral)
-│   │   │   ├── errors.go                     # Termination errors
-│   │   │   ├── repository.go                 # TerminationRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: TerminationRequested/Confirmed/RolledBack
-│   │   │
-│   │   ├── dispute/
-│   │   │   ├── entity.go                     # Contract disputes (ContractID, Reason, FiledBy, Status, Resolution)
-│   │   │   ├── evidence.go                   # Evidence submission (files, descriptions, timestamps)
-│   │   │   ├── resolution.go                 # Dispute resolution (outcome, awarded amount, penalties)
-│   │   │   ├── status.go                     # Dispute status (Open, UnderReview, Mediation, Resolved, Escalated)
-│   │   │   ├── anchors.go                    # 🆕 Anchor contract states (under-review, on-hold) during disputes
-│   │   │   ├── errors.go                     # Dispute errors
-│   │   │   ├── repository.go                 # DisputeRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: DisputeOpened/EvidenceSubmitted/ResolutionUpdated/Resolved/Escalated
-│   │   │
-│   │   ├── sow/                              # 🆕 NEW DOMAIN: Statement of Work (SOW) versioning
-│   │   │   ├── entity.go                     # SOW aggregate (ContractID, CurrentVersionID, Active)
-│   │   │   ├── version.go                    # Versioned scope items (Version, Scope, Budget, CreatedBy, CreatedAt, ApprovedBy, ApprovedAt)
-│   │   │   ├── changelog.go                  # Changelog entries (who/when/what changed; approvals)
-│   │   │   ├── enums.go                      # SOW status (Draft, PendingApproval, Approved, Rejected)
-│   │   │   ├── errors.go                     # SOW domain errors (SOWNotFound, VersionConflict, NotApprover)
-│   │   │   ├── repository.go                 # SOWRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: SOWVersionCreated/SubmittedForApproval/Approved/Rejected/Activated
-│   │   │
-│   │   └── financial_hold/                   # 🆕 NEW DOMAIN: Financial holds aligned to disputes
-│   │       ├── entity.go                     # FinancialHold (ContractID, Amount, Reason, Status, PlacedBy, PlacedAt, ReleasedAt)
-│   │       ├── reason.go                     # Hold reasons (Dispute, Compliance, Chargeback, Manual)
-│   │       ├── status.go                     # Hold status (Active, Released)
-│   │       ├── errors.go                     # Financial hold errors
-│   │       ├── repository.go                 # FinancialHoldRepository interface
-│   │       └── events.go                     # 🆕 Domain events: FinancialHoldPlaced/Adjusted/Released
 │   │
-│   │   # ========================= NEW DOMAINS (ADDED) =========================
-│   │   ├── attachment/                       # Contract attachments and documents
-│   │   │   ├── entity.go                     # Attachment aggregate (ContractID, FileID, Type, UploadedBy, UploadedAt, Version)
-│   │   │   ├── type.go                       # Attachment types (ContractDocument, Evidence, Invoice, Receipt, NDA)
-│   │   │   ├── version.go                    # Versioning for attachments (with history and diffs for editable docs)
-│   │   │   ├── access_control.go             # Access controls (who can view/download/edit; linked to roles)
-│   │   │   ├── errors.go                     # Attachment errors (AttachmentNotFound, InvalidType, AccessDenied)
-│   │   │   ├── repository.go                 # AttachmentRepository interface
-│   │   │   └── events.go                     # Domain events: AttachmentUploaded/Updated/Deleted/Accessed
-│   │   │
-│   │   ├── signature/                        # Electronic signatures for contracts and amendments
-│   │   │   ├── entity.go                     # Signature aggregate (ContractID, SignerID, SignatureData, SignedAt, IPAddress)
-│   │   │   ├── signer.go                     # Signer details (Freelancer, Client, Witness; multi-signer support)
-│   │   │   ├── workflow.go                   # Signature workflow (Pending, Signed, Rejected; sequential/parallel signing)
-│   │   │   ├── verification.go               # Signature verification (e-sign provider integration, tamper-proof checks)
-│   │   │   ├── errors.go                     # Signature errors (SignatureNotFound, InvalidSigner, VerificationFailed)
-│   │   │   ├── repository.go                 # SignatureRepository interface
-│   │   │   └── events.go                     # Domain events: SignatureRequested/Signed/Rejected/Verified
-│   │   │
-│   │   ├── budget/                           # Budget tracking and forecasting (scope progress, non-financial accounting)
-│   │   │   ├── entity.go                     # Budget aggregate (ContractID, TotalBudget, Spent, Remaining, ForecastedSpend)
-│   │   │   ├── tracking.go                   # Real-time tracking (linked to timesheets/milestones/progress)
-│   │   │   ├── forecast.go                   # Forecasting models (burn rate, remaining work, historical data)
-│   │   │   ├── alerts.go                     # Budget alerts (over-budget thresholds, low-remaining warnings)
-│   │   │   ├── errors.go                     # Budget errors (BudgetNotFound, OverspendDetected)
-│   │   │   ├── repository.go                 # BudgetRepository interface
-│   │   │   └── events.go                     # Domain events: BudgetUpdated/ForecastGenerated/AlertTriggered
-│   │   │
-│   │   ├── sla/                              # Service Level Agreements (SLAs) for enterprise contracts
-│   │   │   ├── entity.go                     # SLA aggregate (ContractID, Metrics[], Penalties[], Rewards[])
-│   │   │   ├── metric.go                     # SLA metrics (ResponseTime, Uptime, QualityScore; targets & measurements)
-│   │   │   ├── penalty.go                    # Penalties for breaches (fines, credits, termination clauses)
-│   │   │   ├── reward.go                     # Rewards for exceeding SLAs (bonuses, extensions)
-│   │   │   ├── monitoring.go                 # SLA monitoring (real-time checks, reporting periods)
-│   │   │   ├── errors.go                     # SLA errors (SLANotFound, BreachDetected)
-│   │   │   ├── repository.go                 # SLARepository interface
-│   │   │   └── events.go                     # Domain events: SLABreachDetected/SLARewardEarned/SLAReportGenerated
-│   │   │
-│   │   ├── agency/                           # Agency contracts (multi-freelancer teams)
-│   │   │   ├── entity.go                     # AgencyContract aggregate (ContractID, AgencyID, Members[], Roles[])
-│   │   │   ├── member.go                     # Agency members (FreelancerID, Role, Permissions, BillRate)
-│   │   │   ├── role.go                       # Agency roles (Lead, Contributor, Reviewer; with permissions)
-│   │   │   ├── billing.go                    # Agency billing (consolidated invoicing, split payments)
-│   │   │   ├── errors.go                     # Agency errors (AgencyNotFound, MemberNotAuthorized)
-│   │   │   ├── repository.go                 # AgencyRepository interface
-│   │   │   └── events.go                     # Domain events: AgencyMemberAdded/Removed/RoleChanged/BillingUpdated
-│   │   │
-│   │   ├── compliance/                       # Compliance and legal requirements (contract-specific rules)
-│   │   │   ├── entity.go                     # Compliance aggregate (ContractID, Requirements[], Status, Audits[])
-│   │   │   ├── requirement.go                # Compliance requirements (NDAs, BackgroundChecks, Certifications)
-│   │   │   ├── audit.go                      # Compliance audits (periodic checks, reports, findings)
-│   │   │   ├── jurisdiction.go               # Jurisdiction-specific rules (e.g., GDPR, CCPA)
-│   │   │   ├── errors.go                     # Compliance errors (ComplianceNotMet, AuditFailed)
-│   │   │   ├── repository.go                 # ComplianceRepository interface
-│   │   │   └── events.go                     # Domain events: ComplianceRequirementAdded/Met/Failed/AuditCompleted
-│   │   │
-│   │   ├── performance/                      # Contract performance metrics and KPIs
-│   │   │   ├── entity.go                     # Performance aggregate (ContractID, KPIs[], Scores[], Trends[])
-│   │   │   ├── kpi.go                        # KPIs (OnTimeDelivery, Quality, Communication; definitions & targets)
-│   │   │   ├── score.go                      # Performance scores (calculated with weights)
-│   │   │   ├── trend.go                      # Performance trends (historical improvements/declines)
-│   │   │   ├── errors.go                     # Performance errors (KPINotDefined, ScoreCalculationFailed)
-│   │   │   ├── repository.go                 # PerformanceRepository interface
-│   │   │   └── events.go                     # Domain events: PerformanceUpdated/KPIBreached/TrendAlerted
-│   │   │
-│   │   ├── negotiation/                      # Contract negotiation and offers
-│   │   │   ├── entity.go                     # Negotiation aggregate (ContractID, Offers[], CounterOffers[], Status)
-│   │   │   ├── offer.go                      # Offer details (Terms, Amount, Timeline, ProposedBy, ProposedAt)
-│   │   │   ├── counter_offer.go              # Counter-offer mechanics (diffs & rationale)
-│   │   │   ├── workflow.go                   # Negotiation workflow (Pending, Accepted, Rejected, Expired)
-│   │   │   ├── errors.go                     # Negotiation errors (NegotiationNotFound, InvalidOffer)
-│   │   │   ├── repository.go                 # NegotiationRepository interface
-│   │   │   └── events.go                     # Domain events: OfferMade/CounterOffered/Accepted/Rejected
-│   │   │
-│   │   ├── renewal/                          # Contract renewals and extensions
-│   │   │   ├── entity.go                     # Renewal aggregate (ContractID, RenewalType, NewTerms, RenewalDate)
-│   │   │   ├── type.go                       # Renewal types (Auto, Manual, Extension)
-│   │   │   ├── auto_renewal.go               # Auto-renewal rules (conditions, notifications)
-│   │   │   ├── extension.go                  # Contract extensions (additional time/budget)
-│   │   │   ├── errors.go                     # Renewal errors (RenewalNotEligible, ExtensionDenied)
-│   │   │   ├── repository.go                 # RenewalRepository interface
-│   │   │   └── events.go                     # Domain events: RenewalRequested/Approved/AutoRenewed/Extended
-│   │   │
-│   │   ├── ip_rights/                        # Intellectual Property rights management
-│   │   │   ├── entity.go                     # IPRights (ContractID, AssignmentType, RightsGranted, Exclusions)
-│   │   │   ├── assignment.go                 # IP assignment (full transfer, license, work-for-hire)
-│   │   │   ├── license.go                    # Licensing terms (exclusive/non-exclusive, perpetual/term-limited)
-│   │   │   ├── protection.go                 # IP protection (confidentiality, non-compete)
-│   │   │   ├── errors.go                     # IP rights errors (IPConflict, AssignmentInvalid)
-│   │   │   ├── repository.go                 # IPRightsRepository interface
-│   │   │   └── events.go                     # Domain events: IPAssigned/Licensed/Protected
-│   │   │
-│   │   ├── nda/                              # Non-Disclosure Agreements
-│   │   │   ├── entity.go                     # NDA aggregate (ContractID, Parties, ConfidentialInfo, Duration, Breaches)
-│   │   │   ├── terms.go                      # NDA terms (definitions, obligations, exceptions)
-│   │   │   ├── breach.go                     # Breach handling (penalties, remedies)
-│   │   │   ├── errors.go                     # NDA errors (NDANotSigned, BreachDetected)
-│   │   │   ├── repository.go                 # NDARepository interface
-│   │   │   └── events.go                     # Domain events: NDASigned/Breached/Enforced
-│   │   │
-│   │   ├── report/                           # Contract reporting & analytics (non-financial progress/performance)
-│   │   │   ├── entity.go                     # Report aggregate (ContractID, Type, GeneratedAt, Data)
-│   │   │   ├── type.go                       # Report types (Progress, Performance)
-│   │   │   ├── analytics.go                  # Analytics metrics (efficiency, risks)
-│   │   │   ├── errors.go                     # Report errors (ReportNotGenerated)
-│   │   │   ├── repository.go                 # ReportRepository interface
-│   │   │   └── events.go                     # Domain events: ReportGenerated/AnalyticsUpdated
-│   │   │
-│   │   └── feedback/                         # Mid-contract feedback
-│   │       ├── entity.go                     # Feedback aggregate (ContractID, Feedbacks[], Scores)
-│   │       ├── mid_contract.go               # Mid-contract feedback (monthly for hourly)
-│   │       ├── score.go                      # Feedback scores and comments
-│   │       ├── errors.go                     # Feedback errors (FeedbackNotDue)
-│   │       ├── repository.go                 # FeedbackRepository interface
-│   │       └── events.go                     # Domain events: FeedbackSubmitted/Responded
+│   # ========================================================================================
+│   # 🔧 CONFIGURATION LAYER (Load First)
+│   # ========================================================================================
+│   ├── config/
+│   │   ├── schema.go  # Config struct: Server(Port, Host, Read/Write timeouts); DB(Host, Port, Name, User, Password, Max/MinConns); Redis; Kafka(Brokers, Topics, CGs); Storage(Endpoint, Bucket, Keys); FeatureFlags; Observability(Tracing, MetricsPort, LogLevel)
+│   │   ├── loader.go  # Load config from env/yaml/flags
+│   │   ├── validator.go  # Validate configuration
+│   │   └── feature_flags.go  # 🆕 toggles: enable_contract_drafts, enable_etag, enable_auto_release, enable_sla_tracking, enable_agency_contracts, enable_direct_contracts, enable_work_diary, enable_e_signatures, enable_auto_renewal, enable_compliance_checks
 │   │
-│   ├── application/                          # 📋 Application Layer (complete with commands/queries/service/validators)
-│   │   ├── eventhandler/
-│   │   │   ├── proposal_handler.go            # Consumes: proposal.accepted → create Contract; invite/negotiation accepted → ContractCreated
-│   │   │   ├── payment_handler.go             # Consumes: payment.processed/payment.failed → record & react (ContractPaid / retry hooks)
-│   │   │   ├── escrow_handler.go              # Consumes: escrow.released | escrow.funded | escrow.refund.processed → sync financial state
-│   │   │   ├── dispute_handler.go             # Consumes: dispute.opened/resolved/closed → anchor/resume/complete
-│   │   │   ├── admin_handler.go               # Consumes: admin.feature_flag.updated | admin.config.updated | admin.moderation.actioned
-│   │   │   ├── financial_risk_handler.go      # Consumes: financial.risk.alert | chargeback.created/updated → place/release holds
-│   │   │   ├── contract_status_handler.go     # Consumes: contract.financial_hold.placed/released → sync read models & checks
-│   │   │   ├── message_handler.go             # Consumes: message.notification_delivered → SLA timers/notifications
-│   │   │   └── system_handler.go              # Consumes: admin.threshold.updated | admin.experiment.updated
-│   │   │
-│   │   ├── contract/
-│   │   │   ├── service.go                    # Contract logic (Create, Update, Pause, Resume, End)
-│   │   │   ├── commands.go                   # CreateContract, UpdateContract, PauseContract, EndContract
-│   │   │   ├── queries.go                    # GetContract, ListContracts, FilterContracts
-│   │   │   ├── dto.go                        # ContractDTO, CreateContractDTO, UpdateContractDTO
-│   │   │   ├── mapper.go                     # Entity-DTO mapping
-│   │   │   ├── validators.go                 # Contract validation (terms, amounts, dates)
-│   │   │   └── business_rules.go             # Business rules (payment release conditions)
-│   │   │
-│   │   ├── milestone/
-│   │   │   ├── service.go                    # Milestone logic (Create, Complete, Approve, Request)
-│   │   │   ├── commands.go                   # CreateMilestone, CompleteMilestone, ApproveMilestone, RequestChanges
-│   │   │   ├── queries.go                    # GetMilestone, ListMilestones, GetPendingApprovals
-│   │   │   ├── dto.go                        # MilestoneDTO
-│   │   │   ├── mapper.go                     # Milestone mappers
-│   │   │   ├── validators.go                 # Validate grace periods & auto-release
-│   │   │   └── policy_evaluator.go           # 🆕 Evaluate acceptance policy per milestone
-│   │   │
-│   │   ├── deliverable/
-│   │   │   ├── service.go                    # Submit, Review, Request revisions
-│   │   │   ├── commands.go                   # SubmitDeliverable, ApproveDeliverable, RequestDeliverableChanges
-│   │   │   ├── queries.go                    # GetDeliverable, ListDeliverables
-│   │   │   ├── dto.go                        # DeliverableDTO
-│   │   │   ├── mapper.go                     # Deliverable mappers
-│   │   │   └── validators.go                 # Acceptance linkage & revision limits
-│   │   │
-│   │   ├── timesheet/
-│   │   │   ├── service.go                    # Timesheet logic (Log time, Submit week, Approve)
-│   │   │   ├── commands.go                   # LogTime, SubmitWeek, ApproveTimesheet, DisputeHours
-│   │   │   ├── queries.go                    # GetTimesheets, GetWeeklySummary, CalculateEarnings
-│   │   │   ├── calculator.go                 # Calculate hours & earnings based on hourly rate
-│   │   │   ├── dto.go                        # TimesheetDTO, TimeEntryDTO
-│   │   │   ├── mapper.go                     # Timesheet mappers
-│   │   │   └── validators.go                 # Max hours, dates, weekly caps, policy flags
-│   │   │
-│   │   ├── workdiary/
-│   │   │   ├── service.go                    # Track activity, Upload screenshots
-│   │   │   ├── commands.go                   # AddDiaryEntry, UploadScreenshot, FlagPolicyViolation
-│   │   │   ├── queries.go                    # GetDiaryDay, ListDiaryRange, ActivityMetrics
-│   │   │   ├── dto.go                        # WorkDiaryDTO
-│   │   │   ├── mapper.go                     # Work diary mappers
-│   │   │   └── validators.go                 # Screenshot policy & activity thresholds
-│   │   │
-│   │   ├── template/
-│   │   │   ├── service.go                    # Create, Update, Use template
-│   │   │   ├── commands.go                   # CreateTemplate, UpdateTemplate
-│   │   │   ├── queries.go                    # GetTemplate, ListTemplates
-│   │   │   ├── dto.go                        # TemplateDTO
-│   │   │   ├── mapper.go                     # Template mappers
-│   │   │   └── validators.go                 # Clause & term checks
-│   │   │
-│   │   ├── amendment/
-│   │   │   ├── service.go                    # Request, Approve, Reject
-│   │   │   ├── commands.go                   # RequestAmendment, ApproveAmendment, RejectAmendment
-│   │   │   ├── queries.go                    # GetAmendment, ListAmendments
-│   │   │   ├── dto.go                        # AmendmentDTO
-│   │   │   ├── mapper.go                     # Amendment mappers
-│   │   │   └── validators.go                 # Effective dates, overlap, scope/rate checks
-│   │   │
-│   │   ├── termination/
-│   │   │   ├── service.go                    # Terminate contract, Calculate final payment
-│   │   │   ├── commands.go                   # TerminateContract
-│   │   │   ├── queries.go                    # GetTermination
-│   │   │   ├── dto.go                        # TerminationDTO
-│   │   │   ├── mapper.go                     # Termination mappers
-│   │   │   └── validators.go                 # Validate reasons & payouts
-│   │   │
-│   │   ├── dispute/
-│   │   │   ├── service.go                    # Open, Submit evidence, Resolve
-│   │   │   ├── commands.go                   # OpenDispute, SubmitEvidence, ResolveDispute, EscalateDispute
-│   │   │   ├── queries.go                    # GetDisputes, GetDisputeHistory
-│   │   │   ├── dto.go                        # DisputeDTO, EvidenceDTO, ResolutionDTO
-│   │   │   ├── mapper.go                     # Dispute mappers
-│   │   │   └── validators.go                 # Allowed transitions, anchor states
-│   │   │
-│   │   ├── sow/
-│   │   │   ├── service.go                    # Versioning, propose changes, approve/reject
-│   │   │   ├── commands.go                   # ProposeSOWVersion, ApproveSOW, RejectSOW
-│   │   │   ├── queries.go                    # GetSOW, ListSOWVersions, GetChangelog
-│   │   │   ├── dto.go                        # SOWDTO, SOWVersionDTO, ChangelogEntryDTO
-│   │   │   ├── mapper.go                     # Map SOW entities ⇄ DTOs
-│   │   │   └── validators.go                 # Version monotonicity, approver roles
-│   │   │
-│   │   ├── financial_hold/
-│   │   │   ├── service.go                    # Place/release holds; compute net available for payout
-│   │   │   ├── commands.go                   # PlaceHold, ReleaseHold
-│   │   │   ├── queries.go                    # GetHolds, GetActiveHold, GetHeldAmount
-│   │   │   ├── dto.go                        # FinancialHoldDTO
-│   │   │   ├── mapper.go                     # Map financial hold entities ⇄ DTOs
-│   │   │   └── validators.go                 # Hold reasons, amounts >= 0, dispute linkage
-│   │   │
-│   │   # ===== NEW APPLICATION MODULES FOR NEW DOMAINS =====
-│   │   ├── attachment/
-│   │   │   ├── service.go                    # Upload, Update metadata, Delete, Get versions
-│   │   │   ├── commands.go                   # UploadAttachment, UpdateAttachment, DeleteAttachment
-│   │   │   ├── queries.go                    # GetAttachment, ListAttachments, GetAttachmentVersions
-│   │   │   ├── dto.go                        # AttachmentDTO, AttachmentVersionDTO
-│   │   │   ├── mapper.go                     # Attachment mappers
-│   │   │   └── validators.go                 # Type checks, ACL checks
-│   │   │
-│   │   ├── signature/
-│   │   │   ├── service.go                    # Request signature, Verify, Record outcomes
-│   │   │   ├── commands.go                   # RequestSignature, VerifySignature, RejectSignature
-│   │   │   ├── queries.go                    # GetSignatureState, ListSigners
-│   │   │   ├── dto.go                        # SignatureDTO, SignerDTO
-│   │   │   ├── mapper.go                     # Signature mappers
-│   │   │   └── validators.go                 # Valid signer, workflow order
-│   │   │
-│   │   ├── budget/
-│   │   │   ├── service.go                    # Track & forecast budget
-│   │   │   ├── commands.go                   # UpdateBudget, ReforecastBudget
-│   │   │   ├── queries.go                    # GetBudget, GetForecast, GetAlerts
-│   │   │   ├── dto.go                        # BudgetDTO, ForecastDTO
-│   │   │   ├── mapper.go                     # Budget mappers
-│   │   │   └── validators.go                 # Bounds, consistency with SOW
-│   │   │
-│   │   ├── sla/
-│   │   │   ├── service.go                    # Define metrics, monitor, apply penalties/rewards
-│   │   │   ├── commands.go                   # DefineSLA, UpdateSLA, RecordSLAMeasurement
-│   │   │   ├── queries.go                    # GetSLA, GetSLAMetrics, GetSLAReports
-│   │   │   ├── dto.go                        # SLADTO, SLAMetricDTO, SLAPeriodReportDTO
-│   │   │   ├── mapper.go                     # SLA mappers
-│   │   │   └── validators.go                 # Metric validity, penalty bounds
-│   │   │
-│   │   ├── agency/
-│   │   │   ├── service.go                    # Manage members/roles, billing rollups
-│   │   │   ├── commands.go                   # AddMember, RemoveMember, ChangeRole, UpdateAgencyBilling
-│   │   │   ├── queries.go                    # GetAgencyContract, ListAgencyMembers
-│   │   │   ├── dto.go                        # AgencyContractDTO, AgencyMemberDTO
-│   │   │   ├── mapper.go                     # Agency mappers
-│   │   │   └── validators.go                 # Role permissions, bill rate bounds
-│   │   │
-│   │   ├── compliance/
-│   │   │   ├── service.go                    # Track requirements, audits, jurisdictions
-│   │   │   ├── commands.go                   # AddRequirement, MarkRequirementMet, RecordAudit
-│   │   │   ├── queries.go                    # GetCompliance, ListAudits
-│   │   │   ├── dto.go                        # ComplianceDTO, AuditDTO
-│   │   │   ├── mapper.go                     # Compliance mappers
-│   │   │   └── validators.go                 # Jurisdiction checks
-│   │   │
-│   │   ├── performance/
-│   │   │   ├── service.go                    # Update KPIs, compute scores & trends
-│   │   │   ├── commands.go                   # UpdateKPI, ComputePerformanceScore
-│   │   │   ├── queries.go                    # GetPerformance, GetTrends
-│   │   │   ├── dto.go                        # PerformanceDTO, KPIDTO
-│   │   │   ├── mapper.go                     # Performance mappers
-│   │   │   └── validators.go                 # KPI definitions, weight sums
-│   │   │
-│   │   ├── negotiation/
-│   │   │   ├── service.go                    # Offers/counter-offers workflow
-│   │   │   ├── commands.go                   # MakeOffer, CounterOffer, AcceptOffer, RejectOffer
-│   │   │   ├── queries.go                    # GetNegotiation, ListOffers
-│   │   │   ├── dto.go                        # NegotiationDTO, OfferDTO
-│   │   │   ├── mapper.go                     # Negotiation mappers
-│   │   │   └── validators.go                 # State transitions
-│   │   │
-│   │   ├── renewal/
-│   │   │   ├── service.go                    # Renew/extend contracts
-│   │   │   ├── commands.go                   # RequestRenewal, ApproveRenewal, ExtendContract
-│   │   │   ├── queries.go                    # GetRenewalPlan
-│   │   │   ├── dto.go                        # RenewalDTO
-│   │   │   ├── mapper.go                     # Renewal mappers
-│   │   │   └── validators.go                 # Eligibility rules
-│   │   │
-│   │   ├── ip_rights/
-│   │   │   ├── service.go                    # Assign/license/protect IP
-│   │   │   ├── commands.go                   # AssignIP, LicenseIP, ApplyProtection
-│   │   │   ├── queries.go                    # GetIPRights
-│   │   │   ├── dto.go                        # IPRightsDTO
-│   │   │   ├── mapper.go                     # IP mappers
-│   │   │   └── validators.go                 # Valid assignment/licensing
-│   │   │
-│   │   ├── nda/
-│   │   │   ├── service.go                    # Generate/sign NDAs, track breaches
-│   │   │   ├── commands.go                   # SignNDA, RecordBreach
-│   │   │   ├── queries.go                    # GetNDA, ListNDAs
-│   │   │   ├── dto.go                        # NDADTO
-│   │   │   ├── mapper.go                     # NDA mappers
-│   │   │   └── validators.go                 # Terms completeness
-│   │   │
-│   │   ├── report/
-│   │   │   ├── service.go                    # Generate progress/performance reports
-│   │   │   ├── commands.go                   # GenerateReport
-│   │   │   ├── queries.go                    # GetReport
-│   │   │   ├── dto.go                        # ReportDTO
-│   │   │   ├── mapper.go                     # Report mappers
-│   │   │   └── validators.go                 # Data availability
-│   │   │
-│   │   ├── feedback/
-│   │   │   ├── service.go                    # Collect/respond to feedback
-│   │   │   ├── commands.go                   # SubmitFeedback, RespondToFeedback
-│   │   │   ├── queries.go                    # GetFeedback, GetFeedbackHistory
-│   │   │   ├── dto.go                        # FeedbackDTO
-│   │   │   ├── mapper.go                     # Feedback mappers
-│   │   │   └── validators.go                 # Schedule & duplication controls
-│   │   │
-│   │   # ===== ADDITIONAL COLLABORATION & ENTRY MODES =====
-│   │   ├── workroom/
-│   │   │   ├── service.go                    # Central project space (tasks/notes integration)
-│   │   │   ├── commands.go                   # CreateWorkroom, AddTask, UpdateTask, AddNote
-│   │   │   ├── queries.go                    # GetWorkroom, ListTasks, ListNotes
-│   │   │   ├── dto.go                        # WorkroomDTO, TaskDTO, NoteDTO
-│   │   │   ├── mapper.go                     # Workroom mappers
-│   │   │   └── validators.go                 # Access & participant checks
-│   │   │
-│   │   ├── direct_contract/
-│   │   │   ├── service.go                    # Direct contract activation rules
-│   │   │   ├── commands.go                   # InitiateDirectContract, AcceptDirectContract, ActivateDirectContract
-│   │   │   ├── queries.go                    # GetDirectContract
-│   │   │   ├── dto.go                        # DirectContractDTO
-│   │   │   ├── mapper.go                     # Direct contract mappers
-│   │   │   └── validators.go                 # Eligibility, fee triggers
-│   │   │
-│   │   └── ai_assistance/
-│   │       ├── service.go                    # AI drafting/suggestions/meeting summaries
-│   │       ├── commands.go                   # GenerateDraft, ApplySuggestion, SummarizeMeeting
-│   │       ├── queries.go                    # GetAIAssistanceHistory
-│   │       ├── dto.go                        # AIAssistanceDTO
-│   │       ├── mapper.go                     # AI mappers
-│   │       └── validators.go                 # Input bounds & safety
+│   # ========================================================================================
+│   # 🧩 DEPENDENCY INJECTION (Load Second)
+│   # ========================================================================================
+│   ├── ioc/
+│   │   ├── container.go  # 🆕 DI container: Config, DB, Redis, Kafka(prod/cons), repositories, services, handlers, external clients, observers, scheduler
+│   │   └── wiring.go  # 🆕 Wire order: config→infra→repos→services→handlers; feature-flagged wiring; observers toggle; outbox dispatcher; scheduled tasks
 │   │
-│   ├── infrastructure/                       # 🔧 Infrastructure Layer
+│   # ========================================================================================
+│   # 🏗️ INFRASTRUCTURE LAYER (Load Second)
+│   # ========================================================================================
+│   ├── infrastructure/
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 🔄 COORDINATION - Distributed Primitives
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── coordination/
+│   │   │   ├── leader_election.go  # 🆕 single-active worker via Redis/etcd; leader election; failover; health checks
+│   │   │   └── distlock.go  # 🆕 distributed locks: Redis SETNX+expiry; PG advisory fallback; timeouts; deadlock prevention
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 💾 PERSISTENCE - Database Layer
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
 │   │   ├── persistence/
 │   │   │   └── postgres/
-│   │   │       ├── connection.go             # PostgreSQL connection
-│   │   │       ├── transaction.go            # Transaction helpers
-│   │   │       ├── migrations.go             # 📝 Auto-migration with version tracking
-│   │   │       ├── version.go                # 🆕 Schema version tracking
-│   │   │       ├── safety.go                 # 🆕 Pre-migration safety checks
-│   │   │       ├── contract_repository.go    # ContractRepository implementation
-│   │   │       ├── milestone_repository.go   # MilestoneRepository implementation
-│   │   │       ├── deliverable_repository.go # DeliverableRepository implementation
-│   │   │       ├── timesheet_repository.go   # TimesheetRepository implementation
-│   │   │       ├── workdiary_repository.go   # WorkDiaryRepository implementation
-│   │   │       ├── template_repository.go    # TemplateRepository implementation
-│   │   │       ├── amendment_repository.go   # AmendmentRepository implementation
-│   │   │       ├── pause_repository.go       # PauseRepository implementation
-│   │   │       ├── termination_repository.go # TerminationRepository implementation
-│   │   │       ├── dispute_repository.go     # DisputeRepository implementation
-│   │   │       ├── sow_repository.go         # 🆕 SOWRepository implementation
-│   │   │       ├── financial_hold_repository.go   # 🆕 FinancialHoldRepository implementation
-│   │   │       # ===== NEW REPOSITORIES =====
-│   │   │       ├── attachment_repository.go  # AttachmentRepository implementation
-│   │   │       ├── signature_repository.go   # SignatureRepository implementation
-│   │   │       ├── budget_repository.go      # BudgetRepository implementation
-│   │   │       ├── sla_repository.go         # SLARepository implementation
-│   │   │       ├── agency_repository.go      # AgencyRepository implementation
-│   │   │       ├── compliance_repository.go  # ComplianceRepository implementation
-│   │   │       ├── performance_repository.go # PerformanceRepository implementation
-│   │   │       ├── negotiation_repository.go # NegotiationRepository implementation
-│   │   │       ├── renewal_repository.go     # RenewalRepository implementation
-│   │   │       ├── ip_rights_repository.go   # IPRightsRepository implementation
-│   │   │       ├── nda_repository.go         # NDARepository implementation
-│   │   │       ├── report_repository.go      # ReportRepository implementation
-│   │   │       └── feedback_repository.go    # FeedbackRepository implementation
+│   │   │       ├── connection.go  # PGX pool; max/min conns; health checks; reconnection; query timeouts
+│   │   │       ├── transaction.go  # Tx helpers: Begin/Commit/Rollback; savepoints; ctx propagation; auto-rollback on panic
+│   │   │       ├── migrations.go  # 📝 auto-migrations (dev only); skip in prod; integrates with version.go & safety.go
+│   │   │       ├── version.go  # 🆕 schema version tracking; schema_versions table; compare current vs target; optional rollback
+│   │   │       ├── safety.go  # 🆕 pre-migration checks: destructive ops guard; backup hints; long-run warnings; concurrent index creation
+│   │   │       ├── outbox_store.go  # 🆕 tx-coupled outbox: insert events; mark published; cleanup; DLQ for failures
 │   │   │
+│   │   │       # ===== CORE CONTRACT REPOSITORIES =====
+│   │   │       ├── contract_repository.go  # Contract CRUD/queries: by ID/freelancer/client/status/type; active/expiring; search+filters
+│   │   │       ├── sow_repository.go  # 🆕 SOW: create/update; by contract; version history/latest; approve/reject version
+│   │   │       ├── financial_hold_repository.go  # 🆕 Holds: place/release/extend; list by contract/active/expiring; total held
+│   │   │
+│   │   │       # ===== MILESTONE & DELIVERABLE REPOSITORIES =====
+│   │   │       ├── milestone_repository.go  # Milestones: CRUD; pending/overdue; totals/stats
+│   │   │       ├── deliverable_repository.go  # Deliverables: CRUD; by milestone/status; pending review; rejected with revisions
+│   │   │
+│   │   │       # ===== TIME TRACKING REPOSITORIES =====
+│   │   │       ├── timesheet_repository.go  # Timesheets: CRUD; by contract+week/status; pending approval/disputed; totals
+│   │   │       ├── workdiary_repository.go  # Work diary: entries by date range; activity summary; screenshot URLs; delete screenshot
+│   │   │
+│   │   │       # ===== TEMPLATE REPOSITORIES =====
+│   │   │       ├── template_repository.go  # Templates: CRUD; public/by owner/category; search; popular (usage)
+│   │   │
+│   │   │       # ===== CONTRACT CHANGE REPOSITORIES =====
+│   │   │       ├── amendment_repository.go  # Amendments: CRUD; by contract; pending; history/latest
+│   │   │       ├── pause_repository.go  # Pause/resume: record; history; total paused days; current pause
+│   │   │       ├── termination_repository.go  # Terminations: CRUD; by contract; pending settlement; stats by reason/type
+│   │   │
+│   │   │       # ===== DISPUTE REPOSITORIES =====
+│   │   │       ├── dispute_repository.go  # Disputes: CRUD; by contract/status; open/escalated; stats/resolution time
+│   │   │
+│   │   │       # ===== DOCUMENT & SIGNATURE REPOSITORIES =====
+│   │   │       ├── attachment_repository.go  # 🆕 Attachments: CRUD+versioning; upload/delete/get; by contract/type; version history/latest
+│   │   │       ├── signature_repository.go  # 🆕 E-signatures: request/record; by contract/signer; status/pending; verification
+│   │   │
+│   │   │       # ===== FINANCIAL REPOSITORIES =====
+│   │   │       ├── budget_repository.go  # 🆕 Budget: create/update/by contract; record spending; remaining; trends/forecast; thresholds/over-budget
+│   │   │       ├── invoice_repository.go  # 🆕 Invoices: generate/update/by contract/status; mark paid; overdue; stats
+│   │   │
+│   │   │       # ===== COMPLIANCE & LEGAL REPOSITORIES =====
+│   │   │       ├── sla_repository.go  # 🆕 SLA: define/update/by contract; record metrics; detect breaches; lists/report; penalties/rewards
+│   │   │       ├── agency_repository.go  # 🆕 Agency: by contract; members/roles; billing split; member payments
+│   │   │       ├── compliance_repository.go  # 🆕 Compliance: add/verify; audits/history; list/status; expiring items
+│   │   │       ├── ip_rights_repository.go  # 🆕 IP rights: assign/grant; update terms; license history
+│   │   │       ├── nda_repository.go  # 🆕 NDA: sign/breach/enforce; active/expired tracking
+│   │   │
+│   │   │       # ===== REPORTING & COLLABORATION REPOSITORIES =====
+│   │   │       ├── performance_repository.go  # 🆕 KPIs: define/record; scores/trends; benchmarks/report
+│   │   │       ├── report_repository.go  # 🆕 Reports: generate/get/list/schedule; analytics data
+│   │   │       ├── feedback_repository.go  # 🆕 Feedback: submit/get/list; summaries/averages
+│   │   │       └── workroom_repository.go  # 🆕 Workroom: tasks/notes/files; list/query
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📨 MESSAGING - Event-Driven Communication
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── messaging/
+│   │   │   ├── outbox/
+│   │   │   │   ├── dispatcher.go  # 🆕 poll outbox; publish to Kafka; mark published; retries (exponential); DLQ; cleanup
+│   │   │   │   └── metrics.go  # 🆕 publish lag; failed attempts; retry distribution; DLQ size
+│   │   │   ├── topics.go  # ♻️ Kafka topic constants (re-export contracts/events): lifecycle, milestones, financial, timesheet, disputes, compliance, collaboration
+│   │   │   ├── producer.go  # Kafka producer wrapper: partition by contract_id; compression (lz4); async/sync
+│   │   │   └── consumer.go  # Kafka consumer wrapper: subscribe; CG mgmt; offset strategies; retries/error handling
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 🗄️ CACHING - Performance
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
 │   │   ├── cache/
 │   │   │   └── redis/
-│   │   │       ├── connection.go             # Redis connection
-│   │   │       ├── contract_cache.go         # Contract caching
-│   │   │       └── hold_cache.go             # 🆕 Financial hold cache (by contract)
+│   │   │       ├── client.go  # Redis client wrapper: pooling; reconnection; timeouts
+│   │   │       ├── keys.go  # Key patterns: contract:{id}, contract:{id}:milestones/status/budget; user:{id}:contracts; freelancer:{id}:active_contracts
+│   │   │       ├── ttl.go  # TTLs: short 5m status/budget; medium 1h details; long 24h templates/static
+│   │   │       ├── singleflight.go  # 🆕 stampede protection: dedupe concurrent requests; share result
+│   │   │       └── invalidation_rules.go  # 🆕 event→keys mapping (status change, milestone release, dispute opened, budget updated, amendment applied)
 │   │   │
-│   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go               # 📝 Uses platform-shared/inbox
-│   │   │       ├── producer.go               # 📝 Uses platform-shared/outbox
-│   │   │       ├── topics.go                 # 📝 contracts/events topics (contract.created, milestone.completed, etc.)
-│   │   │       └── scram.go                  # SCRAM authentication
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # ⏰ SCHEDULER - Cron & Background Jobs
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── scheduler/
+│   │   │   ├── cron.go  # ♻️ cron runner: wrap with distlock; jitter; errors/logging; health
+│   │   │   └── tasks/
+│   │   │       ├── task_guard.go  # 🆕 idempotency tokens; last-run watermark; timeouts; graceful shutdown
+│   │   │       ├── milestone_auto_release.go  # hourly; auto-release approved > grace(3d) if no disputes; notify
+│   │   │       ├── sla_breach_monitor.go  # every 15m; check response/deadline SLAs; record breaches; penalties; alerts
+│   │   │       ├── contract_expiry.go  # daily midnight; expiring in 7d; renewal reminders; mark expired; auto-renew if enabled
+│   │   │       ├── dispute_escalation.go  # twice daily; stale disputes > 7d; escalate; notify
+│   │   │       ├── timesheet_reminder.go  # Fridays 17:00; hourly contracts without weekly timesheet; reminders
+│   │   │       └── budget_alert.go  # every 4h; thresholds 50/75/90%; alerts; overrun prediction
 │   │   │
-│   │   └── storage/
-│   │       └── client.go                     # Storage service client (upload deliverables, screenshots, attachments)
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📊 OBSERVABILITY - Metrics & Tracing
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── observability/
+│   │   │   ├── metrics.go  # 🆕 Prometheus: RED (api reqs, errors, duration P50/95/99); USE (db pool, cache hit, outbox lag); business (contract_value_total, milestone_release_latency, dispute_resolution_time, sla_breach_rate, budget_overrun_count)
+│   │   │   ├── tracing.go  # 🆕 Jaeger/OTel helpers: spans; attrs (hashed contract_id/user_id, event_id, correlation_id); errors; baggage
+│   │   │   └── slo_monitor.go  # 🆕 SLOs: API P99<500ms(99.9%), projection lag<1s(99%), outbox lag<5s(99.5%), creation success>99.9%, milestone release<24h(99%); alert on breach
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📦 STORAGE - MinIO/S3
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── storage/
+│   │   │   ├── client.go  # MinIO/S3 client: upload/download; presigned URLs; delete; list by prefix
+│   │   │   ├── buckets.go  # Buckets: contracts-documents; contracts-attachments; work-diary-screenshots; dispute-evidence
+│   │   │   └── policies.go  # Access: parties-only; admin-read; time-limited links; immutable after signing
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 🔌 PLATFORM CLIENTS - External Adapters
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   └── platform/
+│   │       └── clients/
+│   │           ├── users_client.go  # 🆕 verify user status; profiles; stats update; circuit breaker; retries
+│   │           ├── financial_client.go  # 🆕 escrow create/release; holds place/release; verify balance; tx history
+│   │           ├── communications_client.go  # 🆕 notifications: contract/milestone/dispute/reminder/budget; async fire-and-forget
+│   │           ├── jobs_client.go  # job details; job status check; mark filled; update contract count
+│   │           ├── proposals_client.go  # proposal details; mark accepted; deduct connects
+│   │           ├── reviews_client.go  # trigger review on completion; can leave review; link to contract
+│   │           └── storage_client.go  # storage-be API alternative: upload/get URL/delete; virus scan integration
 │   │
-│   ├── interfaces/
-│   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── contract_handler.go       # Contract handlers (POST /contracts, GET /contracts/:id)
-│   │       │   ├── sow_handler.go            # SOW endpoints (POST/GET SOW versions, approvals)
-│   │       │   ├── financial_hold_handler.go # 🆕 Financial holds (POST holds, POST release)
-│   │       │   ├── milestone_handler.go      # Milestone handlers (POST /contracts/:id/milestones)
-│   │       │   ├── deliverable_handler.go    # Deliverable handlers (POST /contracts/:id/deliverables)
-│   │       │   ├── timesheet_handler.go      # Timesheet handlers (POST /contracts/:id/timesheet)
-│   │       │   ├── workdiary_handler.go      # Work diary handlers (POST /contracts/:id/workdiary)
-│   │       │   ├── template_handler.go       # Template handlers (GET /templates)
-│   │       │   ├── amendment_handler.go      # Amendment handlers (POST /contracts/:id/amendments)
-│   │       │   ├── termination_handler.go    # Termination handlers (POST /contracts/:id/terminate)
-│   │       │   ├── dispute_handler.go        # Dispute handlers (POST /contracts/:id/disputes)
-│   │       │   # ===== NEW HANDLERS =====
-│   │       │   ├── attachment_handler.go     # Attachments (POST/GET/DELETE, version list)
-│   │       │   ├── signature_handler.go      # Signature requests, status, verify
-│   │       │   ├── budget_handler.go         # Budget read/forecast & alerts
-│   │       │   ├── sla_handler.go            # SLA define/update/measure/report
-│   │       │   ├── agency_handler.go         # Agency members/roles, billing
-│   │       │   ├── compliance_handler.go     # Requirements & audits endpoints
-│   │       │   ├── performance_handler.go    # KPIs, scores, trends
-│   │       │   ├── negotiation_handler.go    # Offers/counter-offers endpoints
-│   │       │   ├── renewal_handler.go        # Renew/extend endpoints
-│   │       │   ├── ip_rights_handler.go      # IP assignment/licensing endpoints
-│   │       │   ├── nda_handler.go            # NDA sign & breach endpoints
-│   │       │   ├── report_handler.go         # Generate & fetch reports
-│   │       │   ├── feedback_handler.go       # Feedback submit/respond endpoints
-│   │       │   ├── workroom_handler.go       # Workroom tasks/notes endpoints
-│   │       │   └── direct_contract_handler.go# Direct contract initiation/activation
-│   │       │
-│   │       ├── routes/                        # ✅ Route registrars for each handler group
-│   │       │   ├── contract_routes.go         # /contracts, /contracts/:id
-│   │       │   ├── sow_routes.go              # /contracts/:id/sow, /contracts/:id/sow/versions
-│   │       │   ├── financial_hold_routes.go   # /contracts/:id/holds, /contracts/:id/holds/:holdId/release
-│   │       │   ├── milestone_routes.go        # /contracts/:id/milestones
-│   │       │   ├── deliverable_routes.go      # /contracts/:id/deliverables
-│   │       │   ├── timesheet_routes.go        # /contracts/:id/timesheet
-│   │       │   ├── workdiary_routes.go        # /contracts/:id/workdiary
-│   │       │   ├── template_routes.go         # /templates
-│   │       │   ├── amendment_routes.go        # /contracts/:id/amendments
-│   │       │   ├── termination_routes.go      # /contracts/:id/terminate
-│   │       │   ├── dispute_routes.go          # /contracts/:id/disputes
-│   │       │   # ===== NEW ROUTES =====
-│   │       │   ├── attachment_routes.go       # /contracts/:id/attachments
-│   │       │   ├── signature_routes.go        # /contracts/:id/signatures
-│   │       │   ├── budget_routes.go           # /contracts/:id/budget
-│   │       │   ├── sla_routes.go              # /contracts/:id/sla
-│   │       │   ├── agency_routes.go           # /contracts/:id/agency
-│   │       │   ├── compliance_routes.go       # /contracts/:id/compliance
-│   │       │   ├── performance_routes.go      # /contracts/:id/performance
-│   │       │   ├── negotiation_routes.go      # /contracts/:id/negotiation
-│   │       │   ├── renewal_routes.go          # /contracts/:id/renewal
-│   │       │   ├── ip_rights_routes.go        # /contracts/:id/ip-rights
-│   │       │   ├── nda_routes.go              # /contracts/:id/nda
-│   │       │   ├── report_routes.go           # /contracts/:id/reports
-│   │       │   ├── feedback_routes.go         # /contracts/:id/feedback
-│   │       │   ├── workroom_routes.go         # /contracts/:id/workroom
-│   │       │   └── direct_contract_routes.go  # /contracts/:id/direct
-│   │       │
-│   │       ├── middleware/                    # 📝 Uses platform-shared
-│   │       │   ├── auth.go                    # Uses pkg/auth (Keycloak)
-│   │       │   ├── rbac.go                    # Uses pkg/auth RBAC
-│   │       │   ├── cors.go                    # Uses platform-shared/ginx
-│   │       │   ├── rate_limit.go              # Rate limiting
-│   │       │   └── idempotency.go             # Uses platform-shared/idempotency
-│   │       │
-│   │       ├── responses/
-│   │       │   └── README.md                  # Points to platform-shared/httpx
-│   │       │
-│   │       └── router.go                      # Uses platform-shared/ginx
+│   # ========================================================================================
+│   # 🏛️ DOMAIN LAYER - Business Entities & Rules (Load Third)
+│   # ========================================================================================
+│   ├── domain/
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📋 CORE CONTRACT DOMAIN
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── contract/
+│   │   │   ├── entity.go  # Aggregate: ID(ULID), JobID, ProposalID?, FreelancerID, ClientID, Type(Fixed/Hourly/Milestone/Retainer), Status(Draft/Active/Paused/Disputed/Completed/Terminated/Expired), Terms(VO), Amount/Currency, Start/End, Created/Updated/Version; methods Activate/Pause/Resume/Complete/Terminate; guards CanBeAmended/Terminated/Paused; IsExpired/Active
+│   │   │   ├── terms.go  # Terms VO: PaymentSchedule(upfront/milestone/weekly/monthly), Deliverables[], Scope, Confidentiality, IPRights, Termination, DisputeResolution
+│   │   │   ├── enums.go  # Enums: ContractType, ContractStatus, PaymentSchedule
+│   │   │   ├── value_objects.go  # VOs: ContractAmount, ContractDuration, ContractRate
+│   │   │   ├── errors.go  # ErrContractNotFound, ErrInvalidTerms, ErrAlreadyActive, ErrUnauthorized, ErrCannotPause/Terminate, ErrExpired
+│   │   │   ├── repository.go  # Interface: Create/Update/Delete/GetByID; List by freelancer/client/status/type; active/expiring; Search(ListFilter)
+│   │   │   ├── list_filter.go  # Filters: status/type; amount min/max; start/end ranges; freelancer/client; pagination/sort
+│   │   │   └── events.go  # ContractCreated/Activated/Paused/Resumed/Completed/Terminated/Expired/Renewed/Disputed/StatusChanged
+│   │   │
+│   │   ├── sow/
+│   │   │   ├── entity.go  # SOW aggregate: ID, ContractID, Scope, Objectives, Deliverables, Timeline, AcceptanceCriteria, CurrentVersion, Versions[]; methods CreateVersion/Approve/Reject
+│   │   │   ├── version.go  # Version: Number, CreatedAt/By, Changes diff, ApprovalStatus(Pending/Approved/Rejected), ApprovedBy/At
+│   │   │   ├── scope.go  # Scope: WBS, inclusions/exclusions, assumptions
+│   │   │   ├── errors.go  # ErrSOWNotFound, ErrSOWVersionNotFound
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # SOWCreated/Updated/Approved/VersionCreated
+│   │   │
+│   │   ├── financial_hold/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Type(Risk/Dispute/Compliance/Chargeback/Manual), Amount/Currency, Reason, PlacedAt/By, ExpiresAt, ReleasedAt/By, Status(Active/Released/Expired); methods CanRelease/Release/Extend
+│   │   │   ├── hold_type.go  # Types & rules
+│   │   │   ├── release_rules.go  # Time/Event/Approval-based auto-release rules
+│   │   │   ├── errors.go  # ErrHoldNotFound, ErrAlreadyActive, ErrInsufficientFunds
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # FinancialHoldPlaced/Released/Expired
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 🎯 MILESTONES & DELIVERABLES
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── milestone/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Title/Desc, Amount/Currency, Due/Submitted/Approved/Released, Status(Pending/InProgress/UnderReview/Approved/Rejected/Released/Disputed), Order, Deliverables[]; methods Submit/Approve/Reject/Release/Dispute; CanAutoRelease
+│   │   │   ├── status.go  # Transitions
+│   │   │   ├── approval.go  # ClientApproval, feedback, revision cycle
+│   │   │   ├── auto_release.go  # GracePeriod(3d); checks no disputes; release date calc
+│   │   │   ├── errors.go  # ErrMilestoneNotFound, ErrAlreadyReleased, ErrNotApproved
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Created/Submitted/Approved/Rejected/Released/Disputed
+│   │   │
+│   │   ├── deliverable/
+│   │   │   ├── entity.go  # Entity: ID, MilestoneID, Title/Desc, FileURLs[], SubmittedAt/ReviewedAt, Status(Pending/Submitted/UnderReview/Accepted/Rejected/Revision), ClientFeedback; methods Submit/Accept/Reject/RequestRevision
+│   │   │   ├── status.go  # Enum
+│   │   │   ├── review.go  # ReviewFeedback/RevisionRequest/AcceptanceCriteria
+│   │   │   ├── errors.go  # ErrDeliverableNotFound, ErrNoFilesAttached
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Submitted/Accepted/Rejected/RevisionRequested
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # ⏱️ TIME TRACKING
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── timesheet/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, WeekStart/End, Entries[], TotalHours/Amount, Status(Draft/Submitted/Approved/Rejected/Disputed), Submitted/Approved/RejectedAt, ApprovalNotes; methods AddEntry/Submit/Approve/Reject/Dispute; calculators
+│   │   │   ├── entry.go  # TimeEntry VO: Date, Hours/Minutes, Description, Task?, Billable; validations (≤24h/day, no dup same day)
+│   │   │   ├── approval.go  # ApprovalDecision/Notes; disputed hours
+│   │   │   ├── dispute.go  # Reasons; disputed entries; resolution outcomes
+│   │   │   ├── errors.go  # ErrTimesheetNotFound, ErrAlreadySubmitted, ErrInvalidHours
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Created/Submitted/Approved/Rejected/Disputed
+│   │   │
+│   │   ├── workdiary/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Date, Entries[], TotalTrackedHours, ScreenshotURLs[], PrivacySettings; methods RecordEntry/AddManualTime/DeleteScreenshot
+│   │   │   ├── entry.go  # 10-min slots: timestamp, duration, activity%, screenshotURL?, keystrokes/mouse, app title
+│   │   │   ├── screenshot.go  # URL, capturedAt, blurred, deletedAt, retention(30d)
+│   │   │   ├── privacy.go  # ScreenshotFrequency, BlurScreenshots, RedactAppTitles, ExcludedApps[]
+│   │   │   ├── manual_time.go  # Offline entries; reason; requires approval
+│   │   │   ├── errors.go  # ErrWorkDiaryNotFound, ErrScreenshotNotFound
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # EntryRecorded/ScreenshotCaptured/ManualTimeAdded/PrivacyUpdated
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📄 TEMPLATES
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── template/
+│   │   │   ├── entity.go  # Aggregate: ID, Name/Desc, Type, Terms, Clauses[], Category, IsPublic, OwnerID, UsageCount; methods Customize/Publish/Unpublish/Clone
+│   │   │   ├── clause.go  # Payment/Termination/IP/Confidentiality/Dispute/Warranty clauses
+│   │   │   ├── category.go  # Enums (Development/Design/Writing/Marketing/Other)
+│   │   │   ├── customization.go  # Customizable/Required fields; defaults
+│   │   │   ├── errors.go  # ErrTemplateNotFound, ErrTemplateNotPublic
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Created/Updated/Published/Used
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # ✏️ AMENDMENTS & CHANGES
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── amendment/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Type(Scope/Budget/Timeline/Terms/Rate), Changes map, Reason, RequestedBy, Status(Pending/Approved/Rejected/Applied), Timestamps, ApprovalsByParty; methods Approve/Reject/Apply; IsBilaterallyApproved
+│   │   │   ├── amendment_type.go  # Enum
+│   │   │   ├── approval.go  # Bilateral workflow; timeout(30d); reminders(7d)
+│   │   │   ├── version_control.go  # Previous/New version; diff; rollback support
+│   │   │   ├── errors.go  # ErrAmendmentNotFound/Rejected/NotBilaterallyApproved
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Requested/Approved/Rejected/Applied
+│   │   │
+│   │   ├── termination/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Type(Mutual/ForCause/ForConvenience/Breach/NonPerformance), Reason, InitiatedBy, Dates, NoticePeriod, Status, FinalPayment/Refund; methods Approve/Complete/Dispute; settlement calculator
+│   │   │   ├── termination_type.go  # Enum
+│   │   │   ├── notice.go  # Notice calculation; earliest termination; waiver
+│   │   │   ├── settlement.go  # Final payment/refund/penalties/severance
+│   │   │   ├── errors.go  # ErrTerminationNotAllowed, ErrInvalidType
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Initiated/Approved/Completed/Disputed
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # ⚖️ DISPUTES
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── dispute/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Type(Quality/Payment/Scope/Timeline/Communication/Breach), Description, RaisedBy, Evidence[], Status(Open/UnderReview/Escalated/Resolved/Closed), Resolution, ResolvedAt/By; methods AddEvidence/Escalate/Resolve/Close
+│   │   │   ├── dispute_type.go  # Enum
+│   │   │   ├── evidence.go  # Evidence: type, file info, description, submitted by/at
+│   │   │   ├── resolution.go  # Resolution types (Mediation/Arbitration/Refund/ReWork), outcomes, financial adjustments
+│   │   │   ├── escalation.go  # Levels: Mediation(7d)/Admin(14d)/Arbitration(30d); auto-escalate
+│   │   │   ├── errors.go  # ErrDisputeNotFound, ErrAlreadyClosed
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Opened/EvidenceSubmitted/Escalated/Resolved/Closed
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📎 DOCUMENTS & SIGNATURES
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── attachment/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Type(SOW/NDA/SignedContract/Supporting/Amendment), FileName/URL/Size/Mime, UploadedBy/At, Version, IsSigned; methods CreateVersion/GetLatest/Delete
+│   │   │   ├── attachment_type.go  # Enum
+│   │   │   ├── version.go  # Versioning: number, createdAt/By, changes, isCurrent
+│   │   │   ├── errors.go  # ErrAttachmentNotFound, ErrFileTooLarge
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Uploaded/Deleted/VersionCreated
+│   │   │
+│   │   ├── signature/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, SignerID/Role, SignatureData, IP/UserAgent, SignedAt, Status(Pending/Signed/Declined/Expired), VerificationHash; methods Sign/Verify/Decline
+│   │   │   ├── signer.go  # Name/Email/Role; signing order; required flag
+│   │   │   ├── signing_flow.go  # Sequential signing; notifications; expiration(30d); AllPartiesSigned
+│   │   │   ├── verification.go  # Hash gen/verify; audit trail
+│   │   │   ├── errors.go  # ErrSignerNotAuthorized, ErrExpired
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Requested/Signed/Verified/AllPartiesSigned/Declined
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 💰 FINANCIAL
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── budget/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, TotalBudget/Currency, Spent/Remaining, Thresholds[], Alerts[], BurnRate; methods RecordSpending/CheckThresholds/Forecast
+│   │   │   ├── threshold.go  # % thresholds; reached flag/at; notification sent
+│   │   │   ├── alert.go  # Type(ThresholdReached/BudgetExceeded/ForecastOverrun); message; sentAt/to
+│   │   │   ├── forecast.go  # BurnRate; exhaustion date; overrun; recommendations
+│   │   │   ├── errors.go  # ErrBudgetExceeded, ErrInvalidBudget
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # BudgetUpdated/ThresholdReached/BudgetExceeded/BudgetAdjusted
+│   │   │
+│   │   ├── invoice/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, InvoiceNumber, LineItems[], Subtotal/Tax/Total/Currency, Due/Generated/PaidAt, Status(Draft/Sent/Paid/Overdue/Cancelled), PaymentMethod; methods Generate/Send/MarkPaid/Cancel
+│   │   │   ├── line_item.go  # Type(Milestone/Hours/Expense/Fee); desc; qty/price/amount; reference
+│   │   │   ├── tax.go  # Jurisdiction calc; rates; exemptions; TaxID
+│   │   │   ├── status.go  # Enum & transitions
+│   │   │   ├── errors.go  # ErrAlreadyPaid, ErrNotFound
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # Generated/Sent/Paid/Overdue/Cancelled
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # ⚖️ COMPLIANCE & LEGAL
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── sla/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Metrics[], Thresholds[], Breaches[], Penalties[], Rewards[]; methods RecordMetric/DetectBreach/ApplyPenalty/GrantReward
+│   │   │   ├── metric.go  # Type(Response/Delivery/Availability/Quality), target, actual, measuredAt
+│   │   │   ├── breach.go  # MetricType, threshold, actual, detected/resolvedAt, severity
+│   │   │   ├── penalty.go  # Type(Refund/Credit/Discount); amount/currency; reason; appliedAt
+│   │   │   ├── reward.go  # Type(Bonus/Badge/PrioritySupport); amount?; reason; grantedAt
+│   │   │   ├── errors.go  # ErrSLANotDefined, ErrInvalidMetric
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # BreachDetected/PenaltyApplied/RewardEarned/SLAReportGenerated
+│   │   │
+│   │   ├── agency/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, AgencyID, Members[], Roles[], SplitRules; methods Add/Remove/Update/CalculateSplit
+│   │   │   ├── member.go  # Member details: role/permissions; bill rate; split%; joined/left
+│   │   │   ├── role.go  # Role definitions & permissions
+│   │   │   ├── billing.go  # Consolidated invoicing; split payments; rules; member payment calc
+│   │   │   ├── errors.go  # ErrAgencyNotFound, ErrMemberNotAuthorized
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # MemberAdded/Removed/RoleChanged/BillingUpdated
+│   │   │
+│   │   ├── compliance/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Requirements[], Status, Audits[], ExpiresAt; methods AddRequirement/Verify/RunAudit
+│   │   │   ├── requirement.go  # Type(NDA/Background/Certification/Insurance), desc, required, status, verifiedAt/By, documentURL
+│   │   │   ├── audit.go  # Type(Periodic/Triggered/Random), date/by, findings[], status, remediation plan
+│   │   │   ├── jurisdiction.go  # GDPR/CCPA/LaborLaws; GetApplicableLaws(location)
+│   │   │   ├── errors.go  # ErrComplianceNotMet, ErrAuditFailed
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # RequirementAdded/ComplianceMet/ComplianceFailed/AuditCompleted
+│   │   │
+│   │   ├── performance/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, KPIs[], Scores[], Trends[], Benchmarks[]; methods DefineKPI/Record/Calculate/Compare
+│   │   │   ├── kpi.go  # KPI types; targets; weights; frequency
+│   │   │   ├── score.go  # Overall/Per-KPI scores; calculatedAt; grade
+│   │   │   ├── trend.go  # Period; historical scores; direction; predicted score
+│   │   │   ├── benchmark.go  # Industry/category; averages; top percentile; comparisons
+│   │   │   ├── errors.go  # ErrKPINotDefined, ErrInvalidScore
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # PerformanceUpdated/KPIBreached/TrendAlerted/BenchmarkCompared
+│   │   │
+│   │   ├── negotiation/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID(draft), Offers[], CounterOffers[], Status, History[], ExpiresAt; methods MakeOffer/Counter/Accept/Reject
+│   │   │   ├── offer.go  # Terms/amount/currency/timeline; proposedBy/At; expires; notes
+│   │   │   ├── counter_offer.go  # Link original; changes; rationale; proposedBy/At
+│   │   │   ├── workflow.go  # MaxRounds; response timeout(7d) auto-reject; reminders
+│   │   │   ├── errors.go  # ErrNotFound, ErrInvalidOffer, ErrExpired
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # OfferMade/CounterOffered/Accepted/Rejected/Expired
+│   │   │
+│   │   ├── renewal/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, RenewalType(Auto/Manual/Extension), NewTerms, RenewalDate, AutoRenew, Notifications[], Status; methods Request/Approve/Reject/Extend
+│   │   │   ├── renewal_type.go  # Enum
+│   │   │   ├── auto_renewal.go  # Conditions; opt-out(30d); notifications(60/30/7d); terms adjustment
+│   │   │   ├── extension.go  # Duration; additional budget; reason; bilateral approval
+│   │   │   ├── errors.go  # ErrNotEligible, ErrExtensionDenied
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # RenewalRequested/Approved/AutoRenewed/ContractExtended
+│   │   │
+│   │   ├── ip_rights/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, AssignmentType(FullTransfer/License/WorkForHire), RightsGranted[], Exclusions[], TransferDate, License; methods AssignIP/GrantLicense/UpdateTerms
+│   │   │   ├── assignment.go  # Types description
+│   │   │   ├── license.go  # License: type, duration, territory, usage, sublicensing
+│   │   │   ├── protection.go  # Confidentiality/NonCompete/Attribution
+│   │   │   ├── errors.go  # ErrIPConflict, ErrAssignmentInvalid
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # IPAssigned/IPLicensed/IPProtectionApplied
+│   │   │
+│   │   ├── nda/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Parties[], ConfidentialInfo, Duration, Breaches[], Penalties, SignedAt, ExpiresAt; methods Sign/ReportBreach/Enforce
+│   │   │   ├── terms.go  # Definitions/Obligations/Exceptions/ReturnOfMaterials
+│   │   │   ├── breach.go  # Type; description; reportedBy/At; evidence[]; penalties/remedies
+│   │   │   ├── errors.go  # ErrNDANotSigned, ErrBreachDetected
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # NDASigned/NDABreached/NDAEnforced
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📊 REPORTING & COLLABORATION
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── report/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Type(Progress/Performance/Financial/Compliance/TimeTracking), GeneratedAt/By, Data map, Format(PDF/Excel/JSON), FileURL; methods Generate/Schedule/Export
+│   │   │   ├── report_type.go  # Enum
+│   │   │   ├── analytics.go  # Efficiency/Risks/Predictions/Trends
+│   │   │   ├── errors.go  # ErrReportNotGenerated, ErrInvalidType
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # ReportGenerated/AnalyticsUpdated/ReportScheduled
+│   │   │
+│   │   ├── feedback/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Feedbacks[], AverageScore, LastFeedbackAt; methods Submit/Respond
+│   │   │   ├── mid_contract.go  # Frequency/monthly; due date; mandatory; reminders
+│   │   │   ├── score.go  # Quality/Communication/Timeliness/Professionalism; comments; submittedBy/At
+│   │   │   ├── errors.go  # ErrNotDue, ErrAlreadySubmitted
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # FeedbackSubmitted/FeedbackResponded
+│   │   │
+│   │   ├── workroom/
+│   │   │   ├── entity.go  # Aggregate: ID, ContractID, Tasks[], Notes[], Files[], Messages[]; methods CreateTask/Complete/AddNote/ShareFile
+│   │   │   ├── task.go  # Title/Desc; assignedTo/createdBy; due/completed; status; priority
+│   │   │   ├── note.go  # Markdown content; created/updated; type; tags
+│   │   │   ├── shared_file.go  # FileName/URL/Size; uploadedBy/At; type; access permissions
+│   │   │   ├── errors.go  # ErrTaskNotFound, ErrUnauthorized
+│   │   │   ├── repository.go  # Interface
+│   │   │   └── events.go  # TaskCreated/TaskCompleted/NoteAdded/FileShared
+│   │   │
+│   │   └── direct_contract/
+│   │       ├── entity.go  # Aggregate: ID, ClientID, FreelancerID, InviteToken, Terms, Status(Pending/Accepted/Rejected/Expired), InvitedAt/ExpiresAt, AcceptedAt/RejectedAt; methods Accept/Reject/Expire
+│   │       ├── invitation.go  # Token gen; send invitation; validate; expiry(30d)
+│   │       ├── acceptance.go  # Review/Negotiate/Accept&Activate/RejectWithReason
+│   │       ├── errors.go  # ErrInviteExpired, ErrAlreadyAccepted, ErrInvalidToken
+│   │       ├── repository.go  # Interface
+│   │       └── events.go  # Invited/Accepted/Rejected/Activated/Expired
 │   │
-│   └── config/                                # 🆕 MEDIUM
-│       ├── schema.go                          # 🆕 Typed Config
-│       ├── loader.go                          # 🆕 Viper loader
-│       └── docs/
-│           └── CONFIGURATION.md               # 🆕 Config docs
+│   # ========================================================================================
+│   # 📋 APPLICATION LAYER - Use Cases & Policies
+│   # ========================================================================================
+│   ├── application/
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 🔐 AUTHORIZATION
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── authz/
+│   │   │   ├── policies.go  # 🆕 RBAC policies: canCreate/View/Update/Terminate/Approve/Release/Resolve/AccessDiary/Sign/ViewFinancials...
+│   │   │   └── guards.go  # 🆕 Enforcement helpers: ensure participant/client/freelancer/admin; bilateral approval; active/no-disputes
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 📬 EVENT HANDLERS (Consumers)
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   ├── eventhandler/
+│   │   │   ├── _common/idempotency.go  # 🆕 store last-seen event version; event_id+causation_id; TTL 7d
+│   │   │   ├── proposal_handler.go  # proposal.accepted→CreateFromProposal; invite.accepted→CreateDirect; negotiation.completed→FinalizeTerms
+│   │   │   ├── payment_handler.go  # payment.processed→Record/UpdateBudget; payment.failed→Notify/Retry; refund→UpdateFinancials
+│   │   │   ├── escrow_handler.go  # escrow.released→CompleteMilestone; funded→ActivateContract; refund.processed→TerminationRefund
+│   │   │   ├── dispute_handler.go  # dispute.opened→PauseContract/Hold; resolved→Resume/ReleaseHold; closed→UpdateStatus
+│   │   │   ├── admin_handler.go  # feature_flag.updated→Refresh; config.updated→Reload; moderation.actioned→HandleAction
+│   │   │   ├── financial_risk_handler.go  # risk.alert→PlaceHold; chargeback.created→PlaceHold; chargeback.resolved→Release/Update
+│   │   │   ├── contract_status_handler.go  # internal hold placed/released→update reads/notify/trigger payments
+│   │   │   ├── message_handler.go  # notification_delivered→UpdateSLATimers; message.read→Comm metrics
+│   │   │   ├── user_handler.go  # user.suspended→Freeze; banned→Terminate; reactivated→Resume
+│   │   │   └── job_handler.go  # job.closed→MarkContractsComplete; job.cancelled→HandleCancellation
+│   │   │
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   # 🎯 DOMAIN SERVICES (Use Cases)
+│   │   # ──────────────────────────────────────────────────────────────────────────────────
+│   │   #
+│   │   # ===== CORE CONTRACT SERVICES =====
+│   │   ├── contract/
+│   │   │   ├── service.go       # Contract lifecycle management (Activate, Pause/Resume, Complete, Terminate), outbox emit, read-model updates
+│   │   │   ├── commands.go      # CreateContract, UpdateContract, PauseContract, ResumeContract, CompleteContract, TerminateContract
+│   │   │   ├── queries.go       # GetContract, ListContracts, FilterContracts, GetContractStats (pagination/sorting)
+│   │   │   ├── validators.go    # ValidateTerms, ValidateAmount, ValidateDates, ValidateParticipants, status transition guards
+│   │   │   └── dto.go           # ContractDTO, CreateContractRequest, UpdateContractRequest, mappers
+│   │   #
+│   │   # ===== STATEMENT OF WORK (SOW) =====
+│   │   ├── sow/
+│   │   │   ├── service.go       # SOW creation/versioning/approval workflow; link to contract; enforce approval rules
+│   │   │   ├── commands.go      # CreateSOW, UpdateSOW, ApproveSOW, RejectSOW, CreateSOWVersion (diffs & metadata)
+│   │   │   ├── queries.go       # GetSOW, ListSOWVersions, GetLatestSOW (history access)
+│   │   │   ├── validators.go    # ValidateSOWCompleteness, ValidateScope, version constraints & ACL checks
+│   │   │   └── dto.go           # SOWDTO, CreateSOWRequest, SOWVersionDTO
+│   │   #
+│   │   # ===== FINANCIAL HOLDS (RISK MGMT) =====
+│   │   ├── financial_hold/
+│   │   │   ├── service.go       # Place/Release/Extend/Expire holds; escrow & disputes hooks; DLQ-safe updates
+│   │   │   ├── commands.go      # PlaceHold, ReleaseHold, ExtendHold, ExpireHold
+│   │   │   ├── queries.go       # GetHold, ListHolds, GetActiveHolds, GetHoldsExpiringSoon
+│   │   │   ├── validators.go    # ValidateHoldAmount, ValidateHoldReason, authz checks
+│   │   │   └── dto.go           # FinancialHoldDTO, PlaceHoldRequest, ReleaseHoldRequest
+│   │   #
+│   │   # ===== MILESTONES =====
+│   │   ├── milestone/
+│   │   │   ├── service.go       # Milestone CRUD/submission/approval/rejection/release/dispute; auto-release integration
+│   │   │   ├── commands.go      # CreateMilestone, SubmitMilestone, ApproveMilestone, RejectMilestone, ReleaseMilestone, DisputeMilestone
+│   │   │   ├── queries.go       # GetMilestone, ListMilestones, GetPendingMilestones, GetOverdueMilestones, GetMilestoneStats
+│   │   │   ├── validators.go    # ValidateMilestoneAmount, ValidateDueDate, ValidateDeliverables, ordering rules
+│   │   │   └── dto.go           # MilestoneDTO, CreateMilestoneRequest, SubmitMilestoneRequest
+│   │   #
+│   │   # ===== DELIVERABLES =====
+│   │   ├── deliverable/
+│   │   │   ├── service.go       # Deliverable submit/review/accept/reject/revision loop; file links; audit
+│   │   │   ├── commands.go      # SubmitDeliverable, ReviewDeliverable, AcceptDeliverable, RejectDeliverable, RequestRevision
+│   │   │   ├── queries.go       # GetDeliverable, ListDeliverables, GetPendingReview
+│   │   │   ├── validators.go    # ValidateDeliverableFiles, ValidateDescription, state checks
+│   │   │   └── dto.go           # DeliverableDTO, SubmitDeliverableRequest, ReviewDeliverableRequest
+│   │   #
+│   │   # ===== TIME TRACKING =====
+│   │   ├── timesheet/
+│   │   │   ├── service.go       # Weekly timesheets: add entries, submit, approve/reject/dispute; totals calc
+│   │   │   ├── commands.go      # CreateTimesheet, AddTimeEntry, SubmitTimesheet, ApproveTimesheet, RejectTimesheet, DisputeTimesheet
+│   │   │   ├── queries.go       # GetTimesheet, ListTimesheets, GetTimesheetSummary, GetPendingApproval, GetDisputedTimesheets
+│   │   │   ├── validators.go    # ValidateTimeEntries, ValidateHours (24h/day cap, duplicates), ValidateWeek
+│   │   │   └── dto.go           # TimesheetDTO, TimeEntryDTO, SubmitTimesheetRequest
+│   │   ├── workdiary/
+│   │   │   ├── service.go       # Work diary tracking & screenshots; manual time; privacy controls; retention rules
+│   │   │   ├── commands.go      # RecordWorkDiaryEntry, AddManualTime, DeleteScreenshot, UpdatePrivacySettings
+│   │   │   ├── queries.go       # GetWorkDiary, ListWorkDiaryEntries, GetActivitySummary, GetScreenshots
+│   │   │   ├── validators.go    # ValidateTrackingData (intervals, activity), ValidatePrivacySettings
+│   │   │   └── dto.go           # WorkDiaryDTO, WorkDiaryEntryDTO, PrivacySettingsDTO
+│   │   #
+│   │   # ===== TEMPLATES =====
+│   │   ├── template/
+│   │   │   ├── service.go       # Template CRUD/customization/publish; usage counts
+│   │   │   ├── commands.go      # CreateTemplate, UpdateTemplate, PublishTemplate, UnpublishTemplate, UseTemplate, CloneTemplate
+│   │   │   ├── queries.go       # GetTemplate, ListTemplates, SearchTemplates, GetPublicTemplates, GetPopularTemplates
+│   │   │   ├── validators.go    # ValidateTemplateCompleteness, ValidateClauses, required fields
+│   │   │   └── dto.go           # TemplateDTO, CreateTemplateRequest, UseTemplateRequest
+│   │   #
+│   │   # ===== CONTRACT CHANGES =====
+│   │   ├── amendment/
+│   │   │   ├── service.go       # Propose/approve/reject/apply; bilateral approval; version control
+│   │   │   ├── commands.go      # ProposeAmendment, ApproveAmendment, RejectAmendment, ApplyAmendment, WithdrawAmendment
+│   │   │   ├── queries.go       # GetAmendment, ListAmendments, GetPendingAmendments, GetAmendmentHistory
+│   │   │   ├── validators.go    # ValidateAmendmentChanges, ValidateBilateralApproval, timeouts
+│   │   │   └── dto.go           # AmendmentDTO, ProposeAmendmentRequest, ApproveAmendmentRequest
+│   │   ├── termination/
+│   │   │   ├── service.go       # Initiate/approve/complete/dispute terminations; settlement calc
+│   │   │   ├── commands.go      # InitiateTermination, ApproveTermination, CompleteTermination, DisputeTermination, CalculateSettlement
+│   │   │   ├── queries.go       # GetTermination, ListTerminations, GetTerminationsByType
+│   │   │   ├── validators.go    # ValidateTerminationReason, ValidateNoticePeriod, ValidateSettlement
+│   │   │   └── dto.go           # TerminationDTO, InitiateTerminationRequest, SettlementDTO
+│   │   #
+│   │   # ===== DISPUTES =====
+│   │   ├── dispute/
+│   │   │   ├── service.go       # Open/escalate/resolve/close disputes; evidence handling; SLAs
+│   │   │   ├── commands.go      # OpenDispute, SubmitEvidence, EscalateDispute, ResolveDispute, CloseDispute
+│   │   │   ├── queries.go       # GetDispute, ListDisputes, GetOpenDisputes, GetEscalatedDisputes, GetDisputeStats
+│   │   │   ├── validators.go    # ValidateDisputeReason, ValidateEvidence, state guards
+│   │   │   └── dto.go           # DisputeDTO, OpenDisputeRequest, SubmitEvidenceRequest
+│   │   #
+│   │   # ===== DOCUMENTS & SIGNATURES =====
+│   │   ├── attachment/
+│   │   │   ├── service.go       # Upload/version/delete attachments; storage links; audit/versioning
+│   │   │   ├── commands.go      # UploadAttachment, DeleteAttachment, CreateAttachmentVersion
+│   │   │   ├── queries.go       # GetAttachment, ListAttachments, GetAttachmentVersions
+│   │   │   ├── validators.go    # ValidateFileType, ValidateFileSize, ValidateAttachmentType
+│   │   │   └── dto.go           # AttachmentDTO, UploadAttachmentRequest
+│   │   ├── signature/
+│   │   │   ├── service.go       # Request/sign/verify/decline; sequential flow; audit trail; integrity hash
+│   │   │   ├── commands.go      # RequestSignature, SignContract, DeclineSignature, VerifySignature, ResendSignatureRequest
+│   │   │   ├── queries.go       # GetSignature, GetSigningStatus, ListSignatures, GetPendingSignatures
+│   │   │   ├── validators.go    # ValidateSigner, ValidateSigningOrder, ValidateSignatureData
+│   │   │   └── dto.go           # SignatureDTO, RequestSignatureRequest, SignContractRequest
+│   │   #
+│   │   # ===== FINANCIAL =====
+│   │   ├── budget/
+│   │   │   ├── service.go       # Track/update budget; alerts & forecasting; thresholds logic
+│   │   │   ├── commands.go      # UpdateBudget, SetThreshold, RecordSpending, AdjustBudget
+│   │   │   ├── queries.go       # GetBudget, GetBudgetForecast, GetSpendingTrend, GetOverBudgetContracts
+│   │   │   ├── validators.go    # ValidateBudgetAmount, ValidateThresholds
+│   │   │   └── dto.go           # BudgetDTO, SetThresholdRequest, BudgetForecastDTO
+│   │   ├── invoice/
+│   │   │   ├── service.go       # Generate/send/mark paid/cancel invoices; payment tracking
+│   │   │   ├── commands.go      # GenerateInvoice, SendInvoice, MarkInvoicePaid, CancelInvoice, RegenerateInvoice
+│   │   │   ├── queries.go       # GetInvoice, ListInvoices, GetOverdueInvoices, GetInvoiceStats
+│   │   │   ├── validators.go    # ValidateLineItems, ValidateTaxCalculation
+│   │   │   └── dto.go           # InvoiceDTO, GenerateInvoiceRequest, InvoiceLineItemDTO
+│   │   #
+│   │   # ===== COMPLIANCE & LEGAL =====
+│   │   ├── sla/
+│   │   │   ├── service.go       # Define/record metrics; detect breaches; penalties/rewards; reports
+│   │   │   ├── commands.go      # DefineSLA, RecordMetric, DetectBreach, ApplyPenalty, GrantReward, GenerateSLAReport
+│   │   │   ├── queries.go       # GetSLA, GetSLAReport, ListBreaches, GetSLACompliance
+│   │   │   ├── validators.go    # ValidateSLAMetrics, ValidateThresholds
+│   │   │   └── dto.go           # SLADTO, DefineSLARequest, SLAMetricDTO, SLABreachDTO
+│   │   ├── agency/
+│   │   │   ├── service.go       # Team contracts (multi-freelancer); roles/permissions; payment split
+│   │   │   ├── commands.go      # AddAgencyMember, RemoveAgencyMember, UpdateMemberRole, UpdateBillingSplit, CalculatePayments
+│   │   │   ├── queries.go       # GetAgencyContract, ListAgencyMembers, GetBillingSplit
+│   │   │   ├── validators.go    # ValidateMemberPermissions, ValidateSplitRules
+│   │   │   └── dto.go           # AgencyContractDTO, AgencyMemberDTO, BillingSplitDTO
+│   │   ├── compliance/
+│   │   │   ├── service.go       # Track requirements, verify, run audits, expire; jurisdiction rules
+│   │   │   ├── commands.go      # AddRequirement, VerifyCompliance, RunAudit, UpdateCompliance, ExpireCompliance
+│   │   │   ├── queries.go       # GetCompliance, ListRequirements, GetAuditReport, GetExpiringCompliance
+│   │   │   ├── validators.go    # ValidateRequirement, ValidateAuditCriteria
+│   │   │   └── dto.go           # ComplianceDTO, ComplianceRequirementDTO, AuditDTO
+│   │   #
+│   │   # ===== PERFORMANCE =====
+│   │   ├── performance/
+│   │   │   ├── service.go       # Define KPIs, record metrics, calc scores/trends; benchmarking & reports
+│   │   │   ├── commands.go      # DefineKPI, RecordPerformance, CalculateScore, GeneratePerformanceReport, UpdateBenchmark
+│   │   │   ├── queries.go       # GetPerformance, GetKPIScores, GetTrends, CompareToBenchmark, GetPerformanceReport
+│   │   │   ├── validators.go    # ValidateKPIDefinition, ValidateWeights, ValidateScores
+│   │   │   └── dto.go           # PerformanceDTO, KPIDTO, PerformanceScoreDTO, TrendDTO
+│   │   #
+│   │   # ===== NEGOTIATION =====
+│   │   ├── negotiation/
+│   │   │   ├── service.go       # Offers/counter-offers; accept/reject; rounds & timeouts; audit history
+│   │   │   ├── commands.go      # MakeOffer, MakeCounterOffer, AcceptOffer, RejectOffer, WithdrawOffer, ExpireNegotiation
+│   │   │   ├── queries.go       # GetNegotiation, ListOffers, GetActiveNegotiation, GetNegotiationHistory
+│   │   │   ├── validators.go    # ValidateOffer, ValidateOfferTerms, ValidateCounterOffer
+│   │   │   └── dto.go           # NegotiationDTO, OfferDTO, CounterOfferDTO
+│   │   #
+│   │   # ===== RENEWAL & EXTENSION =====
+│   │   ├── renewal/
+│   │   │   ├── service.go       # Request/approve/reject renewals; extensions; auto-renew rules & notifications
+│   │   │   ├── commands.go      # RequestRenewal, ApproveRenewal, RejectRenewal, ExtendContract, EnableAutoRenewal, DisableAutoRenewal
+│   │   │   ├── queries.go       # GetRenewal, ListRenewals, GetRenewalEligibility, GetExpiringContracts
+│   │   │   ├── validators.go    # ValidateRenewalTerms, ValidateExtension
+│   │   │   └── dto.go           # RenewalDTO, RequestRenewalRequest, ExtensionDTO
+│   │   #
+│   │   # ===== IP RIGHTS =====
+│   │   ├── ip_rights/
+│   │   │   ├── service.go       # Assign IP, license grants, term updates; protect & audit
+│   │   │   ├── commands.go      # AssignIP, GrantLicense, UpdateIPTerms, TransferRights
+│   │   │   ├── queries.go       # GetIPRights, GetLicenseTerms, ListIPAssignments
+│   │   │   ├── validators.go    # ValidateIPTerms, ValidateLicense, ValidateAssignment
+│   │   │   └── dto.go           # IPRightsDTO, AssignIPRequest, LicenseDTO
+│   │   #
+│   │   # ===== NDA =====
+│   │   ├── nda/
+│   │   │   ├── service.go       # Sign/expire NDAs; breach reporting & enforcement; penalties
+│   │   │   ├── commands.go      # SignNDA, ReportBreach, EnforceNDA, ExpireNDA
+│   │   │   ├── queries.go       # GetNDA, ListNDAs, ListBreaches, GetActiveNDAs
+│   │   │   ├── validators.go    # ValidateNDATerms, ValidateBreach
+│   │   │   └── dto.go           # NDADTO, SignNDARequest, NDABreachDTO
+│   │   #
+│   │   # ===== REPORTING & COLLABORATION =====
+│   │   ├── report/
+│   │   │   ├── service.go       # Generate/schedule/export reports; analytics aggregation
+│   │   │   ├── commands.go      # GenerateReport, ScheduleReport, ExportReport, CancelScheduledReport
+│   │   │   ├── queries.go       # GetReport, ListReports, GetAnalytics, GetScheduledReports
+│   │   │   ├── validators.go    # ValidateReportType, ValidateReportParameters
+│   │   │   └── dto.go           # ReportDTO, GenerateReportRequest, AnalyticsDTO
+│   │   ├── feedback/
+│   │   │   ├── service.go       # Mid-contract feedback; reminders; average scores
+│   │   │   ├── commands.go      # SubmitFeedback, RespondToFeedback, RequestFeedback
+│   │   │   ├── queries.go       # GetFeedback, ListFeedbacks, GetFeedbackSummary, GetDueFeedbacks, GetAverageScores
+│   │   │   ├── validators.go    # ValidateFeedbackScores, ValidateFeedbackTiming
+│   │   │   └── dto.go           # FeedbackDTO, SubmitFeedbackRequest, FeedbackScoreDTO
+│   │   ├── workroom/
+│   │   │   ├── service.go       # Collaborative tasks/notes/files/messages; permissions
+│   │   │   ├── commands.go      # CreateTask, UpdateTask, CompleteTask, DeleteTask, AddNote, UpdateNote, DeleteNote, ShareFile, DeleteFile
+│   │   │   ├── queries.go       # GetTask, ListTasks, GetNote, ListNotes, GetFile, ListFiles, GetWorkroomActivity
+│   │   │   ├── validators.go    # ValidateTask, ValidateFileType, ValidateAccess
+│   │   │   └── dto.go           # WorkroomTaskDTO, WorkroomNoteDTO, WorkroomFileDTO
+│   │   #
+│   │   # ===== DIRECT CONTRACT =====
+│   │   └── direct_contract/
+│   │       ├── service.go       # Invite/accept/reject; activate direct contracts; token flow
+│   │       ├── commands.go      # InviteFreelancer, AcceptInvite, RejectInvite, ActivateDirectContract, CancelInvite, ResendInvite
+│   │       ├── queries.go       # GetInvite, ListInvites, GetInviteStatus, GetPendingInvites
+│   │       ├── validators.go    # ValidateInviteTerms, ValidateToken, ValidateFreelancer
+│   │       └── dto.go           # DirectContractDTO, InviteFreelancerRequest, AcceptInviteRequest
+│   │
+│   # ========================================================================================
+│   # 🌐 INTERFACES LAYER - HTTP (v1), OpenAPI, Middleware
+│   # ========================================================================================
+│   └── interfaces/
+│       └── http/
+│           ├── v1/                                   # 🚦 Versioned API surface (mounted at /v1)
+│           │   │
+│           │   # ──────────────────────────────────────────────────────────────────────────
+│           │   # 🎯 HANDLERS (Use-Case Endpoints)
+│           │   # ──────────────────────────────────────────────────────────────────────────
+│           │   ├── handlers/
+│           │   │   # ===== CORE CONTRACT HANDLERS =====
+│           │   │   ├── contract_handler.go           # Contract CRUD & lifecycle; authz; RFC7807 mapping; metrics/tracing
+│           │   │
+│           │   │   # ===== STATEMENT OF WORK (SOW) =====
+│           │   │   ├── sow_handler.go                # SOW create/version/approve/reject; version rules; Problem Details
+│           │   │
+│           │   │   # ===== FINANCIAL HOLDS (RISK MGMT) =====
+│           │   │   ├── financial_hold_handler.go     # Place/extend/release holds; permissions; notifications
+│           │   │
+│           │   │   # ===== MILESTONES =====
+│           │   │   ├── milestone_handler.go          # Create/submit/approve/reject/release/dispute; auto-release integration
+│           │   │
+│           │   │   # ===== DELIVERABLES =====
+│           │   │   ├── deliverable_handler.go        # Submit/review/accept/reject/revision; file links; auditing
+│           │   │
+│           │   │   # ===== TIME TRACKING =====
+│           │   │   ├── timesheet_handler.go          # Add entries/submit/approve/reject/dispute; week checks; totals
+│           │   │   ├── workdiary_handler.go          # Record entries/screenshots; privacy settings; retention-safe deletes
+│           │   │
+│           │   │   # ===== TEMPLATES =====
+│           │   │   ├── template_handler.go           # CRUD/publish/use/clone; search & pagination; cache hints
+│           │   │
+│           │   │   # ===== CONTRACT CHANGES =====
+│           │   │   ├── amendment_handler.go          # Propose/approve/reject/apply; bilateral approval; timeouts
+│           │   │   ├── termination_handler.go        # Initiate/approve/complete/dispute; settlement calc; idempotency keys
+│           │   │
+│           │   │   # ===== DISPUTES =====
+│           │   │   ├── dispute_handler.go            # Open/escalate/resolve/close; evidence uploads; SLA timers
+│           │   │
+│           │   │   # ===== DOCUMENTS & SIGNATURES =====
+│           │   │   ├── attachment_handler.go         # Upload/delete/version; presigned URLs; AV scan results
+│           │   │   ├── signature_handler.go          # Request/sign/decline/verify; sequential flow; integrity hash
+│           │   │
+│           │   │   # ===== FINANCIAL =====
+│           │   │   ├── budget_handler.go             # Update thresholds/forecast; burn-rate output; alert triggers
+│           │   │   ├── invoice_handler.go            # Generate/send/mark-paid/cancel; pay links; state transitions
+│           │   │
+│           │   │   # ===== COMPLIANCE & LEGAL =====
+│           │   │   ├── sla_handler.go                # Define/record/detect-breach/report; penalties/rewards
+│           │   │   ├── agency_handler.go             # Team membership/roles/billing split; permissions matrix
+│           │   │   ├── compliance_handler.go         # Requirements verify/audits/run/expire; jurisdiction rules
+│           │   │
+│           │   │   # ===== PERFORMANCE =====
+│           │   │   ├── performance_handler.go        # KPIs define/record/scores/trends; benchmark comparisons
+│           │   │
+│           │   │   # ===== NEGOTIATION =====
+│           │   │   ├── negotiation_handler.go        # Offers/counter-offers/accept/reject/expire; round limits
+│           │   │
+│           │   │   # ===== RENEWAL & EXTENSION =====
+│           │   │   ├── renewal_handler.go            # Request/approve/reject/extend; auto-renew opt-in/out notices
+│           │   │
+│           │   │   # ===== IP RIGHTS =====
+│           │   │   ├── ip_rights_handler.go          # Assign/licensing/updates; protection flags; auditability
+│           │   │
+│           │   │   # ===== NDA =====
+│           │   │   ├── nda_handler.go                # Sign/expire/report breach/enforce; penalties mapping
+│           │   │
+│           │   │   # ===== REPORTING & COLLABORATION =====
+│           │   │   ├── report_handler.go             # Generate/schedule/export; async job handoff; list pagination
+│           │   │   ├── feedback_handler.go           # Submit/respond/request; averages & due filters
+│           │   │   ├── workroom_handler.go           # Tasks/notes/files/messages CRUD; access checks
+│           │   │
+│           │   │   # ===== DIRECT CONTRACT =====
+│           │   │   └── direct_contract_handler.go    # Invite/accept/reject/activate; token validation; expiry handling
+│           │   │
+│           │   # ──────────────────────────────────────────────────────────────────────────
+│           │   # 🛣️ ROUTES (HTTP Surface)
+│           │   # ──────────────────────────────────────────────────────────────────────────
+│           │   ├── routes/
+│           │   │   # ===== CORE CONTRACT ROUTES =====
+│           │   │   ├── contract_routes.go            # /v1/contracts (POST,GET); /v1/contracts/:id (GET,PATCH,DELETE); filters,pagination,ETag
+│           │   │
+│           │   │   # ===== STATEMENT OF WORK (SOW) =====
+│           │   │   ├── sow_routes.go                 # /v1/contracts/:id/sow (POST,GET); /v1/contracts/:id/sow/versions (POST,GET); approve/reject
+│           │   │
+│           │   │   # ===== FINANCIAL HOLDS (RISK MGMT) =====
+│           │   │   ├── financial_hold_routes.go      # /v1/contracts/:id/holds (POST,GET); /v1/holds/:holdId/release (POST); extend/expire
+│           │   │
+│           │   │   # ===== MILESTONES =====
+│           │   │   ├── milestone_routes.go           # /v1/contracts/:id/milestones (POST,GET); /v1/milestones/:id/{submit|approve|reject|release} (POST)
+│           │   │
+│           │   │   # ===== DELIVERABLES =====
+│           │   │   ├── deliverable_routes.go         # /v1/milestones/:id/deliverables (POST,GET); review/accept/reject/revision (POST)
+│           │   │
+│           │   │   # ===== TIME TRACKING =====
+│           │   │   ├── timesheet_routes.go           # /v1/contracts/:id/timesheets (POST,GET); /v1/timesheets/:id/{approve|reject|dispute} (POST)
+│           │   │   ├── workdiary_routes.go           # /v1/contracts/:id/workdiary (GET); /v1/workdiary/privacy (PATCH); screenshots CRUD
+│           │   │
+│           │   │   # ===== TEMPLATES =====
+│           │   │   ├── template_routes.go            # /v1/templates (POST,GET); /v1/templates/:id (GET,PATCH,DELETE); /:id/{use|publish|unpublish} (POST)
+│           │   │
+│           │   │   # ===== CONTRACT CHANGES =====
+│           │   │   ├── amendment_routes.go           # /v1/contracts/:id/amendments (POST,GET); /v1/amendments/:id/{approve|reject|apply} (POST)
+│           │   │   ├── termination_routes.go         # /v1/contracts/:id/terminate (POST); /v1/terminations/:id/settlement (GET); approve/complete/dispute (POST)
+│           │   │
+│           │   │   # ===== DISPUTES =====
+│           │   │   ├── dispute_routes.go             # /v1/contracts/:id/disputes (POST,GET); /v1/disputes/:id/evidence (POST,GET); {escalate|resolve|close} (POST)
+│           │   │
+│           │   │   # ===== DOCUMENTS & SIGNATURES =====
+│           │   │   ├── attachment_routes.go          # /v1/contracts/:id/attachments (POST,GET); /v1/attachments/:id/versions (POST,GET); delete (DELETE)
+│           │   │   ├── signature_routes.go           # /v1/contracts/:id/signatures (POST,GET); /v1/signatures/:id/{sign|decline|verify} (POST)
+│           │   │
+│           │   │   # ===== FINANCIAL =====
+│           │   │   ├── budget_routes.go              # /v1/contracts/:id/budget (GET,PATCH); /v1/budget/forecast (GET); thresholds (PATCH)
+│           │   │   ├── invoice_routes.go             # /v1/contracts/:id/invoices (POST,GET); /v1/invoices/:id/pay (POST); mark-paid|cancel (POST)
+│           │   │
+│           │   │   # ===== COMPLIANCE & LEGAL =====
+│           │   │   ├── sla_routes.go                 # /v1/contracts/:id/sla (POST,GET); metrics/record (POST); /v1/sla/breaches (GET)
+│           │   │   ├── agency_routes.go              # /v1/contracts/:id/agency (GET,PATCH); /v1/agency/members (POST,DELETE,PATCH); billing-split (PATCH)
+│           │   │   ├── compliance_routes.go          # /v1/contracts/:id/compliance (GET,PATCH); /v1/compliance/audits (POST,GET); verify/expire (POST)
+│           │   │
+│           │   │   # ===== PERFORMANCE =====
+│           │   │   ├── performance_routes.go         # /v1/contracts/:id/performance (GET); /v1/performance/kpis (POST,GET,PATCH); scores/trends (GET)
+│           │   │
+│           │   │   # ===== NEGOTIATION =====
+│           │   │   ├── negotiation_routes.go         # /v1/contracts/:id/negotiation (GET); /v1/negotiation/offers (POST,GET); accept|reject|withdraw (POST)
+│           │   │
+│           │   │   # ===== RENEWAL & EXTENSION =====
+│           │   │   ├── renewal_routes.go             # /v1/contracts/:id/renewal (POST,GET); /v1/renewal/extend (POST); auto-renew enable/disable (POST)
+│           │   │
+│           │   │   # ===== IP RIGHTS =====
+│           │   │   ├── ip_rights_routes.go           # /v1/contracts/:id/ip-rights (GET,PATCH); /v1/ip-rights/assign (POST); license ops (POST)
+│           │   │
+│           │   │   # ===== NDA =====
+│           │   │   ├── nda_routes.go                 # /v1/contracts/:id/nda (GET,POST); /v1/nda/sign (POST); breach/enforce (POST)
+│           │   │
+│           │   │   # ===== REPORTING & COLLABORATION =====
+│           │   │   ├── report_routes.go              # /v1/contracts/:id/reports (POST,GET); /v1/reports/analytics (GET); export/schedule (POST)
+│           │   │   ├── feedback_routes.go            # /v1/contracts/:id/feedback (POST,GET); /v1/feedback/submit (POST); respond (POST)
+│           │   │   ├── workroom_routes.go            # /v1/contracts/:id/workroom (GET); /v1/workroom/{tasks|notes|files} (CRUD); activity (GET)
+│           │   │
+│           │   │   # ===== DIRECT CONTRACT =====
+│           │   │   └── direct_contract_routes.go     # /v1/direct-contracts (POST,GET); /v1/direct-contracts/:token/accept (POST); reject|resend (POST)
+│           │   │
+│           │   # ===== OPENAPI =====
+│           │   └── openapi/
+│           │       ├── openapi.yaml  # OpenAPI 3.0: endpoints, schemas, auth, errors
+│           │       └── generator.go  # Generate /swagger + /openapi.json (dev); optional request validation in debug
+│           │
+│           # ===== PRESENTERS & HTTP UTILITIES =====
+│           ├── presenters/
+│           │   └── errors.go  # 🆕 RFC7807 Problem+JSON: type/title/status/detail/instance/extensions
+│           ├── etag.go  # 🆕 ETag middleware for cacheable GET: generate hash; If-None-Match; 304; feature-flagged
+│           └── middleware/
+│               ├── auth.go  # JWT via pkg/auth: verify token; extract claims; inject user ctx
+│               ├── rbac.go  # ♻️ role/permission checks; align with app/authz policies; deny unauthorized
+│               ├── cors.go  # CORS: origins, methods, preflight
+│               ├── rate_limit.go  # per-user/endpoint limits; Redis counters; 429 on exceed
+│               ├── idempotency.go  # Idempotency-Key(UUIDv4); store req/resp in Redis (24h); dedupe
+│               ├── requestid.go  # 🆕 X-Request-ID (ULID); add header; inject to logs
+│               ├── logging.go  # 🆕 structured req/resp logs; duration; correlation id
+│               ├── recovery.go  # 🆕 panic recovery; stack trace; 500; keep server alive
+│               └── tracing.go  # 🆕 distributed tracing: spans; inject context; attrs(method/path/status)
 │
-├── config/                                    # 🆕 MEDIUM
-│   ├── default.yaml
-│   ├── dev.yaml
-│   └── prod.yaml
+# ========================================================================================
+# 🗂️ DATABASE MIGRATIONS
+# ========================================================================================
+├── db/
+│   └── migrations/  # 🔄 symlink/mirror of internal migrations; make migrate-{up,down}
+│       ├── contracts/  # core contract schema
+│       ├── milestones/  # milestones & deliverables
+│       ├── financial/  # holds, budgets, invoices
+│       ├── compliance/  # SLAs, NDAs, IP rights
+│       ├── amendments/  # amendments, terminations
+│       └── collaboration/  # workroom, templates, agency
 │
-├── dapr/                                      # 🆕 MEDIUM
-│   ├── local/
-│   │   ├── pubsub.yaml
-│   │   └── statestore.yaml
-│   └── k8s/
-│       ├── pubsub.yaml                        # Scopes: ["contracts-be"]
-│       ├── statestore.yaml
-│       └── secrets.yaml
+# ========================================================================================
+# 📚 DOCUMENTATION
+# ========================================================================================
+├── docs/
+│   ├── README.md  # overview & quick start
+│   ├── API.md  # high-level API
+│   ├── API_VERSIONING.md  # 🆕 versioning & deprecation policy (semver; breaking vs non-breaking; 6mo deprecation; Sunset headers)
+│   ├── EVENTS.md  # event schemas & topics (lifecycle/milestones/financial/timesheet/disputes/compliance/collaboration)
+│   ├── ARCHITECTURE.md  # layers; DDD; event-driven; CQRS
+│   ├── MIGRATIONS.md  # 🆕 forward-only; version tracking; safety checks; zero-downtime; concurrent indexes
+│   ├── SCHEMA.md  # 🆕 ERD; table schemas (33+); indexes; constraints; retention
+│   ├── RUNBOOK.md  # 🆕 deploy/rollback/incidents/troubleshooting/health checks
+│   ├── CACHING.md  # 🆕 keys; TTLs; warming; SWR; event invalidation; singleflight
+│   ├── DATA_RETENTION.md  # 🛡️🆕 contracts 7y; screenshots 30d; dispute evidence 3y; audit logs 2y; soft-deletes 90d; cleanup jobs
+│   ├── ERASURE.md  # 🛡️🆕 GDPR/CCPA erasure: hooks; anonymization; legal holds; playbooks; audit trail
+│   ├── SLOS.md  # 📏🆕 SLO targets (latency, success, lags); alerting
+│   ├── OUTBOX.md  # 🆕 exactly-once-ish; tx writes; retries; DLQ; cleanup; metrics
+│   ├── RELEASE_CHECKLIST.md  # 🆕 openapi-diff; schema-diff; migration plan; flags; env vars; rollback; dashboards
+│   ├── NAMING.md  # ♻️ packages snake_case; endpoints kebab-case; tables snake_case; protobuf PascalCase; events dot.case
+│   ├── OPENAPI.md  # 🆕 regenerate spec; SDK gen (Go/TS); publish; breaking change detection
+│   ├── contract-lifecycle.md  # flows & state diagrams
+│   ├── milestone-system.md  # milestone/deliverable flows; auto-release(3d); payouts
+│   ├── timesheet-workdiary.md  # weekly timesheets; approvals; work diary; screenshots; manual time; disputes
+│   ├── dispute-resolution.md  # open/evidence/escalate/resolve; holds
+│   ├── amendment-termination.md  # bilateral approvals; versioning; types; notice; settlements
+│   ├── sla-performance.md  # metrics; breaches; penalties/rewards; KPIs; trends; benchmarks
+│   ├── agency-contracts.md  # teams; permissions; splits; consolidated invoicing
+│   ├── direct-contracts.md  # invites; token acceptance; pre-negotiation; bypass proposals
+│   └── compliance-legal.md  # NDAs; IP rights; compliance reqs; audits; jurisdictions
 │
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go
-│   │   └── codes.go                           # CONTRACT_NOT_FOUND, MILESTONE_NOT_COMPLETED
-│   ├── logger/                                # ❌ REMOVED
-│   │   └── README.md
-│   ├── utils/
-│   │   ├── validator.go
-│   │   ├── time_calculator.go                 # Time calculation utilities
-│   │   └── date_utils.go                      # Date utilities
-│   └── constants/
-│       ├── events.go                          # ❌ REMOVED
-│       └── topics.go                          # ❌ REMOVED
-│
-├── deployments/
-│   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       ├── configmap.yaml
-│       ├── secrets.yaml
-│       ├── hpa.yaml
-│       ├── pdb.yaml
-│       └── servicemonitor.yaml
-│
-├── scripts/
-│   ├── setup-local.sh
-│   ├── get-secrets.sh
-│   └── seed-data.sh
-│
+# ========================================================================================
+# 🧪 TESTS
+# ========================================================================================
 ├── tests/
 │   ├── unit/
+│   │   ├── domain/  # 33 aggregates
+│   │   │   ├── contract_test.go
+│   │   │   ├── milestone_test.go
+│   │   │   ├── timesheet_test.go
+│   │   │   └── ... (30 more)
+│   │   ├── application/  # 33 services
+│   │   │   ├── contract_service_test.go
+│   │   │   ├── milestone_service_test.go
+│   │   │   └── ... (31 more)
+│   │   └── infrastructure/
+│   │       ├── cache_test.go
+│   │       ├── outbox_test.go
+│   │       └── clients_test.go
 │   ├── integration/
+│   │   ├── repository/  # real DB
+│   │   │   ├── contract_repository_test.go
+│   │   │   ├── milestone_repository_test.go
+│   │   │   └── ... (31 more)
+│   │   ├── eventhandler/
+│   │   │   ├── proposal_handler_test.go
+│   │   │   ├── payment_handler_test.go
+│   │   │   └── ... (8 more)
+│   │   └── external_clients/
+│   │       ├── users_client_test.go
+│   │       ├── financial_client_test.go
+│   │       └── ... (5 more)
+│   ├── reliability/
+│   │   ├── projections_replay_test.go  # 🆕 replay all contract events; verify read models; ordering; idempotency
+│   │   └── outbox_dispatcher_test.go  # 🆕 at-least-once; idempotency; retries; DLQ
+│   ├── property/
+│   │   ├── contract_property_test.go  # 🆕 invariants: amount>0; start<end; valid transitions
+│   │   ├── milestone_property_test.go  # 🆕 sum≤contract; ordered due dates; no release before approval
+│   │   └── budget_property_test.go  # 🆕 spent+remaining=total; spent≥0; ascending thresholds
 │   └── e2e/
+│       ├── contract_lifecycle_test.go  # create→activate→work→complete; dispute path; amendment path
+│       ├── dispute_resolution_test.go  # open→evidence→escalate→resolve
+│       └── chaos_event_delivery_test.go  # 🆕 dup/out-of-order/delayed events; resilience
 │
-├── docs/
-│   ├── README.md
-│   ├── API.md
-│   ├── EVENTS.md                              # Events: contract.created, milestone.completed, timesheet.submitted, dispute.opened
-│   ├── ARCHITECTURE.md
-│   ├── MIGRATIONS.md                          # 🆕
-│   ├── SCHEMA.md                              # 🆕
-│   ├── RUNBOOK.md                             # 🆕
-│   ├── contract-lifecycle.md                  # Contract lifecycle documentation
-│   ├── sow-versioning.md                      # 🆕 SOW versioning & approvals
-│   └── financial-holds.md                     # 🆕 Holds policy & dispute anchors
+# ========================================================================================
+# 🔧 SCRIPTS
+# ========================================================================================
+├── scripts/
+│   ├── migrate.sh  # 🆕 migrate up/down/version; prod safety checks
+│   ├── openapi-diff.sh  # 🆕 compare spec vs main; detect breakage; CI fail; changelog
+│   ├── schema-diff.sh  # 🆕 pg_dump; compare; drift detection; CI guard
+│   ├── generate-sdks.sh  # 🆕 gen Go SDK (sdk/go) & TS SDK (sdk/ts); publish
+│   └── sbom-sign.sh  # 🆕 SBOM build + cosign sign/verify
 │
+# ========================================================================================
+# 🚀 CI/CD
+# ========================================================================================
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
+│       ├── ci.yml  # tests (unit/integration), linters, build, push image
+│       ├── cd.yml  # deploy dev/staging/prod; smoke; rollback on fail
+│       ├── contract-ci.yml  # 🆕 openapi-diff; event schema checks (buf breaking); fail on breaking
+│       ├── security.yml  # 🆕 golangci-lint(security); govulncheck; trivy; cosign verify
+│       └── load-tests.yml  # 🆕 k6/Gatling; /healthz & hot paths; P99 alerts
 │
-├── go.mod                                     # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
+# ========================================================================================
+# 📦 SDK GENERATION
+# ========================================================================================
+├── sdk/
+│   ├── go/
+│   │   ├── client.go  # main client
+│   │   ├── contracts.go  # contract ops
+│   │   ├── milestones.go  # milestone ops
+│   │   └── ... (31 more)
+│   └── ts/
+│       ├── client.ts  # main client
+│       ├── contracts.ts  # contract ops
+│       ├── milestones.ts  # milestone ops
+│       └── ... (31 more)
+│
+# ========================================================================================
+# 🔧 CONFIG / ROOT FILES
+# ========================================================================================
+├── .golangci.yml  # 🆕 linters: enable security; no unused; complexity limits; CI parity
+├── CODEOWNERS  # 🆕 ownership: domain & infra dirs; docs
+├── go.mod  # deps: pkg/auth, platform-shared(telemetry/outbox), contracts/events (protobuf)
+├── go.sum  # checksums
+├── .env.example  # DATABASE_URL, REDIS_URL, KAFKA_BROKERS, MINIO_ENDPOINT, KEYCLOAK_URL, FEATURE_FLAGS_*
+├── Makefile  # build/test/lint/fmt/migrate/openapi/sdks/docker/deploy
+├── Dockerfile  # multi-stage; minimal runtime; non-root; healthcheck
+├── .dockerignore  # docker ignores
+├── .gitignore  # git ignores
+└── README.md  # overview; quick start; architecture; dev & deploy guides; contributing
 
 
 ```
 
 ---
-
-## 📦 **5️⃣ financial-be (Payments and Wallet Management Service)**
+## 📦 **financial-be (Financial Management Service) - REFACTORED**
 
 ```
+
 apps/be/financial-be/
 │
 ├── cmd/
-│   └── api/
-│       └── main.go                           # Entry point - initializes Gin, Dapr, connects to Postgres
+│   ├── api/
+│   │   └── main.go                           # 📝 API entrypoint - initializes Gin, Dapr, Postgres (uses platform-shared/logging, internal/config)
+│   │                                         # ♻️ Serve versioned routes (/v1/*) & enable ETag middleware when flag is on
+│   │                                         # NO background jobs here - delegated to cmd/worker
+│   │
+│   └── worker/
+│       └── main.go                           # 🆕 Worker entrypoint - background jobs, inbox/outbox, leader election
+│                                             # Runs: payout batches, payment schedules, reminders, reconciliation, outbox dispatcher
+│                                             # Uses: infrastructure/coordination for leader election & distributed locks
 │
 ├── internal/
-│   ├── domain/                               # 🏛️ Domain Layer
-│   │   ├── wallet/
-│   │   │   ├── entity.go                     # User wallet (UserID, Balance, Currency, Status, CreatedAt)
-│   │   │   ├── balance.go                    # Balance tracking (Available, Pending, Reserved)
-│   │   │   ├── currency.go                   # Multi-currency support (USD, EUR, GBP, etc.)
-│   │   │   ├── errors.go                     # Wallet errors (InsufficientFunds, WalletNotFound)
-│   │   │   ├── repository.go                 # WalletRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: WalletCreated, WalletUpdated, WalletClosed, FundsReserved, FundsReleased
-│   │   │
-│   │   ├── transaction/
-│   │   │   ├── entity.go                     # Financial transactions (ID, WalletID, Amount, Type, Status, Reference)
-│   │   │   ├── enums.go                      # Type (Deposit, Withdrawal, Transfer, Payment, Refund), Status (Pending, Completed, Failed), Category
-│   │   │   ├── ledger.go                     # Double-entry ledger (debit/credit accounting)
-│   │   │   ├── errors.go                     # Transaction errors (TransactionFailed, DuplicateTransaction)
-│   │   │   ├── repository.go                 # TransactionRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: TransactionInitiated, TransactionPosted, TransactionFailed, TransactionReversed
-│   │   │
-│   │   ├── ledger_journal/                   # 🆕 Wallet ledger (double-entry) - immutable journal & audit
-│   │   │   ├── entity.go                     # JournalEntry (ID, DebitAccount, CreditAccount, Amount, Currency, EffectiveAt, Hash, PrevHash)
-│   │   │   ├── transfer.go                   # Transfers between accounts (builds 2-sided entries)
-│   │   │   ├── adjustment.go                 # Manual adjustments with approvals
-│   │   │   ├── audit.go                      # Audit trail (entry proofs, tamper-evidence)
-│   │   │   ├── errors.go                     # Ledger errors (Imbalance, ImmutableViolation)
-│   │   │   ├── repository.go                 # LedgerJournalRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: JournalEntryRecorded, JournalAdjustmentApproved, JournalAdjustmentRejected
-│   │   │
-│   │   ├── payment/
-│   │   │   ├── entity.go                     # Payment records (ID, Amount, Currency, PayerID, PayeeID, Method, Status)
-│   │   │   ├── payment_method.go             # Payment methods (CreditCard, PayPal, BankTransfer, Wallet)
-│   │   │   ├── method_profile.go             # 🆕 Payout preferences per method (limits, cutoffs, fees)
-│   │   │   ├── onboarding.go                 # 🆕 Onboarding KYC/KYB statuses per method/provider
-│   │   │   ├── gateway.go                    # Payment gateway abstraction (Stripe, PayPal interface)
-│   │   │   ├── errors.go                     # Payment errors (PaymentFailed, InvalidCard)
-│   │   │   ├── repository.go                 # PaymentRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: PaymentAuthorized, PaymentCaptured, PaymentFailed, PaymentRefundInitiated
-│   │   │
-│   │   ├── escrow/
-│   │   │   ├── entity.go                     # Escrow accounts (ID, ContractID, Amount, Status, HeldAt, ReleasedAt)
-│   │   │   ├── hold.go                       # Fund holds (amount reserved until milestone completion)
-│   │   │   ├── release.go                    # Fund release conditions (milestone approved, dispute resolved)
-│   │   │   ├── pro_rata.go                   # 🆕 Pro-rata partial releases by milestone & refunds
-│   │   │   ├── errors.go                     # Escrow errors (EscrowNotFound, InsufficientEscrow)
-│   │   │   ├── repository.go                 # EscrowRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: EscrowFunded, EscrowPartiallyReleased, EscrowReleased, EscrowRefunded
-│   │   │
-│   │   ├── payout/
-│   │   │   ├── entity.go                     # Payout requests (ID, UserID, Amount, Method, Status, RequestedAt, ProcessedAt)
-│   │   │   ├── method.go                     # Payout methods (BankTransfer, PayPal, Payoneer, Wire)
-│   │   │   ├── schedule.go                   # Payout scheduling (instant, daily, weekly, monthly)
-│   │   │   ├── errors.go                     # Payout errors (PayoutFailed, BelowMinimum)
-│   │   │   ├── repository.go                 # PayoutRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: PayoutRequested, PayoutScheduled, PayoutProcessed, PayoutFailed
-│   │   │
-│   │   ├── invoice/
-│   │   │   ├── entity.go                     # Invoice generation (ID, ContractID, Number, Amount, DueDate, Status, PaidAt)
-│   │   │   ├── line_item.go                  # Invoice line items (description, quantity, price, total)
-│   │   │   ├── tax.go                        # Tax calculations (VAT, sales tax by jurisdiction)
-│   │   │   ├── errors.go                     # Invoice errors (InvoiceNotFound, AlreadyPaid)
-│   │   │   ├── repository.go                 # InvoiceRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: InvoiceIssued, InvoiceUpdated, InvoicePaid, InvoiceOverdue, InvoiceCanceled
-│   │   │
-│   │   ├── fee/
-│   │   │   ├── entity.go                     # Platform fees (ID, TransactionID, Amount, Type, Rate)
-│   │   │   ├── calculator.go                 # Fee calculation rules (percentage, tiered rates)
-│   │   │   ├── tier.go                       # Fee tiers (based on subscription, volume, user type)
-│   │   │   ├── v2/                           # 🆕 Fee engine v2 (tiered/volume, country exceptions, coupons)
-│   │   │   │   ├── rules.go                  # Rules model (volume discounts, locale overrides, coupons)
-│   │   │   │   ├── coupon.go                 # Coupon/promo code entity & redemption logic
-│   │   │   │   ├── country_exceptions.go     # Country/regional exceptions
-│   │   │   │   ├── errors.go                 # Fee v2 errors (InvalidCoupon, IneligibleTier)
-│   │   │   │   └── repository.go             # FeeRulesRepository interface
-│   │   │   ├── errors.go                     # Fee errors
-│   │   │   ├── repository.go                 # FeeRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: FeeCalculated, FeeAdjusted, CouponApplied, CouponRevoked
-│   │   │
-│   │   ├── refund/
-│   │   │   ├── entity.go                     # Refund processing (ID, PaymentID, Amount, Reason, Status, ProcessedAt)
-│   │   │   ├── policy.go                     # Refund policies (full, partial, time limits)
-│   │   │   ├── pro_rata.go                   # 🆕 Pro-rata refunds aligned to milestones
-│   │   │   ├── errors.go                     # Refund errors (RefundNotAllowed, RefundExpired)
-│   │   │   ├── repository.go                 # RefundRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: RefundRequested, RefundApproved, RefundDeclined, RefundProcessed
-│   │   │
-│   │   ├── dispute_payment/
-│   │   │   ├── entity.go                     # Payment disputes (ID, PaymentID, Reason, FiledBy, Status, Resolution)
-│   │   │   ├── chargeback.go                 # Chargeback handling (from credit card companies)
-│   │   │   ├── errors.go                     # Dispute errors
-│   │   │   ├── repository.go                 # DisputePaymentRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: PaymentDisputeOpened, ChargebackRecorded, PaymentDisputeResolved
-│   │   │
-│   │   ├── tax/
-│   │   │   ├── entity.go                     # Tax records (ID, UserID, Year, Type, Amount, Status)
-│   │   │   ├── vat_gst.go                    # 🆕 VAT/GST per locale & reverse-charge logic
-│   │   │   ├── reverse_charge.go             # 🆕 Reverse-charge mechanics & validations
-│   │   │   ├── forms_1099k.go                # 🆕 1099/K forms generation & thresholds
-│   │   │   ├── profile_link.go               # 🆕 Link to Users-BE tax profile (TIN/VAT ID)
-│   │   │   ├── form.go                       # Tax forms (W9, 1099, VAT returns)
-│   │   │   ├── errors.go                     # Tax errors
-│   │   │   ├── repository.go                 # TaxRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: TaxRecordCreated, TaxFormGenerated, TaxProfileLinked, VATReverseChargeApplied
-│   │   │
-│   │   ├── fx/                               # 🆕 Multi-currency rigor (quotes vs settlement, FX rates)
-│   │   │   ├── rate.go                       # FXRate (Base, Quote, Rate, EffectiveFrom, Provider, Precision)
-│   │   │   ├── quote_settlement.go           # Quote vs. settlement currency handling
-│   │   │   ├── rounding.go                   # Rounding rules per currency/amount type
-│   │   │   ├── errors.go                     # FX errors (RateNotFound, StaleRate)
-│   │   │   ├── repository.go                 # FXRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: FXRateUpdated, FXQuoteCreated, FXSettlementCalculated
-│   │   │
-│   │   └── risk/                             # 🆕 Risk/holds (reserves, rolling reserves, negative balances)
-│   │       ├── reserve.go                    # Reserve balances & rolling reserve schedules
-│   │       ├── hold_workflow.go              # Holds/auto-release based on risk signals & time
-│   │       ├── chargeback_workflow.go        # Chargeback workflows & recovery
-│   │       ├── negative_balance.go           # Negative balance handling & collections
-│   │       ├── errors.go                     # Risk errors
-│   │       ├── repository.go                 # RiskRepository interface
-│   │       └── events.go                     # 🆕 Domain events: ReserveSet, ReserveUpdated, RiskHoldPlaced, RiskHoldReleased, NegativeBalanceCreated
 │   │
-│   ├── application/                          # 📋 Application Layer (now with commands/queries/service/validators everywhere)
-│   │   ├── eventhandler/
-│   │   │   ├── billing_handler.go             # Consumes (from subscriptions-be → financial-be):
-│   │   │   │                                     #   billing.invoice.exported — ingest exported invoices for charging/AR.
-│   │   │   │
-│   │   │   ├── admin_risk_handler.go          # Consumes (from admin-be → financial-be; Risk dashboards):
-│   │   │   │                                     #   risk.hold.placed
-│   │   │   │                                     #   risk.hold.released
-│   │   │   │                                     #   risk.reserve.set
-│   │   │   │                                     #   risk.reserve.updated
-│   │   │   │                                     #   risk.chargeback.recorded
-│   │   │   │                                     #   risk.chargeback.updated
-│   │   │   │                                     #   risk.velocity.alert
-│   │   │   │
-│   │   │   ├── admin_flags_handler.go         # Consumes (from admin-be; Config & flags):
-│   │   │   │                                     #   admin.feature_flag.updated
-│   │   │   │                                     #   admin.threshold.updated
-│   │   │   │                                     #   admin.experiment.updated
-│   │   │   │
-│   │   │   └── seats_billing_handler.go       # Consumes (from subscriptions-be → financial-be; Billing & seats):
-│   │   │
-│   │   ├── wallet/
-│   │   │   ├── service.go                    # Wallet logic (Create, Deposit, Withdraw, Transfer, GetBalance)
-│   │   │   ├── commands.go                   # DepositCommand, WithdrawCommand, TransferCommand
-│   │   │   ├── queries.go                    # GetBalance, GetHistory, GetTransactions
-│   │   │   ├── validators.go                 # 🆕 Validate currency, amounts, sufficient balance, status
-│   │   │   ├── dto.go                        # WalletDTO, TransactionDTO
-│   │   │   └── mapper.go                     # Wallet mappers
-│   │   │
-│   │   ├── transaction/
-│   │   │   ├── service.go                    # Transaction logic (Create, Reverse, Reconcile)
-│   │   │   ├── commands.go                   # CreateTransaction, ReverseTransaction, ReconcileTransactions
-│   │   │   ├── queries.go                    # GetTransaction, ListTransactions, GetLedger
-│   │   │   ├── validators.go                 # 🆕 Immutable journal checks, double-entry balance
-│   │   │   ├── dto.go                        # TransactionDTO, LedgerDTO
-│   │   │   ├── mapper.go                     # Transaction mappers
-│   │   │   └── reconciliation.go             # Reconciliation logic (match payments with bank statements)
-│   │   │
-│   │   ├── ledger_journal/                   # 🆕 Ledger journal application surface
-│   │   │   ├── service.go                    # AppendEntry, Transfer, Adjust, AuditTrail
-│   │   │   ├── commands.go                   # AppendJournalEntry, TransferFunds, CreateAdjustment
-│   │   │   ├── queries.go                    # GetEntry, ListEntries, GetAuditTrail
-│   │   │   ├── validators.go                 # Entry hash chain, debits=credits, approvals
-│   │   │   ├── dto.go                        # JournalEntryDTO, TransferDTO, AdjustmentDTO
-│   │   │   └── mapper.go                     # Journal mappers
-│   │   │
-│   │   ├── payment/
-│   │   │   ├── service.go                    # Payment logic (Process, Capture, Void, Refund)
-│   │   │   ├── commands.go                   # ProcessPayment, CapturePayment, VoidPayment, RefundPayment
-│   │   │   ├── queries.go                    # GetPayment, ListPayments
-│   │   │   ├── validators.go                 # 🆕 Method eligibility, onboarding status, limits
-│   │   │   ├── dto.go                        # PaymentDTO, ProcessPaymentDTO
-│   │   │   ├── mapper.go                     # Payment mappers
-│   │   │   ├── stripe_processor.go           # Stripe payment processor implementation
-│   │   │   ├── paypal_processor.go           # PayPal payment processor implementation
-│   │   │   └── processor_factory.go          # Payment processor factory (select processor by method)
-│   │   │
-│   │   ├── escrow/
-│   │   │   ├── service.go                    # Escrow logic (Hold, Release, Refund)
-│   │   │   ├── commands.go                   # HoldEscrow, ReleaseEscrow, RefundEscrow, 🆕 PartialReleaseEscrow
-│   │   │   ├── queries.go                    # 🆕 GetEscrow, ListEscrows, GetEscrowHistory
-│   │   │   ├── validators.go                 # 🆕 Hold coverage, release conditions, pro-rata math
-│   │   │   ├── dto.go                        # EscrowDTO, HoldEscrowDTO
-│   │   │   ├── mapper.go                     # Escrow mappers
-│   │   │   └── pro_rata_release_manager.go   # 🆕 Dispute-driven conditional releases
-│   │   │
-│   │   ├── payout/
-│   │   │   ├── service.go                    # Payout logic (Request, Process, Cancel, GetHistory)
-│   │   │   ├── commands.go                   # RequestPayout, ProcessPayout, CancelPayout
-│   │   │   ├── queries.go                    # GetPayouts, GetPayoutHistory
-│   │   │   ├── validators.go                 # 🆕 Method limits, compliance holds, min amounts
-│   │   │   ├── dto.go                        # PayoutDTO, RequestPayoutDTO
-│   │   │   ├── mapper.go                     # Payout mappers
-│   │   │   └── batch_processor.go            # Batch payout processor (process multiple payouts together)
-│   │   │
-│   │   ├── invoice/
-│   │   │   ├── service.go                    # Invoice logic (Generate, Send, MarkPaid, Cancel)
-│   │   │   ├── commands.go                   # GenerateInvoice, SendInvoice, MarkInvoicePaid
-│   │   │   ├── queries.go                    # GetInvoice, ListInvoices
-│   │   │   ├── validators.go                 # 🆕 Line totals, tax rounding, currency consistency
-│   │   │   ├── dto.go                        # InvoiceDTO, GenerateInvoiceDTO
-│   │   │   ├── mapper.go                     # Invoice mappers
-│   │   │   ├── generator.go                  # Invoice PDF generation
-│   │   │   └── tax_calculator.go             # Tax calculation (VAT, sales tax)
-│   │   │
-│   │   ├── fee/
-│   │   │   ├── service.go                    # Fee logic (Calculate, Apply, Waive)
-│   │   │   ├── calculator.go                 # Fee calculation (percentage, tiered, flat)
-│   │   │   ├── validators.go                 # 🆕 Fee caps, non-negative, eligibility
-│   │   │   ├── dto.go                        # FeeDTO
-│   │   │   └── rules_engine.go               # Fee rules engine (apply rules based on user type, volume)
-│   │   │
-│   │   ├── fee_v2/                           # 🆕 App layer for Fee engine v2
-│   │   │   ├── service.go                    # Calculate with tiers, volume, country exceptions, coupons
-│   │   │   ├── commands.go                   # ApplyCoupon, RevokeCoupon, UpdateFeeRules
-│   │   │   ├── queries.go                    # GetEffectiveFee, GetUserFeeTier, GetCoupon
-│   │   │   ├── validators.go                 # Coupon validity, stacking rules, locale overrides
-│   │   │   ├── dto.go                        # FeeV2DTO, CouponDTO, FeeRuleDTO
-│   │   │   └── mapper.go                     # Fee v2 mappers
-│   │   │
-│   │   ├── refund/
-│   │   │   ├── service.go                    # Refund logic (Process, Cancel, GetHistory)
-│   │   │   ├── commands.go                   # ProcessRefund, CancelRefund, 🆕 ProcessPartialRefund
-│   │   │   ├── queries.go                    # 🆕 GetRefund, ListRefunds
-│   │   │   ├── validators.go                 # 🆕 Pro-rata vs eligibility, time windows
-│   │   │   ├── dto.go                        # RefundDTO
-│   │   │   └── mapper.go                     # Refund mappers
-│   │   │
-│   │   ├── tax/
-│   │   │   ├── service.go                    # Tax logic (Calculate, Generate forms, File)
-│   │   │   ├── form_generator.go             # Generate tax forms (W9, 1099, 1099-K)
-│   │   │   ├── commands.go                   # 🆕 SyncTaxProfileFromUsersBE, Generate1099K
-│   │   │   ├── queries.go                    # 🆕 GetTaxProfile, GetVATRate, GetReverseChargeEligibility
-│   │   │   ├── validators.go                 # 🆕 VAT ID formats, threshold checks
-│   │   │   ├── dto.go                        # TaxDTO
-│   │   │   └── mapper.go                     # Tax mappers
-│   │   │
-│   │   ├── fx/
-│   │   │   ├── service.go                    # Quote→settlement conversion, fetch/apply FX rates
-│   │   │   ├── commands.go                   # 🆕 UpsertFXRate, SetRoundingRule
-│   │   │   ├── queries.go                    # 🆕 GetFXRate, ConvertAmount, GetEffectiveRateAt
-│   │   │   ├── validators.go                 # 🆕 Effective timestamps, precision, currency pairs
-│   │   │   ├── dto.go                        # FXRateDTO, ConversionRequestDTO
-│   │   │   └── mapper.go                     # FX mappers
-│   │   │
-│   │   └── risk/
-│   │       ├── service.go                    # Holds, reserves, chargebacks, negative balances
-│   │       ├── commands.go                   # 🆕 CreateReserve, ReleaseReserve, PlaceHold, RemoveHold
-│   │       ├── queries.go                    # 🆕 GetReserves, GetHolds, GetRiskScore
-│   │       ├── validators.go                 # 🆕 Rolling reserve schedules, chargeback states
-│   │       ├── dto.go                        # RiskDTO, ReserveDTO, HoldDTO
-│   │       └── mapper.go                     # Risk mappers
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   # 🔧 CONFIGURATION (Load First)
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   ├── config/
+│   │   ├── schema.go                         # ♻️ Typed Config struct (App, Server, Postgres, Kafka, Redis, Auth, Stripe/PayPal keys, FX providers, risk thresholds)
+│   │   │                                     # Group flags under Config.FeatureFlags
+│   │   ├── feature_flags.go                  # 🆕 Central toggles (enable_ledger_audit, enable_etag, enable_fx_auto_update, enable_risk_holds, etc.)
+│   │   ├── loader.go                         # Config loader using Viper (CLI → ENV → file → defaults)
+│   │   └── docs/
+│   │       └── CONFIGURATION.md              # Configuration documentation
 │   │
-│   ├── infrastructure/                       # 🔧 Infrastructure Layer
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   # 🧩 DEPENDENCY INJECTION CONTAINER
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   ├── ioc/
+│   │   ├── container.go                      # 🆕 DI graph: constructs DB/Redis/Kafka clients, repositories, services, handlers, schedulers
+│   │   │                                     # Wire outbox, coordination, observers based on env
+│   │   └── wiring.go                         # 🆕 Env-driven wiring & feature flags: selects implementations (local vs cloud)
+│   │                                         # Wire outbox, coordination, observers based on env
+│   │
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   # 🔧 INFRASTRUCTURE LAYER (Load Second)
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   ├── infrastructure/
+│   │   │
+│   │   # ===== DISTRIBUTED COORDINATION =====
+│   │   ├── coordination/
+│   │   │   ├── leader_election.go            # 🆕 Single-active cron/worker (ensures only one worker processes jobs)
+│   │   │   │                                 # Used by: payout batches, payment schedules, reminders, reconciliation
+│   │   │   └── distlock.go                   # 🆕 Redis/PG advisory locks for cron tasks (prevents duplicate execution)
+│   │   │
+│   │   # ===== PERSISTENCE LAYER =====
 │   │   ├── persistence/
 │   │   │   └── postgres/
-│   │   │       ├── connection.go             # PostgreSQL connection
-│   │   │       ├── transaction.go            # Transaction helpers
-│   │   │       ├── migrations.go             # 📝 UPDATED: Auto-migration with version tracking
-│   │   │       ├── version.go                # 🆕 Schema version tracking
-│   │   │       ├── safety.go                 # 🆕 Pre-migration safety checks
-│   │   │       ├── wallet_repository.go      # WalletRepository implementation
-│   │   │       ├── transaction_repository.go # TransactionRepository implementation
-│   │   │       ├── ledger_journal_repository.go # 🆕 LedgerJournalRepository implementation
-│   │   │       ├── payment_repository.go     # PaymentRepository implementation
-│   │   │       ├── escrow_repository.go      # EscrowRepository implementation
-│   │   │       ├── payout_repository.go      # PayoutRepository implementation
-│   │   │       ├── invoice_repository.go     # InvoiceRepository implementation
-│   │   │       ├── fee_repository.go         # FeeRepository implementation
-│   │   │       ├── fee_rules_repository.go   # 🆕 FeeRulesRepository implementation (v2)
-│   │   │       ├── refund_repository.go      # RefundRepository implementation
-│   │   │       ├── dispute_payment_repository.go # DisputePaymentRepository implementation
-│   │   │       ├── tax_repository.go         # TaxRepository implementation
-│   │   │       ├── fx_repository.go          # 🆕 FXRepository implementation
-│   │   │       ├── risk_repository.go        # 🆕 RiskRepository implementation
-│   │   │       └── payment_schedule_repository.go # PaymentScheduleRepository implementation
+│   │   │       ├── connection.go             # PostgreSQL connection (pooling, tracing, retries)
+│   │   │       ├── transaction.go            # ♻️ Transaction helpers (unit-of-work, retry on serialization)
+│   │   │       │                             # Ensure outbox write is in same DB tx
+│   │   │       ├── migrations.go             # 📝 Auto-migration logic with version tracking
+│   │   │       ├── version.go                # Schema version tracking
+│   │   │       ├── safety.go                 # Pre-migration safety checks
+│   │   │       │
+│   │   │       ├── migrations/               # 🆕 SQL-first, forward-only migrations (prod)
+│   │   │       │   ├── wallet/               # 🆕 Per-schema migration folders
+│   │   │       │   ├── payment/              # 🆕
+│   │   │       │   ├── escrow/               # 🆕
+│   │   │       │   ├── tax/                  # 🆕
+│   │   │       │   └── risk/                 # 🆕
+│   │   │       │
+│   │   │       # ===== CORE WALLET & LEDGER REPOSITORIES =====
+│   │   │       ├── wallet_repository.go      # WalletRepository implementation (balances, reserves, CRUD)
+│   │   │       ├── transaction_repository.go # TransactionRepository implementation (journal linkage, persist, lookup, list)
+│   │   │       ├── ledger_journal_repository.go # LedgerJournalRepository (append-only journal, audit trail, hash chain verification)
+│   │   │       │
+│   │   │       # ===== PAYMENT & ESCROW REPOSITORIES =====
+│   │   │       ├── payment_repository.go     # PaymentRepository implementation (provider refs, states, search)
+│   │   │       ├── escrow_repository.go      # EscrowRepository implementation (holds, releases, refunds, pro-rata)
+│   │   │       ├── payout_repository.go      # PayoutRepository implementation (queue, batch, process, cancel)
+│   │   │       │
+│   │   │       # ===== INVOICE & FEE REPOSITORIES =====
+│   │   │       ├── invoice_repository.go     # InvoiceRepository implementation (lines, taxes, generation, send, mark paid)
+│   │   │       ├── fee_repository.go         # FeeRepository implementation (fee rows, audits, calculations)
+│   │   │       ├── fee_rules_repository.go   # FeeRulesRepository implementation (v2 rulesets: tiers, coupons, locale exceptions)
+│   │   │       │
+│   │   │       # ===== REFUND & DISPUTE REPOSITORIES =====
+│   │   │       ├── refund_repository.go      # RefundRepository implementation (process, cancel, partial refunds, states, audit)
+│   │   │       ├── dispute_payment_repository.go # DisputePaymentRepository implementation (chargebacks, representment, resolution)
+│   │   │       │
+│   │   │       # ===== TAX & FX REPOSITORIES =====
+│   │   │       ├── tax_repository.go         # TaxRepository implementation (records, forms, filing, VAT/GST, 1099-K)
+│   │   │       ├── fx_repository.go          # FXRepository implementation (time-based rates, quote/settlement, rounding rules)
+│   │   │       │
+│   │   │       # ===== RISK MANAGEMENT REPOSITORIES =====
+│   │   │       ├── risk_repository.go        # RiskRepository implementation (holds, reserves, chargeback workflows, negative balances)
+│   │   │       │
+│   │   │       # ===== PROTECTION & FEE UPDATE REPOSITORIES =====
+│   │   │       ├── protection_plan_repository.go  # ProtectionPlanRepository implementation (plans, claims, eligibility, payouts)
+│   │   │       ├── fee_update_repository.go       # FeeUpdateRepository implementation (fee versions, migrations, impact calculations)
+│   │   │       │
+│   │   │       # ===== INTERNATIONAL PAYMENTS REPOSITORY =====
+│   │   │       ├── international_payment_repository.go # InternationalPaymentRepository (routing, compliance checks, local rails, FX adjustments)
+│   │   │       │
+│   │   │       # ===== BONUS & EXPENSE REPOSITORIES =====
+│   │   │       ├── bonus_repository.go            # BonusRepository implementation (award, pay, reverse, conditions)
+│   │   │       ├── expense_repository.go          # ExpenseRepository implementation (submit, approve, reimburse, receipts)
+│   │   │       │
+│   │   │       # ===== PAYMENT SCHEDULE & REMINDER REPOSITORIES =====
+│   │   │       ├── payment_schedule_repository.go # PaymentScheduleRepository (schedules, frequency, due windows, automation)
+│   │   │       ├── reminder_repository.go         # ReminderRepository implementation (triggers, escalation, dunning, templates)
+│   │   │       │
+│   │   │       # ===== INSURANCE & TAX FORM REPOSITORIES =====
+│   │   │       ├── insurance_repository.go        # InsuranceRepository implementation (policies, claims, coverage, providers)
+│   │   │       ├── tax_form_repository.go         # TaxFormRepository implementation (W9, 1099, VAT returns, validation, reporting)
+│   │   │       │
+│   │   │       # ===== PAYROLL & CURRENCY REPOSITORIES =====
+│   │   │       ├── payroll_repository.go          # PayrollRepository implementation (process, withholding, pay periods, reporting)
+│   │   │       ├── currency_repository.go         # CurrencyRepository implementation (preferences, rate locks, conversions)
+│   │   │       │
+│   │   │       # ===== BANK ACCOUNT REPOSITORY =====
+│   │   │       ├── bank_account_repository.go     # 🆕 BankAccountRepository implementation (CRUD, verification, default payout method)
+│   │   │       │
+│   │   │       # ===== OUTBOX REPOSITORY =====
+│   │   │       └── outbox_store.go           # 🆕 Outbox repository (tx-coupled outbox table access for exactly-once publishing)
 │   │   │
+│   │   # ===== CACHING LAYER =====
 │   │   ├── cache/
 │   │   │   └── redis/
-│   │   │       ├── connection.go             # Redis connection
-│   │   │       ├── wallet_cache.go           # Wallet balance caching
-│   │   │       ├── rate_cache.go             # Exchange rate caching
-│   │   │       └── risk_cache.go             # 🆕 Holds/reserve snapshots
+│   │   │       ├── connection.go             # Redis connection (pooling, timeouts)
+│   │   │       ├── keys.go                   # 🆕 Canonical cache keys & TTLs (no magic strings)
+│   │   │       ├── singleflight.go           # 🆕 Stampede protection for hot keys (wallet balances, FX rates)
+│   │   │       ├── invalidation_rules.go     # 🆕 Map events → keys to drop (documented alongside)
+│   │   │       │
+│   │   │       # ===== DOMAIN-SPECIFIC CACHES =====
+│   │   │       ├── wallet_cache.go           # Wallet balance caching (hot path reads)
+│   │   │       ├── rate_cache.go             # Exchange rate caching (FX provider TTL)
+│   │   │       ├── risk_cache.go             # Holds/reserve snapshots for quick checks
+│   │   │       └── schedule_cache.go         # NextDue caches for payment schedules (cron efficiency)
 │   │   │
+│   │   # ===== EXTERNAL SERVICE CLIENTS =====
 │   │   ├── clients/
-│   │   │   ├── users/                        # 🆕 Users-BE client (tax profiles / KYC)
-│   │   │   │   └── client.go                 # Fetch tax profiles & KYC statuses
-│   │   │   └── coupons/                      # 🆕 Coupon/Promo validation backend (if separate)
-│   │   │       └── client.go                 # Validate & redeem promo codes
+│   │   │   ├── users/                        # Users-BE client (tax profiles, KYC/KYB statuses)
+│   │   │   │   └── client.go                 # Fetch tax profiles & KYC statuses; circuit breaker/retry
+│   │   │   │
+│   │   │   ├── coupons/                      # Coupon/Promo validation backend (if separate service)
+│   │   │   │   └── client.go                 # Validate & redeem promo codes; idempotent redemption
+│   │   │   │
+│   │   │   └── contracts/                    # 🆕 Contracts-BE client (contract status, milestones)
+│   │   │       └── client.go                 # Query contract status for escrow releases & payment schedules
 │   │   │
+│   │   # ===== MESSAGING LAYER =====
 │   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go               # 📝 UPDATED: Uses platform-shared/inbox
-│   │   │       ├── producer.go               # 📝 UPDATED: Uses platform-shared/outbox
-│   │   │       ├── topics.go                 # 📝 UPDATED: From contracts/events (payment.processed, escrow.released, payout.processed)
-│   │   │       └── scram.go                  # SCRAM authentication
+│   │   │   ├── kafka/
+│   │   │   │   ├── consumer.go               # Kafka consumer (uses platform-shared/inbox, DLQ, retries)
+│   │   │   │   ├── producer.go               # Kafka producer (uses platform-shared/outbox, exactly-once semantics)
+│   │   │   │   ├── topics.go                 # ♻️ Topics: payment.*, escrow.*, payout.*, fee.*, tax.*, fx.*, risk.*, bonus.*, expense.*, schedules.*, reminders.*
+│   │   │   │   │                             # Thin re-export from contracts/events with per-context keys (financial.*)
+│   │   │   │   └── scram.go                  # SCRAM authentication (SASL/SCRAM-SHA-512)
+│   │   │   │
+│   │   │   ├── outbox/                       # 🆕 Exactly-once-ish publisher
+│   │   │   │   ├── dispatcher.go             # 🆕 Reads outbox → Kafka (with retries/DLQ, leader-elected)
+│   │   │   │   └── metrics.go                # 🆕 Publish lag, failures, retries (Prometheus metrics)
+│   │   │   │
+│   │   │   └── bootstrap.go                  # 🆕 Consumer/producer wiring (initialize subscriptions, configure handlers)
 │   │   │
+│   │   # ===== PAYMENT GATEWAY INTEGRATIONS =====
 │   │   ├── payment_gateway/
 │   │   │   ├── stripe/
-│   │   │   │   ├── client.go                 # Stripe API client
-│   │   │   │   ├── webhook_handler.go        # Stripe webhook handler (payment.succeeded, charge.failed)
-│   │   │   │   └── mapper.go                 # Stripe event mapper
+│   │   │   │   ├── client.go                 # Stripe API client (auth, retries, idempotency keys)
+│   │   │   │   ├── webhook_handler.go        # Stripe webhook handler (payment_intent.succeeded, charge.failed)
+│   │   │   │   │                             # 🆕 Includes signature verification middleware
+│   │   │   │   └── mapper.go                 # Stripe → internal event mapper (normalize payloads)
+│   │   │   │
 │   │   │   ├── paypal/
-│   │   │   │   ├── client.go                 # PayPal API client
-│   │   │   │   ├── webhook_handler.go        # PayPal webhook handler
-│   │   │   │   └── mapper.go                 # PayPal event mapper
-│   │   │   └── factory.go                    # Payment gateway factory
-│   │   │
-│   │   └── pdf/
-│   │       └── generator.go                  # PDF invoice generation (using library like wkhtmltopdf)
-│   │
-│   ├── interfaces/
-│   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── wallet_handler.go         # Wallet handlers (GET /wallets/:id, POST /wallets/:id/deposit)
-│   │       │   ├── transaction_handler.go    # Transaction handlers (GET /transactions)
-│   │       │   ├── ledger_journal_handler.go # 🆕 Journal handlers (POST /ledger/entry, GET /ledger/audit)
-│   │       │   ├── payment_handler.go        # Payment handlers (POST /payments, GET /payments/:id)
-│   │       │   ├── escrow_handler.go         # Escrow handlers (POST /escrow/hold, POST /escrow/release)
-│   │       │   ├── payout_handler.go         # Payout handlers (POST /payouts, GET /payouts/:id)
-│   │       │   ├── invoice_handler.go        # Invoice handlers (POST /invoices, GET /invoices/:id)
-│   │       │   ├── fee_handler.go            # Fee handlers (GET /fees/calculate)
-│   │       │   ├── fee_v2_handler.go         # 🆕 Fee v2 endpoints (GET /fees/v2/effective, POST /fees/v2/coupon)
-│   │       │   ├── refund_handler.go         # Refund handlers (POST /refunds)
-│   │       │   ├── tax_handler.go            # Tax handlers (GET /tax/forms)
-│   │       │   ├── fx_handler.go             # 🆕 FX handlers (GET /fx/rate, POST /fx/rate)
-│   │       │   ├── risk_handler.go           # 🆕 Risk/holds handlers (POST /risk/reserve, GET /risk/holds)
-│   │       │   ├── bank_account_handler.go   # Bank account handlers (POST /bank-accounts)
-│   │       │   ├── webhook_handler.go        # Webhook handlers (POST /webhooks/stripe, POST /webhooks/paypal)
-│   │       │   └── health_handler.go         # Health check
-│   │       │
-│   │       ├── routes/                       # 🆕 Route registrars for each handler group
-│   │       │   ├── wallet_routes.go          # /wallets/*
-│   │       │   ├── transaction_routes.go     # /transactions/*
-│   │       │   ├── ledger_journal_routes.go  # /ledger/*
-│   │       │   ├── payment_routes.go         # /payments/*
-│   │       │   ├── escrow_routes.go          # /escrow/*
-│   │       │   ├── payout_routes.go          # /payouts/*
-│   │       │   ├── invoice_routes.go         # /invoices/*
-│   │       │   ├── fee_routes.go             # /fees/*
-│   │       │   ├── fee_v2_routes.go          # /fees/v2/*
-│   │       │   ├── refund_routes.go          # /refunds/*
-│   │       │   ├── tax_routes.go             # /tax/*
-│   │       │   ├── fx_routes.go              # /fx/*
-│   │       │   └── risk_routes.go            # /risk/*
-│   │       │
-│   │       ├── middleware/                   # 📝 UPDATED: Uses platform-shared
-│   │       │   ├── auth.go                   # 📝 UPDATED: Uses pkg/auth
-│   │       │   ├── rbac.go                   # 📝 UPDATED: Uses pkg/auth
-│   │       │   ├── cors.go                   # 📝 UPDATED: Uses platform-shared/ginx
-│   │       │   ├── rate_limit.go             # Rate limiting
-│   │       │   └── idempotency.go            # 🆕 Uses platform-shared/idempotency (critical for payments!)
-│   │       │
-│   │       ├── responses/
-│   │       │   └── README.md                 # 📝 Points to platform-shared/httpx
-│   │       │
-│   │       └── router.go                     # 📝 UPDATED: Uses platform-shared/ginx
-│   │
-│   └── config/                               # 🆕 MEDIUM
-│       ├── schema.go                         # 🆕 Typed Config (includes Stripe/PayPal keys)
-│       ├── loader.go                         # 🆕 Viper loader
-│       └── docs/
-│           └── CONFIGURATION.md              # 🆕 Config docs
-│
-├── config/                                   # 🆕 MEDIUM
-│   ├── default.yaml
-│   ├── dev.yaml
-│   └── prod.yaml
-│
-├── dapr/                                     # 🆕 MEDIUM
-│   ├── local/
-│   │   ├── pubsub.yaml
-│   │   └── statestore.yaml
-│   └── k8s/
-│       ├── pubsub.yaml                       # Scopes: ["financial-be"]
-│       ├── statestore.yaml
-│       └── secrets.yaml
-│
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go
-│   │   ├── codes.go                          # INSUFFICIENT_FUNDS, PAYMENT_FAILED
-│   │   └── payment_errors.go                 # Payment-specific error types
-│   ├── logger/                               # ❌ REMOVED
-│   │   └── README.md
-│   ├── utils/
-│   │   ├── validator.go
-│   │   ├── currency.go                       # Currency conversion utilities
-│   │   ├── decimal.go                        # Decimal math for money (avoid floating point errors)
-│   │   └── encryption.go                     # Encryption utilities (for sensitive data like card numbers)
-│   └── constants/
-│       ├── events.go                         # ❌ REMOVED
-│       ├── topics.go                         # ❌ REMOVED
-│       ├── currencies.go                     # Currency constants (USD, EUR, GBP)
-│       └── payment_methods.go                # Payment method constants
-│
-├── deployments/
-│   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       ├── configmap.yaml
-│       ├── secrets.yaml                      # Contains Stripe/PayPal API keys
-│       ├── hpa.yaml
-│       ├── pdb.yaml
-│       ├── networkpolicy.yaml                # Extra security for financial service
-│       └── servicemonitor.yaml
-│
-├── scripts/
-│   ├── setup-local.sh
-│   ├── get-secrets.sh
-│   ├── seed-data.sh
-│   └── reconciliation.sh                     # Daily reconciliation script
-│
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-│
-├── docs/
-│   ├── README.md
-│   ├── API.md
-│   ├── EVENTS.md                             # 🆕 Events (payment.processed, escrow.held, escrow.released, payout.processed)
-│   ├── ARCHITECTURE.md
-│   ├── MIGRATIONS.md                         # 🆕
-│   ├── SCHEMA.md                             # 🆕 Domain schemas (journal, fees v2, fx)
-│   ├── RUNBOOK.md                            # 🆕
-│   ├── payment-flows.md                      # Payment flow documentation
-│   ├── escrow-system.md                      # Escrow system documentation
-│   ├── fee-structure.md                      # Platform fee structure
-│   ├── fee-v2.md                             # 🆕 Fee engine v2 rules & examples
-│   ├── fx-and-rounding.md                    # 🆕 FX, effective timestamps, rounding
-│   ├── risk-holds.md                         # 🆕 Reserves, holds, chargebacks
-│   └── compliance.md                         # PCI DSS & tax compliance notes
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
-│
-├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
-
-```
-
----
-# Skillsier Platform - Remaining Microservices Folder Structures
-## Services 6-11 with Full Comments (Old + New) ✨
-
----
-
-## 📦 **6️⃣ communications-be (Real-time Messaging and Notifications Service)**
-
-```
-apps/be/communications-be/
-│
-├── cmd/
-│   └── api/
-│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
-│
-├── internal/
-│   ├── domain/                               # 🛍️ Domain Layer - Business logic & entities
-│   │   ├── conversation/
-│   │   │   ├── entity.go                     # Chat conversations (ID, Participants, Type, Status, CreatedAt, UpdatedAt)
-│   │   │   ├── participant.go                # Conversation participants (ConversationID, UserID, Role, JoinedAt, LastReadAt)
-│   │   │   ├── settings.go                   # Conversation settings (mute, pin, archive flags per user)
-│   │   │   ├── typing_indicator.go           # Typing indicators (ConversationID, UserID, TypingAt, ExpiresAt)
-│   │   │   ├── errors.go                     # Domain errors (ConversationNotFound, ParticipantNotFound, UnauthorizedAccess)
-│   │   │   ├── repository.go                 # ConversationRepository interface (Create, FindByID, AddParticipant, RemoveParticipant)
-│   │   │   └── events.go                     # 🆕 Domain events: ConversationCreated, ParticipantAdded, ParticipantRemoved, ConversationMuted, ConversationArchived
-│   │   │
-│   │   ├── message/
-│   │   │   ├── entity.go                     # Chat messages (ID, ConversationID, SenderID, Content, Type, SentAt, EditedAt, DeletedAt)
-│   │   │   ├── attachment.go                 # Message attachments (MessageID, FileURL, FileType, FileName, FileSize, ThumbnailURL)
-│   │   │   ├── read_receipt.go               # Read receipts (MessageID, UserID, ReadAt)
-│   │   │   ├── reaction.go                   # Message reactions (MessageID, UserID, Emoji, ReactedAt)
-│   │   │   ├── mention.go                    # User mentions (@username) (MessageID, MentionedUserID, Position)
-│   │   │   ├── errors.go                     # Message errors (MessageNotFound, InvalidContent, MessageTooLong)
-│   │   │   └── repository.go                 # MessageRepository interface (Create, Update, Delete, FindByConversation, MarkAsRead)
-│   │   │   └── events.go                     # 🆕 Domain events: MessageSent, MessageEdited, MessageDeleted, MessageRead, AttachmentAdded, ReactionAdded
-│   │   │
-│   │   ├── notification/
-│   │   │   ├── entity.go                     # All notifications (ID, UserID, Type, Title, Body, Data JSON, Priority, ReadAt, CreatedAt)
-│   │   │   ├── enums.go                      # Type (JobAlert, ProposalUpdate, BidAlert, ContractUpdate, Payment, Review, Message, System), Priority (Low, Medium, High, Urgent), Category (Transactional, Marketing, System)
-│   │   │   ├── preferences.go                # User notification preferences (Email, SMS, Push, InApp enabled/disabled per notification type)
-│   │   │   ├── settings.go                   # Notification settings per type (instant delivery, daily digest, weekly summary, muted)
-│   │   │   ├── quiet_hours.go                # 🆕 Quiet hours per user (start, end, timezone)
-│   │   │   ├── errors.go                     # Notification errors (NotificationNotFound, InvalidType, PreferencesNotSet)
-│   │   │   └── repository.go                 # NotificationRepository interface (Create, MarkAsRead, Delete, FindByUser, GetUnreadCount)
-│   │   │   └── events.go                     # 🆕 Domain events: NotificationCreated, NotificationUpdated, NotificationRead, NotificationDeleted
-│   │   │
-│   │   ├── in_app_notification/
-│   │   │   ├── entity.go                     # 🆕 In-app real-time notifications (ID, NotificationID, UserID, DisplayedAt, DismissedAt, ClickedAt)
-│   │   │   ├── badge_count.go                # 🆕 Unread notification badges (UserID, Category, UnreadCount, LastUpdatedAt)
-│   │   │   ├── group.go                      # 🆕 Notification grouping (GroupID, NotificationIDs, GroupType, Summary)
-│   │   │   ├── action.go                     # 🆕 Notification actions/CTAs (NotificationID, ActionType, ActionURL, Label)
-│   │   │   ├── errors.go                     # 🆕 In-app notification errors
-│   │   │   └── repository.go                 # 🆕 InAppNotificationRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: InAppNotificationDisplayed, InAppNotificationDismissed, InAppNotificationClicked, BadgeCountUpdated
-│   │   │
-│   │   ├── notification_template/
-│   │   │   ├── entity.go                     # Notification templates (ID, Name, Type, Subject, Body, Variables, IsActive)
-│   │   │   ├── variable.go                   # Template variables ({{user_name}}, {{job_title}}, {{amount}}, {{date}})
-│   │   │   ├── localization.go               # Multi-language templates (TemplateID, Language, TranslatedSubject, TranslatedBody)
-│   │   │   ├── errors.go                     # Template errors (TemplateNotFound, InvalidVariable, MissingTranslation)
-│   │   │   └── repository.go                 # TemplateRepository interface (FindByType, Render, GetTranslation)
-│   │   │   └── events.go                     # 🆕 Domain events: TemplateCreated, TemplateUpdated, TemplateLocalized, TemplateDeactivated
-│   │   │
-│   │   ├── email/
-│   │   │   ├── entity.go                     # Email records (ID, RecipientID, RecipientEmail, Subject, Body, TemplateID, Status, SentAt, DeliveredAt)
-│   │   │   ├── template.go                   # Email templates (HTML/Text templates with CSS inlining support)
-│   │   │   ├── batch.go                      # Batch email sending (BatchID, Recipients, Subject, Body, Status, ScheduledFor)
-│   │   │   ├── errors.go                     # Email errors (InvalidEmail, SendFailed, TemplateRenderFailed)
-│   │   │   └── repository.go                 # EmailRepository interface (Create, FindByRecipient, GetDeliveryStatus)
-│   │   │   └── events.go                     # 🆕 Domain events: EmailQueued, EmailSent, EmailDelivered, EmailBounced, EmailFailed
-│   │   │
-│   │   ├── notification_queue/
-│   │   │   ├── entity.go                     # 🆕 Queued notifications (ID, NotificationID, Priority, ScheduledFor, Status, Retries, CreatedAt)
-│   │   │   ├── priority_queue.go             # 🆕 Priority-based queue (urgent notifications processed first)
-│   │   │   ├── errors.go                     # 🆕 Queue errors
-│   │   │   └── repository.go                 # 🆕 NotificationQueueRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: NotificationEnqueued, NotificationDequeued, NotificationRetryScheduled, NotificationDeadLettered
-│   │   │
-│   │   ├── delivery_log/
-│   │   │   ├── entity.go                     # 🆕 Delivery tracking (ID, NotificationID, Channel, Status, DeliveredAt, FailureReason, RetryCount)
-│   │   │   ├── status.go                     # 🆕 Delivery status (Pending, Sent, Delivered, Failed, Bounced)
-│   │   │   ├── errors.go                     # 🆕 Delivery errors
-│   │   │   └── repository.go                 # 🆕 DeliveryLogRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: DeliveryLogged, DeliveryFailed, DeliveryBounced
-│   │   │
-│   │   ├── unsubscribe/
-│   │   │   ├── entity.go                     # Unsubscribe management (UserID, NotificationType, UnsubscribedAt, Reason)
-│   │   │   ├── errors.go                     # Unsubscribe errors
-│   │   │   └── repository.go                 # UnsubscribeRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: Unsubscribed, Resubscribed
-│   │   │
-│   │   ├── online_status/
-│   │   │   ├── entity.go                     # User online/offline status (UserID, Status, LastSeenAt, DeviceType)
-│   │   │   ├── errors.go                     # Status errors
-│   │   │   └── repository.go                 # OnlineStatusRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: UserOnline, UserOffline, LastSeenUpdated
-│   │   │
-│   │   ├── message_flag/
-│   │   │   ├── entity.go                     # Flagged messages (ID, MessageID, ReporterID, Reason, Status, ReviewedAt, ReviewedBy)
-│   │   │   ├── reason.go                     # Flag reasons enum (Spam, Harassment, Inappropriate, Scam, Violence)
-│   │   │   ├── status.go                     # Flag status (Pending, UnderReview, Resolved, Dismissed)
-│   │   │   ├── errors.go                     # Flag errors
-│   │   │   └── repository.go                 # MessageFlagRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: MessageFlagSubmitted, MessageFlagResolved, MessageFlagDismissed
-│   │   │
-│   │   ├── system_message/                   # 🆕 System messages domain (events → system feed)
-│   │   │   ├── entity.go                     # SystemMessage (ID, ConversationID, Type, PayloadJSON, CreatedAt)
-│   │   │   ├── types.go                      # Types (MilestoneFunded, MilestoneReleased, Approval, DisputeOpened, DisputeClosed)
-│   │   │   ├── errors.go                     # System message errors
-│   │   │   └── repository.go                 # SystemMessageRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: SystemMessageCreated, SystemMessageBroadcasted
-│   │   │
-│   │   ├── call/                             # 🆕 Voice/Video & scheduling hooks
-│   │   │   ├── entity.go                     # Call (ID, ConversationID, OrganizerID, Link, Provider, StartsAt, EndsAt, Status, Timezone)
-│   │   │   ├── provider.go                   # Providers (Jitsi/Zoom/Meet) abstraction
-│   │   │   ├── errors.go                     # Call errors (InvalidTimeWindow, ProviderError)
-│   │   │   └── repository.go                 # CallRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: CallScheduled, CallStarted, CallEnded, CallCanceled
-│   │   │
-│   │   └── calendar_invite/                  # 🆕 Calendar invites for scheduling
-│   │       ├── entity.go                     # CalendarInvite (CallID, UserID, ICal, SentAt, Status)
-│   │       ├── errors.go                     # Invite errors
-│   │       └── repository.go                 # CalendarInviteRepository interface
-│   │       └── events.go                     # 🆕 Domain events: CalendarInviteSent, CalendarInviteAccepted, CalendarInviteDeclined, CalendarInviteBounced
-│   │
-│   ├── application/                          # 📋 Application Layer - Use cases & orchestration
-│   │   ├── eventhandler/
-│   │   │   ├── user_handler.go                # Consumes: user.created → send welcome (emails/in-app). 
-│   │   │   │                                     # Ref: Event Consumption Matrix lists communications-be as consumer of user.created. 
+│   │   │   │   ├── client.go                 # PayPal API client (orders/captures/refunds)
+│   │   │   │   ├── webhook_handler.go        # PayPal webhook handler (capture completed/denied)
+│   │   │   │   │                             # 🆕 Includes signature verification middleware
+│   │   │   │   └── mapper.go                 # PayPal → internal event mapper
 │   │   │   │
-│   │   │   ├── job_handler.go                 # Consumes: job.posted → notify matching freelancers.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes job.posted. 
-│   │   │   │
-│   │   │   ├── proposal_handler.go            # Consumes: proposal.submitted → notify client.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes proposal.submitted. 
-│   │   │   │
-│   │   │   ├── contract_handler.go            # Consumes: contract.created → notify both parties.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes contract.created. 
-│   │   │   │
-│   │   │   ├── payment_handler.go             # Consumes: payment.processed → send receipt.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes payment.processed. 
-│   │   │   │
-│   │   │   ├── review_handler.go              # Consumes: review.submitted → notify reviewee;
-│   │   │   │                                     #           review.double_blind.window.opened|closed → send reminders (from reviews-be).
-│   │   │   │                                     # Refs: Matrix shows communications-be consumes review.submitted; 
-│   │   │   │                                     #       reviews-be publishes double_blind window events to communications-be. 
-│   │   │   │
-│   │   │   ├── admin_case_handler.go          # Consumes: admin.case.user_report.created|triaged|actioned|dismissed → notify subjects as needed; 
-│   │   │   │                                     #           admin.ticket.note.added (if notify).
-│   │   │   │                                     # Ref: Added-events doc routes these to communications-be. 
-│   │   │   │
-│   │   │   ├── delivery_logger_handler.go     # Emits audit on delivery completion (comm.delivery.logged) for admin-be audit streams.
-│   │   │   │                                     # Ref: Added-events doc notes audit trail feed from communications-be. 
-│   │   │   │
-│   │   │   └── partitioning_notes.go          # (comments only) Partition keys used by handlers:
-│   │   │                                         #   user_id (user events), job_id (job events), contract_id (contract),
-│   │   │                                         #   transaction_id/contract_id (payments), conversation_id (message topics).
-│   │   │                                         # Ref: Partition Key Strategy. 
-│   │   ├── conversation/
-│   │   │   ├── service.go                    # Conversation business logic (Create, Archive, Mute, Delete conversations)
-│   │   │   ├── commands.go                   # CreateConversation, ArchiveConversation, MuteConversation, DeleteConversation
-│   │   │   ├── queries.go                    # GetConversation, ListConversations, SearchConversations
-│   │   │   ├── dto.go                        # ConversationDTO, CreateConversationDTO, ConversationListDTO
-│   │   │   ├── mapper.go                     # Entity-DTO mapping
-│   │   │   └── validators.go                 # Input validation
+│   │   │   └── factory.go                    # Payment gateway factory (select provider by method/region, fallback/retry logic)
 │   │   │
-│   │   ├── message/
-│   │   │   ├── service.go                    # Message business logic (Send, Edit, Delete, React to messages)
-│   │   │   ├── commands.go                   # SendMessage, EditMessage, DeleteMessage, ReactToMessage, MarkAsRead
-│   │   │   ├── queries.go                    # GetMessages, SearchMessages, GetUnreadCount
-│   │   │   ├── dto.go                        # MessageDTO, SendMessageDTO, MessageListDTO
-│   │   │   ├── mapper.go                     # Message mappers
-│   │   │   ├── validators.go                 # Message validation (content length, attachment size)
-│   │   │   └── realtime_service.go           # 🆕 WebSocket handling (broadcast messages, typing indicators, presence)
+│   │   # ===== PDF GENERATION =====
+│   │   ├── pdf/
+│   │   │   └── generator.go                  # PDF invoice generation (wkhtmltopdf/Chrome headless wrapper)
 │   │   │
-│   │   ├── notification/
-│   │   │   ├── service.go                    # Notification business logic (Send, MarkAsRead, Delete, ClearAll)
-│   │   │   ├── commands.go                   # SendNotification, MarkAsRead, DeleteNotification, ClearAllNotifications
-│   │   │   ├── queries.go                    # GetNotifications, GetUnreadCount, GetNotificationHistory
-│   │   │   ├── dto.go                        # NotificationDTO, SendNotificationDTO, NotificationListDTO
-│   │   │   ├── mapper.go                     # Notification mappers
-│   │   │   ├── validators.go                 # Notification validation
-│   │   │   ├── orchestrator.go               # 🆕 Multi-channel orchestration (send to email, push, in-app simultaneously)
-│   │   │   ├── preferences_service.go        # 🆕 Manage user preferences (update notification settings per type)
-│   │   │   └── aggregator.go                 # 🆕 Aggregate similar notifications (group by type, time window)
-│   │   │
-│   │   ├── notification_preferences/         # 🆕 Explicit app module for per-channel prefs / digests / quiet hours
-│   │   │   ├── service.go                    # UpdatePreferences, GetPreferences, SetQuietHours, SetDigestSchedule
-│   │   │   ├── commands.go                   # UpdatePreferences, SetQuietHours, SetDigestSchedule
-│   │   │   ├── queries.go                    # GetPreferences, GetEffectivePreferences
-│   │   │   ├── validators.go                 # Channel validation, time windows, timezone safety
-│   │   │   ├── dto.go                        # NotificationPreferencesDTO, QuietHoursDTO, DigestScheduleDTO
-│   │   │   └── mapper.go                     # Preferences mappers
-│   │   │
-│   │   ├── in_app_notification/
-│   │   │   ├── service.go                    # 🆕 In-app notification logic
-│   │   │   ├── commands.go                   # 🆕 PushInAppNotification, DismissInAppNotification, ClickInAppAction
-│   │   │   ├── queries.go                    # 🆕 GetInAppNotifications, GetBadgeCount
-│   │   │   ├── validators.go                 # 🆕 Action validation, throttling
-│   │   │   ├── real_time_sender.go           # 🆕 Real-time notification delivery via WebSocket/SSE
-│   │   │   ├── badge_manager.go              # 🆕 Badge count management (calculate, update, reset counts)
-│   │   │   ├── grouping_engine.go            # 🆕 Group similar notifications
-│   │   │   ├── dto.go                        # 🆕 InAppNotificationDTO
-│   │   │   └── mapper.go                     # 🆕 In-app notification mappers
-│   │   │
-│   │   ├── email/
-│   │   │   ├── service.go                    # Email business logic (Send, SendBatch, GetDeliveryStatus)
-│   │   │   ├── commands.go                   # 🆕 SendEmail, SendEmailBatch
-│   │   │   ├── queries.go                    # 🆕 GetEmailStatus, ListEmailsForUser
-│   │   │   ├── validators.go                 # 🆕 Email address format, batch sizes, template vars
-│   │   │   ├── sender.go                     # Email sending logic (via WildDuck SMTP)
-│   │   │   ├── template_renderer.go          # Render email templates (inject variables, compile HTML)
-│   │   │   ├── batch_sender.go               # Batch email sending (queue, rate limit, send in batches)
-│   │   │   ├── dto.go                        # EmailDTO, SendEmailDTO, BatchEmailDTO
-│   │   │   ├── mapper.go                     # Email mappers
-│   │   │   └── wildduck_client.go            # 🆕 WildDuck SMTP integration (connect, authenticate, send)
-│   │   │
-│   │   ├── template/
-│   │   │   ├── service.go                    # Template business logic (Create, Update, Render templates)
-│   │   │   ├── commands.go                   # 🆕 CreateTemplate, UpdateTemplate
-│   │   │   ├── queries.go                    # 🆕 GetTemplate, ListTemplates
-│   │   │   ├── validators.go                 # 🆕 Variable whitelisting, translation presence
-│   │   │   ├── renderer.go                   # Template rendering engine (replace variables, compile)
-│   │   │   ├── variable_injector.go          # Inject dynamic variables into templates
-│   │   │   ├── dto.go                        # TemplateDTO, RenderTemplateDTO
-│   │   │   └── mapper.go                     # Template mappers
-│   │   │
-│   │   ├── online_status/
-│   │   │   ├── service.go                    # Online status logic (Update status, GetStatus, GetOnlineUsers)
-│   │   │   ├── commands.go                   # 🆕 SetOnline, SetAway, SetBusy, SetOffline
-│   │   │   ├── queries.go                    # 🆕 GetUserStatus, GetOnlineUsers
-│   │   │   ├── validators.go                 # 🆕 TTL bounds, allowed transitions
-│   │   │   ├── tracker.go                    # Track online/offline status (heartbeat mechanism)
-│   │   │   ├── presence_manager.go           # Manage user presence (online, away, busy, offline)
-│   │   │   └── dto.go                        # OnlineStatusDTO
-│   │   │
-│   │   ├── flag/
-│   │   │   ├── service.go                    # Flag business logic (FlagMessage, UnflagMessage, ReviewFlag)
-│   │   │   ├── commands.go                   # FlagMessage, UnflagMessage, ResolveFlag
-│   │   │   ├── queries.go                    # 🆕 GetFlags, GetFlag
-│   │   │   ├── validators.go                 # 🆕 Reason whitelist, reviewer role checks
-│   │   │   ├── dto.go                        # FlagDTO, FlagMessageDTO
-│   │   │   └── mapper.go                     # Flag mappers
-│   │   │
-│   │   ├── system_message/                   # 🆕 System messages app layer
-│   │   │   ├── service.go                    # PublishSystemMessage (milestones funded/released, approvals, disputes)
-│   │   │   ├── commands.go                   # CreateSystemMessage
-│   │   │   ├── queries.go                    # GetSystemMessagesForConversation
-│   │   │   ├── validators.go                 # Allowed types, payload schema
-│   │   │   ├── dto.go                        # SystemMessageDTO
-│   │   │   └── mapper.go                     # System message mappers
-│   │   │
-│   │   ├── call/                             # 🆕 Voice/Video & scheduling hooks
-│   │   │   ├── service.go                    # CreateCallLink, CancelCall, RescheduleCall
-│   │   │   ├── commands.go                   # CreateCall, CancelCall, RescheduleCall
-│   │   │   ├── queries.go                    # GetCall, ListCallsForConversation
-│   │   │   ├── validators.go                 # Timezone-safe windows, overlaps, provider limits
-│   │   │   ├── dto.go                        # CallDTO
-│   │   │   └── mapper.go                     # Call mappers
-│   │   │
-│   │   ├── calendar_invite/                  # 🆕 Calendar invites surface
-│   │   │   ├── service.go                    # GenerateICal, SendInvites, UpdateInviteStatus
-│   │   │   ├── commands.go                   # SendCalendarInvite
-│   │   │   ├── queries.go                    # GetInvitesForCall
-│   │   │   ├── validators.go                 # Email, timezone, iCal bounds
-│   │   │   ├── dto.go                        # CalendarInviteDTO
-│   │   │   └── mapper.go                     # Invite mappers
-│   │   
-│   │
-│   ├── infrastructure/                       # 🔧 Infrastructure Layer - External concerns
-│   │   ├── persistence/
-│   │   │   └── postgres/
-│   │   │       ├── connection.go             # PostgreSQL connection setup (DSN from config, connection pooling)
-│   │   │       ├── transaction.go            # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
-│   │   │       ├── migrations.go             # 📝 UPDATED: Auto-migration logic (now with version tracking, GORM AutoMigrate for all tables)
-│   │   │       ├── version.go                # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
-│   │   │       ├── safety.go                 # 🆕 Pre-migration safety checks (environment validation, disk space check)
-│   │   │       ├── conversation_repository.go # ConversationRepository implementation with GORM
-│   │   │       ├── message_repository.go     # MessageRepository implementation
-│   │   │       ├── notification_repository.go # NotificationRepository implementation
-│   │   │       ├── in_app_notification_repository.go # 🆕 InAppNotificationRepository implementation
-│   │   │       ├── template_repository.go    # TemplateRepository implementation
-│   │   │       ├── email_repository.go       # EmailRepository implementation
-│   │   │       ├── notification_queue_repository.go # 🆕 NotificationQueueRepository implementation
-│   │   │       ├── delivery_log_repository.go # 🆕 DeliveryLogRepository implementation
-│   │   │       ├── unsubscribe_repository.go # UnsubscribeRepository implementation
-│   │   │       ├── online_status_repository.go # OnlineStatusRepository implementation
-│   │   │       ├── system_message_repository.go # 🆕 SystemMessageRepository implementation
-│   │   │       ├── call_repository.go        # 🆕 CallRepository implementation
-│   │   │       └── calendar_invite_repository.go # 🆕 CalendarInviteRepository implementation
-│   │   │
-│   │   ├── cache/
-│   │   │   └── redis/
-│   │   │       ├── connection.go             # Redis connection setup (connection pooling, retry logic)
-│   │   │       ├── conversation_cache.go     # Conversation caching (Get, Set, Invalidate with TTL)
-│   │   │       ├── online_status_cache.go    # 🆕 Cache online status (fast reads for presence indicator)
-│   │   │       ├── typing_indicator_cache.go # 🆕 Cache typing indicators (ephemeral data with short TTL)
-│   │   │       ├── notification_cache.go     # 🆕 Cache unread counts (fast badge updates)
-│   │   │       └── presence_cache.go         # 🆕 User presence caching
-│   │   │
-│   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go               # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
-│   │   │       ├── producer.go               # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
-│   │   │       ├── topics.go                 # 📝 UPDATED: Topic constants (now imported from contracts/events - message.sent, notification.delivered)
-│   │   │       └── scram.go                  # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
-│   │   │
-│   │   ├── realtime/
-│   │   │   ├── websocket/
-│   │   │   │   ├── hub.go                    # 🆕 WebSocket hub - connection manager (manages all active WS connections, broadcast to users/rooms)
-│   │   │   │   ├── client.go                 # 🆕 WebSocket client (represents a single connection, read/write goroutines)
-│   │   │   │   ├── handler.go                # 🆕 WebSocket message handler (handle incoming WS messages, route to services)
-│   │   │   │   ├── broadcaster.go            # 🆕 Broadcast to multiple clients (send to all, send to room, send to user)
-│   │   │   │   └── room.go                   # 🆕 WebSocket rooms/channels (group connections by conversation ID)
-│   │   │   └── sse/
-│   │   │       ├── handler.go                # 🆕 Server-Sent Events handler (alternative to WebSocket for one-way real-time updates)
-│   │   │       └── stream.go                 # 🆕 SSE stream management (maintain open connections, send events)
-│   │   │
-│   │   ├── email/
-│   │   │   ├── wildduck/
-│   │   │   │   ├── client.go                 # 🆕 WildDuck SMTP/API client (connect to self-hosted WildDuck)
-│   │   │   │   ├── smtp_sender.go            # 🆕 SMTP sending via WildDuck
-│   │   │   │   ├── api_client.go             # 🆕 WildDuck REST API client (manage mailboxes, filters)
-│   │   │   │   └── config.go                 # 🆕 WildDuck configuration (SMTP host, port, credentials)
-│   │   │   └── smtp/
-│   │   │       ├── client.go                 # Generic SMTP fallback (if not using WildDuck)
-│   │   │       └── config.go                 # SMTP configuration
-│   │   │
-│   │   ├── storage/
-│   │   │   └── client.go                     # Storage service client (upload message attachments via HTTP API)
-│   │   │
-│   │   └── outbox/                           # ❌ REMOVED: Use platform-shared/outbox instead
-│   │       ├── processor.go                  # ❌ Use platform-shared/outbox/forwarder.go
-│   │       └── scheduler.go                  # ❌ Use platform-shared/outbox/scheduler.go
-│   │
-│   ├── interfaces/
-│   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── conversation_handler.go   # Conversation HTTP handlers (GET, POST, PUT, DELETE /conversations, /conversations/:id)
-│   │       │   ├── message_handler.go        # Message HTTP handlers (POST /conversations/:id/messages, GET /messages/:id, PUT, DELETE)
-│   │       │   ├── notification_handler.go   # Notification HTTP handlers (GET /notifications, PUT /notifications/:id/read, DELETE /notifications/:id)
-│   │       │   ├── in_app_notification_handler.go # 🆕 In-app notification handlers (GET /notifications/in-app, GET /notifications/badge-count)
-│   │       │   ├── email_handler.go          # Email HTTP handlers (POST /emails, GET /emails/:id/status)
-│   │       │   ├── template_handler.go       # Template HTTP handlers (GET /templates, POST /templates, GET /templates/:id)
-│   │       │   ├── preferences_handler.go    # Preferences HTTP handlers (GET /preferences, PUT /preferences)
-│   │       │   ├── websocket_handler.go      # 🆕 WebSocket upgrade handler (HTTP → WebSocket upgrade)
-│   │       │   ├── sse_handler.go            # 🆕 SSE handler (establish SSE connections)
-│   │       │   ├── online_status_handler.go  # Online status HTTP handlers (GET /users/:id/status, PUT /status/online)
-│   │       │   ├── unsubscribe_handler.go    # Unsubscribe HTTP handlers (POST /unsubscribe, GET /unsubscribe/preferences)
-│   │       │   ├── system_message_handler.go # 🆕 System message feed endpoints
-│   │       │   ├── call_handler.go           # 🆕 Call links & scheduling endpoints
-│   │       │   ├── calendar_invite_handler.go# 🆕 Calendar invite endpoints
-│   │       │   ├── flag_handler.go           # Flag HTTP handlers (POST /messages/:id/flag, GET /flags)
-│   │       │   └── health_handler.go         # Health check endpoints (/health, /ready, /live)
-│   │       │
-│   │       ├── routes/                       # 🆕 Route registrars mapped 1:1 to handlers
-│   │       │   ├── conversation_routes.go    # /conversations, /conversations/:id
-│   │       │   ├── message_routes.go         # /conversations/:id/messages
-│   │       │   ├── notification_routes.go    # /notifications/*
-│   │       │   ├── in_app_notification_routes.go # /notifications/in-app/*
-│   │       │   ├── email_routes.go           # /emails/*
-│   │       │   ├── template_routes.go        # /templates/*
-│   │       │   ├── preferences_routes.go     # /preferences/*
-│   │       │   ├── websocket_routes.go       # /ws (upgrade)
-│   │       │   ├── sse_routes.go             # /sse/*
-│   │       │   ├── online_status_routes.go   # /status/*
-│   │       │   ├── unsubscribe_routes.go     # /unsubscribe/*
-│   │       │   ├── system_message_routes.go  # /system-messages/*
-│   │       │   ├── call_routes.go            # /calls/*
-│   │       │   └── calendar_invite_routes.go # /calendar-invites/*
-│   │       │
-│   │       ├── middleware/                   # 📝 UPDATED: Middleware (now uses platform-shared middleware)
-│   │       │   ├── auth.go                   # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
-│   │       │   ├── rbac.go                   # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
-│   │       │   ├── cors.go                   # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
-│   │       │   ├── rate_limit.go             # Rate limiting middleware (token bucket algorithm)
-│   │       │   └── idempotency.go            # 🆕 Idempotency middleware (uses platform-shared/idempotency)
-│   │       │
-│   │       ├── responses/                    # 📝 UPDATED: Response helpers
-│   │       │   └── README.md                 # 📝 Points to platform-shared/httpx (use shared response wrappers)
-│   │       │
-│   │       └── router.go                     # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
-│   │
-│   └── config/                               # 🆕 MEDIUM - Standardized configuration
-│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, Auth, WildDuck, WebSocket)
-│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
-│       └── docs/
-│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
-│
-├── config/
-│   ├── default.yaml                          # 🆕 Default configuration
-│   ├── dev.yaml                              # 🆕 Development overrides
-│   └── prod.yaml                             # 🆕 Production overrides
-│
-├── dapr/
-│   ├── local/
-│   │   ├── pubsub.yaml                       # Kafka pub/sub component
-│   │   └── statestore.yaml                   # State store component
-│   └── k8s/
-│       ├── pubsub.yaml                       # Kafka with scopes: ["communications-be"]
-│       ├── statestore.yaml                   # State store with scopes
-│       └── secrets.yaml                      # Dapr secret store
-│
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go                         # Service-specific errors
-│   │   └── codes.go                          # Error codes (MESSAGE_NOT_FOUND, CONVERSATION_NOT_FOUND)
-│   ├── logger/                               # ❌ REMOVED: Use platform-shared/logging
-│   │   └── README.md                         # 📝 Points to platform-shared/logging
-│   ├── utils/
-│   │   ├── validator.go                      # Local validation utilities
-│   │   ├── template_engine.go                # Template rendering utilities
-│   │   ├── sanitizer.go                      # Sanitize message content (prevent XSS)
-│   │   └── html_to_text.go                   # Convert HTML to plain text (for email fallback)
-│   └── constants/
-│       ├── events.go                         # ❌ REMOVED: Use contracts/events
-│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
-│       ├── notification_types.go             # Notification type constants
-│       └── websocket_events.go               # WebSocket event types
-│
-├── templates/
-│   ├── email/                                # Email HTML templates
-│   │   ├── base.html                         # Base email template (header, footer, styles)
-│   │   ├── welcome.html                      # Welcome email
-│   │   ├── job_alert.html                    # Job alert email
-│   │   ├── new_proposal.html                 # New proposal notification
-│   │   ├── proposal_accepted.html            # Proposal accepted notification
-│   │   ├── bid_received.html                 # New bid notification
-│   │   ├── outbid_alert.html                 # Outbid alert
-│   │   ├── contract_created.html             # Contract created notification
-│   │   ├── milestone_completed.html          # Milestone completed notification
-│   │   ├── payment_received.html             # Payment received notification
-│   │   ├── payment_sent.html                 # Payment sent notification
-│   │   ├── review_request.html               # Review request
-│   │   ├── review_received.html              # Review received notification
-│   │   ├── new_message.html                  # New message notification
-│   │   ├── subscription_expiring.html        # Subscription expiring reminder
-│   │   ├── password_reset.html               # Password reset email
-│   │   ├── verify_email.html                 # Email verification
-│   │   └── weekly_summary.html               # Weekly activity summary
-│   └── notification/                         # In-app notification templates (JSON)
-│       ├── job_posted.json                   # Job posted notification template
-│       ├── proposal_received.json            # Proposal received template
-│       ├── contract_created.json             # Contract created template
-│       ├── milestone_completed.json          # Milestone completed template
-│       ├── payment_received.json             # Payment received template
-│       └── review_received.json              # Review received template
-│
-├── deployments/
-│   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       ├── configmap.yaml
-│       ├── secrets.yaml
-│       ├── hpa.yaml
-│       ├── pdb.yaml
-│       └── servicemonitor.yaml
-│
-├── scripts/
-│   ├── setup-local.sh
-│   ├── get-secrets.sh
-│   ├── seed-templates.sh
-│   └── seed-data.sh
-│
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-│
-├── docs/
-│   ├── README.md
-│   ├── API.md
-│   ├── EVENTS.md                             # 🆕 Events (published: message.sent, notification.delivered, consumed: all domain events)
-│   ├── ARCHITECTURE.md
-│   ├── MIGRATIONS.md                         # 🆕 Migration history
-│   ├── SCHEMA.md                             # 🆕 Database schema
-│   ├── RUNBOOK.md                            # 🆕 Operational procedures
-│   ├── websocket-protocol.md                 # 🆕 WebSocket protocol documentation
-│   ├── notification-system.md                # 🆕 Notification system overview
-│   ├── in-app-notifications.md               # 🆕 In-app notifications guide
-│   ├── email-templates.md
-│   └── wildduck-integration.md               # 🆕 WildDuck integration guide
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
-│
-├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
-
-```
----
-
-## **📦 7️⃣ storage-be (UPDATED)**
-```
-apps/be/storage-be/
-│
-├── cmd/
-│   └── api/
-│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
-│
-├── internal/
-│   ├── domain/
-│   │   ├── file/
-│   │   │   ├── entity.go                     # File metadata
-│   │   │   ├── enums.go                      # FileType, Status, Visibility
-│   │   │   ├── metadata.go                   # File metadata
-│   │   │   ├── errors.go                     # 🆕 File domain errors (FileNotFound, InvalidMimeType, FileTooLarge)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: FileCreated, FileUpdated, FileMoved, FileDeleted (hard)
-│   │   │
-│   │   ├── folder/
-│   │   │   ├── entity.go                     # Folder structure
-│   │   │   ├── errors.go                     # 🆕 Folder domain errors (FolderNotFound, NameConflict)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: FolderCreated, FolderRenamed, FolderMoved, FolderDeleted
-│   │   │
-│   │   ├── upload/
-│   │   │   ├── entity.go                     # Upload sessions
-│   │   │   ├── chunk.go                      # Chunked uploads
-│   │   │   ├── resumable.go                  # Resumable upload support
-│   │   │   ├── errors.go                     # 🆕 Upload domain errors (UploadSessionNotFound, ChunkOutOfOrder)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: UploadStarted, UploadChunkAppended, UploadResumed, UploadCompleted, UploadAborted
-│   │   │
-│   │   ├── media/
-│   │   │   ├── entity.go                     # Media processing records
-│   │   │   ├── thumbnail.go                  # Thumbnail generation
-│   │   │   ├── variant.go                    # Image variants
-│   │   │   ├── errors.go                     # 🆕 Media domain errors (ProcessingFailed, UnsupportedFormat)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: MediaProcessingStarted, MediaProcessingSucceeded, MediaProcessingFailed, ThumbnailGenerated
-│   │   │
-│   │   ├── access_control/
-│   │   │   ├── entity.go                     # File access permissions
-│   │   │   ├── errors.go                     # 🆕 Access control errors (PermissionDenied, ACLNotFound)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: AccessGranted, AccessRevoked, ACLUpdated
-│   │   │
-│   │   ├── version/
-│   │   │   ├── entity.go                     # File versioning
-│   │   │   ├── errors.go                     # 🆕 Versioning errors (VersionNotFound, ImmutableVersion)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: FileVersionCreated, FileVersionPromoted, FileVersionRestored
-│   │   │
-│   │   ├── share/
-│   │   │   ├── entity.go                     # File sharing
-│   │   │   ├── link.go                       # Share links
-│   │   │   ├── errors.go                     # 🆕 Share errors (ShareNotFound, ShareExpired)
-│   │   │   ├── repository.go                 # ShareRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: ShareCreated, ShareRevoked, ShareExpired
-│   │   │
-│   │   ├── file_flag/
-│   │   │   ├── entity.go                     # Flagged files
-│   │   │   ├── reason.go                     # Flag reasons
-│   │   │   ├── status.go                     # Flag status
-│   │   │   ├── errors.go                     # 🆕 Flag errors (FlagNotFound, InvalidFlagReason)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: FileFlagSubmitted, FileFlagResolved, FileFlagDismissed
-│   │   │
-│   │   ├── policy/                           # 🆕 File policies: size/type, virus scan, DLP
-│   │   │   ├── entity.go                     # Policy (ID, Name, MaxSizeMB, AllowedMIMEs, BlockedMIMEs, EnforceVirusScan, EnforceDLP)
-│   │   │   ├── dlp_pattern.go                # DLP patterns for PII/PCI (regexes, detectors)
-│   │   │   ├── result.go                     # Policy evaluation results (violations, reasons)
-│   │   │   ├── errors.go                     # Policy errors
-│   │   │   ├── repository.go                 # PolicyRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: FilePolicyCreated, FilePolicyUpdated, FilePolicyViolationDetected
-│   │   │
-│   │   ├── lifecycle/                        # 🆕 Lifecycle rules: retention, legal hold, soft-delete
-│   │   │   ├── entity.go                     # LifecycleRule (ContractState, RetentionDays, LegalHold, RestoreWindowDays)
-│   │   │   ├── soft_delete.go                # Soft-delete markers (DeletedAt, RestoreBy)
-│   │   │   ├── legal_hold.go                 # Legal hold records (PlacedBy, Reason, ExpiresAt)
-│   │   │   ├── errors.go                     # Lifecycle errors
-│   │   │   ├── repository.go                 # LifecycleRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: FileSoftDeleted, FileRestored, LegalHoldPlaced, LegalHoldRemoved
-│   │   │
-│   │   ├── linking/                          # 🆕 Versioning & linking: signed URLs, download audit logs
-│   │   │   ├── signed_url.go                 # Signed URL (FileID, Action, ExpiresAt, Signature)
-│   │   │   ├── audit_log.go                  # Download audit log (FileID, UserID, IP, UserAgent, At)
-│   │   │   ├── errors.go                     # Linking errors
-│   │   │   ├── repository.go                 # LinkingRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: SignedURLCreated, SignedURLRevoked, FileDownloadLogged
-│   │   │
-│   │   └── outbox/
-│   │       ├── entity.go                     # ❌ REMOVED (use platform-shared/outbox/entity.go)
-│   │       └── repository.go                 # ❌ REMOVED (use platform-shared/outbox/repository.go)
-│   │
-│   ├── application/
-│   │   ├── eventhandler/
-│   │   │   ├── user_handler.go                # Consumes: user.updated
-│   │   │   │                                     # Purpose: refresh ownership/ACL context (e.g., org/role changes) used by access_control/policy.
-│   │   │   │
-│   │   │   ├── contract_handler.go            # Consumes: contract.state.changed
-│   │   │   │                                     # Purpose: enforce lifecycle/retention & legal holds by contract state
-│   │   │   │                                     #           (place/remove holds; adjust restore windows/retention markers).
-│   │   │   │
-│   │   │   ├── admin_policy_handler.go        # Consumes: admin.policy.updated
-│   │   │   │                                     # Purpose: update storage policy cache (size/type limits, virus-scan & DLP patterns/rules).
-│   │   │   │
-│   │   │   └── admin_moderation_handler.go    # Consumes: admin.moderation.actioned (approve/reject/remove/hide)
-│   │   │                                         # Purpose: reflect moderation outcomes in storage:
-│   │   │                                         #           - quarantine or restore files,
-│   │   │                                         #           - revoke or reissue signed URLs,
-│   │   │                                         #           - toggle visibility flags for indexed artifacts.
-│   │   ├── file/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Upload, Delete, Move, Copy
-│   │   │   ├── queries.go                    # Get, List, Search
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── upload/
-│   │   │   ├── service.go
-│   │   │   ├── chunked_upload.go
-│   │   │   ├── resumable.go
-│   │   │   ├── dto.go
-│   │   │   ├── commands.go                   # 🆕 StartUpload, AppendChunk, CompleteUpload, AbortUpload
-│   │   │   ├── queries.go                    # 🆕 GetUploadSession, GetUploadProgress
-│   │   │   └── validators.go                 # 🆕 Validate chunk order/size, checksum
-│   │   ├── media/
-│   │   │   ├── service.go
-│   │   │   ├── image_processor.go
-│   │   │   ├── video_processor.go
-│   │   │   ├── thumbnail_generator.go
-│   │   │   ├── dto.go
-│   │   │   ├── commands.go                   # 🆕 ProcessImage, ProcessVideo, GenerateThumbnail
-│   │   │   ├── queries.go                    # 🆕 GetMediaJob, ListMediaJobs
-│   │   │   └── validators.go                 # 🆕 Validate dimensions/codec/bitrate
-│   │   ├── folder/
-│   │   │   ├── service.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 CreateFolder, RenameFolder, MoveFolder, DeleteFolder
-│   │   │   ├── queries.go                    # 🆕 GetFolder, ListFolderContents, SearchFolders
-│   │   │   └── validators.go                 # 🆕 Validate names, cycles, path depth
-│   │   ├── share/
-│   │   │   ├── service.go
-│   │   │   ├── link_generator.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 CreateShare, RevokeShare, UpdateShare
-│   │   │   ├── queries.go                    # 🆕 GetShare, ListSharesByFile
-│   │   │   └── validators.go                 # 🆕 Validate expiry/scopes/access
-│   │   ├── version/
-│   │   │   ├── service.go
-│   │   │   ├── dto.go
-│   │   │   └── mapper.go
-│   │   │   ├── commands.go                   # 🆕 CreateVersion, RestoreVersion, DeleteVersion
-│   │   │   ├── queries.go                    # 🆕 GetVersion, ListVersions
-│   │   │   └── validators.go                 # 🆕 Validate immutable rules
-│   │   ├── flag/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Flag, Unflag file
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go                 # 🆕 Validate flag reason/state transitions
-│   │   ├── policy/                           # 🆕 File policy application layer
-│   │   │   ├── service.go                    # EvaluatePolicy, UpdatePolicy, GetPolicy
-│   │   │   ├── commands.go                   # SetPolicy, EnableDLP, DisableDLP
-│   │   │   ├── queries.go                    # GetPolicy, ListPolicies
-│   │   │   ├── validators.go                 # Validate size/type lists, regexes
-│   │   │   ├── dto.go                        # PolicyDTO, DLPResultDTO
-│   │   │   └── mapper.go                     # Policy mappers
-│   │   ├── lifecycle/                        # 🆕 Lifecycle application layer
-│   │   │   ├── service.go                    # ApplyRules, SoftDelete, Restore, PlaceLegalHold, RemoveLegalHold
-│   │   │   ├── commands.go                   # DefineRule, UpdateRule, DeleteRule, SoftDeleteFile, RestoreFile, PlaceLegalHold
-│   │   │   ├── queries.go                    # GetRules, GetFileLifecycle, GetLegalHolds
-│   │   │   ├── validators.go                 # Validate retention windows, restore periods
-│   │   │   ├── dto.go                        # LifecycleRuleDTO, LegalHoldDTO
-│   │   │   └── mapper.go                     # Lifecycle mappers
-│   │   ├── linking/                          # 🆕 Signed URLs & audit logs
-│   │   │   ├── service.go                    # CreateSignedURL, RevokeSignedURL, LogDownload, ListAuditLogs
-│   │   │   ├── commands.go                   # CreateSignedURL, RevokeSignedURL
-│   │   │   ├── queries.go                    # GetSignedURL, ListSignedURLs, GetAuditLogs
-│   │   │   ├── validators.go                 # Validate expiry, actions, scopes
-│   │   │   ├── dto.go                        # SignedURLDTO, AuditLogDTO
-│   │   │   └── mapper.go                     # Linking mappers
-│   ├── infrastructure/
-│   │   ├── persistence/
-│   │   │   └── postgres/
-│   │   │       ├── connection.go             # PostgreSQL connection setup (DSN from config, connection pooling)
-│   │   │       ├── transaction.go            # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
-│   │   │       ├── migrations.go             # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
-│   │   │       ├── version.go                # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
-│   │   │       ├── safety.go                 # 🆕 Pre-migration safety checks (environment validation, disk space check)
-│   │   │       ├── file_repository.go        # FileRepository implementation with GORM
-│   │   │       ├── folder_repository.go
-│   │   │       ├── upload_repository.go
-│   │   │       ├── media_repository.go
-│   │   │       ├── access_control_repository.go
-│   │   │       ├── version_repository.go
-│   │   │       ├── share_repository.go
-│   │   │       ├── file_flag_repository.go
-│   │   │       ├── policy_repository.go      # 🆕 PolicyRepository implementation
-│   │   │       ├── lifecycle_repository.go   # 🆕 LifecycleRepository implementation
-│   │   │       └── linking_repository.go     # 🆕 LinkingRepository implementation (signed URLs, audit logs)
-│   │   ├── cache/
-│   │   │   └── redis/
-│   │   │       ├── connection.go             # Redis connection setup (connection pooling, retry logic)
-│   │   │       └── file_cache.go             # File metadata caching (Get, Set, Invalidate with TTL)
-│   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go               # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
-│   │   │       ├── producer.go               # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
-│   │   │       ├── topics.go                 # 📝 UPDATED: Topic constants (now imported from contracts/events - file.uploaded, file.deleted, media.processed)
-│   │   │       └── scram.go                  # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
-│   │   ├── object_storage/
-│   │   │   ├── local/
-│   │   │   │   ├── storage.go                # Local file system storage
-│   │   │   │   └── config.go                 # Local storage config
-│   │   │   ├── minio/
-│   │   │   │   ├── client.go                 # Self-hosted MinIO client (upload, download, presigned URLs)
-│   │   │   │   └── config.go                 # MinIO configuration (endpoint, credentials, bucket names)
-│   │   │   ├── signer.go                     # 🆕 Signed URL signer abstraction (create/revoke)
-│   │   │   └── provider.go                   # Storage provider abstraction
-│   │   ├── media_processing/
-│   │   │   ├── image/
-│   │   │   │   ├── resizer.go                # Image resizing logic
-│   │   │   │   ├── optimizer.go              # Image optimization (compression)
-│   │   │   │   └── watermark.go              # Watermarking images
-│   │   │   ├── video/
-│   │   │   │   ├── transcoder.go             # Video transcoding
-│   │   │   │   └── thumbnail.go              # Video thumbnail generation
-│   │   │   └── processor.go                  # General media processor
-│   │   ├── virus_scan/
-│   │   │   └── clamav.go                     # ClamAV integration for virus scanning
-│   │   ├── dlp/                              # 🆕 DLP engine adapters
-│   │   │   ├── regex_engine.go               # Regex-based detectors (PII/PCI patterns)
-│   │   │   └── provider.go                   # Pluggable DLP providers (custom/third-party)
-│   │   └── outbox/
-│   │       ├── processor.go                  # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
-│   │       └── scheduler.go                  # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
-│   │
-│   ├── interfaces/
-│   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── file_handler.go           # File HTTP handlers (GET, POST, DELETE /files)
-│   │       │   ├── upload_handler.go         # Upload handlers (POST /upload, chunked support)
-│   │       │   ├── download_handler.go       # Download handlers (GET /download/:id)
-│   │       │   ├── folder_handler.go         # Folder handlers
-│   │       │   ├── share_handler.go          # Share handlers
-│   │       │   ├── media_handler.go          # Media processing handlers
-│   │       │   ├── flag_handler.go           # Flag handlers
-│   │       │   ├── policy_handler.go         # 🆕 Policy endpoints (GET/PUT policies, evaluate)
-│   │       │   ├── lifecycle_handler.go      # 🆕 Lifecycle endpoints (soft-delete/restore/legal hold)
-│   │       │   ├── linking_handler.go        # 🆕 Signed URL + audit log endpoints
-│   │       │   └── health_handler.go         # Health check endpoints (/health, /ready, /live)
-│   │       ├── middleware/
-│   │       │   ├── auth.go                   # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
-│   │       │   ├── rbac.go                   # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
-│   │       │   ├── cors.go                   # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
-│   │       │   ├── rate_limit.go             # Rate limiting middleware (token bucket algorithm)
-│   │       │   ├── logging.go                # 📝 UPDATED: Logging middleware (uses platform-shared/ginx/logging)
-│   │       │   ├── error_handler.go          # Error handling middleware
-│   │       │   ├── request_id.go             # 📝 UPDATED: Request ID middleware (uses platform-shared/ginx/requestid)
-│   │       │   └── file_size_limit.go        # File size limit middleware
-│   │       ├── responses/
-│   │       │   ├── success.go                # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
-│   │       │   ├── error.go                  # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
-│   │       │   └── pagination.go             # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
-│   │       ├── routes/                       # 🆕 Route registrars mapped 1:1 to handlers
-│   │       │   ├── file_routes.go            # /files/*
-│   │       │   ├── upload_routes.go          # /upload/*
-│   │       │   ├── download_routes.go        # /download/*
-│   │       │   ├── folder_routes.go          # /folders/*
-│   │       │   ├── share_routes.go           # /shares/*
-│   │       │   ├── media_routes.go           # /media/*
-│   │       │   ├── flag_routes.go            # /flags/*
-│   │       │   ├── policy_routes.go          # 🆕 /policies/*
-│   │       │   ├── lifecycle_routes.go       # 🆕 /lifecycle/*
-│   │       │   └── linking_routes.go         # 🆕 /links/* (signed URLs, audit logs)
-│   │       └── router.go                     # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
-│   │
-│   └── config/                               # 🆕 MEDIUM - Standardized configuration
-│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, MinIO, Storage)
-│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
-│       └── docs/
-│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
-│
-├── config/
-│   ├── default.yaml
-│   ├── dev.yaml
-│   └── prod.yaml
-│
-├── dapr/
-│   ├── local/
-│   │   ├── pubsub.yaml
-│   │   └── statestore.yaml
-│   └── k8s/
-│       ├── pubsub.yaml                       # Kafka with scopes: ["storage-be"]
-│       ├── statestore.yaml                   # State store with scopes
-│       └── secrets.yaml                      # Dapr secret store
-│
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go                         # Service-specific errors
-│   │   └── codes.go                          # Error codes
-│   ├── logger/
-│   │   └── logger.go                         # ❌ REMOVED: Use platform-shared/logging
-│   ├── utils/
-│   │   ├── validator.go                      # Local validation utilities
-│   │   ├── file_utils.go                     # File utilities (path manipulation, extension extraction)
-│   │   ├── mime_detector.go                  # MIME type detection
-│   │   └── hash.go                           # File hash calculation (MD5, SHA256)
-│   └── constants/
-│       ├── events.go                         # ❌ REMOVED: Use contracts/events
-│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
-│       └── mime_types.go                     # Supported MIME types
-│
-├── deployments/
-│   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       ├── configmap.yaml
-│       ├── secrets.yaml
-│       ├── hpa.yaml
-│       ├── pdb.yaml
-│       ├── pvc.yaml
-│       └── servicemonitor.yaml
-│
-├── scripts/
-│   ├── setup-local.sh
-│   ├── get-secrets.sh
-│   ├── seed-data.sh
-│   └── cleanup-orphaned.sh
-│
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-│
-├── docs/
-│   ├── README.md
-│   ├── api.md
-│   ├── events.md                             # 📝 UPDATED: Events (published: file.uploaded, file.deleted, consumed: user.created, etc.)
-│   ├── upload-flow.md
-│   ├── media-processing.md
-│   ├── MIGRATIONS.md
-│   ├── SCHEMA.md
-│   └── RUNBOOK.md
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
-│
-├── go.mod
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
-
-```
----
-
-## **📦8️⃣ search-be (UPDATED WITH ENHANCED RECOMMENDATIONS)**
-
-```
-apps/be/search-be/
-│
-├── cmd/
-│   └── api/
-│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Elasticsearch (now uses loadConfig from internal/config, platform-shared/logging)
-│
-├── internal/
-│   ├── domain/
-│   │   ├── search_index/
-│   │   │   ├── entity.go                     # Search index metadata
-│   │   │   ├── job_index.go                  # Job search document
-│   │   │   ├── user_index.go                 # User/Freelancer document
-│   │   │   ├── errors.go                     # 🆕 Index errors (IndexNotFound, DocumentConflict)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: search.document.indexed / search.document.reindexed / search.index.visibility.changed / search.index.archived
-│   │   │
-│   │   ├── search_query/
-│   │   │   ├── entity.go                     # Search query logs
-│   │   │   ├── filters.go                    # Search filters
-│   │   │   ├── errors.go                     # 🆕 Query errors (InvalidFilter, BadSort)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: search.query.logged / search.query.alert.triggered
-│   │   │
-│   │   ├── recommendation/
-│   │   │   ├── entity.go                     # Recommendation records
-│   │   │   ├── score.go                      # Scoring algorithm
-│   │   │   ├── reason.go                     # Recommendation reasons
-│   │   │   ├── feedback.go                   # User feedback on recommendations
-│   │   │   ├── errors.go                     # 🆕 Recommendation errors (ModelUnavailable, ScoringFailed)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: search.recommendation.generated / search.recommendation.feedback.recorded
-│   │   │
-│   │   ├── recommendation_model/
-│   │   │   ├── entity.go                     # ML model metadata
-│   │   │   ├── feature.go                    # Feature vectors
-│   │   │   ├── training_data.go              # Training data
-│   │   │   ├── errors.go                     # 🆕 Model errors (VersionNotFound, FeatureMismatch)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: search.model.version.registered / search.model.deployed / search.model.rolled_back / search.model.training_data.updated
-│   │   │
-│   │   ├── user_preference/
-│   │   │   ├── entity.go                     # User preferences for recommendations
-│   │   │   ├── implicit_signals.go           # Implicit user signals (clicks, views)
-│   │   │   ├── explicit_preferences.go       # Explicit preferences
-│   │   │   ├── errors.go                     # 🆕 Preference errors (PreferenceNotFound)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: search.personalization.updated / search.preference.updated
-│   │   │
-│   │   ├── matching/
-│   │   │   ├── entity.go                     # Job-Freelancer matches
-│   │   │   ├── criteria.go                   # Matching criteria
-│   │   │   ├── score_breakdown.go            # Detailed match scoring
-│   │   │   ├── errors.go                     # 🆕 Matching errors (CriteriaInvalid)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: search.match.calculated / search.match.accepted / search.match.dismissed
-│   │   │
-│   │   ├── feed/
-│   │   │   ├── entity.go                     # User feeds
-│   │   │   ├── item.go                        # Feed items
-│   │   │   ├── personalization.go             # Personalization data
-│   │   │   ├── errors.go                      # 🆕 Feed errors (FeedNotFound)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: search.feed.item.added / search.feed.item.removed / search.feed.updated
-│   │   │
-│   │   ├── trending/
-│   │   │   ├── entity.go                      # Trending jobs/skills
-│   │   │   ├── calculator.go                  # Calculate trending items
-│   │   │   ├── errors.go                      # 🆕 Trending errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                      # 🆕 Domain events: search.trending.calculated / search.trending.updated
-│   │   │
-│   │   ├── saved_search/
-│   │   │   ├── entity.go                      # Saved searches
-│   │   │   ├── alert.go                        # Search alerts
-│   │   │   ├── errors.go                       # 🆕 Saved search errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                       # 🆕 Domain events: search.saved_search.created / search.saved_search.updated / search.saved_search.deleted / search.saved_search.alert.sent
-│   │   │
-│   │   ├── similarity/
-│   │   │   ├── entity.go                      # Similar jobs/users
-│   │   │   ├── vector.go                      # Similarity vectors
-│   │   │   ├── errors.go                      # 🆕 Similarity errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                      # 🆕 Domain events: search.similarity.computed / search.similarity.model.updated
-│   │   │
-│   │   ├── taxonomy/                          # 🆕 Taxonomy & synonyms
-│   │   │   ├── entity.go                       # Normalized skills/categories (SkillID, Name, CategoryID, Aliases)
-│   │   │   ├── category.go                     # Categories (ID, Name, ParentID, Path)
-│   │   │   ├── synonym.go                      # Synonyms & alias mapping (SkillID, Alias, ToleranceScore)
-│   │   │   ├── typos.go                        # Typo tolerance rules (edit distance thresholds)
-│   │   │   ├── errors.go                        # Taxonomy errors (SkillNotFound, AliasConflict)
-│   │   │   ├── repository.go                    # TaxonomyRepository interface
-│   │   │   └── events.go                        # 🆕 Domain events: search.taxonomy.updated / search.taxonomy.synonym.changed / search.taxonomy.typo_rules.updated
-│   │   │
-│   │   ├── ltr/                                # 🆕 Learning-to-rank hooks
-│   │   │   ├── entity.go                       # LTR signals (docID, conversions, responseSpeed, jobSuccess, intent)
-│   │   │   ├── signal_source.go                # Signal sources (events → features)
-│   │   │   ├── feature_store.go                # Persisted LTR features (effectiveAt timestamps)
-│   │   │   ├── errors.go                       # LTR errors (SignalOutOfRange, FeatureStale)
-│   │   │   ├── repository.go                   # LTRRepository interface
-│   │   │   └── events.go                       # 🆕 Domain events: search.ltr.signal.recorded / search.ltr.features.updated
-│   │   │
-│   │   ├── facets/                             # 🆕 Facets & filters
-│   │   │   ├── entity.go                       # Facet definitions (price bands, availability, tz overlap, languages, badges)
-│   │   │   ├── banding.go                      # Price/rate band logic
-│   │   │   ├── tz_overlap.go                   # Timezone overlap calculator
-│   │   │   ├── errors.go                       # Facet errors (InvalidBand, UnknownBadge)
-│   │   │   ├── repository.go                   # FacetRepository interface
-│   │   │   └── events.go                       # 🆕 Domain events: search.facets.definition.updated / search.facets.banding.updated / search.facets.tz_overlap.updated
-│   │   │
-│   │   ├── personalization/                    # 🆕 Personalization signals
-│   │   │   ├── entity.go                       # Profiles (recent activity, saved searches, preferred rates)
-│   │   │   ├── cold_start.go                   # Cold-start defaults
-│   │   │   ├── errors.go                       # Personalization errors
-│   │   │   ├── repository.go                   # PersonalizationRepository interface
-│   │   │   └── events.go                       # 🆕 Domain events: search.personalization.updated / search.personalization.cold_start.applied
-│   │   │
-│   │   ├── hygiene/                            # 🆕 Index hygiene
-│   │   │   ├── entity.go                       # Hygiene tasks (incremental updates, dedup, archival, visibility)
-│   │   │   ├── incremental.go                  # Incremental update markers (version, changed fields)
-│   │   │   ├── dedupe.go                       # Dedupe fingerprints
-│   │   │   ├── visibility.go                   # Visibility states
-│   │   │   ├── errors.go                       # Hygiene errors
-│   │   │   ├── repository.go                   # HygieneRepository interface
-│   │   │   └── events.go                       # 🆕 Domain events: search.index.hygiene.deduplicated / search.index.hygiene.archived / search.index.hygiene.visibility.changed
-│   │   │
-│   │   └── outbox/
-│   │       ├── entity.go                       # ❌ REMOVED (use platform-shared/outbox/entity.go)
-│   │       └── repository.go                    # ❌ REMOVED (use platform-shared/outbox/repository.go)
-│   │
-│   ├── application/
-│   │   ├── eventhandler/
-│   │   │   ├── job_handler.go                 # Consumes: job.posted | job.updated | job.closed
-│   │   │   │                                     # Purpose: create/update/remove job documents in the search index; refresh facets.
-│   │   │   │
-│   │   │   ├── user_handler.go                # Consumes: user.updated
-│   │   │   │                                     # Purpose: refresh user/freelancer search documents (profile fields, visibility, badges).
-│   │   │   │
-│   │   │   ├── review_handler.go              # Consumes: review.double_blind.published | review.published
-│   │   │   │                                     # Purpose: update public rating aggregates on indexed user/job docs; recalc ranking features.
-│   │   │   │
-│   │   │   ├── entitlement_handler.go         # Consumes: subscription.feature.changed
-│   │   │   │                                     # Purpose: adjust facet/visibility rules and gated search features tied to plan changes.
-│   │   │   │
-│   │   │   ├── admin_content_handler.go       # Consumes: admin.content.actioned (approve/reject/remove/hide)
-│   │   │   │                                     # Purpose: hide/unhide or restore affected indexed documents promptly.
-│   │   │   │
-│   │   │   ├── admin_flags_handler.go         # Consumes: admin.feature_flag.updated | admin.threshold.updated | admin.experiment.updated
-│   │   │   │                                     # Purpose: refresh runtime toggles that control search facets, boosts, filters, and experiments.
-│   │   │   │
-│   │   │   ├── storage_lifecycle_handler.go   # Consumes: file.lifecycle.soft_deleted | file.lifecycle.restored
-│   │   │   │                                     # Purpose: sync file-backed assets’ visibility in indexed documents (thumbnails, attachments).
-│   │   │   │
-│   │   │   └── _partitioning_notes.go         # (comments only) Partition keys used by handlers:
-│   │   │                                         #   job.* → key by job_id
-│   │   │                                         #   user.* → key by user_id
-│   │   │                                         #   review.* → key by subject_user_id (or contract_id when provided)
-│   │   │                                         #   admin.* → key by affected_resource_id
-│   │   │                                         #   file.lifecycle.* → key by file_id
-│   │   ├── search/
-│   │   │   ├── service.go
-│   │   │   ├── job_search.go
-│   │   │   ├── freelancer_search.go
-│   │   │   ├── query_builder.go
-│   │   │   ├── facet_builder.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                    # 🆕 ExecuteSearch (jobs/freelancers), SaveSearch
-│   │   │   ├── queries.go                     # 🆕 GetSearchResults, GetSearchSuggestions
-│   │   │   └── validators.go                  # 🆕 Validate filters/sorts/facets
-│   │   ├── indexing/
-│   │   │   ├── service.go
-│   │   │   ├── job_indexer.go
-│   │   │   ├── user_indexer.go
-│   │   │   ├── bulk_indexer.go
-│   │   │   ├── dto.go
-│   │   │   ├── commands.go                    # 🆕 IndexJob, IndexUser, ReindexAll
-│   │   │   ├── queries.go                     # 🆕 GetIndexStatus, GetDocByID
-│   │   │   └── validators.go                  # 🆕 Validate index payloads
-│   │   ├── recommendation/
-│   │   │   ├── service.go
-│   │   │   ├── job_recommender.go             # Recommend jobs to freelancers
-│   │   │   ├── freelancer_recommender.go      # Recommend freelancers to clients
-│   │   │   ├── collaborative_filtering.go     # Collaborative filtering algorithm
-│   │   │   ├── content_based.go               # Content-based filtering
-│   │   │   ├── hybrid_recommender.go          # Hybrid recommendation approach
-│   │   │   ├── scoring_engine.go              # Calculate recommendation scores
-│   │   │   ├── personalization.go             # Personalization logic
-│   │   │   ├── diversity_optimizer.go         # Ensure diverse recommendations
-│   │   │   ├── cold_start_handler.go          # Handle new users/jobs
-│   │   │   ├── dto.go
-│   │   │   ├── ml_model.go                    # ML model integration
-│   │   │   ├── commands.go                    # 🆕 GenerateRecommendations, RecordFeedback
-│   │   │   ├── queries.go                     # 🆕 GetRecommendations, GetReasons
-│   │   │   └── validators.go                  # 🆕 Validate rec limits, diversity params
-│   │   ├── matching/
-│   │   │   ├── service.go
-│   │   │   ├── matcher.go                     # Job-Freelancer matching
-│   │   │   ├── criteria_evaluator.go          # Evaluate match criteria
-│   │   │   ├── skill_matcher.go               # Match based on skills
-│   │   │   ├── experience_matcher.go          # Match based on experience
-│   │   │   ├── rate_matcher.go                # Match based on rates
-│   │   │   ├── availability_matcher.go        # Match based on availability
-│   │   │   ├── score_calculator.go            # Calculate match score
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                    # 🆕 CreateMatchRun
-│   │   │   ├── queries.go                     # 🆕 GetMatchesForJob, GetMatchesForUser
-│   │   │   └── validators.go                  # 🆕 Validate criteria completeness
-│   │   ├── feed/
-│   │   │   ├── service.go
-│   │   │   ├── generator.go                   # Generate personalized feed
-│   │   │   ├── ranking.go                     # Rank feed items
-│   │   │   ├── freshness_scorer.go            # Score by freshness
-│   │   │   ├── relevance_scorer.go            # Score by relevance
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                    # 🆕 GenerateFeed
-│   │   │   ├── queries.go                     # 🆕 GetFeed
-│   │   │   └── validators.go                  # 🆕 Validate feed window/size
-│   │   ├── trending/
-│   │   │   ├── service.go
-│   │   │   ├── calculator.go                  # Calculate trending items
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                    # 🆕 RecomputeTrending
-│   │   │   ├── queries.go                     # 🆕 GetTrending
-│   │   │   └── validators.go                  # 🆕 Validate window/minSupport
-│   │   ├── similarity/
-│   │   │   ├── service.go
-│   │   │   ├── job_similarity.go              # Find similar jobs
-│   │   │   ├── user_similarity.go             # Find similar users
-│   │   │   ├── vector_calculator.go           # Calculate similarity vectors
-│   │   │   ├── dto.go
-│   │   │   ├── commands.go                    # 🆕 RebuildSimilarityVectors
-│   │   │   ├── queries.go                     # 🆕 GetSimilarJobs, GetSimilarUsers
-│   │   │   └── validators.go                  # 🆕 Validate k/threshold
-│   │   ├── suggestion/
-│   │   │   ├── service.go                     # Autocomplete suggestions
-│   │   │   ├── dto.go
-│   │   │   ├── cache_warmer.go
-│   │   │   ├── commands.go                    # 🆕 WarmSuggestionCache
-│   │   │   ├── queries.go                     # 🆕 GetSuggestions
-│   │   │   └── validators.go                  # 🆕 Validate prefix/lang
-│   │   ├── taxonomy/                          # 🆕 Taxonomy application layer
-│   │   │   ├── service.go                      # Manage skills/categories, synonyms, typo rules
-│   │   │   ├── commands.go                     # UpsertSkill, UpsertCategory, AddAlias, RemoveAlias
-│   │   │   ├── queries.go                      # GetSkill, ListSkills, GetCategoryTree
-│   │   │   ├── validators.go                   # Validate alias conflicts, edit distance
-│   │   │   ├── dto.go                           # TaxonomyDTO, CategoryDTO, AliasDTO
-│   │   │   └── mapper.go                        # Taxonomy mappers
-│   │   ├── ltr/                                # 🆕 LTR application layer
-│   │   │   ├── service.go                      # Ingest signals, build feature vectors, rerank
-│   │   │   ├── commands.go                     # IngestSignalBatch, SnapshotFeatures
-│   │   │   ├── queries.go                      # GetFeaturesForDoc, PreviewRerank
-│   │   │   ├── validators.go                   # Validate signal bounds, effectiveAt
-│   │   │   ├── dto.go                           # SignalDTO, FeatureDTO, RerankPreviewDTO
-│   │   │   └── mapper.go                        # LTR mappers
-│   │   ├── facets/                             # 🆕 Facets application layer
-│   │   │   ├── service.go                      # Build facets, apply filters, banding
-│   │   │   ├── commands.go                     # DefineFacet, UpdateFacetBands
-│   │   │   ├── queries.go                      # GetFacetsForQuery
-│   │   │   ├── validators.go                   # Validate bands, tz overlap rules
-│   │   │   ├── dto.go                           # FacetDTO, BandDTO
-│   │   │   └── mapper.go                        # Facet mappers
-│   │   ├── personalization/                    # 🆕 Personalization application layer
-│   │   │   ├── service.go                      # Update profile, compute defaults
-│   │   │   ├── commands.go                     # UpdatePersonalizationProfile
-│   │   │   ├── queries.go                      # GetPersonalizationProfile
-│   │   │   ├── validators.go                   # Validate rate prefs, recent activity bounds
-│   │   │   ├── dto.go                           # PersonalizationDTO
-│   │   │   └── mapper.go                        # Personalization mappers
-│   │   ├── hygiene/                            # 🆕 Index hygiene application layer
-│   │   │   ├── service.go                      # Incremental updates, dedupe, archive/visibility
-│   │   │   ├── commands.go                     # RunIncrementalUpdate, RunDedup, ArchiveDoc, SetVisibility
-│   │   │   ├── queries.go                      # GetHygieneStatus, GetDocHistory
-│   │   │   ├── validators.go                   # Validate dedupe fingerprint size, state transitions
-│   │   │   ├── dto.go                           # HygieneTaskDTO, VisibilityDTO
-│   │   │   └── mapper.go                        # Hygiene mappers
-│   ├── infrastructure/
-│   │   ├── persistence/
-│   │   │   └── postgres/
-│   │   │       ├── connection.go              # PostgreSQL connection setup (DSN from config, connection pooling)
-│   │   │       ├── transaction.go             # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
-│   │   │       ├── migrations.go              # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
-│   │   │       ├── version.go                 # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
-│   │   │       ├── safety.go                  # 🆕 Pre-migration safety checks (environment validation, disk space check)
-│   │   │       ├── search_query_repository.go
-│   │   │       ├── recommendation_repository.go
-│   │   │       ├── recommendation_model_repository.go
-│   │   │       ├── user_preference_repository.go
-│   │   │       ├── matching_repository.go
-│   │   │       ├── feed_repository.go
-│   │   │       ├── trending_repository.go
-│   │   │       ├── saved_search_repository.go
-│   │   │       ├── similarity_repository.go
-│   │   │       ├── taxonomy_repository.go     # 🆕 TaxonomyRepository implementation
-│   │   │       ├── ltr_repository.go          # 🆕 LTRRepository implementation
-│   │   │       ├── facets_repository.go       # 🆕 FacetRepository implementation
-│   │   │       ├── personalization_repository.go # 🆕 PersonalizationRepository implementation
-│   │   │       └── hygiene_repository.go      # 🆕 HygieneRepository implementation
-│   │   ├── elasticsearch/
-│   │   │   ├── client.go                      # Elasticsearch client
-│   │   │   ├── index_manager.go               # Index management
-│   │   │   ├── job_mapper.go                  # Job mapping to ES document
-│   │   │   ├── user_mapper.go                 # User mapping to ES document
-│   │   │   └── config.go                      # ES configuration (hosts, auth)
-│   │   ├── cache/
-│   │   │   └── redis/
-│   │   │       ├── connection.go              # Redis connection setup (connection pooling, retry logic)
-│   │   │       ├── search_cache.go            # Cache search results (Get, Set, Invalidate with TTL)
-│   │   │       ├── suggestion_cache.go        # Cache autocomplete suggestions
-│   │   │       ├── feed_cache.go              # Cache user feeds
-│   │   │       ├── recommendation_cache.go    # Cache recommendations
-│   │   │       ├── taxonomy_cache.go          # 🆕 Cache skills/categories & aliases
-│   │   │       └── ltr_cache.go               # 🆕 Cache LTR features snapshot
-│   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go                # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
-│   │   │       ├── producer.go                # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
-│   │   │       ├── topics.go                  # 📝 UPDATED: Topic constants (now imported from contracts/events - job.indexed, user.indexed, recommendation.generated)
-│   │   │       └── scram.go                   # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
-│   │   ├── ml/
-│   │   │   ├── model_loader.go                # Load ML models
-│   │   │   ├── predictor.go                   # Make predictions
-│   │   │   ├── feature_extractor.go           # Extract features
-│   │   │   ├── trainer.go                     # Train models
-│   │   │   └── evaluator.go                   # Evaluate model performance
-│   │   └── outbox/
-│   │       ├── processor.go                   # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
-│   │       └── scheduler.go                   # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
-│   │
-│   ├── interfaces/
-│   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── search_handler.go          # Search HTTP handlers (POST /search/jobs, /search/freelancers)
-│   │       │   ├── recommendation_handler.go  # Recommendation handlers (GET /recommendations/jobs, /recommendations/freelancers)
-│   │       │   ├── matching_handler.go        # Matching handlers
-│   │       │   ├── feed_handler.go            # Feed handlers
-│   │       │   ├── trending_handler.go        # Trending handlers
-│   │       │   ├── similarity_handler.go      # Similarity handlers
-│   │       │   ├── suggestion_handler.go      # Autocomplete handlers
-│   │       │   ├── indexing_handler.go        # Admin endpoint for indexing
-│   │       │   ├── taxonomy_handler.go        # 🆕 Taxonomy handlers (skills/categories, aliases)
-│   │       │   ├── ltr_handler.go             # 🆕 LTR handlers (ingest signals, preview rerank)
-│   │       │   ├── facets_handler.go          # 🆕 Facet handlers (definitions, bands)
-│   │       │   ├── personalization_handler.go # 🆕 Personalization handlers (get/update profile)
-│   │       │   ├── hygiene_handler.go         # 🆕 Hygiene handlers (incrementals/dedup/visibility)
-│   │       │   └── health_handler.go          # Health check endpoints (/health, /ready, /live)
-│   │       ├── routes/                         # 🆕 Route registrars mapped 1:1 to handlers
-│   │       │   ├── search_routes.go            # /search/*
-│   │       │   ├── recommendation_routes.go    # /recommendations/*
-│   │       │   ├── matching_routes.go          # /matching/*
-│   │       │   ├── feed_routes.go              # /feed/*
-│   │       │   ├── trending_routes.go          # /trending/*
-│   │       │   ├── similarity_routes.go        # /similarity/*
-│   │       │   ├── suggestion_routes.go        # /suggestions/*
-│   │       │   ├── indexing_routes.go          # /indexing/*
-│   │       │   ├── taxonomy_routes.go          # 🆕 /taxonomy/*
-│   │       │   ├── ltr_routes.go               # 🆕 /ltr/*
-│   │       │   ├── facets_routes.go            # 🆕 /facets/*
-│   │       │   ├── personalization_routes.go   # 🆕 /personalization/*
-│   │       │   └── hygiene_routes.go           # 🆕 /hygiene/*
-│   │       ├── middleware/
-│   │       │   ├── auth.go                     # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
-│   │       │   ├── rbac.go                     # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
-│   │       │   ├── cors.go                     # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
-│   │       │   ├── rate_limit.go               # Rate limiting middleware (token bucket algorithm)
-│   │       │   ├── logging.go                  # 📝 UPDATED: Logging middleware (structured logs per request, uses platform-shared/ginx/logging)
-│   │       │   ├── error_handler.go            # Error handling middleware
-│   │       │   └── request_id.go               # 📝 UPDATED: Request ID middleware (X-Request-ID header, uses platform-shared/ginx/requestid)
-│   │       ├── responses/
-│   │       │   ├── success.go                  # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
-│   │       │   ├── error.go                    # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
-│   │       │   └── pagination.go               # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
-│   │       └── router.go                       # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
-│   │
-│   └── config/                                 # 🆕 MEDIUM - Standardized configuration
-│       ├── schema.go                           # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, Elasticsearch, ML)
-│       ├── loader.go                           # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
-│       └── docs/
-│           └── CONFIGURATION.md                # 🆕 Configuration documentation (all ENV vars, defaults, examples)
-│
-├── config/                                     # 🆕 MEDIUM - Configuration files
-│   ├── default.yaml                            # 🆕 Default configuration
-│   ├── dev.yaml                                # 🆕 Development overrides
-│   └── prod.yaml                               # 🆕 Production overrides
-│
-├── dapr/                                       # 🆕 MEDIUM - Dapr components split by environment
-│   ├── local/
-│   │   ├── pubsub.yaml                         # Kafka pub/sub component
-│   │   └── statestore.yaml                     # State store component
-│   └── k8s/
-│       ├── pubsub.yaml                         # Kafka with scopes: ["search-be"]
-│       ├── statestore.yaml                     # State store with scopes
-│       └── secrets.yaml                        # Dapr secret store
-│
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go                           # Service-specific errors
-│   │   └── codes.go                            # Error codes
-│   ├── logger/
-│   │   └── logger.go                           # ❌ REMOVED: Use platform-shared/logging
-│   ├── utils/
-│   │   ├── validator.go                        # Local validation utilities
-│   │   ├── text_analyzer.go                    # Text analysis utilities
-│   │   ├── normalizer.go                       # Data normalization
-│   │   └── vector_math.go                      # Vector math for similarity
-│   └── constants/
-│       ├── events.go                           # ❌ REMOVED: Use contracts/events
-│       ├── topics.go                           # ❌ REMOVED: Use contracts/events
-│       └── indices.go                          # Index names constants
-│
-├── elasticsearch/
-│   ├── mappings/
-│   │   ├── jobs.json                           # Job index mapping
-│   │   └── users.json                          # User index mapping
-│   └── analyzers/
-│       └── custom_analyzers.json               # Custom analyzers
-│
-├── ml_models/
-│   ├── job_recommendation/
-│   │   ├── model.pkl                           # ML model for job recommendations
-│   │   ├── features.json                       # Features list
-│   │   └── metadata.json                       # Model metadata
-│   ├── freelancer_recommendation/
-│   │   ├── model.pkl                           # ML model for freelancer recommendations
-│   │   ├── features.json                       # Features list
-│   │   └── metadata.json                       # Model metadata
-│   └── matching/
-│       ├── model.pkl                           # ML model for matching
-│       ├── features.json                       # Features list
-│       └── metadata.json                       # Model metadata
-│
-├── deployments/
-│   └── k8s/
-│       ├── deployment.yaml                     # Kubernetes Deployment
-│       ├── service.yaml                        # Kubernetes Service
-│       ├── configmap.yaml                      # ConfigMap
-│       ├── secrets.yaml                        # Secrets
-│       ├── hpa.yaml                            # HPA
-│       ├── pdb.yaml                            # PDB
-│       └── servicemonitor.yaml                 # Prometheus ServiceMonitor
-│
-├── scripts/
-│   ├── setup-local.sh                          # Setup local environment
-│   ├── get-secrets.sh                          # Fetch secrets
-│   ├── seed-data.sh                            # Seed test data
-│   ├── create-indices.sh                       # Create ES indices
-│   ├── reindex-all.sh                          # Reindex all data
-│   └── train-models.sh                         # Train ML models
-│
-├── tests/
-│   ├── unit/                                   # Unit tests
-│   ├── integration/                            # Integration tests
-│   └── e2e/                                    # End-to-end tests
-│
-├── docs/
-│   ├── README.md                               # Service overview
-│   ├── api.md                                  # API documentation
-│   ├── events.md                               # 📝 UPDATED: Events (published: job.indexed, user.indexed, recommendation.generated, consumed: job.posted, user.updated, etc.)
-│   ├── search-algorithms.md                    # Search algorithms
-│   ├── recommendation-engine.md                # Recommendation engine details
-│   ├── recommendation-types.md                 # Recommendation types
-│   ├── matching-algorithm.md                   # Matching algorithm
-│   ├── ml-models.md                            # ML models documentation
-│   ├── elasticsearch-setup.md                  # Elasticsearch setup
-│   ├── MIGRATIONS.md                           # 🆕 Migration history
-│   ├── SCHEMA.md                               # 🆕 Database schema
-│   └── RUNBOOK.md                              # 🆕 Operational procedures
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml                              # CI workflow
-│       └── cd.yml                              # CD workflow
-│
-├── go.mod                                      # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
-
-```
-
----
-
-## **📦9️⃣ reviews-be (UPDATED - COVERS RATINGS)**
-
-```
-apps/be/reviews-be/
-│
-├── cmd/
-│   └── api/
-│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
-│
-├── internal/
-│   ├── domain/
-│   │   ├── review/
-│   │   │   ├── entity.go                     # Review aggregate root
-│   │   │   ├── rating.go                     # Rating breakdown (overall, quality, communication, etc.)
-│   │   │   ├── enums.go                      # ReviewType, Status, ReviewCategory
-│   │   │   ├── response.go                   # Review responses
-│   │   │   ├── helpful.go                    # Helpful votes
-│   │   │   ├── errors.go                     # 🆕 Domain errors (ReviewNotFound, WindowClosed, AlreadySubmitted)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: ReviewSubmitted, ReviewEdited, ReviewPublished, ReviewWithdrawn
-│   │   ├── rating/
-│   │   │   ├── entity.go                     # Rating system
-│   │   │   ├── criteria.go                   # Rating criteria
-│   │   │   ├── aggregation.go                # Aggregate ratings
-│   │   │   ├── errors.go                     # 🆕 Rating errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: RatingCriteriaUpdated, RatingAggregated
-│   │   ├── badge/
-│   │   │   ├── entity.go                     # Achievement badges
-│   │   │   ├── criteria.go                   # Badge criteria
-│   │   │   ├── types.go                      # Badge types (Top Rated, Rising Talent, etc.)
-│   │   │   ├── level.go                      # Badge levels
-│   │   │   ├── errors.go                     # 🆕 Badge errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: BadgeCreated, BadgeCriteriaUpdated, BadgeLevelUpdated, BadgeArchived
-│   │   ├── user_badge/
-│   │   │   ├── entity.go                     # User badge assignments
-│   │   │   ├── achievement_date.go           # When badge was earned
-│   │   │   ├── errors.go                     # 🆕 UserBadge errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: BadgeAwardedToUser, BadgeRevokedFromUser
-│   │   ├── reputation/
-│   │   │   ├── entity.go                     # Reputation scores
-│   │   │   ├── score_calculator.go           # Score calculation
-│   │   │   ├── history.go                    # Reputation history
-│   │   │   ├── decay.go                      # 🆕 Rolling averages, decay, outlier dampening
-│   │   │   ├── top_rated_rules.go            # 🆕 “Top-rated” eligibility rules
-│   │   │   ├── errors.go                     # 🆕 Reputation errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: ReputationUpdated, TopRatedEligibilityChanged
-│   │   ├── feedback/
-│   │   │   ├── entity.go                     # Private feedback
-│   │   │   ├── category.go                   # Feedback categories
-│   │   │   ├── nps.go                        # 🆕 Confidential NPS-style scores
-│   │   │   ├── errors.go                     # 🆕 Feedback errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: PrivateFeedbackSubmitted, PrivateFeedbackUpdated
-│   │   ├── flag/
-│   │   │   ├── entity.go                     # Flagged reviews
-│   │   │   ├── reason.go                     # Flag reasons
-│   │   │   ├── errors.go                     # 🆕 Flag errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: ReviewFlagSubmitted, ReviewFlagResolved, ReviewFlagDismissed
-│   │   ├── stats/
-│   │   │   ├── entity.go                     # Review statistics
-│   │   │   ├── aggregates.go                 # Aggregated stats
-│   │   │   ├── errors.go                     # 🆕 Stats errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: ReviewStatsUpdated, ReviewStatsRecalculated
-│   │   ├── review_reminder/
-│   │   │   ├── entity.go                     # Review reminders
-│   │   │   ├── errors.go                     # 🆕 Reminder errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: ReviewReminderScheduled, ReviewReminderSent, ReviewReminderFailed
-│   │   ├── double_blind/                     # 🆕 Double-blind reviews domain
-│   │   │   ├── entity.go                     # Windows (contractID, openAt, closeAt, submitted{client,freelancer})
-│   │   │   ├── window.go                     # Publish after both submit or timeout
-│   │   │   ├── policy.go                     # Rules (durations, grace periods)
-│   │   │   ├── errors.go                     # Double-blind errors (WindowNotOpen, PublishBlocked)
-│   │   │   ├── repository.go                 # DoubleBlindRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: DoubleBlindSubmitted, DoubleBlindPublished, DoubleBlindTimeout
-│   │   ├── weighting/                        # 🆕 Dimensions & weights
-│   │   │   ├── entity.go                     # Weight profiles per category (quality, comms, timeliness)
-│   │   │   ├── profile.go                    # Category-specific weighting resolution
-│   │   │   ├── errors.go                     # Weighting errors (ProfileNotFound)
-│   │   │   ├── repository.go                 # WeightingRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: WeightProfileCreated, WeightProfileUpdated
-│   │   ├── public_response/                  # 🆕 Public response rights
-│   │   │   ├── entity.go                     # Right-of-reply records (reviewID, authorID, body, postedAt)
-│   │   │   ├── policy.go                     # Response windows/length limits
-│   │   │   ├── errors.go                     # Public response errors
-│   │   │   ├── repository.go                 # PublicResponseRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: PublicResponsePosted, PublicResponseEdited, PublicResponseRemoved
-│   │   ├── moderation/                       # 🆕 Abuse controls
-│   │   │   ├── entity.go                     # Moderation states (Pending, UnderReview, Removed, Restored)
-│   │   │   ├── auto_flag.go                  # Auto-flags: swapping, bursts, suspicious patterns
-│   │   │   ├── signals.go                    # Detection signals
-│   │   │   ├── errors.go                     # Moderation errors
-│   │   │   ├── repository.go                 # ModerationRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: ReviewAbuseAutoFlagged, ReviewModerationStateChanged
-│   │   └── outbox/
-│   │       ├── entity.go                     # ❌ REMOVED (use platform-shared/outbox/entity.go)
-│   │       └── repository.go                 # ❌ REMOVED (use platform-shared/outbox/repository.go)
-│   │
-│   ├── application/
-│   │   ├── eventhandler/
-│   │   │   ├── contract_handler.go            # Consumes: contract.ended
-│   │   │   │                                     # Purpose: opens the double-blind review window for both parties at contract end.
-│   │   │   │
-│   │   │   ├── payment_handler.go             # Consumes: payment.captured
-│   │   │   │                                     # Purpose: starts/qualifies the double-blind window when payment is captured (hourly/fixed).
-│   │   │   │
-│   │   │   ├── admin_moderation_handler.go    # Consumes: admin.moderation.actioned (approve/reject/remove/hide)
-│   │   │   │                                     # Purpose: reflect moderation decisions on reviews (remove/restore visibility, recalc aggregates if needed).
-│   │   │   │
-│   │   │   ├── badge_handler.go               # Consumes: badge.criteria.met  # (optional downstream hook)
-│   │   │   │                                     # Purpose: optional: feed reputation/badge eligibility workflows that affect review surfaces.
-│   │   │   │
-│   │   │   └── admin_flags_handler.go         # Consumes: admin.feature_flag.updated | admin.threshold.updated | admin.experiment.updated
-│   │   │                                         # Purpose: refresh runtime toggles/config used by review windows, moderation thresholds,
-│   │   │                                         #           decay/outlier dampening, and publishing policies.
-│   │   ├── review/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Update, Delete, Respond
-│   │   │   ├── queries.go                    # Get, List, Filter
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   └── business_rules.go
-│   │   ├── rating/
-│   │   │   ├── service.go
-│   │   │   ├── aggregator.go                 # Aggregate ratings
-│   │   │   ├── calculator.go                 # Calculate average ratings
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 UpsertCriteria, RecalculateForContract
-│   │   │   ├── queries.go                    # 🆕 GetCriteria, GetAggregates
-│   │   │   └── validators.go                 # 🆕 Validate criteria weights & bounds
-│   │   ├── badge/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Award, Revoke badges
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── achievement_checker.go        # Check badge criteria
-│   │   ├── reputation/
-│   │   │   ├── service.go
-│   │   │   ├── calculator.go                 # Calculate reputation
-│   │   │   ├── updater.go                    # Update reputation
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 RecomputeUserReputation, ApplyDecay
-│   │   │   ├── queries.go                    # 🆕 GetReputation, GetHistory
-│   │   │   └── validators.go                 # 🆕 Validate decay/outlier params
-│   │   ├── feedback/
-│   │   │   ├── service.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 SubmitPrivateFeedback
-│   │   │   ├── queries.go                    # 🆕 GetPrivateFeedback
-│   │   │   └── validators.go                 # 🆕 Validate NPS bounds & confidentiality
-│   │   ├── stats/
-│   │   │   ├── service.go
-│   │   │   ├── aggregator.go                 # Aggregate stats
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 RebuildStats
-│   │   │   ├── queries.go                    # 🆕 GetStats
-│   │   │   └── validators.go                 # 🆕 Validate windows & min samples
-│   │   ├── double_blind/                     # 🆕 App layer for double-blind reviews
-│   │   │   ├── service.go                    # OpenWindow, SubmitSide, PublishIfReady
-│   │   │   ├── commands.go                   # OpenWindow, SubmitClient, SubmitFreelancer, ForcePublish
-│   │   │   ├── queries.go                    # GetWindow, GetPublishState
-│   │   │   └── validators.go                 # Validate window times & state transitions
-│   │   ├── weighting/                        # 🆕 App layer for dimensions & weights
-│   │   │   ├── service.go                    # ResolveWeightProfile, UpsertProfile
-│   │   │   ├── commands.go                   # UpsertWeightProfile
-│   │   │   ├── queries.go                    # GetWeightProfile, ListProfiles
-│   │   │   └── validators.go                 # Validate weight sums & ranges
-│   │   ├── public_response/                  # 🆕 App layer for right-of-reply
-│   │   │   ├── service.go                    # PostResponse, UpdateResponse
-│   │   │   ├── commands.go                   # CreateResponse, EditResponse
-│   │   │   ├── queries.go                    # GetResponse
-│   │   │   └── validators.go                 # Validate length & window
-│   │   ├── moderation/                       # 🆕 Abuse controls
-│   │   │   ├── service.go                    # AutoFlag, ReviewModeration, ChangeState
-│   │   │   ├── commands.go                   # AutoFlagReview, SetModerationState
-│   │   │   ├── queries.go                    # GetModerationState, ListFlags
-│   │   │   └── validators.go                 # Validate reasons & thresholds
-│   ├── infrastructure/
-│   │   ├── persistence/
-│   │   │   └── postgres/
-│   │   │       ├── connection.go             # PostgreSQL connection setup (DSN from config, connection pooling)
-│   │   │       ├── transaction.go            # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
-│   │   │       ├── migrations.go             # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
-│   │   │       ├── version.go                # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
-│   │   │       ├── safety.go                 # 🆕 Pre-migration safety checks (environment validation, disk space check)
-│   │   │       ├── review_repository.go
-│   │   │       ├── rating_repository.go
-│   │   │       ├── badge_repository.go
-│   │   │       ├── user_badge_repository.go
-│   │   │       ├── reputation_repository.go
-│   │   │       ├── feedback_repository.go
-│   │   │       ├── flag_repository.go
-│   │   │       ├── stats_repository.go
-│   │   │       ├── review_reminder_repository.go
-│   │   │       ├── double_blind_repository.go # 🆕 DoubleBlindRepository implementation
-│   │   │       ├── weighting_repository.go    # 🆕 WeightingRepository implementation
-│   │   │       ├── public_response_repository.go # 🆕 PublicResponseRepository implementation
-│   │   │       └── moderation_repository.go   # 🆕 ModerationRepository implementation
-│   │   ├── cache/
-│   │   │   └── redis/
-│   │   │       ├── connection.go             # Redis connection setup (connection pooling, retry logic)
-│   │   │       ├── review_cache.go           # Cache reviews (Get, Set, Invalidate with TTL)
-│   │   │       ├── badge_cache.go            # Cache badges
-│   │   │       ├── reputation_cache.go       # Cache reputation scores
-│   │   │       ├── stats_cache.go            # Cache stats
-│   │   │       ├── double_blind_cache.go     # 🆕 Cache windows/publish state
-│   │   │       └── weighting_cache.go        # 🆕 Cache weight profiles
-│   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go               # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
-│   │   │       ├── producer.go               # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
-│   │   │       ├── topics.go                 # 📝 UPDATED: Topic constants (imported from contracts/events - review.submitted, review.published, badge.awarded)
-│   │   │       └── scram.go                  # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
-│   │   └── outbox/
-│   │       ├── processor.go                  # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
-│   │       └── scheduler.go                  # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
-│   │
-│   ├── interfaces/
-│   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── review_handler.go         # Review HTTP handlers (POST /reviews, GET /reviews/:id)
-│   │       │   ├── rating_handler.go         # Rating handlers
-│   │       │   ├── badge_handler.go          # Badge handlers
-│   │       │   ├── reputation_handler.go     # Reputation handlers
-│   │       │   ├── feedback_handler.go       # Feedback handlers
-│   │       │   ├── stats_handler.go          # Stats handlers
-│   │       │   ├── flag_handler.go           # Flag handlers
-│   │       │   ├── double_blind_handler.go   # 🆕 Double-blind endpoints
-│   │       │   ├── weighting_handler.go      # 🆕 Weight profiles endpoints
-│   │       │   ├── public_response_handler.go# 🆕 Right-of-reply endpoints
-│   │       │   └── moderation_handler.go     # 🆕 Moderation endpoints
-│   │       ├── routes/                       # 🆕 Route registrars mapped 1:1 to handlers
-│   │       │   ├── review_routes.go          # /reviews/*
-│   │       │   ├── rating_routes.go          # /ratings/*
-│   │       │   ├── badge_routes.go           # /badges/*
-│   │       │   ├── reputation_routes.go      # /reputation/*
-│   │       │   ├── feedback_routes.go        # /feedback/*
-│   │       │   ├── stats_routes.go           # /stats/*
-│   │       │   ├── flag_routes.go            # /flags/*
-│   │       │   ├── double_blind_routes.go    # 🆕 /double-blind/*
-│   │       │   ├── weighting_routes.go       # 🆕 /weights/*
-│   │       │   ├── public_response_routes.go # 🆕 /responses/*
-│   │       │   └── moderation_routes.go      # 🆕 /moderation/*
-│   │       ├── middleware/
-│   │       │   ├── auth.go                   # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
-│   │       │   ├── rbac.go                   # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
-│   │       │   ├── cors.go                   # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
-│   │       │   ├── rate_limit.go             # Rate limiting middleware (token bucket algorithm)
-│   │       │   ├── logging.go                # 📝 UPDATED: Logging middleware (structured logs per request, uses platform-shared/ginx/logging)
-│   │       │   ├── error_handler.go          # Error handling middleware
-│   │       │   └── request_id.go             # 📝 UPDATED: Request ID middleware (X-Request-ID header, uses platform-shared/ginx/requestid)
-│   │       ├── responses/
-│   │       │   ├── success.go                # 📝 UPDATED: Success response wrappers (use platform-shared/httpx/response.go)
-│   │       │   ├── error.go                  # 📝 UPDATED: Error responses (use platform-shared/httpx/errors.go)
-│   │       │   └── pagination.go             # 📝 UPDATED: Pagination (use platform-shared/httpx/pagination.go)
-│   │       └── router.go                     # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
-│   │
-│   └── config/                               # 🆕 MEDIUM - Standardized configuration
-│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis)
-│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
-│       └── docs/
-│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
-│
-├── config/
-│   ├── default.yaml                          # 🆕 Default configuration
-│   ├── dev.yaml                              # 🆕 Development overrides
-│   └── prod.yaml                             # 🆕 Production overrides
-│
-├── dapr/
-│   ├── local/
-│   │   ├── pubsub.yaml                       # Kafka pub/sub component
-│   │   └── statestore.yaml                   # State store component
-│   └── k8s/
-│       ├── pubsub.yaml                       # Kafka with scopes: ["reviews-be"]
-│       ├── statestore.yaml                   # State store with scopes
-│       └── secrets.yaml                      # Dapr secret store
-│
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go                         # Service-specific errors
-│   │   └── codes.go                          # Error codes
-│   ├── logger/
-│   │   └── logger.go                         # ❌ REMOVED: Use platform-shared/logging
-│   ├── utils/
-│   │   ├── validator.go                      # Local validation utilities
-│   │   ├── sanitizer.go                      # Sanitize review content (prevent XSS)
-│   │   └── sentiment_analyzer.go             # Sentiment analysis for reviews
-│   └── constants/
-│       ├── events.go                         # ❌ REMOVED: Use contracts/events
-│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
-│       └── badges.go                         # Badge constants
-│
-├── seeds/
-│   └── badges.sql                            # Seed initial badges
-│
-├── deployments/
-│   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       ├── configmap.yaml
-│       ├── secrets.yaml
-│       ├── hpa.yaml
-│       ├── pdb.yaml
-│       └── servicemonitor.yaml
-│
-├── scripts/
-│   ├── setup-local.sh
-│   ├── get-secrets.sh
-│   ├── seed-badges.sh
-│   └── recalculate-reputation.sh
-│
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-│
-├── docs/
-│   ├── README.md
-│   ├── api.md
-│   ├── events.md                             # 📝 UPDATED: (review.submitted, review.published, badge.awarded, reputation.updated)
-│   ├── badge-system.md
-│   ├── reputation-algorithm.md
-│   ├── rating-system.md
-│   ├── double-blind.md                       # 🆕 Double-blind policy & flows
-│   ├── moderation.md                          # 🆕 Abuse controls & moderation states
-│   ├── MIGRATIONS.md                          # 🆕
-│   ├── SCHEMA.md                              # 🆕
-│   └── RUNBOOK.md                             # 🆕
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
-│
-├── go.mod
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
-
-```
-
-
----
-
-## **📦🔟 subscriptions-be (UPDATED)**
-
-```
-apps/be/subscriptions-be/
-│
-├── cmd/
-│   └── api/
-│       └── main.go
-│
-├── internal/
-│   ├── domain/
-│   │   ├── plan/
-│   │   │   ├── entity.go                     # Subscription plans
-│   │   │   ├── features.go                   # Plan features
-│   │   │   ├── pricing.go                    # Pricing tiers
-│   │   │   ├── limits.go                     # Plan limits
-│   │   │   ├── errors.go                     # 🆕 Domain errors (PlanNotFound, InvalidFeature, LimitExceeded)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: plan.created / plan.updated / plan.archived
-│   │   ├── subscription/
-│   │   │   ├── entity.go                     # User subscriptions
-│   │   │   ├── billing_cycle.go              # Billing cycle management
-│   │   │   ├── enums.go                      # Status, Type
-│   │   │   ├── auto_renewal.go               # Auto-renewal logic
-│   │   │   ├── errors.go                     # 🆕 Subscription errors (AlreadyActive, PastDue, Canceled)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: subscription.created / subscription.changed / subscription.paused / subscription.canceled / subscription.renewed
-│   │   ├── connect/
-│   │   │   ├── entity.go                     # Connects/Credits
-│   │   │   ├── package.go                    # Connect packages
-│   │   │   ├── transaction.go                # Connect transactions
-│   │   │   ├── balance.go                    # Balance tracking
-│   │   │   ├── expiry.go                     # 🆕 Expiry & rollover rules (effective/expiry windows)
-│   │   │   ├── grant.go                      # 🆕 Promotional grants (campaign/ref IDs)
-│   │   │   ├── errors.go                     # 🆕 Connect errors (InsufficientBalance, Expired, RolloverNotAllowed)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: connects.purchased / connects.used / connects.expired / connects.granted
-│   │   ├── usage/
-│   │   │   ├── entity.go                     # Usage tracking
-│   │   │   ├── quota.go                      # Usage quotas
-│   │   │   ├── limit.go                      # Usage limits
-│   │   │   ├── meter.go                      # 🆕 Per-feature meters (messages_to_non_hires, boosts, invites)
-│   │   │   ├── errors.go                     # 🆕 Usage errors (LimitReached, CounterNotFound)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: usage.meter.incremented / usage.limit.reached
-│   │   ├── entitlement/                      # 🆕 Plans & entitlements / feature flags
-│   │   │   ├── entity.go                     # Entitlement (User/OrgID, PlanID, FeatureKey, Allowed, Scope)
-│   │   │   ├── rules.go                      # Rule evaluation (plan→features, addons, promos)
-│   │   │   ├── errors.go                     # 🆕 Entitlement errors (FeatureDenied, NotInPlan)
-│   │   │   ├── repository.go                 # EntitlementRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: entitlement.feature.enabled / entitlement.feature.disabled
-│   │   ├── seat_billing/                     # 🆕 Seat-based billing (clients/agencies)
-│   │   │   ├── entity.go                     # Seat allocation (SubscriptionID, Seats, Assigned, OveragePolicy)
-│   │   │   ├── overage.go                    # Overage calculations (per-seat over cap)
-│   │   │   ├── proration.go                  # Proration rules for mid-cycle changes
-│   │   │   ├── invoice_export.go             # Invoice export model (→ Financial-BE)
-│   │   │   ├── errors.go                     # 🆕 Seat billing errors
-│   │   │   ├── repository.go                 # SeatBillingRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: billing.proration.applied / billing.invoice.exported / seat.overage.incurred / seat.allocated
-│   │   ├── addon/
-│   │   │   ├── entity.go                     # Plan add-ons
-│   │   │   ├── errors.go                     # 🆕 Addon errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: addon.added / addon.removed / addon.updated
-│   │   ├── promotion/
-│   │   │   ├── entity.go                     # Promotional codes
-│   │   │   ├── discount.go                   # Discount rules
-│   │   │   ├── usage_limit.go                # Usage limits for promos
-│   │   │   ├── errors.go                     # 🆕 Promotion errors (InvalidCode, Exhausted, Ineligible)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: promo.created / promo.applied / promo.revoked / promo.exhausted
-│   │   ├── trial/
-│   │   │   ├── entity.go                     # Free trials
-│   │   │   ├── eligibility.go                # Trial eligibility
-│   │   │   ├── errors.go                     # 🆕 Trial errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: trial.started / trial.ended / trial.eligibility.updated
-│   │   ├── billing_history/
-│   │   │   ├── entity.go                     # Billing history
-│   │   │   ├── errors.go                     # 🆕 Billing history errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: billing.invoice.generated / billing.payment.applied / billing.credit.issued
-│   │   ├── feature_toggle/
-│   │   │   ├── entity.go                     # Feature toggles per plan
-│   │   │   ├── errors.go                     # 🆕 Feature toggle errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.feature_flag.updated (plan scope) / feature.toggle.enabled / feature.toggle.disabled
-│   │   └── outbox/
-│   │       ├── entity.go                     # ❌ REMOVED (use platform-shared/outbox/entity.go)
-│   │       └── repository.go                 # ❌ REMOVED (use platform-shared/outbox/repository.go)
-│   │
-│   ├── application/
-│   │   ├── eventhandler/
-│   │   │   ├── financial_handler.go           # Consumes: payment.processed | payment.failed    (from financial-be)
-│   │   │   │                                     # Purpose: post-payment workflows (activate/renew/pause as needed),
-│   │   │   │                                     #          dunning/reactivation on failures.
-│   │   │   │
-│   │   │   ├── proposal_handler.go            # Consumes: proposal.submitted            (from proposals-be)
-│   │   │   │                                     # Purpose: deduct connects / enforce submit limits based on plan/entitlements.
-│   │   │   │
-│   │   │   ├── job_handler.go                 # Consumes: job.posted                    (from jobs-be)
-│   │   │   │                                     # Purpose: check posting limits, apply plan gating, consume connects if required.
-│   │   │   │
-│   │   │   └── admin_flags_handler.go         # Consumes: admin.feature_flag.updated |
-│   │   │                                         #           admin.threshold.updated |
-│   │   │                                         #           admin.experiment.updated          (from admin-be)
-│   │   │                                         # Purpose: refresh runtime flags/thresholds/experiments that gate
-│   │   │                                         #          features like boosts, extra invites, posting quotas.
-│   │   ├── plan/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Update plans
-│   │   │   ├── queries.go                    # Get, List plans
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go                 # 🆕 Validate features/limits/pricing
-│   │   ├── subscription/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Subscribe, Cancel, Change, Pause
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── lifecycle_manager.go          # Manage subscription lifecycle
-│   │   │   ├── renewal_manager.go            # Handle renewals
-│   │   │   └── validators.go                 # 🆕 Validate status transitions, proration inputs
-│   │   ├── connect/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Purchase, Use, Transfer, Refund
-│   │   │   ├── queries.go                    # Get balance, History
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── calculator.go                 # Calculate connect costs
-│   │   │   └── validators.go                 # 🆕 Validate expiries/rollovers/amounts
-│   │   ├── usage/
-│   │   │   ├── service.go
-│   │   │   ├── tracker.go                    # Track usage
-│   │   │   ├── quota_checker.go              # Check quotas
-│   │   │   ├── limiter.go                    # Enforce limits
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go                 # 🆕 Validate counters & limits
-│   │   ├── entitlement/                      # 🆕 Plans & entitlements
-│   │   │   ├── service.go                    # Resolve entitlements, check feature access
-│   │   │   ├── commands.go                   # GrantEntitlement, RevokeEntitlement (admin/system)
-│   │   │   ├── queries.go                    # GetEntitlements, CheckFeature
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go                 # Validate feature scopes and subjects
-│   │   ├── seat_billing/                     # 🆕 Seats + overages + proration + export
-│   │   │   ├── service.go                    # Allocate seats, compute overages, proration, export invoice
-│   │   │   ├── commands.go                   # AssignSeat, ReleaseSeat, SetSeatCap, RecalculateOverages
-│   │   │   ├── queries.go                    # GetSeatSummary, GetOverages
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go                 # Validate seat counts and policies
-│   │   ├── addon/
-│   │   │   ├── service.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 AddAddon, RemoveAddon
-│   │   │   ├── queries.go                    # 🆕 GetAddons, GetAddon
-│   │   │   └── validators.go                 # 🆕 Validate addon compatibility
-│   │   ├── promotion/
-│   │   │   ├── service.go
-│   │   │   ├── validator.go                  # Validate promo codes (kept as-is)
-│   │   │   ├── validators.go                 # 🆕 Aliases to keep naming consistency
-│   │   │   ├── dto.go
-│   │   │   └── mapper.go
-│   │   ├── trial/
-│   │   │   ├── service.go
-│   │   │   ├── eligibility_checker.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── commands.go                   # 🆕 StartTrial, EndTrial
-│   │   │   ├── queries.go                    # 🆕 GetTrial, IsEligible
-│   │   │   └── validators.go                 # 🆕 Validate trial eligibility/rules
-│   │   ├── billing/
-│   │   │   ├── service.go
-│   │   │   ├── invoice_generator.go          # Generate invoices
-│   │   │   ├── payment_processor.go          # Process payments
-│   │   │   ├── exporter.go                   # 🆕 Export invoices to Financial-BE
-│   │   │   ├── dto.go
-│   │   │   ├── commands.go                   # 🆕 GenerateInvoice, ExportInvoice, CapturePayment
-│   │   │   ├── queries.go                    # 🆕 GetInvoice, ListInvoices
-│   │   │   └── validators.go                 # 🆕 Validate seat counts, proration, exports
-│   │
-│   ├── infrastructure/
-│   │   ├── persistence/
-│   │   │   └── postgres/
-│   │   │       ├── connection.go
-│   │   │       ├── transaction.go
-│   │   │       ├── migrations.go
-│   │   │       ├── version.go
-│   │   │       ├── safety.go
-│   │   │       ├── plan_repository.go
-│   │   │       ├── subscription_repository.go
-│   │   │       ├── connect_repository.go
-│   │   │       ├── usage_repository.go
-│   │   │       ├── entitlement_repository.go      # 🆕 Implementation
-│   │   │       ├── seat_billing_repository.go     # 🆕 Implementation
-│   │   │       ├── addon_repository.go
-│   │   │       ├── promotion_repository.go
-│   │   │       ├── trial_repository.go
-│   │   │       ├── billing_history_repository.go
-│   │   │       ├── feature_toggle_repository.go
-│   │   │       └── outbox_repository.go           # ❌ REMOVED (use platform-shared/outbox/postgres/repository.go)
-│   │   ├── cache/
-│   │   │   └── redis/
-│   │   │       ├── connection.go
-│   │   │       ├── subscription_cache.go
-│   │   │       ├── plan_cache.go
-│   │   │       ├── connect_cache.go
-│   │   │       ├── entitlement_cache.go           # 🆕 Cache entitlements
-│   │   │       └── feature_toggle_cache.go
-│   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go
-│   │   │       ├── producer.go
-│   │   │       ├── topics.go
-│   │   │       └── scram.go
+│   │   # ===== SCHEDULER (BACKGROUND JOBS) =====
 │   │   ├── scheduler/
-│   │   │   ├── cron.go
-│   │   │   └── jobs.go
-│   │   ├── payment/
-│   │   │   └── client.go                         # Financial-BE client (unchanged)
-│   │   ├── billing_export/                        # 🆕 Explicit Financial-BE export client
-│   │   │   ├── client.go                          # REST/gRPC client for invoice export
-│   │   │   └── mapper.go                          # Map local invoices/overages → Financial-BE DTO
-│   │   └── outbox/
-│   │       ├── processor.go                       # ❌ REMOVED
-│   │       └── scheduler.go                       # ❌ REMOVED
-│   │
-│   ├── interfaces/
+│   │   │   ├── cron.go                       # ♻️ Cron registry: schedules, idempotency guards, safe shutdown
+│   │   │   │                                 # Wrap each task with distlock + jitter
+│   │   │   └── tasks/
+│   │   │       ├── task_guard.go             # 🆕 Idempotency tokens + last-run watermark
+│   │   │       ├── payout_batch_task.go      # 🆕 Batch payout processing (grouped by method/currency, runs in worker)
+│   │   │       ├── payment_schedule_task.go  # 🆕 Run due payment schedules (auto-payment triggers)
+│   │   │       ├── reminder_task.go          # 🆕 Send reminders (invoice due, tax form due, escalation)
+│   │   │       ├── reconciliation_task.go    # 🆕 Daily reconciliation (bank vs journal, generates reports)
+│   │   │       ├── fx_rate_update_task.go    # 🆕 Update FX rates from providers (periodic refresh)
+│   │   │       └── risk_review_task.go       # 🆕 Review holds/reserves for auto-release (SLA windows)
+│   │   │
+│   │   # ===== OBSERVABILITY =====
+│   │   ├── observability/                    # 🆕 Consolidated telemetry utilities
+│   │   │   ├── metrics.go                    # 🆕 RED/USE metrics helpers (payment latency, escrow holds, payout success rate)
+│   │   │   ├── tracing.go                    # 🆕 Common attrs (hashed user_id, org_id, event_id, payment_id)
+│   │   │   └── slo_monitor.go                # 🆕 SLO monitoring (payment P99, payout batch lag, reconciliation delay)
+│   │   │
+│   │   # ===== HTTP UTILITIES =====
 │   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── plan_handler.go
-│   │       │   ├── subscription_handler.go
-│   │       │   ├── connect_handler.go
-│   │       │   ├── usage_handler.go
-│   │       │   ├── entitlement_handler.go        # 🆕 Entitlement endpoints
-│   │       │   ├── seat_billing_handler.go       # 🆕 Seat mgmt & overages
-│   │       │   ├── addon_handler.go
-│   │       │   ├── promotion_handler.go
-│   │       │   ├── trial_handler.go
-│   │       │   ├── billing_handler.go
-│   │       │   └── health_handler.go
-│   │       ├── middleware/
-│   │       │   ├── auth.go
-│   │       │   ├── rbac.go
-│   │       │   ├── cors.go
-│   │       │   ├── rate_limit.go
-│   │       │   ├── logging.go
-│   │       │   ├── error_handler.go
-│   │       │   ├── request_id.go
-│   │       │   └── feature_gate.go
-│   │       ├── responses/
-│   │       │   ├── success.go
-│   │       │   ├── error.go
-│   │       │   └── pagination.go
-│   │       ├── routes/                           # Route registrars mapped 1:1 to handlers
-│   │       │   ├── plan_routes.go                # /plans/*
-│   │       │   ├── subscription_routes.go        # /subscriptions/*
-│   │       │   ├── connect_routes.go             # /connects/*
-│   │       │   ├── usage_routes.go               # /usage/*
-│   │       │   ├── entitlement_routes.go         # 🆕 /entitlements/*
-│   │       │   ├── seat_billing_routes.go        # 🆕 /seats/*
-│   │       │   ├── addon_routes.go               # /addons/*
-│   │       │   ├── promotion_routes.go           # /promotions/*
-│   │       │   ├── trial_routes.go               # /trials/*
-│   │       │   └── billing_routes.go             # /billing/*
-│   │       └── router.go
+│   │       ├── idempotency_adapter.go        # Bind platform-shared idempotency to Gin (critical for payments!)
+│   │       └── etag.go                       # 🆕 Middleware-level ETag (pairs with utils/etag, optional feature flag)
 │   │
-│   └── config/
-│       ├── schema.go
-│       ├── loader.go
-│       └── docs/
-│           └── CONFIGURATION.md
-│
-├── config/
-│   ├── default.yaml
-│   ├── dev.yaml
-│   └── prod.yaml
-│
-├── dapr/
-│   ├── local/
-│   │   ├── pubsub.yaml
-│   │   └── statestore.yaml
-│   └── k8s/
-│       ├── pubsub.yaml
-│       ├── statestore.yaml
-│       └── secrets.yaml
-│
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go
-│   │   └── codes.go
-│   ├── logger/
-│   │   └── logger.go
-│   ├── utils/
-│   │   ├── validator.go
-│   │   ├── billing_calculator.go
-│   │   └── proration.go
-│   └── constants/
-│       ├── events.go
-│       ├── topics.go
-│       ├── plans.go
-│       └── features.go
-│
-├── seeds/
-│   ├── plans.sql
-│   └── connect_packages.sql
-│
-├── deployments/
-│   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       ├── configmap.yaml
-│       ├── secrets.yaml
-│       ├── hpa.yaml
-│       ├── pdb.yaml
-│       ├── cronjob-renewal.yaml
-│       └── servicemonitor.yaml
-│
-├── scripts/
-│   ├── setup-local.sh
-│   ├── get-secrets.sh
-│   ├── seed-plans.sh
-│   ├── seed-data.sh
-│   └── process-renewals.sh
-│
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-│
-├── docs/
-│   ├── README.md
-│   ├── api.md
-│   ├── events.md
-│   ├── subscription-plans.md
-│   ├── connects-system.md
-│   ├── billing-logic.md
-│   ├── feature-toggles.md
-│   ├── MIGRATIONS.md
-│   ├── SCHEMA.md
-│   └── RUNBOOK.md
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
-│
-├── go.mod
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
-
-```
-
-
----
-
-## **📦1️⃣1️⃣ admin-be (NEW - COMPREHENSIVE**
-
-```
-apps/be/admin-be/
-│
-├── cmd/
-│   └── api/
-│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
-│
-├── internal/
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   # 🏛️ DOMAIN LAYER (Business Logic & Entities - Load Third)
+│   # ──────────────────────────────────────────────────────────────────────────────────
 │   ├── domain/
-│   │   ├── admin_user/
-│   │   │   ├── entity.go                     # Admin user accounts
-│   │   │   ├── role.go                       # Admin roles (SuperAdmin, Moderator, Support)
-│   │   │   ├── permission.go                 # Granular permissions
-│   │   │   ├── activity_log.go               # Admin activity tracking
-│   │   │   ├── errors.go                     # 🆕 Domain errors (AdminUserNotFound, PermissionDenied)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.user.created / admin.user.updated / admin.user.role.changed / admin.user.permissions.updated / admin.user.login.logged
-│   │   ├── support_ticket/
-│   │   │   ├── entity.go                     # Support tickets
-│   │   │   ├── priority.go                   # Priority levels (Low, Medium, High, Urgent)
-│   │   │   ├── status.go                     # Status (Open, InProgress, Resolved, Closed)
-│   │   │   ├── category.go                   # Ticket categories
-│   │   │   ├── assignment.go                 # Agent assignment
-│   │   │   ├── errors.go                     # 🆕 Ticket errors (TicketNotFound, InvalidStatus)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.case.opened / admin.case.updated / admin.case.assigned / admin.case.closed
-│   │   ├── ticket_message/
-│   │   │   ├── entity.go                     # Ticket conversation messages
-│   │   │   ├── attachment.go                 # Message attachments
-│   │   │   ├── errors.go                     # 🆕 Message errors (MessageNotFound, AttachmentTooLarge)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: ticket.note.added / ticket.note.edited / ticket.note.deleted / ticket.attachment.added
-│   │   ├── support_agent/
-│   │   │   ├── entity.go                     # Support agent profiles
-│   │   │   ├── availability.go               # Agent availability/online status
-│   │   │   ├── stats.go                      # Agent performance stats
-│   │   │   ├── errors.go                     # 🆕 Agent errors (AgentNotFound, AgentUnavailable)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: support.agent.status.changed / support.agent.assigned / support.agent.workload.updated
-│   │   ├── canned_response/
-│   │   │   ├── entity.go                     # Predefined responses
-│   │   │   ├── category.go                   # Response categories
-│   │   │   ├── errors.go                     # 🆕 Canned response errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: canned_response.created / canned_response.updated / canned_response.archived
-│   │   ├── knowledge_base/
-│   │   │   ├── entity.go                     # KB articles
-│   │   │   ├── category.go                   # Article categories
-│   │   │   ├── tag.go                        # Article tags
-│   │   │   ├── version.go                    # Article versioning
-│   │   │   ├── errors.go                     # 🆕 KB errors (ArticleNotFound, VersionConflict)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: kb.article.created / kb.article.updated / kb.article.versioned / kb.article.published / kb.article.unpublished
-│   │   ├── faq/
-│   │   │   ├── entity.go                     # Frequently asked questions
-│   │   │   ├── category.go                   # FAQ categories
-│   │   │   ├── errors.go                     # 🆕 FAQ errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: faq.created / faq.updated / faq.published / faq.unpublished
-│   │   ├── moderation_queue/
-│   │   │   ├── entity.go                     # Moderation queue items
-│   │   │   ├── content_type.go               # Job, User, Review, Message, etc.
-│   │   │   ├── flag_reason.go                # Reasons for flagging
-│   │   │   ├── action.go                     # Moderation actions taken
-│   │   │   ├── errors.go                     # 🆕 Moderation errors (QueueItemNotFound)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.moderation.enqueued / admin.moderation.assigned / admin.moderation.state.changed
-│   │   ├── user_action/
-│   │   │   ├── entity.go                     # Admin actions on users
-│   │   │   ├── action_type.go                # Suspend, Ban, Verify, Warn, etc.
-│   │   │   ├── reason.go                     # Action reasons
-│   │   │   ├── errors.go                     # 🆕 User action errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.user_action.applied (suspend/ban/verify/warn) / admin.user_action.reversed
-│   │   ├── content_action/
-│   │   │   ├── entity.go                     # Admin actions on content
-│   │   │   ├── action_type.go                # Remove, Hide, Approve, Reject
-│   │   │   ├── errors.go                     # 🆕 Content action errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.content.actioned (approve/reject/remove/hide)
-│   │   ├── dispute_resolution/
-│   │   │   ├── entity.go                     # Dispute cases
-│   │   │   ├── evidence.go                   # Evidence submitted
-│   │   │   ├── decision.go                   # Admin decision
-│   │   │   ├── errors.go                     # 🆕 Dispute errors (DisputeNotFound)
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.case.opened (dispute) / admin.case.updated / admin.case.closed / admin.dispute.decision.made
-│   │   ├── system_config/
-│   │   │   ├── entity.go                     # System configuration
-│   │   │   ├── feature_flag.go               # Feature flags
-│   │   │   ├── maintenance.go                # Maintenance mode settings
-│   │   │   ├── errors.go                     # 🆕 Config errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.feature_flag.updated / admin.threshold.updated / admin.experiment.updated / admin.maintenance.window.set
-│   │   ├── announcement/
-│   │   │   ├── entity.go                     # Platform announcements
-│   │   │   ├── target.go                     # Target audience (All, Freelancers, Clients)
-│   │   │   ├── schedule.go                   # Scheduled announcements
-│   │   │   ├── errors.go                     # 🆕 Announcement errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.announcement.created / admin.announcement.scheduled / admin.announcement.published / admin.announcement.canceled
-│   │   ├── report/
-│   │   │   ├── entity.go                     # Generated reports
-│   │   │   ├── report_type.go                # Report types (Users, Revenue, Activity)
-│   │   │   ├── schedule.go                   # Scheduled reports
-│   │   │   ├── errors.go                     # 🆕 Report errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.report.requested / admin.report.generated / admin.report.delivery.failed
-│   │   ├── analytics_dashboard/
-│   │   │   ├── entity.go                     # Dashboard configurations
-│   │   │   ├── widget.go                     # Dashboard widgets
-│   │   │   ├── metric.go                     # Custom metrics
-│   │   │   ├── errors.go                     # 🆕 Analytics dashboard errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.dashboard.created / admin.dashboard.updated / admin.dashboard.widget.added / admin.dashboard.widget.removed
-│   │   ├── audit_log/
-│   │   │   ├── entity.go                     # Complete audit trail
-│   │   │   ├── action.go                     # Actions performed
-│   │   │   ├── resource.go                   # Resources affected
-│   │   │   ├── errors.go                     # 🆕 Audit log errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.audit.logged (staff action appended)
-│   │   ├── notification_blast/
-│   │   │   ├── entity.go                     # Bulk notifications/emails
-│   │   │   ├── audience.go                   # Target audience
-│   │   │   ├── schedule.go                   # Scheduled blasts
-│   │   │   ├── errors.go                     # 🆕 Blast errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.blast.scheduled / admin.blast.sent / admin.blast.failed / admin.blast.canceled
-│   │   ├── platform_stats/
-│   │   │   ├── entity.go                     # Platform statistics
-│   │   │   ├── realtime.go                   # Real-time stats
-│   │   │   ├── errors.go                     # 🆕 Platform stats errors
-│   │   │   ├── repository.go
-│   │   │   └── events.go                     # 🆕 Domain events: admin.platform.stats.snapshot.created / admin.platform.stats.realtime.updated
-│   │   └── outbox/
-│   │       ├── entity.go                     # ❌ REMOVED (use platform-shared/outbox/entity.go)
-│   │       └── repository.go                 # ❌ REMOVED (use platform-shared/outbox/repository.go)
+│   │   │
+│   │   # ===== CORE WALLET & BALANCE =====
+│   │   ├── wallet/
+│   │   │   ├── entity.go                     # User wallet (UserID, Balance, Currency, Status, CreatedAt)
+│   │   │   ├── balance.go                    # Balance tracking (Available, Pending, Reserved) with atomic adjustments
+│   │   │   ├── currency.go                   # Multi-currency support (USD, EUR, GBP, etc.) and default currency rules
+│   │   │   ├── errors.go                     # Wallet errors (InsufficientFunds, WalletNotFound, WalletClosed)
+│   │   │   ├── repository.go                 # WalletRepository interface (CRUD, Reserve, Release, GetBalance)
+│   │   │   └── events.go                     # Domain events: WalletCreated, WalletUpdated, WalletClosed, FundsReserved, FundsReleased
+│   │   │
+│   │   # ===== TRANSACTION & LEDGER =====
+│   │   ├── transaction/
+│   │   │   ├── entity.go                     # Financial transactions (ID, WalletID, Amount, Type, Status, Reference, CreatedAt)
+│   │   │   ├── enums.go                      # Type (Deposit, Withdrawal, Transfer, Payment, Refund), Status (Pending, Completed, Failed), Category
+│   │   │   ├── ledger.go                     # Double-entry ledger (debit/credit accounting) + balancing checks
+│   │   │   ├── errors.go                     # Transaction errors (TransactionFailed, DuplicateTransaction, ImbalancedEntry)
+│   │   │   ├── repository.go                 # TransactionRepository interface (persist, lookup, list, reconcile)
+│   │   │   └── events.go                     # Domain events: TransactionInitiated, TransactionPosted, TransactionFailed, TransactionReversed
+│   │   │
+│   │   ├── ledger_journal/                   # Wallet ledger (double-entry) - immutable journal & audit
+│   │   │   ├── entity.go                     # JournalEntry (ID, DebitAccount, CreditAccount, Amount, Currency, EffectiveAt, Hash, PrevHash)
+│   │   │   ├── transfer.go                   # Transfers between accounts (builds 2-sided entries; validates debits=credits)
+│   │   │   ├── adjustment.go                 # Manual adjustments with maker/checker approvals & notes
+│   │   │   ├── audit.go                      # Audit trail (entry proofs, tamper-evidence via hash chain)
+│   │   │   ├── errors.go                     # Ledger errors (Imbalance, ImmutableViolation, HashMismatch)
+│   │   │   ├── repository.go                 # LedgerJournalRepository interface (append, list, audit)
+│   │   │   └── events.go                     # Domain events: JournalEntryRecorded, JournalAdjustmentApproved, JournalAdjustmentRejected
+│   │   │
+│   │   # ===== PAYMENT PROCESSING =====
+│   │   ├── payment/
+│   │   │   ├── entity.go                     # Payment records (ID, Amount, Currency, PayerID, PayeeID, Method, Status, ProviderRef)
+│   │   │   ├── payment_method.go             # Payment methods (CreditCard, PayPal, BankTransfer, Wallet)
+│   │   │   ├── method_profile.go             # Payout preferences per method (limits, cutoffs, fees, destination IDs)
+│   │   │   ├── onboarding.go                 # Onboarding KYC/KYB statuses per method/provider (required docs, states)
+│   │   │   ├── gateway.go                    # Payment gateway abstraction (Stripe, PayPal interface) & retries
+│   │   │   ├── errors.go                     # Payment errors (PaymentFailed, InvalidCard, GatewayTimeout, InsufficientFunds)
+│   │   │   ├── repository.go                 # PaymentRepository interface (persist, update, search, reconcile)
+│   │   │   └── events.go                     # Domain events: PaymentAuthorized, PaymentCaptured, PaymentFailed, PaymentRefundInitiated
+│   │   │
+│   │   # ===== ESCROW MANAGEMENT =====
+│   │   ├── escrow/
+│   │   │   ├── entity.go                     # Escrow accounts (ID, ContractID, Amount, Status, HeldAt, ReleasedAt)
+│   │   │   ├── hold.go                       # Fund holds (amount reserved until milestone completion or dispute close)
+│   │   │   ├── release.go                    # Fund release conditions (milestone approved, dispute resolved, partial releases)
+│   │   │   ├── pro_rata.go                   # Pro-rata partial releases by milestone & refunds (distribution calc)
+│   │   │   ├── errors.go                     # Escrow errors (EscrowNotFound, InsufficientEscrow, EscrowLocked)
+│   │   │   ├── repository.go                 # EscrowRepository interface (create, hold, release, refund, partial release)
+│   │   │   └── events.go                     # Domain events: EscrowFunded, EscrowPartiallyReleased, EscrowReleased, EscrowRefunded
+│   │   │
+│   │   # ===== PAYOUT PROCESSING =====
+│   │   ├── payout/
+│   │   │   ├── entity.go                     # Payout requests (ID, UserID, Amount, Method, Status, RequestedAt, ProcessedAt)
+│   │   │   ├── method.go                     # Payout methods (BankTransfer, PayPal, Payoneer, Wire) & metadata
+│   │   │   ├── schedule.go                   # Payout scheduling (instant, daily, weekly, monthly) with cut-off logic
+│   │   │   ├── errors.go                     # Payout errors (PayoutFailed, BelowMinimum, MethodUnavailable, InsufficientBalance)
+│   │   │   ├── repository.go                 # PayoutRepository interface (queue, batch, update, cancel, process)
+│   │   │   └── events.go                     # Domain events: PayoutRequested, PayoutScheduled, PayoutProcessed, PayoutFailed
+│   │   │
+│   │   # ===== INVOICE MANAGEMENT =====
+│   │   ├── invoice/
+│   │   │   ├── entity.go                     # Invoice generation (ID, ContractID, Number, Amount, DueDate, Status, PaidAt)
+│   │   │   ├── line_item.go                  # Invoice line items (description, quantity, price, total, tax)
+│   │   │   ├── tax.go                        # Tax calculations (VAT, sales tax by jurisdiction & reverse charge flags)
+│   │   │   ├── errors.go                     # Invoice errors (InvoiceNotFound, AlreadyPaid, InvalidTotals, InvalidTax)
+│   │   │   ├── repository.go                 # InvoiceRepository interface (create, send, update, lookup, mark paid, cancel)
+│   │   │   └── events.go                     # Domain events: InvoiceIssued, InvoiceUpdated, InvoicePaid, InvoiceOverdue, InvoiceCanceled
+│   │   │
+│   │   # ===== PLATFORM FEES =====
+│   │   ├── fee/
+│   │   │   ├── entity.go                     # Platform fees (ID, TransactionID, Amount, Type, Rate, Currency)
+│   │   │   ├── calculator.go                 # Fee calculation rules (percentage, tiered rates, min/max caps)
+│   │   │   ├── tier.go                       # Fee tiers (based on subscription, volume, user type)
+│   │   │   │
+│   │   │   ├── v2/                           # Fee engine v2 (advanced rules)
+│   │   │   │   ├── rules.go                  # Rules model (volume discounts, locale overrides, coupons, experiments)
+│   │   │   │   ├── coupon.go                 # Coupon/promo code entity & redemption logic (single-use, stacking)
+│   │   │   │   ├── country_exceptions.go     # Country/regional exceptions (local regulation overrides)
+│   │   │   │   ├── errors.go                 # Fee v2 errors (InvalidCoupon, IneligibleTier, ExpiredRule)
+│   │   │   │   └── repository.go             # FeeRulesRepository interface (CRUD for rule sets)
+│   │   │   │
+│   │   │   ├── errors.go                     # Fee errors (FeeConfigMissing, NegativeFee, InvalidTier)
+│   │   │   ├── repository.go                 # FeeRepository interface (persist & audit fee applications)
+│   │   │   └── events.go                     # Domain events: FeeCalculated, FeeAdjusted, CouponApplied, CouponRevoked
+│   │   │
+│   │   # ===== REFUND PROCESSING =====
+│   │   ├── refund/
+│   │   │   ├── entity.go                     # Refund processing (ID, PaymentID, Amount, Reason, Status, ProcessedAt)
+│   │   │   ├── policy.go                     # Refund policies (full, partial, time limits, dispute linkage)
+│   │   │   ├── pro_rata.go                   # Pro-rata refunds aligned to milestones (safe allocation)
+│   │   │   ├── errors.go                     # Refund errors (RefundNotAllowed, RefundExpired, OverRefund, InvalidAmount)
+│   │   │   ├── repository.go                 # RefundRepository interface (queue, process, audit, cancel)
+│   │   │   └── events.go                     # Domain events: RefundRequested, RefundApproved, RefundDeclined, RefundProcessed
+│   │   │
+│   │   # ===== PAYMENT DISPUTES =====
+│   │   ├── dispute_payment/
+│   │   │   ├── entity.go                     # Payment disputes (ID, PaymentID, Reason, FiledBy, Status, Resolution)
+│   │   │   ├── chargeback.go                 # Chargeback handling (card network flows, representment)
+│   │   │   ├── errors.go                     # Dispute errors (DisputeNotFound, ChargebackInvalidState, AlreadyResolved)
+│   │   │   ├── repository.go                 # DisputePaymentRepository interface (open, update, resolve, representment)
+│   │   │   └── events.go                     # Domain events: PaymentDisputeOpened, ChargebackRecorded, PaymentDisputeResolved
+│   │   │
+│   │   # ===== TAX MANAGEMENT =====
+│   │   ├── tax/
+│   │   │   ├── entity.go                     # Tax records (ID, UserID, Year, Type, Amount, Status, Jurisdiction)
+│   │   │   ├── vat_gst.go                    # VAT/GST per locale & reverse-charge logic (EU/UK/CA, etc.)
+│   │   │   ├── reverse_charge.go             # Reverse-charge mechanics & validations (B2B cross-border)
+│   │   │   ├── forms_1099k.go                # 1099-K forms generation & thresholds (US)
+│   │   │   ├── profile_link.go               # Link to Users-BE tax profile (TIN/VAT ID; sync contract-level data)
+│   │   │   ├── form.go                       # Tax forms (W9, 1099, VAT returns; states & versions)
+│   │   │   ├── errors.go                     # Tax errors (TaxProfileMissing, InvalidVATID, FormInvalid, ThresholdNotMet)
+│   │   │   ├── repository.go                 # TaxRepository interface (create, update, file, generate forms)
+│   │   │   └── events.go                     # Domain events: TaxRecordCreated, TaxFormGenerated, TaxProfileLinked, VATReverseChargeApplied
+│   │   │
+│   │   # ===== FOREIGN EXCHANGE (FX) =====
+│   │   ├── fx/
+│   │   │   ├── rate.go                       # FXRate (Base, Quote, Rate, EffectiveFrom, Provider, Precision, Source)
+│   │   │   ├── quote_settlement.go           # Quote vs. settlement currency handling (timing, spreads)
+│   │   │   ├── rounding.go                   # Rounding rules per currency/amount type (bankers, up/down)
+│   │   │   ├── errors.go                     # FX errors (RateNotFound, StaleRate, PrecisionExceeded, InvalidPair)
+│   │   │   ├── repository.go                 # FXRepository interface (upsert rate, query time-bounded, get effective rate)
+│   │   │   └── events.go                     # Domain events: FXRateUpdated, FXQuoteCreated, FXSettlementCalculated
+│   │   │
+│   │   # ===== RISK MANAGEMENT =====
+│   │   ├── risk/
+│   │   │   ├── reserve.go                    # Reserve balances & rolling reserve schedules (percent/time windows)
+│   │   │   ├── hold_workflow.go              # Holds/auto-release based on risk signals & time (SLA windows)
+│   │   │   ├── chargeback_workflow.go        # Chargeback workflows & recovery (fees, evidence, outcomes)
+│   │   │   ├── negative_balance.go           # Negative balance handling & collections (repayment plans)
+│   │   │   ├── errors.go                     # Risk errors (ReserveConflict, HoldNotFound, NegativeBalanceLimit)
+│   │   │   ├── repository.go                 # RiskRepository interface (holds, reserves, risk metrics, negative balance tracking)
+│   │   │   └── events.go                     # Domain events: ReserveSet, ReserveUpdated, RiskHoldPlaced, RiskHoldReleased, NegativeBalanceCreated
+│   │   │
+│   │   # ===== PAYMENT PROTECTION PLANS =====
+│   │   ├── protection_plan/
+│   │   │   ├── entity.go                     # ProtectionPlan aggregate (ContractID, Type, CoverageAmount, Premium, Status, Period)
+│   │   │   ├── type.go                       # Plan types (HourlyProtection, FixedPriceProtection) & defaults
+│   │   │   ├── claim.go                      # Protection claims (filing, review, payout; integrates with risk & escrow)
+│   │   │   ├── eligibility.go                # Eligibility checks (contract type, verification, history)
+│   │   │   ├── errors.go                     # Protection errors (NotEligible, ClaimDenied, CoverageExceeded, AlreadyClaimed)
+│   │   │   ├── repository.go                 # ProtectionPlanRepository interface (plan lifecycle, claims, eligibility checks)
+│   │   │   └── events.go                     # Domain events: ProtectionApplied, ClaimFiled, ClaimApproved, ClaimPaid
+│   │   │
+│   │   # ===== FEE UPDATES & MIGRATIONS =====
+│   │   ├── fee_update/
+│   │   │   ├── entity.go                     # FeeUpdate aggregate (Version, EffectiveDate, Rules[], Impact, Status)
+│   │   │   ├── version.go                    # Fee versions (e.g., flat 10% for freelancers, 3–5% for clients)
+│   │   │   ├── impact.go                     # Impact calculations (per segment; notifications, proration)
+│   │   │   ├── migration.go                  # Fee migration logic (from old to new rule sets; rollback)
+│   │   │   ├── errors.go                     # FeeUpdate errors (VersionConflict, InvalidRate, MigrationFailed, ActiveVersionExists)
+│   │   │   ├── repository.go                 # FeeUpdateRepository interface (publish, activate, archive, rollback)
+│   │   │   └── events.go                     # Domain events: FeeUpdated, ImpactCalculated, Migrated, RolledBack
+│   │   │
+│   │   # ===== INTERNATIONAL PAYMENTS =====
+│   │   ├── international_payment/
+│   │   │   ├── entity.go                     # InternationalPayment (TransactionID, LocalCurrency, ComplianceChecks, Routing)
+│   │   │   ├── compliance.go                 # OFAC/AML/Sanctions checks; links user/tax profile for KYC/KYB
+│   │   │   ├── local_method.go               # Local payout methods (SEPA, ACH, local banks) + routing preferences
+│   │   │   ├── fee_adjustment.go             # Cross-border fee adjustments (FX spreads, local rails fees)
+│   │   │   ├── errors.go                     # InternationalPayment errors (ComplianceFailed, MethodUnavailable, RoutingError)
+│   │   │   ├── repository.go                 # InternationalPaymentRepository interface (route, track status, compliance checks)
+│   │   │   └── events.go                     # Domain events: InternationalPaymentInitiated, InternationalPaymentCompliant, InternationalPaymentProcessed
+│   │   │
+│   │   # ===== BONUS PAYMENTS =====
+│   │   ├── bonus/
+│   │   │   ├── entity.go                     # Bonus aggregate (ContractID, Amount, Reason, AwardedBy, AwardedAt, Status)
+│   │   │   ├── type.go                       # Bonus types (Performance, Completion, Referral) & default flows
+│   │   │   ├── condition.go                  # Bonus conditions (milestone met, on-time delivery, KPI triggers)
+│   │   │   ├── errors.go                     # Bonus errors (BonusNotEligible, AlreadyAwarded, InvalidReason, AmountExceedsLimit)
+│   │   │   ├── repository.go                 # BonusRepository interface (award, reverse, list, get by contract)
+│   │   │   └── events.go                     # Domain events: BonusRequested, BonusAwarded, BonusRejected, BonusPaid
+│   │   │
+│   │   # ===== EXPENSE REIMBURSEMENTS =====
+│   │   ├── expense/
+│   │   │   ├── entity.go                     # Expense aggregate (ContractID, ItemID, Amount, Description, SubmittedBy, Status, SubmittedAt)
+│   │   │   ├── receipt.go                    # Receipt attachments and verification (OCR hooks)
+│   │   │   ├── approval.go                   # Approval workflow (client approval required; levels)
+│   │   │   ├── policy.go                     # Reimbursement policies (caps, eligible categories, per diem)
+│   │   │   ├── errors.go                     # Expense errors (ExpenseNotApproved, OverCap, InvalidReceipt, MissingDocumentation)
+│   │   │   ├── repository.go                 # ExpenseRepository interface (submit, approve, reimburse, reject)
+│   │   │   └── events.go                     # Domain events: ExpenseSubmitted, ExpenseApproved, ExpenseRejected, ExpenseReimbursed
+│   │   │
+│   │   # ===== PAYMENT SCHEDULES =====
+│   │   ├── payment_schedule/
+│   │   │   ├── entity.go                     # PaymentSchedule aggregate (ContractID, Frequency, Amount, NextDue, Status)
+│   │   │   ├── frequency.go                  # Payment frequency (Weekly, BiWeekly, Monthly) & cut-off rules
+│   │   │   ├── adjustment.go                 # Schedule adjustments (prorating, skips, deferrals)
+│   │   │   ├── automation.go                 # Auto-payment triggers (cron, Dapr bindings)
+│   │   │   ├── errors.go                     # Schedule errors (ScheduleConflict, PaymentMissed, DisabledSchedule, InsufficientFunds)
+│   │   │   ├── repository.go                 # PaymentScheduleRepository interface (create, update, list, due, process)
+│   │   │   └── events.go                     # Domain events: ScheduleCreated, ScheduleUpdated, PaymentDue, PaymentProcessed
+│   │   │
+│   │   # ===== AUTOMATED REMINDERS =====
+│   │   ├── reminder/
+│   │   │   ├── entity.go                     # Reminder aggregate (ContractID, Type, Trigger, SentAt, NextAt, Attempts)
+│   │   │   ├── type.go                       # Reminder types (InvoicePay, PayoutDue, TaxFormDue, ScheduleRun)
+│   │   │   ├── template.go                   # Reminder templates (customizable messages; locale-aware)
+│   │   │   ├── escalation.go                 # Escalation paths (repeated reminders, penalties, dunning)
+│   │   │   ├── errors.go                     # Reminder errors (ReminderNotSent, ChannelUnavailable, ThrottleLimitReached)
+│   │   │   ├── repository.go                 # ReminderRepository interface (queue, mark sent, escalate, list)
+│   │   │   └── events.go                     # Domain events: ReminderTriggered, ReminderSent, ReminderEscalated
+│   │   │
+│   │   # ===== INSURANCE & PROTECTION =====
+│   │   ├── insurance/
+│   │   │   ├── entity.go                     # Insurance aggregate (ContractID, PolicyID, Coverage, Premium, Status)
+│   │   │   ├── coverage.go                   # Coverage details (payment protection, liability, limits)
+│   │   │   ├── claim.go                      # Insurance claims (filing, status, payout; external provider codes)
+│   │   │   ├── provider.go                   # Integration with insurance providers (quote/bind/claim)
+│   │   │   ├── errors.go                     # Insurance errors (PolicyNotActive, ClaimDenied, ProviderUnavailable, CoverageExceeded)
+│   │   │   ├── repository.go                 # InsuranceRepository interface (create policy, claim lifecycle, provider integration)
+│   │   │   └── events.go                     # Domain events: InsuranceApplied, ClaimFiled, ClaimApproved, ClaimPaid
+│   │   │
+│   │   # ===== TAX FORMS =====
+│   │   ├── tax_form/
+│   │   │   ├── entity.go                     # TaxForm aggregate (ContractID, FormType, SubmittedBy, Status, SubmittedAt)
+│   │   │   ├── type.go                       # Form types (W9, 1099, VAT ID, 1099-K support docs)
+│   │   │   ├── validation.go                 # Form validation and verification (format & identity checks)
+│   │   │   ├── reporting.go                  # Tax reporting integration (export to tax authorities/providers)
+│   │   │   ├── errors.go                     # Tax form errors (FormInvalid, NotSubmitted, VerificationFailed, IncompleteData)
+│   │   │   ├── repository.go                 # TaxFormRepository interface (submit, verify, fetch, list, report)
+│   │   │   └── events.go                     # Domain events: TaxFormSubmitted, TaxFormVerified, TaxReportGenerated
+│   │   │
+│   │   # ===== PAYROLL INTEGRATION =====
+│   │   ├── payroll/
+│   │   │   ├── entity.go                     # Payroll aggregate (ContractID, WorkerStatus, PayPeriods[], Taxes, Deductions)
+│   │   │   ├── status.go                     # Worker classification (Freelancer, Employee) + validation hooks
+│   │   │   ├── pay_period.go                 # Pay periods (bi-weekly, monthly; with deductions & employer taxes)
+│   │   │   ├── tax.go                        # Tax withholding and reporting (per jurisdiction)
+│   │   │   ├── errors.go                     # Payroll errors (ClassificationMismatch, PeriodClosed, InsufficientDeductions)
+│   │   │   ├── repository.go                 # PayrollRepository interface (process, post, report, withhold)
+│   │   │   └── events.go                     # Domain events: PayrollProcessed, TaxWithheld, PayPeriodClosed
+│   │   │
+│   │   # ===== CURRENCY MANAGEMENT =====
+│   │   ├── currency/
+│   │   │   ├── entity.go                     # Currency aggregate (ContractID, PreferredCurrency, ExchangeRates, LockedAt)
+│   │   │   ├── conversion.go                 # Real-time conversion logic (preferred currency, rounding)
+│   │   │   ├── rate_lock.go                  # Rate locking for payments (validity windows, expirations)
+│   │   │   ├── errors.go                     # Currency errors (ConversionFailed, RateNotAvailable, LockExpired, InvalidCurrency)
+│   │   │   ├── repository.go                 # CurrencyRepository interface (locks, preferences, histories, conversions)
+│   │   │   └── events.go                     # Domain events: CurrencyChanged, RateLocked, Converted
+│   │   │
+│   │   # ===== BANK ACCOUNT MANAGEMENT =====
+│   │   └── bank_account/                     # 🆕 Bank account domain (for exposed endpoints)
+│   │       ├── entity.go                     # BankAccount aggregate (UserID, AccountNumber, RoutingNumber, BankName, IsDefault, Status, VerifiedAt)
+│   │       ├── verifier.go                   # Bank account verification (micro-deposits, Plaid integration)
+│   │       ├── errors.go                     # BankAccount errors (AccountNotFound, VerificationFailed, InvalidRouting, AlreadyExists)
+│   │       ├── repository.go                 # BankAccountRepository interface (CRUD, verify, set default, list by user)
+│   │       └── events.go                     # Domain events: BankAccountAdded, BankAccountVerified, BankAccountSetDefault, BankAccountRemoved
 │   │
-│   │   # --------------------------- NEW DOMAINS (ADD-ONLY) ---------------------------
-│   │   ├── fraud_review/                     # 🆕 Case mgmt: fraud reviews
-│   │   │   ├── entity.go
-│   │   │   ├── status.go                     # Pending, Investigating, Cleared, Confirmed
-│   │   │   ├── severity.go                   # Low, Medium, High, Critical
-│   │   │   ├── reason.go                     # SuspiciousActivity, StolenCard, etc.
-│   │   │   ├── notes.go                      # Investigator notes
-│   │   │   ├── sla.go                        # SLA definitions for review steps
-│   │   │   ├── errors.go                     # 🆕 FraudReviewNotFound, InvalidTransition
-│   │   │   └── repository.go
-│   │   ├── user_report/                      # 🆕 Case mgmt: user reports
-│   │   │   ├── entity.go                     # Reports filed by users about users/content
-│   │   │   ├── category.go                   # Spam, Harassment, IPViolation, etc.
-│   │   │   ├── status.go                     # Open, Triaged, Actioned, Dismissed
-│   │   │   ├── notes.go                      # Moderator notes
-│   │   │   ├── sla.go                        # SLA targets for first-response/resolve
-│   │   │   ├── errors.go                     # 🆕 UserReportNotFound, InvalidCategory
-│   │   │   └── repository.go
-│   │   ├── risk_management/                  # 🆕 Risk dashboards
-│   │   │   ├── hold.go                       # Payment/account holds
-│   │   │   ├── reserve.go                    # Rolling/reserve configs
-│   │   │   ├── chargeback.go                 # Chargeback cases & states
-│   │   │   ├── velocity_alert.go             # Velocity rule hits
-│   │   │   ├── country_rate_anomaly.go       # Country/rate anomaly entity
-│   │   │   ├── errors.go                     # 🆕 RiskItemNotFound, RuleConflict
-│   │   │   └── repository.go
-│   │   ├── ticket_note/                      # 🆕 Case mgmt: internal ticket notes
-│   │   │   ├── entity.go
-│   │   │   ├── errors.go                     # 🆕 TicketNoteNotFound
-│   │   │   └── repository.go
-│   │   └── data_export/                      # 🆕 Audit & export (GDPR/CCPA)
-│   │       ├── entity.go                     # Export job (type, requester, scope)
-│   │       ├── request.go                    # Data subject request metadata
-│   │       ├── status.go                     # Requested, Approved, Generating, Delivered
-│   │       ├── format.go                     # ZIP, CSV, JSONL, Parquet
-│   │       ├── errors.go                     # 🆕 ExportNotFound, AccessDenied
-│   │       └── repository.go
-│   │   # ---------------------------------------------------------------------------
-│   │
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   # 📋 APPLICATION LAYER (Use Cases & Orchestration - Load Fourth)
+│   # ──────────────────────────────────────────────────────────────────────────────────
 │   ├── application/
+│   │   │
+│   │   # ===== EVENT HANDLERS (Inbound Events) =====
 │   │   ├── eventhandler/
-│   │   │   ├── storage_handler.go             # Consumes (from storage-be):
-│   │   │   │                                     #   file.policy.updated             — update moderation/DLP config views;
-│   │   │   │                                     #   file.policy.violation.detected    — open/route moderation case; risk signal;
-│   │   │   │                                     #   file.lifecycle.soft_deleted       — reflect visibility change in dashboards;
-│   │   │   │                                     #   file.lifecycle.restored           — restore visibility state;
-│   │   │   │                                     #   file.lifecycle.legal_hold.placed  — show/propagate legal hold in case mgmt;
-│   │   │   │                                     #   file.lifecycle.legal_hold.removed — clear legal hold indicators;
-│   │   │   │                                     #   file.link.signed_url.created      — append to audit trail;
-│   │   │   │                                     #   file.link.signed_url.revoked      — append to audit trail / revoke confirmations;
-│   │   │   │                                     #   file.download.logged              — append to audit (SIEM/data-lake feed).
+│   │   │   ├── _common/
+│   │   │   │   └── idempotency.go            # 🆕 Store last-seen event version per aggregate (prevent duplicate processing)
 │   │   │   │
-│   │   │   ├── search_handler.go              # Consumes (from search-be):
-│   │   │   │                                     #   search.taxonomy.updated           — taxonomy quality oversight dashboards;
-│   │   │   │                                     #   search.ltr.signal.recorded        — LTR quality monitoring;
-│   │   │   │                                     #   search.personalization.updated    — privacy/compliance review surfaces;
-│   │   │   │                                     #   search.index.hygiene.deduplicated — hygiene queue visibility;
-│   │   │   │                                     #   search.index.hygiene.archived     — archive tracking;
-│   │   │   │                                     #   search.index.hygiene.visibility.changed — moderation/visibility change intake;
-│   │   │   │                                     #   search.document.indexed           — index ops audit;
-│   │   │   │                                     #   search.document.reindexed         — reindex ops audit.
-│   │   │   │
-│   │   │   ├── reviews_handler.go             # Consumes (from reviews-be):
-│   │   │   │                                     #   review.double_blind.submitted     — case intake; SLA timers;
-│   │   │   │                                     #   review.double_blind.published     — publish audit / analytics;
-│   │   │   │                                     #   review.double_blind.timeout       — timeout audit, follow-ups;
-│   │   │   │                                     #   review.response.posted            — right-of-reply audit/visibility;
-│   │   │   │                                     #   review.feedback.private_submitted — research/analytics sink;
-│   │   │   │                                     #   reputation.updated                — eligibility/quality dashboards;
-│   │   │   │                                     #   review.abuse.auto_flagged         — auto-moderation queue intake;
-│   │   │   │                                     #   review.moderation.state.changed   — reflect action history & state.
-│   │   │   │
-│   │   │   ├── subscriptions_handler.go       # Consumes (from subscriptions-be):
-│   │   │   │                                     #   subscription.created              — customer lifecycle dashboards;
-│   │   │   │                                     #   subscription.changed              — same;
-│   │   │   │                                     #   subscription.paused               — alerts & eligibility views;
-│   │   │   │                                     #   subscription.canceled             — churn dashboards;
-│   │   │   │                                     #   subscription.renewed              — renewal audit;
-│   │   │   │                                     #   entitlement.feature.enabled       — propagate plan feature flags to runtime registry;
-│   │   │   │                                     #   entitlement.feature.disabled      — revoke flags in registry;
-│   │   │   │                                     #   connects.purchased                — credits oversight;
-│   │   │   │                                     #   connects.used                     — consumption monitoring;
-│   │   │   │                                     #   connects.expired                  — expiry monitoring;
-│   │   │   │                                     #   connects.granted                  — promo/grant audit;
-│   │   │   │                                     #   billing.invoice.generated         — billing pipeline visibility;
-│   │   │   │                                     #   billing.invoice.exported          — export audit to financial-be;
-│   │   │   │                                     #   billing.proration.applied         — proration audit;
-│   │   │   │                                     #   usage.meter.incremented           — usage alerts dashboards;
-│   │   │   │                                     #   usage.limit.reached               — limit alerts dashboards.
-│   │   │   │
-│   │   │   ├── contracts_handler.go           # Consumes (from contracts-be):
-│   │   │   │                                     #   contract.financial_hold.placed    — open/annotate risk case;
-│   │   │   │                                     #   contract.financial_hold.released  — close/annotate case;
-│   │   │   │                                     #   contract.state.changed            — visibility/policy reactions (read-only intake).
-│   │   │   │
-│   │   │   ├── financial_handler.go           # Consumes (from financial-be & payments rails):
-│   │   │   │                                     #   payment.processed | payment.failed  — dunning/collections dashboards;
-│   │   │   │                                     #   payment.chargeback.created        — chargeback case intake;
-│   │   │   │                                     #   payment.chargeback.updated        — case status updates;
-│   │   │   │                                     #   risk.hold.placed | risk.hold.released — risk dashboard streams;
-│   │   │   │                                     #   risk.reserve.set | risk.reserve.updated — reserve monitoring;
-│   │   │   │                                     #   risk.chargeback.recorded | updated  — chargeback metrics;
-│   │   │   │                                     #   risk.velocity.alert               — anomaly alerts.
-│   │   │   │
-│   │   │   ├── users_handler.go               # Consumes (from users-be / identity flows):
-│   │   │   │                                     #   user.updated                      — reflect flags/verifications in case views;
-│   │   │   │                                     #   contract.dispute.opened (user-side) — cross-link disputes to user case.
-│   │   │   │
-│   │   │   ├── reports_exports_handler.go     # Consumes (cross-service signals to drive admin exports/notifications):
-│   │   │   │                                     #   admin.data_export.requested       — (when originated by other surfaces) intake/export flow;
-│   │   │   │                                     #   admin.data_export.approved        — approval audit;
-│   │   │   │                                     #   admin.data_export.generated       — delivery orchestration audit;
-│   │   │   │                                     #   admin.data_export.delivered       — completion audit;
-│   │   │   │                                     #   admin.data_export.revoked         — revoke audit.
-│   │   │   │
-│   │   │   └── communications_handler.go      # Consumes (from communications-be):
-│   │   │                                         #   comm.delivery.logged   
-│   │   ├── admin_user/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Update, Deactivate
-│   │   │   ├── queries.go                    # Get, List admins
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   └── permission_manager.go         # Manage permissions
-│   │   ├── support_ticket/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Assign, Resolve, Close
-│   │   │   ├── queries.go                    # Get, List, Search tickets
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   ├── assignment_engine.go          # Auto-assign tickets
-│   │   │   ├── escalation_manager.go         # Escalate urgent tickets
-│   │   │   └── sla_tracker.go                # Track SLA compliance
-│   │   ├── ticket_message/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go                 # 🆕 Input validation for messages/attachments
-│   │   ├── support_agent/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   └── stats_calculator.go           # Calculate agent stats
-│   │   ├── canned_response/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── knowledge_base/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Update, Publish
-│   │   │   ├── queries.go                    # Search, Get articles
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   └── search_service.go             # KB search
-│   │   ├── faq/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── moderation/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Approve, Reject, Remove
-│   │   │   ├── queries.go                    # Get queue, Filter
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   ├── queue_manager.go              # Manage moderation queue
-│   │   │   ├── auto_moderator.go             # Automatic moderation rules
-│   │   │   └── content_scanner.go            # Scan for violations
-│   │   ├── user_management/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Suspend, Ban, Verify, Warn
-│   │   │   ├── queries.go                    # Search users, Get details
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   └── action_validator.go           # Validate admin actions
-│   │   ├── content_management/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Remove, Hide, Feature
-│   │   │   ├── queries.go                    # List content, Search
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── dispute_resolution/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Review, Decide, Close
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   └── decision_engine.go            # Help make decisions
-│   │   ├── system_config/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Update configs
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── announcement/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Schedule, Send
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── report/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   ├── generator.go                  # Generate reports
-│   │   │   ├── scheduler.go                  # Schedule reports
-│   │   │   └── exporters/
-│   │   │       ├── pdf_exporter.go           # PDF exporter
-│   │   │       ├── csv_exporter.go           # CSV exporter
-│   │   │       └── excel_exporter.go         # Excel exporter
-│   │   ├── analytics/
-│   │   │   ├── service.go
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── aggregator.go                 # Aggregate analytics
-│   │   │   ├── metrics_calculator.go         # Calculate KPIs
-│   │   │   ├── dashboard_builder.go          # Build dashboards
-│   │   │   └── validators.go                 # 🆕 Validate analytics query params
-│   │   ├── notification_blast/
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Schedule, Send
-│   │   │   ├── queries.go
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   ├── validators.go
-│   │   │   └── audience_selector.go          # Select target users
-│   │   ├── audit/
-│   │   │   ├── service.go
-│   │   │   ├── queries.go                    # Query audit logs
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go                 # 🆕 Validate audit queries/filters
+│   │   │   ├── billing_handler.go            # Consumes: subscriptions-be → billing.invoice.exported (ingest AR for charging)
+│   │   │   ├── admin_risk_handler.go         # Consumes: risk.* (hold/reserve/chargeback/velocity alerts → apply effects)
+│   │   │   ├── admin_flags_handler.go        # Consumes: admin.feature_flag/threshold/experiment.updated (runtime behaviors)
+│   │   │   ├── seats_billing_handler.go      # Consumes: seat usage/billing streams (seat changes → invoice lines)
+│   │   │   ├── contract_handler.go           # 🆕 Consumes: contract.* (contract status changes → escrow releases, payment schedules)
+│   │   │   └── dispute_handler.go            # 🆕 Consumes: dispute.* (dispute events → escrow holds, refund triggers)
+│   │   │
+│   │   # ===== AUTHORIZATION LAYER =====
+│   │   ├── authz/                            # 🆕 Service-level permission checks (defense-in-depth)
+│   │   │   ├── policies.go                   # 🆕 Map roles → actions (admin, wallet_owner, contract_party, finance_admin)
+│   │   │   └── guards.go                     # 🆕 Helpers used by services (CanAccessWallet, CanInitiateRefund, CanViewInvoice)
+│   │   │
+│   │   # ===== CORE WALLET & LEDGER SERVICES =====
+│   │   ├── wallet/
+│   │   │   ├── service.go                    # Wallet logic (Create, Deposit, Withdraw, Transfer, GetBalance, Reserve, Release)
+│   │   │   ├── commands.go                   # DepositCommand, WithdrawCommand, TransferCommand, CreateWallet, ReserveFunds, ReleaseFunds
+│   │   │   ├── queries.go                    # GetBalance, GetHistory, GetTransactions (filter/pagination)
+│   │   │   ├── validators.go                 # Validate currency codes, positive amounts, sufficient balance, wallet status
+│   │   │   ├── dto.go                        # WalletDTO, TransactionDTO, BalanceDTO (in/out mapping contracts)
+│   │   │   └── mapper.go                     # Wallet ⇄ DTO mapping helpers
+│   │   │
+│   │   ├── transaction/
+│   │   │   ├── service.go                    # Transaction logic (Create, Reverse, Reconcile with journal)
+│   │   │   ├── commands.go                   # CreateTransaction, ReverseTransaction, ReconcileTransactions
+│   │   │   ├── queries.go                    # GetTransaction, ListTransactions, GetLedger (with filters)
+│   │   │   ├── validators.go                 # Immutable journal checks, debits=credits, idempotency keys
+│   │   │   ├── dto.go                        # TransactionDTO, LedgerDTO, ReconciliationReportDTO
+│   │   │   ├── mapper.go                     # Transaction ⇄ DTO mappers
+│   │   │   └── reconciliation.go             # Reconciliation logic (match payments with bank statements)
+│   │   │
+│   │   ├── ledger_journal/
+│   │   │   ├── service.go                    # AppendEntry, Transfer, Adjust, AuditTrail orchestration
+│   │   │   ├── commands.go                   # AppendJournalEntry, TransferFunds, CreateAdjustment (maker/checker)
+│   │   │   ├── queries.go                    # GetEntry, ListEntries, GetAuditTrail (hash continuity)
+│   │   │   ├── validators.go                 # Entry hash chain, debits=credits, approval gates
+│   │   │   ├── dto.go                        # JournalEntryDTO, TransferDTO, AdjustmentDTO, AuditTrailDTO
+│   │   │   └── mapper.go                     # Journal ⇄ DTO mappers
+│   │   │
+│   │   # ===== PAYMENT PROCESSING SERVICES =====
+│   │   ├── payment/
+│   │   │   ├── service.go                    # Process, Capture, Void, Refund (routes to provider processors)
+│   │   │   ├── commands.go                   # ProcessPayment, CapturePayment, VoidPayment, RefundPayment
+│   │   │   ├── queries.go                    # GetPayment, ListPayments (status/provider filters)
+│   │   │   ├── validators.go                 # Method eligibility, onboarding status, amount/limits, risk holds
+│   │   │   ├── dto.go                        # PaymentDTO, ProcessPaymentDTO, PaymentResultDTO
+│   │   │   ├── mapper.go                     # Payment ⇄ DTO mappers
+│   │   │   ├── stripe_processor.go           # Stripe payment processor implementation (auth/capture/refund)
+│   │   │   ├── paypal_processor.go           # PayPal payment processor implementation (orders/captures/refunds)
+│   │   │   └── processor_factory.go          # Payment processor factory (select by method/provider; fallback/retry)
+│   │   │
+│   │   # ===== ESCROW MANAGEMENT SERVICES =====
+│   │   ├── escrow/
+│   │   │   ├── service.go                    # Hold, Release, Refund flows (interacts with contracts-be events)
+│   │   │   ├── commands.go                   # HoldEscrow, ReleaseEscrow, RefundEscrow, PartialReleaseEscrow
+│   │   │   ├── queries.go                    # GetEscrow, ListEscrows, GetEscrowHistory
+│   │   │   ├── validators.go                 # Coverage checks, release conditions, pro-rata math, dispute gates
+│   │   │   ├── dto.go                        # EscrowDTO, HoldEscrowDTO, ReleaseEscrowDTO, PartialReleaseDTO
+│   │   │   ├── mapper.go                     # Escrow ⇄ DTO mappers
+│   │   │   └── pro_rata_release_manager.go   # Dispute-driven conditional releases computation engine
+│   │   │
+│   │   # ===== PAYOUT PROCESSING SERVICES =====
+│   │   ├── payout/
+│   │   │   ├── service.go                    # Request, Schedule/Batch, Process, Cancel, GetHistory
+│   │   │   ├── commands.go                   # RequestPayout, ProcessPayout, CancelPayout, SchedulePayouts
+│   │   │   ├── queries.go                    # GetPayouts, GetPayoutHistory (time/status filters)
+│   │   │   ├── validators.go                 # Method limits, compliance holds, minimum amounts, KYC checks
+│   │   │   ├── dto.go                        # PayoutDTO, RequestPayoutDTO, PayoutBatchDTO
+│   │   │   ├── mapper.go                     # Payout ⇄ DTO mappers
+│   │   │   └── batch_processor.go            # Batch payout processor (grouped by method/currency, runs in worker)
+│   │   │
+│   │   # ===== INVOICE MANAGEMENT SERVICES =====
+│   │   ├── invoice/
+│   │   │   ├── service.go                    # Generate, Send, MarkPaid, Cancel; PDF rendering
+│   │   │   ├── commands.go                   # GenerateInvoice, SendInvoice, MarkInvoicePaid, CancelInvoice
+│   │   │   ├── queries.go                    # GetInvoice, ListInvoices (filters: contract/user/status/date)
+│   │   │   ├── validators.go                 # Line totals, tax rounding, currency consistency, unique number
+│   │   │   ├── dto.go                        # InvoiceDTO, LineItemDTO, GenerateInvoiceDTO
+│   │   │   ├── mapper.go                     # Invoice ⇄ DTO mappers
+│   │   │   ├── generator.go                  # Invoice PDF generation orchestrator
+│   │   │   └── tax_calculator.go             # Tax calculation (VAT, sales tax; reverse charge)
+│   │   │
+│   │   # ===== FEE CALCULATION SERVICES =====
+│   │   ├── fee/
+│   │   │   ├── service.go                    # Calculate, Apply, Waive fees to transactions/payouts
+│   │   │   ├── calculator.go                 # Base calculator (percentage, tiered, flat; min/max caps)
+│   │   │   ├── validators.go                 # Fee caps, non-negative, eligibility & stacking rules
+│   │   │   ├── dto.go                        # FeeDTO, FeeRequestDTO, FeeCalculationResultDTO
+│   │   │   └── rules_engine.go               # Rules engine (user type, volume, geography)
+│   │   │
+│   │   ├── fee_v2/
+│   │   │   ├── service.go                    # Tiered/volume, locale exceptions, coupons, experiments
+│   │   │   ├── commands.go                   # ApplyCoupon, RevokeCoupon, UpdateFeeRules
+│   │   │   ├── queries.go                    # GetEffectiveFee, GetUserFeeTier, GetCoupon
+│   │   │   ├── validators.go                 # Coupon validity, stacking, locale overrides, experiment flags
+│   │   │   ├── dto.go                        # FeeV2DTO, CouponDTO, FeeRuleDTO
+│   │   │   └── mapper.go                     # Fee v2 ⇄ DTO mappers
+│   │   │
+│   │   # ===== REFUND PROCESSING SERVICES =====
+│   │   ├── refund/
+│   │   │   ├── service.go                    # Process & Cancel refunds (full/partial) with audit trail
+│   │   │   ├── commands.go                   # ProcessRefund, CancelRefund, ProcessPartialRefund
+│   │   │   ├── queries.go                    # GetRefund, ListRefunds (by payment/user/contract)
+│   │   │   ├── validators.go                 # Pro-rata vs eligibility windows, idempotency, limits
+│   │   │   ├── dto.go                        # RefundDTO, RefundRequestDTO, PartialRefundDTO
+│   │   │   └── mapper.go                     # Refund ⇄ DTO mappers
+│   │   │
+│   │   # ===== TAX SERVICES =====
+│   │   ├── tax/
+│   │   │   ├── service.go                    # Calculate, Generate forms, File (or export)
+│   │   │   ├── form_generator.go             # Generate tax forms (W9, 1099, 1099-K, VAT returns)
+│   │   │   ├── commands.go                   # SyncTaxProfileFromUsersBE, Generate1099K, FileVATReturn
+│   │   │   ├── queries.go                    # GetTaxProfile, GetVATRate, GetReverseChargeEligibility
+│   │   │   ├── validators.go                 # VAT ID formats per locale, threshold checks, 1099-K thresholds
+│   │   │   ├── dto.go                        # TaxDTO, TaxFormDTO, VATRateDTO
+│   │   │   └── mapper.go                     # Tax ⇄ DTO mappers
+│   │   │
+│   │   # ===== FOREIGN EXCHANGE SERVICES =====
+│   │   ├── fx/
+│   │   │   ├── service.go                    # Quote→settlement conversion, fetch/apply FX rates, rounding
+│   │   │   ├── commands.go                   # UpsertFXRate, SetRoundingRule
+│   │   │   ├── queries.go                    # GetFXRate, ConvertAmount, GetEffectiveRateAt
+│   │   │   ├── validators.go                 # Effective timestamps, precision, allowed currency pairs
+│   │   │   ├── dto.go                        # FXRateDTO, ConversionRequestDTO, ConversionResultDTO
+│   │   │   └── mapper.go                     # FX ⇄ DTO mappers
+│   │   │
+│   │   # ===== RISK MANAGEMENT SERVICES =====
+│   │   ├── risk/
+│   │   │   ├── service.go                    # Holds, reserves, chargebacks, negative balances orchestration
+│   │   │   ├── commands.go                   # CreateReserve, ReleaseReserve, PlaceHold, RemoveHold, RecordChargeback
+│   │   │   ├── queries.go                    # GetReserves, GetHolds, GetRiskScore (if available)
+│   │   │   ├── validators.go                 # Rolling reserve schedules, chargeback states, policy gates
+│   │   │   ├── dto.go                        # RiskDTO, ReserveDTO, HoldDTO, ChargebackDTO
+│   │   │   └── mapper.go                     # Risk ⇄ DTO mappers
+│   │   │
+│   │   # ===== PROTECTION PLAN SERVICES =====
+│   │   ├── protection_plan/
+│   │   │   ├── service.go                    # Apply plan, file/approve claims, compute payouts
+│   │   │   ├── commands.go                   # ApplyProtection, FileClaim, ApproveClaim, PayClaim
+│   │   │   ├── queries.go                    # GetPlan, GetClaims, GetEligibility
+│   │   │   ├── validators.go                 # Eligibility checks & coverage caps
+│   │   │   ├── dto.go                        # ProtectionPlanDTO, ClaimDTO, EligibilityDTO
+│   │   │   └── mapper.go                     # Protection plan ⇄ DTO mappers
+│   │   │
+│   │   # ===== FEE UPDATE & MIGRATION SERVICES =====
+│   │   ├── fee_update/
+│   │   │   ├── service.go                    # Manage fee versions & migrations; compute impact
+│   │   │   ├── commands.go                   # PublishFeeVersion, RunFeeMigration, ActivateFeeVersion, RollbackFeeVersion
+│   │   │   ├── queries.go                    # GetActiveFeeVersion, GetImpact, ListFeeVersions
+│   │   │   ├── validators.go                 # Version monotonicity, rate bounds, window checks
+│   │   │   ├── dto.go                        # FeeUpdateDTO, FeeImpactDTO, FeeVersionDTO
+│   │   │   └── mapper.go                     # Fee update ⇄ DTO mappers
+│   │   │
+│   │   # ===== INTERNATIONAL PAYMENT SERVICES =====
+│   │   ├── international_payment/
+│   │   │   ├── service.go                    # Run compliance, convert FX, route to local rails
+│   │   │   ├── commands.go                   # InitiateInternationalPayment, MarkCompliant, RoutePayment
+│   │   │   ├── queries.go                    # GetInternationalPayment, ListInternationalPayments
+│   │   │   ├── validators.go                 # OFAC/AML gates, supported corridors
+│   │   │   ├── dto.go                        # InternationalPaymentDTO, ComplianceDTO
+│   │   │   └── mapper.go                     # Intl payment ⇄ DTO mappers
+│   │   │
+│   │   # ===== BONUS SERVICES =====
+│   │   ├── bonus/
+│   │   │   ├── service.go                    # Award & pay bonuses, enforce conditions
+│   │   │   ├── commands.go                   # AwardBonus, RejectBonus, PayBonus
+│   │   │   ├── queries.go                    # GetBonuses (by contract/user), GetBonusPolicy
+│   │   │   ├── validators.go                 # Condition checks, caps, eligibility
+│   │   │   ├── dto.go                        # BonusDTO, AwardBonusDTO
+│   │   │   └── mapper.go                     # Bonus ⇄ DTO mappers
+│   │   │
+│   │   # ===== EXPENSE SERVICES =====
+│   │   ├── expense/
+│   │   │   ├── service.go                    # Submit/approve/reimburse expenses
+│   │   │   ├── commands.go                   # SubmitExpense, ApproveExpense, RejectExpense, ReimburseExpense
+│   │   │   ├── queries.go                    # GetExpenses, GetExpenseByID
+│   │   │   ├── validators.go                 # Policy caps, categories, receipt validation
+│   │   │   ├── dto.go                        # ExpenseDTO, ReceiptDTO
+│   │   │   └── mapper.go                     # Expense ⇄ DTO mappers
+│   │   │
+│   │   # ===== PAYMENT SCHEDULE SERVICES =====
+│   │   ├── payment_schedule/
+│   │   │   ├── service.go                    # Create/update schedules, run due payments
+│   │   │   ├── commands.go                   # CreateSchedule, UpdateSchedule, RunDuePayments
+│   │   │   ├── queries.go                    # GetSchedules, GetNextDue
+│   │   │   ├── validators.go                 # Conflicts, proration, disabled checks
+│   │   │   ├── dto.go                        # PaymentScheduleDTO, FrequencyDTO
+│   │   │   └── mapper.go                     # Schedule ⇄ DTO mappers
+│   │   │
+│   │   # ===== REMINDER SERVICES =====
+│   │   ├── reminder/
+│   │   │   ├── service.go                    # Trigger & escalate reminders (dunning support)
+│   │   │   ├── commands.go                   # TriggerReminder, EscalateReminder
+│   │   │   ├── queries.go                    # GetReminders, GetReminderTemplates
+│   │   │   ├── validators.go                 # Channel availability, throttle
+│   │   │   ├── dto.go                        # ReminderDTO, ReminderTemplateDTO
+│   │   │   └── mapper.go                     # Reminder ⇄ DTO mappers
+│   │   │
+│   │   # ===== INSURANCE SERVICES =====
+│   │   ├── insurance/
+│   │   │   ├── service.go                    # Apply policy, file/approve claims, coordinate payouts
+│   │   │   ├── commands.go                   # ApplyInsurance, FileClaim, ApproveClaim, PayInsuranceClaim
+│   │   │   ├── queries.go                    # GetInsurance, GetClaims, GetCoverage
+│   │   │   ├── validators.go                 # Policy eligibility, coverage limits
+│   │   │   ├── dto.go                        # InsuranceDTO, InsuranceClaimDTO
+│   │   │   └── mapper.go                     # Insurance ⇄ DTO mappers
+│   │   │
+│   │   # ===== TAX FORM SERVICES =====
+│   │   ├── tax_form/
+│   │   │   ├── service.go                    # Submit/verify forms; link to tax repo
+│   │   │   ├── commands.go                   # SubmitTaxForm, VerifyTaxForm
+│   │   │   ├── queries.go                    # GetTaxForms, GetTaxFormByID
+│   │   │   ├── validators.go                 # Form completeness, identity checks
+│   │   │   ├── dto.go                        # TaxFormDTO
+│   │   │   └── mapper.go                     # Tax form ⇄ DTO mappers
+│   │   │
+│   │   # ===== PAYROLL SERVICES =====
+│   │   ├── payroll/
+│   │   │   ├── service.go                    # Process payroll; apply withholdings & deductions
+│   │   │   ├── commands.go                   # ProcessPayroll, WithholdTax
+│   │   │   ├── queries.go                    # GetPayroll, GetPayPeriods
+│   │   │   ├── validators.go                 # Classification rules, closed periods
+│   │   │   ├── dto.go                        # PayrollDTO, PayPeriodDTO
+│   │   │   └── mapper.go                     # Payroll ⇄ DTO mappers
+│   │   │
+│   │   # ===== CURRENCY SERVICES =====
+│   │   ├── currency/
+│   │   │   ├── service.go                    # Manage preferred currency & conversions
+│   │   │   ├── commands.go                   # LockRate, ConvertNow, SetPreferredCurrency
+│   │   │   ├── queries.go                    # GetPreferredCurrency, GetRateLock
+│   │   │   ├── validators.go                 # Lock windows, precision, supported pairs
+│   │   │   ├── dto.go                        # CurrencyPreferenceDTO, RateLockDTO
+│   │   │   └── mapper.go                     # Currency ⇄ DTO mappers
+│   │   │
+│   │   # ===== BANK ACCOUNT SERVICES =====
+│   │   └── bank_account/                     # 🆕 Bank account app module
+│   │       ├── service.go                    # CRUD bank accounts, verify, set default payout method
+│   │       ├── commands.go                   # AddBankAccount, VerifyBankAccount, SetDefaultBankAccount, RemoveBankAccount
+│   │       ├── queries.go                    # GetBankAccount, ListBankAccounts, GetDefaultBankAccount
+│   │       ├── validators.go                 # Validate routing number, account number, bank details
+│   │       ├── dto.go                        # BankAccountDTO, AddBankAccountDTO, VerificationDTO
+│   │       └── mapper.go                     # BankAccount ⇄ DTO mappers
 │   │
-│   │   # --------------------------- NEW APPLICATION LAYERS (ADD-ONLY) ----------------
-│   │   ├── fraud_review/                     # 🆕
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # OpenReview, Assign, AddNote, SetStatus, LinkEvidence
-│   │   │   ├── queries.go                    # Get, List, Search by user/payment/risk-signal
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── user_report/                      # 🆕
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # Create, Triage, Reassign, AddNote, Resolve, Dismiss
-│   │   │   ├── queries.go                    # Get, List, Filter by category/status/SLA
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── risk/                             # 🆕 dashboards & actions
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # PlaceHold, ReleaseHold, SetReserve, RecordChargeback
-│   │   │   ├── queries.go                    # Dashboards: holds/reserves/chargebacks/alerts/anomalies
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   ├── ticket_note/                      # 🆕
-│   │   │   ├── service.go
-│   │   │   ├── commands.go                   # AddNote, EditNote, DeleteNote
-│   │   │   ├── queries.go                    # ListNotesForTicket
-│   │   │   ├── dto.go
-│   │   │   ├── mapper.go
-│   │   │   └── validators.go
-│   │   └── data_export/                      # 🆕
-│   │       ├── service.go
-│   │       ├── commands.go                   # RequestExport, Approve, Generate, Deliver, Revoke
-│   │       ├── queries.go                    # GetExport, ListExports, GetRequest
-│   │       ├── dto.go
-│   │       ├── mapper.go
-│   │       └── validators.go
-│   │   # ---------------------------------------------------------------------------
-│   │
-│   ├── infrastructure/
-│   │   ├── persistence/
-│   │   │   └── postgres/
-│   │   │       ├── connection.go             # PostgreSQL connection setup (DSN from config, connection pooling)
-│   │   │       ├── transaction.go            # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
-│   │   │       ├── migrations.go             # 📝 UPDATED: Auto-migrate logic (now with version tracking, GORM AutoMigrate for all tables)
-│   │   │       ├── version.go                # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
-│   │   │       ├── safety.go                 # 🆕 Pre-migration safety checks (environment validation, disk space check)
-│   │   │       ├── admin_user_repository.go
-│   │   │       ├── support_ticket_repository.go
-│   │   │       ├── ticket_message_repository.go
-│   │   │       ├── support_agent_repository.go
-│   │   │       ├── canned_response_repository.go
-│   │   │       ├── knowledge_base_repository.go
-│   │   │       ├── faq_repository.go
-│   │   │       ├── moderation_queue_repository.go
-│   │   │       ├── user_action_repository.go
-│   │   │       ├── content_action_repository.go
-│   │   │       ├── dispute_resolution_repository.go
-│   │   │       ├── system_config_repository.go
-│   │   │       ├── announcement_repository.go
-│   │   │       ├── report_repository.go
-│   │   │       ├── analytics_dashboard_repository.go
-│   │   │       ├── audit_log_repository.go
-│   │   │       ├── notification_blast_repository.go
-│   │   │       ├── platform_stats_repository.go
-│   │   │       └── outbox_repository.go      # ❌ REMOVED (use platform-shared/outbox/postgres/repository.go)
-│   │   ├── cache/
-│   │   │   └── redis/
-│   │   │       ├── connection.go             # Redis connection setup (connection pooling, retry logic)
-│   │   │       ├── admin_cache.go            # Cache admin data (Get, Set, Invalidate with TTL)
-│   │   │       ├── ticket_cache.go           # Cache tickets
-│   │   │       ├── stats_cache.go            # Cache stats
-│   │   │       └── config_cache.go           # Cache configs
-│   │   ├── messaging/
-│   │   │   └── kafka/
-│   │   │       ├── consumer.go               # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
-│   │   │       ├── producer.go               # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
-│   │   │       ├── topics.go                 # 📝 UPDATED: Topic constants (now imported from contracts/events - admin.user.suspended, admin.dispute.resolved)
-│   │   │       └── scram.go                  # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
-│   │   ├── external_services/
-│   │   │   ├── users_client.go               # Users service client
-│   │   │   ├── jobs_client.go                # Jobs service client
-│   │   │   ├── proposals_client.go           # Proposals service client
-│   │   │   ├── contracts_client.go           # Contracts service client
-│   │   │   ├── financial_client.go           # Financial service client
-│   │   │   ├── reviews_client.go             # Reviews service client
-│   │   │   ├── communications_client.go      # Communications service client
-│   │   │   ├── search_client.go              # Search service client
-│   │   │   ├── storage_client.go             # Storage service client
-│   │   │   └── subscriptions_client.go       # Subscriptions service client
-│   │   ├── keycloak/
-│   │   │   ├── admin_client.go               # Keycloak admin operations
-│   │   │   └── user_manager.go               # Manage users via Keycloak
-│   │   ├── reporting/
-│   │   │   ├── pdf_generator.go              # PDF generator
-│   │   │   ├── csv_generator.go              # CSV generator
-│   │   │   └── excel_generator.go            # Excel generator
-│   │   └── outbox/
-│   │       ├── processor.go                  # ❌ REMOVED (use platform-shared/outbox/forwarder.go)
-│   │       └── scheduler.go                  # ❌ REMOVED (use platform-shared/outbox/scheduler.go)
-│   │
-│   │   # --------------------------- NEW POSTGRES REPOSITORIES (ADD-ONLY) -------------
-│   │   └── persistence/
-│   │       └── postgres/
-│   │           ├── fraud_review_repository.go              # 🆕
-│   │           ├── user_report_repository.go               # 🆕
-│   │           ├── risk_hold_repository.go                 # 🆕
-│   │           ├── risk_reserve_repository.go              # 🆕
-│   │           ├── risk_chargeback_repository.go           # 🆕
-│   │           ├── risk_velocity_alert_repository.go       # 🆕
-│   │           ├── risk_country_rate_anomaly_repository.go # 🆕
-│   │           ├── ticket_note_repository.go               # 🆕
-│   │           └── data_export_repository.go               # 🆕
-│   │   # ---------------------------------------------------------------------------
-│   │
-│   ├── interfaces/
-│   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── admin_user_handler.go
-│   │       │   ├── support_ticket_handler.go
-│   │       │   ├── ticket_message_handler.go
-│   │       │   ├── support_agent_handler.go
-│   │       │   ├── canned_response_handler.go
-│   │       │   ├── knowledge_base_handler.go
-│   │       │   ├── faq_handler.go
-│   │       │   ├── moderation_handler.go
-│   │       │   ├── user_management_handler.go
-│   │       │   ├── content_management_handler.go
-│   │       │   ├── dispute_resolution_handler.go
-│   │       │   ├── system_config_handler.go
-│   │       │   ├── announcement_handler.go
-│   │       │   ├── report_handler.go
-│   │       │   ├── analytics_handler.go
-│   │       │   ├── notification_blast_handler.go
-│   │       │   ├── audit_log_handler.go
-│   │       │   ├── dashboard_handler.go
-│   │       │   └── health_handler.go          # Health check endpoints (/health, /ready, /live)
-│   │       ├── middleware/
-│   │       │   ├── auth.go                    # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
-│   │       │   ├── admin_auth.go              # 📝 UPDATED: Admin-specific auth (uses pkg/auth)
-│   │       │   ├── permission_check.go        # 📝 UPDATED: Check admin permissions (uses pkg/auth)
-│   │       │   ├── audit_logger.go            # Auto-log all admin actions (platform-shared/logging)
-│   │       │   ├── cors.go                    # 📝 UPDATED: CORS (platform-shared/ginx)
-│   │       │   ├── rate_limit.go              # Rate limiting
-│   │       │   ├── logging.go                 # 📝 UPDATED: Structured logs (platform-shared/ginx/logging)
-│   │       │   ├── error_handler.go           # Error handling
-│   │       │   └── request_id.go              # 📝 UPDATED: X-Request-ID (platform-shared/ginx/requestid)
-│   │       ├── responses/
-│   │       │   ├── success.go                 # 📝 UPDATED: use platform-shared/httpx/response.go
-│   │       │   ├── error.go                   # 📝 UPDATED: use platform-shared/httpx/errors.go
-│   │       │   └── pagination.go              # 📝 UPDATED: use platform-shared/httpx/pagination.go
-│   │       ├── routes/                        # 🆕 Route registrars mapped 1:1 to handlers
-│   │       │   ├── admin_user_routes.go           # /admin/users/*
-│   │       │   ├── support_ticket_routes.go       # /admin/tickets/*
-│   │       │   ├── ticket_message_routes.go       # /admin/tickets/:id/messages/*
-│   │       │   ├── support_agent_routes.go        # /admin/agents/*
-│   │       │   ├── canned_response_routes.go      # /admin/canned-responses/*
-│   │       │   ├── knowledge_base_routes.go       # /admin/kb/*
-│   │       │   ├── faq_routes.go                  # /admin/faqs/*
-│   │       │   ├── moderation_routes.go           # /admin/moderation/*
-│   │       │   ├── user_management_routes.go      # /admin/users/actions/*
-│   │       │   ├── content_management_routes.go   # /admin/content/*
-│   │       │   ├── dispute_resolution_routes.go   # /admin/disputes/*
-│   │       │   ├── system_config_routes.go        # /admin/config/*
-│   │       │   ├── announcement_routes.go         # /admin/announcements/*
-│   │       │   ├── report_routes.go               # /admin/reports/*
-│   │       │   ├── analytics_routes.go            # /admin/analytics/*
-│   │       │   ├── notification_blast_routes.go   # /admin/blasts/*
-│   │       │   ├── audit_log_routes.go            # /admin/audit/*
-│   │       │   ├── dashboard_routes.go            # /admin/dashboard/*
-│   │       │   # --------------------------- NEW ROUTES (ADD-ONLY) -------------------
-│   │       │   ├── fraud_review_routes.go         # 🆕 /admin/fraud-reviews/*
-│   │       │   ├── user_report_routes.go          # 🆕 /admin/user-reports/*
-│   │       │   ├── risk_routes.go                 # 🆕 /admin/risk/*
-│   │       │   ├── data_export_routes.go          # 🆕 /admin/exports/*
-│   │       │   └── ticket_note_routes.go          # 🆕 /admin/tickets/:id/notes/*
-│   │       └── router.go                          # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
-│   │
-│   └── config/                                   # 🆕 MEDIUM - Standardized configuration
-│       ├── schema.go                             # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, Keycloak)
-│       ├── loader.go                             # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
-│       └── docs/
-│           └── CONFIGURATION.md                  # 🆕 Configuration documentation (all ENV vars, defaults, examples)
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   # 🌐 INTERFACES LAYER (HTTP/API - Load Fifth)
+│   # ──────────────────────────────────────────────────────────────────────────────────
+│   └── interfaces/
+│       └── http/
+│           │
+│           # ===== API VERSIONING =====
+│           ├── v1/                           # 🆕 Versioned API surface (all handlers/routes under /v1)
+│           │   │
+│           │   # ===== HANDLERS =====
+│           │   ├── handlers/
+│           │   │   │
+│           │   │   # ===== CORE WALLET & LEDGER HANDLERS =====
+│           │   │   ├── wallet_handler.go         # GET /v1/wallets/:id, POST /v1/wallets/:id/deposit, /withdraw, /transfer
+│           │   │   ├── transaction_handler.go    # GET /v1/transactions, GET /v1/transactions/:id
+│           │   │   ├── ledger_journal_handler.go # POST /v1/ledger/entry, POST /v1/ledger/adjustment, GET /v1/ledger/audit
+│           │   │   │
+│           │   │   # ===== PAYMENT & ESCROW HANDLERS =====
+│           │   │   ├── payment_handler.go        # POST /v1/payments, POST /v1/payments/:id/capture, /void, /refund, GET /v1/payments/:id
+│           │   │   ├── escrow_handler.go         # POST /v1/escrow/hold, POST /v1/escrow/release, POST /v1/escrow/partial-release
+│           │   │   ├── payout_handler.go         # POST /v1/payouts, GET /v1/payouts/:id, POST /v1/payouts/:id/cancel
+│           │   │   │
+│           │   │   # ===== INVOICE & FEE HANDLERS =====
+│           │   │   ├── invoice_handler.go        # POST /v1/invoices, GET /v1/invoices/:id, POST /v1/invoices/:id/send, /pay
+│           │   │   ├── fee_handler.go            # GET /v1/fees/calculate
+│           │   │   ├── fee_v2_handler.go         # GET /v1/fees/v2/effective, POST /v1/fees/v2/coupon
+│           │   │   │
+│           │   │   # ===== REFUND & TAX HANDLERS =====
+│           │   │   ├── refund_handler.go         # POST /v1/refunds, POST /v1/refunds/:id/cancel
+│           │   │   ├── tax_handler.go            # GET /v1/tax/forms, POST /v1/tax/1099k
+│           │   │   │
+│           │   │   # ===== FX & RISK HANDLERS =====
+│           │   │   ├── fx_handler.go             # GET /v1/fx/rate?base=&quote=, POST /v1/fx/rate
+│           │   │   ├── risk_handler.go           # POST /v1/risk/reserve, POST /v1/risk/hold, GET /v1/risk/holds
+│           │   │   │
+│           │   │   # ===== PROTECTION & FEE UPDATE HANDLERS =====
+│           │   │   ├── protection_plan_handler.go    # POST /v1/protection/apply, POST /v1/protection/claims, GET /v1/protection/:contractId
+│           │   │   ├── fee_update_handler.go         # POST /v1/fees/updates, POST /v1/fees/activate, GET /v1/fees/active
+│           │   │   │
+│           │   │   # ===== INTERNATIONAL PAYMENT HANDLERS =====
+│           │   │   ├── international_payment_handler.go # POST /v1/intl/payments, GET /v1/intl/payments/:id
+│           │   │   │
+│           │   │   # ===== BONUS & EXPENSE HANDLERS =====
+│           │   │   ├── bonus_handler.go              # POST /v1/bonus/award, GET /v1/bonus?contractId=
+│           │   │   ├── expense_handler.go            # POST /v1/expenses, PUT /v1/expenses/:id/approve, PUT /v1/expenses/:id/reject
+│           │   │   │
+│           │   │   # ===== SCHEDULE & REMINDER HANDLERS =====
+│           │   │   ├── payment_schedule_handler.go   # POST /v1/schedules, PUT /v1/schedules/:id, POST /v1/schedules/run-due
+│           │   │   ├── reminder_handler.go           # POST /v1/reminders/trigger, POST /v1/reminders/escalate, GET /v1/reminders
+│           │   │   │
+│           │   │   # ===== INSURANCE & TAX FORM HANDLERS =====
+│           │   │   ├── insurance_handler.go          # POST /v1/insurance/apply, POST /v1/insurance/claims, GET /v1/insurance/:contractId
+│           │   │   ├── tax_form_handler.go           # POST /v1/tax/forms, GET /v1/tax/forms?contractId=
+│           │   │   │
+│           │   │   # ===== PAYROLL & BANK ACCOUNT HANDLERS =====
+│           │   │   ├── payroll_handler.go            # POST /v1/payroll/process, GET /v1/payroll?contractId=
+│           │   │   ├── bank_account_handler.go       # 🆕 POST /v1/bank-accounts, GET /v1/bank-accounts/:id, DELETE /v1/bank-accounts/:id
+│           │   │   │
+│           │   │   # ===== WEBHOOK HANDLERS =====
+│           │   │   ├── webhook_handler.go        # POST /v1/webhooks/stripe, POST /v1/webhooks/paypal
+│           │   │   │                             # 🆕 Includes signature verification middleware
+│           │   │   │
+│           │   │   # ===== HEALTH HANDLERS =====
+│           │   │   └── health_handler.go         # 🆕 GET /v1/healthz/live, GET /v1/healthz/ready
+│           │   │
+│           │   # ===== ROUTES =====
+│           │   ├── routes/
+│           │   │   │
+│           │   │   # ===== CORE ROUTES =====
+│           │   │   ├── wallet_routes.go          # /v1/wallets/*
+│           │   │   ├── transaction_routes.go     # /v1/transactions/*
+│           │   │   ├── ledger_journal_routes.go  # /v1/ledger/*
+│           │   │   │
+│           │   │   # ===== PAYMENT & ESCROW ROUTES =====
+│           │   │   ├── payment_routes.go         # /v1/payments/*
+│           │   │   ├── escrow_routes.go          # /v1/escrow/*
+│           │   │   ├── payout_routes.go          # /v1/payouts/*
+│           │   │   │
+│           │   │   # ===== INVOICE & FEE ROUTES =====
+│           │   │   ├── invoice_routes.go         # /v1/invoices/*
+│           │   │   ├── fee_routes.go             # /v1/fees/*
+│           │   │   ├── fee_v2_routes.go          # /v1/fees/v2/*
+│           │   │   │
+│           │   │   # ===== REFUND & TAX ROUTES =====
+│           │   │   ├── refund_routes.go          # /v1/refunds/*
+│           │   │   ├── tax_routes.go             # /v1/tax/*
+│           │   │   │
+│           │   │   # ===== FX & RISK ROUTES =====
+│           │   │   ├── fx_routes.go              # /v1/fx/*
+│           │   │   ├── risk_routes.go            # /v1/risk/*
+│           │   │   │
+│           │   │   # ===== PROTECTION & FEE UPDATE ROUTES =====
+│           │   │   ├── protection_plan_routes.go     # /v1/protection/*
+│           │   │   ├── fee_update_routes.go          # /v1/fees/updates/*
+│           │   │   │
+│           │   │   # ===== INTERNATIONAL PAYMENT ROUTES =====
+│           │   │   ├── international_payment_routes.go # /v1/intl/*
+│           │   │   │
+│           │   │   # ===== BONUS & EXPENSE ROUTES =====
+│           │   │   ├── bonus_routes.go               # /v1/bonus/*
+│           │   │   ├── expense_routes.go             # /v1/expenses/*
+│           │   │   │
+│           │   │   # ===== SCHEDULE & REMINDER ROUTES =====
+│           │   │   ├── payment_schedule_routes.go    # /v1/schedules/*
+│           │   │   ├── reminder_routes.go            # /v1/reminders/*
+│           │   │   │
+│           │   │   # ===== INSURANCE & TAX FORM ROUTES =====
+│           │   │   ├── insurance_routes.go           # /v1/insurance/*
+│           │   │   ├── tax_form_routes.go            # /v1/tax/forms/*
+│           │   │   │
+│           │   │   # ===== PAYROLL & BANK ACCOUNT ROUTES =====
+│           │   │   ├── payroll_routes.go             # /v1/payroll/*
+│           │   │   ├── bank_account_routes.go        # 🆕 /v1/bank-accounts/*
+│           │   │   │
+│           │   │   # ===== WEBHOOK ROUTES =====
+│           │   │   ├── webhook_routes.go         # 🆕 /v1/webhooks/*
+│           │   │   │
+│           │   │   # ===== HEALTH ROUTES =====
+│           │   │   └── health_routes.go          # 🆕 /v1/healthz/*
+│           │   │
+│           │   # ===== OPENAPI SPEC =====
+│           │   └── openapi/
+│           │       ├── openapi.yaml              # 🆕 OpenAPI 3.0 spec (served as /v1/openapi)
+│           │       └── generator.go              # 🆕 Serves /v1/swagger and /v1/openapi.json (dev only)
+│           │
+│           # ===== MIDDLEWARE =====
+│           ├── middleware/
+│           │   ├── requestid.go              # 🆕 Wraps platform-shared request id
+│           │   ├── logging.go                # 🆕 Wraps platform-shared logging
+│           │   ├── recovery.go               # 🆕 Wraps platform-shared recovery
+│           │   ├── tracing.go                # 🆕 Wraps platform-shared otel middleware
+│           │   ├── auth.go                   # Uses pkg/auth (Keycloak/OIDC token verification)
+│           │   ├── rbac.go                   # ♻️ Uses pkg/auth (role checks & resource scoping)
+│           │   │                             # Ensure aligns with application/authz
+│           │   ├── cors.go                   # Uses platform-shared/ginx (CORS config)
+│           │   ├── rate_limit.go             # Rate limiting (per-IP/per-user, burst)
+│           │   ├── idempotency.go            # Uses platform-shared/idempotency (CRITICAL for payments!)
+│           │   └── webhook_signature.go      # 🆕 Webhook signature verification (Stripe/PayPal)
+│           │
+│           # ===== ERROR PRESENTERS =====
+│           ├── presenters/
+│           │   └── errors.go                 # 🆕 Maps domain/service errors → HTTP status & problem+json
+│           │
+│           # ===== ROUTER =====
+│           └── router.go                     # ♻️ Uses platform-shared/ginx; mounts v1 route registrars & middleware
 │
-├── config/                                       # 🆕 MEDIUM - Configuration files
-│   ├── default.yaml                              # 🆕 Default configuration
-│   ├── dev.yaml                                  # 🆕 Development overrides
-│   └── prod.yaml                                 # 🆕 Production overrides
-│
-├── dapr/                                         # 🆕 MEDIUM - Dapr components split by environment
-│   ├── local/                                    # 🆕 For dapr run
-│   │   ├── pubsub.yaml                           # Kafka pub/sub component
-│   │   └── statestore.yaml                       # State store component
-│   └── k8s/                                      # 🆕 For kubectl apply
-│       ├── pubsub.yaml                           # Kafka with scopes: ["admin-be"]
-│       ├── statestore.yaml                       # State store with scopes
-│       └── secrets.yaml                          # Dapr secret store
+├── db/                                       # 🆕 Developer-friendly entrypoint for SQL
+│   └── migrations/                           # 🆕 Symlink or mirror of internal/.../migrations (optional)
 │
 ├── pkg/
 │   ├── errors/
-│   │   ├── errors.go                             # Service-specific errors
-│   │   └── codes.go                              # Error codes
-│   ├── logger/
-│   │   └── logger.go                             # ❌ REMOVED: Use platform-shared/logging
+│   │   ├── errors.go                         # Base error helpers (wrap, with code/context)
+│   │   ├── codes.go                          # Error codes: INSUFFICIENT_FUNDS, PAYMENT_FAILED, ESCROW_LOCK, etc.
+│   │   └── payment_errors.go                 # Payment-specific error types (GatewayDecline, 3DSRequired, RiskHold)
+│   │
+│   ├── logger/                               # ❌ REMOVED
+│   │   └── README.md                         # Placeholder: use platform-shared logging
+│   │
 │   ├── utils/
-│   │   ├── validator.go                          # Local validation utilities
-│   │   ├── sanitizer.go                          # Sanitize input
-│   │   ├── permission_checker.go                 # Permission checking utilities
-│   │   └── report_formatter.go                   # Report formatting
+│   │   ├── validator.go                      # Common validation helpers (UUIDs, enums, ranges)
+│   │   ├── currency.go                       # Currency conversion helpers (symbols, ISO codes)
+│   │   ├── decimal.go                        # Decimal math for money (fixed-point ops, rounding)
+│   │   ├── encryption.go                     # Encryption utilities (field-level encryption, PCI scope)
+│   │   └── etag.go                           # 🆕 ETag generation helpers (pairs with infrastructure/http/etag)
+│   │
 │   └── constants/
-│       ├── events.go                             # ❌ REMOVED: Use contracts/events
-│       ├── topics.go                             # ❌ REMOVED: Use contracts/events
-│       ├── permissions.go                        # Permissions constants
-│       └── moderation_actions.go                 # Moderation actions constants
+│       ├── events.go                         # ❌ REMOVED (use platform-shared constants)
+│       ├── topics.go                         # ❌ REMOVED (use platform-shared topics)
+│       ├── currencies.go                     # Currency constants (USD, EUR, GBP, supported list)
+│       └── payment_methods.go                # Payment method constants (Stripe, PayPal, BankTransfer, Wallet)
+│
+├── config/                                   # Runtime config profiles
+│   ├── default.yaml                          # Base config (safe defaults)
+│   ├── dev.yaml                              # Development overrides (local gateways, debug flags)
+│   └── prod.yaml                             # Production overrides (timeouts, pools, feature flags)
+│
+├── dapr/                                     # Dapr components
+│   ├── local/
+│   │   ├── pubsub.yaml                       # Local pub/sub (scoped to financial-be)
+│   │   └── statestore.yaml                   # Local state store (idempotency keys, outbox)
+│   └── k8s/
+│       ├── pubsub.yaml                       # Scopes: ["financial-be"] (topics for payments/escrow/payouts/etc.)
+│       ├── statestore.yaml                   # State store for production (HA, TTLs)
+│       └── secrets.yaml                      # References to K8s secrets (API keys, tokens)
 │
 ├── deployments/
 │   └── k8s/
-│       ├── deployment.yaml                       # Kubernetes Deployment
-│       ├── service.yaml                          # Kubernetes Service
-│       ├── configmap.yaml                        # ConfigMap
-│       ├── secrets.yaml                          # Secrets
-│       ├── hpa.yaml                              # HPA
-│       ├── pdb.yaml                              # PDB
-│       ├── rbac.yaml                             # Admin RBAC policies
-│       └── servicemonitor.yaml                   # Prometheus ServiceMonitor
+│       ├── deployment.yaml                   # Deployment spec (resources, env, probes)
+│       ├── service.yaml                      # Service spec (ports, selectors)
+│       ├── configmap.yaml                    # App config mounted as files/env
+│       ├── secrets.yaml                      # Contains Stripe/PayPal API keys, DB creds (sealed/encrypted)
+│       ├── hpa.yaml                          # Horizontal Pod Autoscaler (CPU/RAM/requests-per-sec)
+│       ├── pdb.yaml                          # PodDisruptionBudget (availability during maintenance)
+│       ├── networkpolicy.yaml                # Extra security (ingress/egress restrictions)
+│       └── servicemonitor.yaml               # Prometheus ServiceMonitor (metrics scraping)
 │
 ├── scripts/
-│   ├── setup-local.sh                            # Setup local environment
-│   ├── get-secrets.sh                            # Fetch secrets
-│   ├── seed-admin-users.sh                       # Seed admin users
-│   ├── seed-canned-responses.sh                  # Seed canned responses
-│   └── seed-data.sh                              # Seed test data
+│   ├── setup-local.sh                        # Local dev bootstrap (migrations, seeds, Dapr components)
+│   ├── migrate.sh                            # 🆕 SQL migrations (dev/prod flags)
+│   ├── openapi-diff.sh                       # 🆕 Fail CI on breaking API changes
+│   ├── schema-diff.sh                        # 🆕 DB schema guardrail (pg_dump + mig verify)
+│   ├── generate-sdks.sh                      # 🆕 Produce /sdk clients from OpenAPI
+│   ├── get-secrets.sh                        # Script to fetch secrets to local env (vault/secret manager)
+│   ├── seed-data.sh                          # Seed demo data (wallets, rates, fee rules)
+│   ├── reconciliation.sh                     # Daily reconciliation script (bank vs. journal; reports)
+│   └── sbom-sign.sh                          # 🆕 Build SBOM + cosign sign
 │
 ├── tests/
-│   ├── unit/
-│   │   ├── domain/
-│   │   │   ├── admin_user_test.go               # Admin user tests
-│   │   │   ├── support_ticket_test.go           # Support ticket tests
-│   │   │   └── moderation_queue_test.go         # Moderation queue tests
-│   │   ├── application/
-│   │   │   ├── admin_user_service_test.go       # Admin user service tests
-│   │   │   ├── support_ticket_service_test.go   # Support ticket service tests
-│   │   │   └── moderation_service_test.go       # Moderation service tests
-│   │   └── infrastructure/
-│   │       ├── postgres_repository_test.go      # Postgres repository tests
-│   │       └── kafka_producer_test.go           # Kafka producer tests
-│   ├── integration/
-│   │   ├── handlers/
-│   │   │   ├── admin_user_handler_test.go      # Admin user handler tests
-│   │   │   ├── support_ticket_handler_test.go  # Support ticket handler tests
-│   │   │   └── moderation_handler_test.go      # Moderation handler tests
-│   │   └── repositories/
-│   │       ├── admin_user_repository_test.go   # Admin user repository tests
-│   │       └── support_ticket_repository_test.go # Support ticket repository tests
-│   └── e2e/
-│       └── scenarios/
-│           ├── ticket_workflow_test.go         # Ticket workflow tests
-│           ├── moderation_workflow_test.go     # Moderation workflow tests
-│           └── dispute_resolution_test.go      # Dispute resolution tests
+│   ├── unit/                                 # Unit tests (domain/application)
+│   ├── integration/                          # Integration tests (DB/cache/gateways)
+│   ├── e2e/                                  # End-to-end tests (HTTP flows, idempotency, race conditions)
+│   │   └── chaos_event_delivery_test.go      # 🆕 Simulate duplicates, reordering, delays
+│   │
+│   ├── reliability/                          # 🆕 Reliability tests
+│   │   ├── projections_replay_test.go        # 🆕 Rebuild read models from event logs
+│   │   └── outbox_dispatcher_test.go         # 🆕 At-least-once + idempotency assertions
+│   │
+│   └── property/                             # 🆕 Property-based tests
+│       └── fee_calculation_property_test.go  # 🆕 Property/fuzz tests for fee calculation kernel
 │
 ├── docs/
-│   ├── README.md                               # Service overview
-│   ├── api.md                                  # API documentation
-│   ├── events.md                               # 📝 UPDATED: Events (published: admin.user.suspended, admin.dispute.resolved, consumed: user.flagged, contract.dispute.opened, etc.)
-│   ├── admin-roles.md                          # Admin roles
-│   ├── permissions.md                          # Permissions
-│   ├── moderation-guide.md                     # Moderation guide
-│   ├── support-workflows.md                    # Support workflows
-│   ├── reporting.md                            # Reporting
-│   ├── MIGRATIONS.md                           # 🆕 Migration history
-│   ├── SCHEMA.md                               # 🆕 Database schema
-│   └── RUNBOOK.md                              # 🆕 Operational procedures
+│   ├── README.md                             # Overview & getting started
+│   ├── API.md                                # HTTP API surface (endpoints, payloads, examples)
+│   ├── API_VERSIONING.md                     # 🆕 HTTP contract versioning & deprecation policy
+│   ├── OPENAPI.md                            # 🆕 How to regenerate SDKs from OpenAPI spec
+│   ├── EVENTS.md                             # Events (payment.processed, escrow.held/released, payout.processed, fee.updated, intl.payment.*)
+│   ├── ARCHITECTURE.md                       # Service architecture (layers, dependencies, flows)
+│   ├── MIGRATIONS.md                         # DB migrations & versioning strategy
+│   ├── SCHEMA.md                             # Domain schemas (journal, fees v2, fx, protection/insurance/schedules)
+│   ├── RUNBOOK.md                            # Ops runbook (alerts, dashboards, SLOs, incident steps)
+│   ├── SLOS.md                               # 🆕 Target P99s, projection lag, queue delay
+│   ├── OUTBOX.md                             # 🆕 Exactly-once-ish design, retries, DLQ
+│   ├── CACHING.md                            # 🆕 Keys, TTLs, SWR, invalidation events
+│   ├── DATA_RETENTION.md                     # 🆕 Per-domain retention windows
+│   ├── ERASURE.md                            # 🆕 GDPR/CCPA erasure hooks & playbooks
+│   ├── RELEASE_CHECKLIST.md                  # 🆕 Preflight (openapi diff, schema diff, migrations plan)
+│   ├── NAMING.md                             # 🆕 Package snake_case; HTTP kebab-case conventions
+│   ├── payment-flows.md                      # Payment flow documentation (auth/capture/refund)
+│   ├── escrow-system.md                      # Escrow system documentation (holds/releases/disputes)
+│   ├── fee-structure.md                      # Platform fee structure (old engine)
+│   ├── fee-v2.md                             # Fee engine v2 rules & examples (tiers, coupons, locales)
+│   ├── fx-and-rounding.md                    # FX, effective timestamps, rounding rules
+│   ├── risk-holds.md                         # Reserves, holds, chargebacks (policies & flows)
+│   ├── intl-payments.md                      # International payments flows & compliance checks
+│   ├── protection-plans.md                   # Protection plans & claims flows (eligibility, payouts)
+│   ├── schedules-and-reminders.md            # PaymentSchedules & Reminders (cron windows, dunning)
+│   └── payroll-and-taxforms.md               # Payroll + tax_form integration notes (jurisdictions)
+│
+├── sdk/                                      # 🆕 Generated clients (optional but handy)
+│   ├── go/                                   # 🆕 Generated Go client from OpenAPI
+│   └── ts/                                   # 🆕 Generated TypeScript client from OpenAPI
 │
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml                              # CI workflow
-│       └── cd.yml                              # CD workflow
+│       ├── ci.yml                            # CI pipeline (lint, test, build)
+│       ├── cd.yml                            # CD pipeline (image build/push, deploy)
+│       ├── contract-ci.yml                   # 🆕 OpenAPI-diff + event schema checks
+│       ├── security.yml                      # 🆕 golangci-lint, govulncheck, trivy, cosign verify
+│       └── load-tests.yml                    # 🆕 k6/gatling smoke against /healthz & hot paths
 │
-├── go.mod                                      # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
-├── go.sum
-├── .env.example
-├── Makefile
-├── Dockerfile
-├── .dockerignore
-├── .gitignore
-└── README.md
+├── go.mod                                    # Imports pkg/auth, platform-shared libs, contracts/events schemas
+├── go.sum                                    # Module dependency checksums
+├── .env.example                              # Example environment variables (non-secret)
+├── .golangci.yml                             # 🆕 Linter config (CI parity)
+├── CODEOWNERS                                # 🆕 Explicit ownership per context (ease future splits)
+├── Makefile                                  # Common dev tasks (run, test, lint, migrate)
+├── Dockerfile                                # Container build (multi-stage; minimal runtime)
+├── .dockerignore                             # Docker build context exclusions
+├── .gitignore                                # Git ignore rules
+└── README.md                                 # High-level service description & quickstart
+
 
 ```
-
 
 ---
 

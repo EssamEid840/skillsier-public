@@ -1,2853 +1,1981 @@
-# Users-be User Stories
-
-
-Event conventions (applies to all)
-==================================
-
-*   **Format:** aggregate.resource.action.past\_tense.v1 (e.g., user.email.verified.v1).
-    
-*   **Envelope includes:** event\_id, event\_ts, aggregate\_id, partition\_key=user\_id, correlation\_id, causation\_id, actor{id,role}, user\_context{ip,ua}, data\_zone(EU|US), schema\_ref, compliance\_context{pii\_flags}.
-    
-*   **Batch ops:** Per-entity events + one \*.summary.v1.
-    
-*   **PII:** Emit hashes/storage\_ids only (no raw PII).
-    
-
-Write-path defaults
-===================
-
-*   **Idempotency:** Header Idempotency-Key (or envelope).
-    
-*   **Transactions:** DB tx + outbox with (aggregate\_id,event\_type,idempotency\_key) dedupe.
-    
-*   **Retries/DLQ:** For external calls (Keycloak, storage-be, KYC, providers).
-    
-*   **Projections:** \_read views; metric event\_to\_projector\_lag\_ms.
-    
-*   **Security/Perf:** RBAC on commands/queries; SLO/SLA and rate limits noted where important.
-    
+# 📦 **users-be - User Management Service - Complete User Stories**
+
+---
+
+## **1 - CORE USER DOMAIN**
+
+### 1.1 user/
+
+#### User Stories
+- As a **new user**, I want to **register with email and password** so that I can create an account on the platform.
+- As a **user**, I want to **verify my email address** so that I can activate my account and access platform features.
+- As a **user**, I want to **update my profile information** (first name, last name, phone) so that I keep my account details current.
+- As a **user**, I want to **search for other users by username or email** so that I can find colleagues or connections.
+- As an **admin**, I want to **suspend or ban problematic users** so that I can maintain platform integrity.
+- As a **system**, I want to **validate email uniqueness** so that duplicate accounts are prevented.
+- As a **system**, I want to **track user account status** (Active, Suspended, Banned) so that access control is enforced.
+
+#### Flow
+1. **CreateUserCommand**(email, password, user_type, first_name, last_name) → ValidateEmail() | HashPassword() | Persist() → **Outbox:** user.created.v1
+2. **VerifyEmailCommand**(user_id, verification_token) → ValidateToken() | ActivateAccount() → **Outbox:** user.verified.v1
+3. **UpdateUserCommand**(user_id, updates) → AuthorizeOwner() | ValidateFields() | Apply() → **Outbox:** user.updated.v1
+4. **SearchUsersQuery**(query, filters) → ApplyFilters() | Paginate() → UserListDTO
+5. **GetUserQuery**(user_id) → AuthorizeAccess() | Fetch() → UserDTO
+6. **GetUserStatisticsQuery**(user_id) → Aggregate() → UserStatisticsDTO
+
+#### Projections
+- user_read
+- user_stats_read
+- user_search_index
+
+#### Events Published
+- user.created.v1
+- user.updated.v1
+- user.verified.v1
+- user.suspended.v1
+- user.banned.v1
+- user.deleted.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (update), ADMIN (suspend/ban), PUBLIC (search/view)
+- **SLO:** P95 < 150ms (read), P95 < 200ms (write)
+
+---
+
+### 1.2 profile/
+
+#### User Stories
+- As a **user**, I want to **complete my extended profile** (bio, location, profile picture) so that I can present myself professionally.
+- As a **user**, I want to **set my preferences** (language, timezone, currency) so that the platform adapts to my needs.
+- As a **user**, I want to **upload a profile picture** so that others can recognize me.
+- As a **freelancer**, I want to **see my profile completeness score** so that I know what sections to improve.
+- As a **system**, I want to **reference availability data from availability service** so that profile displays current availability status.
+
+#### Flow
+1. **UpdateProfileCommand**(user_id, bio, location, profile_picture_url) → AuthorizeOwner() | Validate() | Persist() → **Outbox:** profile.updated.v1
+2. **UpdatePreferencesCommand**(user_id, language, timezone, currency) → Validate() | Apply() → **Outbox:** preferences.updated.v1
+3. **GetProfileQuery**(user_id) → Fetch() | EnrichWithAvailability() → ProfileDTO
+4. **GetProfileCompletionQuery**(user_id) → Calculate() → ProfileCompletenessDTO
+
+#### Projections
+- profile_read
+- profile_completeness_read
+
+#### Events Published
+- profile.updated.v1
+- preferences.updated.v1
+
+#### Events Consumed
+- availability.updated.v1 (to enrich profile display)
+
+#### RBAC/SLO
+- **RBAC:** OWNER (update), PUBLIC (view)
+- **SLO:** P95 < 180ms
+
+---
+
+## **2 - CAPABILITIES DOMAIN (CONSOLIDATED)**
+
+### 2.1 capabilities/
+
+#### User Stories
+- As a **freelancer**, I want to **add skills with proficiency levels** so that clients know my expertise.
+- As a **freelancer**, I want to **specify years of experience per skill** so that I demonstrate depth of knowledge.
+- As a **freelancer**, I want to **add specializations** (e.g., "React + TypeScript for FinTech") so that I stand out in niche markets.
+- As a **system**, I want to **map skills to standardized taxonomy** (React → WebDev → Engineering) so that search and matching work effectively.
+- As a **freelancer**, I want to **verify my specializations** so that I gain credibility.
+- As a **system**, I want to **track capability updates** so that profile freshness is maintained.
+
+#### Flow
+1. **AddSkillCommand**(user_id, skill_name, proficiency, years_exp) → ValidateSkill() | MapToTaxonomy() | Persist() → **Outbox:** skill.added.v1
+2. **UpdateSkillCommand**(user_id, skill_id, proficiency, years_exp) → AuthorizeOwner() | Update() → **Outbox:** skill.updated.v1
+3. **RemoveSkillCommand**(user_id, skill_id) → AuthorizeOwner() | Delete() → **Outbox:** skill.removed.v1
+4. **AddSpecializationCommand**(user_id, specialization_data) → Validate() | Persist() → **Outbox:** specialization.added.v1
+5. **VerifySpecializationCommand**(user_id, specialization_id) → ValidateEvidence() | Approve() → **Outbox:** specialization.verified.v1
+6. **ListSkillsQuery**(user_id) → Fetch() → SkillListDTO
+7. **GetSkillTaxonomyQuery**(skill_name) → Fetch() → TaxonomyDTO
+
+#### Projections
+- capabilities_read
+- skill_taxonomy_read
+- specializations_read
 
-## 1) User (Core Account)
-
-1.1 Registration & Bootstrap
-----------------------------
-
-### Stories
+#### Events Published
+- skill.added.v1
+- skill.updated.v1
+- skill.removed.v1
+- specialization.added.v1
+- specialization.verified.v1
 
-*   As a prospective user, I want to register (freelancer/client/org) so that I can access the platform while avoiding duplicate identities.
-    
-*   As a prospective user, I want default profile/settings bootstrapped so that onboarding is seamless.
-    
-*   As a system, I want case-insensitive uniqueness of KeycloakID/username/email so that global duplicates are prevented.
-    
-*   As a prospective org user, I want initial seats and roles created so that my team can start immediately.
-    
-*   **(Added)** As a prospective user, I want to apply a referral code at registration so that I get startup connects/benefits.
-    
-*   **(Added)** As a system, I want referral validation and attribution so that fraud is prevented.
-    
-*   **(Added)** As a user, I want password setup at signup and recovery bootstrap so that login is smooth (Keycloak-integrated).
-    
-*   **(Added)** As a prospective user, I want to select my account type (freelancer/client/org) during registration so that my role is clear.
-    
-*   **(Added)** As a system, I want to validate account type to prevent role conflicts.
+#### RBAC/SLO
+- **RBAC:** OWNER (add/update/remove), ADMIN (verify specializations), PUBLIC (view)
+- **SLO:** P95 < 160ms
 
-*   **(New)** As a prospective user, I want to create a guest account so that I can browse jobs/profiles before committing to full registration.
-    
-    
+---
 
-### Flow
+### 2.2 service_catalog/
 
-*   CreateUserCommand(referral\_code?, password\_setup\_token?, account\_type) →ValidateReferralCodeQuery | ValidateAccountTypeQuery | GetUserByKeycloakIDQuery | GetUserByEmailQuery | GetUserByUsernameQuery →CreateUser() (tx: user + profile + settings \[+ org seats/roles\], attribute referrer, grant bonus connects, initialize password via Keycloak; enforce single role)
-    
-*   **(New)** CreateGuestUserCommand → GetGuestUserStatusQuery → CreateGuestUser() (limited access, expires in 7 days)
+#### User Stories
+- As a **freelancer**, I want to **create service offerings** so that clients can purchase predefined packages.
+- As a **freelancer**, I want to **reference my capabilities in services** so that clients see what skills apply.
+- As a **freelancer**, I want to **create service packages** (Basic, Standard, Premium) so that I offer tiered pricing.
+- As a **client**, I want to **browse a freelancer's service catalog** so that I can quickly purchase services.
+- As a **system**, I want to **join service data with capabilities** so that service descriptions are enriched.
 
-### Projections
+#### Flow
+1. **CreateServiceCommand**(user_id, name, description, capability_ids, price, duration) → ValidateCapabilityRefs() | Persist() → **Outbox:** service.created.v1
+2. **UpdateServiceCommand**(service_id, updates) → AuthorizeOwner() | Update() → **Outbox:** service.updated.v1
+3. **CreateServicePackageCommand**(user_id, package_data) → Validate() | Persist() → **Outbox:** package.created.v1
+4. **GetServiceCatalogQuery**(user_id) → FetchWithCapabilities() → ServiceCatalogDTO
 
-*   users\_read, profiles\_read, settings\_read, org\_seats\_read, referrals\_read, connects\_read
-*   **(New)** guest\_users\_read
+#### Projections
+- service_catalog_read
 
-### Events
+#### Events Published
+- service.created.v1
+- service.updated.v1
+- package.created.v1
 
-*   user.account.created.v1, user.verification.required.v1, user.referral.applied.v1, **user.account\_type.assigned.v1**
-*   **(New)** user.guest.created.v1
+#### RBAC/SLO
+- **RBAC:** OWNER (create/update), PUBLIC (view)
+- **SLO:** P95 < 190ms
 
-### RBAC/SLO
+---
 
-*   Public; P95 < 700ms; event-to-index ≤ 1s.
-    
+## **3 - EXPERIENCE & EDUCATION DOMAIN**
+
+### 3.1 experience/
 
-1.2 Identity Verification (Email / Phone / Identity / Social / Mobile)
-----------------------------------------------------------------------
+#### User Stories
+- As a **freelancer**, I want to **add work experience entries** so that clients see my professional background.
+- As a **freelancer**, I want to **mark current positions** so that my profile shows ongoing work.
+- As a **freelancer**, I want to **update or remove experience entries** so that my profile stays accurate.
+- As a **system**, I want to **validate date ranges** so that experience timelines are logical.
+
+#### Flow
+1. **AddExperienceCommand**(user_id, company, title, description, start_date, end_date, is_current) → ValidateDates() | Persist() → **Outbox:** experience.added.v1
+2. **UpdateExperienceCommand**(experience_id, updates) → AuthorizeOwner() | Validate() | Update() → **Outbox:** experience.updated.v1
+3. **DeleteExperienceCommand**(experience_id) → AuthorizeOwner() | Delete() → **Outbox:** experience.removed.v1
+4. **ListExperienceQuery**(user_id) → Fetch() → ExperienceListDTO
+
+#### Projections
+- experience_read
+
+#### Events Published
+- experience.added.v1
+- experience.updated.v1
+- experience.removed.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (add/update/delete), PUBLIC (view)
+- **SLO:** P95 < 140ms
 
-### Stories
+---
+
+### 3.2 education/
+
+#### User Stories
+- As a **freelancer**, I want to **add educational background** so that clients see my qualifications.
+- As a **freelancer**, I want to **specify degree, field of study, and graduation year** so that education is properly documented.
+- As a **system**, I want to **validate graduation year ranges** so that data integrity is maintained.
+
+#### Flow
+1. **AddEducationCommand**(user_id, school, degree, field, graduation_year, description) → Validate() | Persist() → **Outbox:** education.added.v1
+2. **UpdateEducationCommand**(education_id, updates) → AuthorizeOwner() | Update() → **Outbox:** education.updated.v1
+3. **DeleteEducationCommand**(education_id) → AuthorizeOwner() | Delete() → **Outbox:** education.removed.v1
+4. **ListEducationQuery**(user_id) → Fetch() → EducationListDTO
+
+#### Projections
+- education_read
+
+#### Events Published
+- education.added.v1
+- education.updated.v1
+- education.removed.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (add/update/delete), PUBLIC (view)
+- **SLO:** P95 < 140ms
+
+---
+
+### 3.3 language/
+
+#### User Stories
+- As a **freelancer**, I want to **add language proficiencies** so that clients know what languages I can work in.
+- As a **freelancer**, I want to **specify proficiency levels** (Beginner, Intermediate, Advanced, Expert) so that my abilities are clear.
+- As a **client**, I want to **filter freelancers by language** so that I find suitable candidates.
 
-*   As a user, I want to verify email/phone/identity so that my account is trusted and fully active.
-    
-*   As an enterprise admin, I want batch verification so that many accounts can be verified efficiently.
-    
-*   As a system, I want automatic “fully verified” activation when all checks pass so that permissions unlock.
-    
-*   As a compliance officer, I want audit logs of verifications so that reviews are traceable.
-    
-*   **(Added)** As a user, I want social provider verification (Google/LinkedIn OAuth) so that signup is faster.
-    
-*   **(Added)** As a mobile user, I want SMS-based mobile verification so that I can verify on phone.
-    
-*   **(Added)** As a system, I want to enforce multi-factor verification for high-risk accounts so that trust is enhanced.
-    
+#### Flow
+1. **AddLanguageCommand**(user_id, language_code, proficiency_level) → ValidateLanguageCode() | Persist() → **Outbox:** language.added.v1
+2. **UpdateLanguageCommand**(language_id, proficiency_level) → AuthorizeOwner() | Update() → **Outbox:** language.updated.v1
+3. **RemoveLanguageCommand**(language_id) → AuthorizeOwner() | Delete() → **Outbox:** language.removed.v1
+4. **ListLanguagesQuery**(user_id) → Fetch() → LanguageListDTO
+
+#### Projections
+- language_read
+
+#### Events Published
+- language.added.v1
+- language.updated.v1
+- language.removed.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (add/update/remove), PUBLIC (view)
+- **SLO:** P95 < 130ms
+
+---
+
+## **4 - CREDENTIALS DOMAIN (CONSOLIDATED)**
+
+### 4.1 credentials/
+
+#### User Stories
+- As a **freelancer**, I want to **add external certifications** (AWS, Google, Microsoft) so that I demonstrate verified expertise.
+- As a **freelancer**, I want to **submit verification documents** for external certifications so that they are validated.
+- As a **system**, I want to **verify external certifications** so that only legitimate credentials are displayed.
+- As a **freelancer**, I want to **earn platform certifications** (Upwork badges) so that I gain trust on the platform.
+- As a **system**, I want to **issue platform certifications based on exams** so that skill verification is standardized.
+- As a **system**, I want to **track certification expiry and recertification** so that credentials remain current.
+
+#### Flow
+1. **AddExternalCertificationCommand**(user_id, issuer, name, credential_url, issued_date, expiry_date) → Validate() | Persist() → **Outbox:** external_certification.added.v1
+2. **VerifyExternalCertificationCommand**(cert_id, verification_status, verified_by) → ValidateEvidence() | Update() → **Outbox:** external_certification.verified.v1
+3. **EarnPlatformCertificationCommand**(user_id, certification_type, exam_result) → ValidateExamPass() | IssueCert() → **Outbox:** platform_certification.earned.v1
+4. **RenewPlatformCertificationCommand**(cert_id, renewal_exam_result) → ValidateRenewal() | Update() → **Outbox:** platform_certification.renewed.v1
+5. **GetCredentialsQuery**(user_id) → Fetch() → CredentialsDTO
+
+#### Projections
+- credentials_read
+- external_certifications_read
+- platform_certifications_read
+
+#### Events Published
+- external_certification.added.v1
+- external_certification.verified.v1
+- external_certification.rejected.v1
+- external_certification.expired.v1
+- platform_certification.earned.v1
+- platform_certification.renewed.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (add external), ADMIN (verify external), SYSTEM (issue platform), PUBLIC (view verified)
+- **SLO:** P95 < 170ms
+
+---
+
+## **5 - PORTFOLIO & SHOWCASE DOMAIN**
+
+### 5.1 portfolio/
+
+#### User Stories
+- As a **freelancer**, I want to **add portfolio items** so that I can showcase my work.
+- As a **freelancer**, I want to **upload images, videos, and documents** so that clients see tangible examples.
+- As a **freelancer**, I want to **reorder portfolio items** so that my best work appears first.
+- As a **client**, I want to **browse a freelancer's portfolio** so that I can assess work quality.
+- As a **system**, I want to **validate media types and file sizes** so that uploads are safe.
 
-### Flow
-
-*   VerifyEmailCommand | VerifyPhoneCommand | VerifyIdentityCommand | VerifyEmailBatchCommand | VerifySocialIdentityCommand | VerifyMobileNumberCommand | EnforceMultiFactorVerificationCommand →GetUnverifiedUsersQuery | GetVerifiedUsersQuery | GetSocialProvidersQuery | GetVerificationRequirementsQuery →VerifyEmail() | VerifyPhone() | VerifyIdentity() | VerifySocialIdentity() | VerifyMobileNumber() | EnforceMultiFactorVerification()
-    
-
-### Projections
-
-*   users\_read.verification\_flags, verification\_audit\_read
-    
-
-### Events
-
-*   user.email.verified.v1, user.phone.verified.v1, user.identity.verified.v1, user.social.verified.v1, user.mobile.verified.v1, user.fully\_verified.attained.v1, user.email.batch\_verified.summary.v1, **user.verification.multifactor.required.v1**
-    
-
-### RBAC/SLO
-
-*   Self; P95 single < 5s; batch 10k < 60s; idempotent tokens.
-    
-
-1.3 Account Updates & Partial Update Policy + Password Policy
--------------------------------------------------------------
-
-### Stories
-
-*   As a user, I want partial updates so that I can change only the fields I need.
-    
-*   As a user, I want re-verification if critical fields change so that trust is maintained.
-    
-*   As a system, I want rate-limiting on updates so that abuse is prevented.
-    
-*   **(Added)** As a user, I want to update my password with strength validation so that security is maintained.
-    
-
-### Flow
-
-*   UpdateUserCommand → GetUserByIDQuery | ListUsersQuery → UpdateUser() (detect critical change → reverification trigger)
-    
-*   **(Added)** UpdatePasswordCommand(old,new) → UpdatePassword() (Keycloak)
-    
-
-### Projections
-
-*   users\_read, users\_search\_read
-    
-
-### Events
-
-*   user.account.updated.v1, user.reverification.triggered.v1, user.password.updated.v1
-    
-
-### RBAC/SLO
-
-*   Self; P95 < 200ms; 30 req/min/user.
-    
-
-1.4 Search, Listing & Filtering
--------------------------------
-
-### Stories
-
-*   As an admin, I want to search users with full-text and filters so that I can manage at scale.
-    
-*   As an admin, I want minimum query length and timing metrics so that performance is monitored.
-    
-*   As an admin, I want country/status/type filters with pagination so that large data is handleable.
-    
-
-### Flow
-
-*   SearchUsersQuery | ListUsersQuery | GetUsersByCountryQuery | GetUsersByStatusQuery → SearchUsers() | ListUsers()
-    
-
-### Projections
-
-*   users\_search\_read, users\_read — **No events**
-    
-
-1.5 Stats, Growth & Retention Analytics
----------------------------------------
-
-### Stories
-
-*   As a platform admin, I want growth trends and user counts so that I can plan capacity.
-    
-*   As an analyst, I want cohort analysis so that retention is measured.
-    
-*   As a marketer, I want referral stats so that campaigns are optimized.
-    
-*   **(Added)** As an analyst, I want retention cohorts (e.g., 30-day active by signup month) so that health is tracked.
-    
-*   **(Added)** As a marketer, I want churn prediction analytics so that I can target retention campaigns.
-
-*   **(New)** As an analyst, I want engagement metrics (e.g., time on platform, feature usage) so that I can optimize UX.
-    
-
-### Flow
-
-*   (Updated) GetUserStatisticsQuery | GetUserGrowthStatsQuery | CountUsersByTypeQuery | CountUsersByStatusQuery | GetUsersByReferrerQuery | GetReferralCountQuery | GetUserRetentionCohortsQuery | GetChurnPredictionQuery | GetEngagementMetricsQuery → GetUserStatistics() | GetUserGrowthStats() | GetReferralCount() | GetUserRetentionCohorts() | GetChurnPrediction() | GetEngagementMetrics()
-    
-
-### Projections
-
-*   users\_analytics\_read, referrals\_read, **churn\_predictions\_read** — **No events**
-*   **(New)** engagement\_metrics\_read
-
-1.6 Session Hygiene, Login Recording & MFA-on-Anomaly
------------------------------------------------------
-
-### Stories
-
-*   As a security system, I want to record logins so that risk signals are tracked.
-    
-*   As a user, I want to view active sessions so that I can monitor access.
-    
-*   As a security admin, I want to force global sign-out so that compromised accounts are secured.
-    
-*   As a system, I want auto-expiry on inactivity so that risks are minimized.
-    
-*   **(Added)** As a system, I want MFA challenge on anomalous logins so that security is layered.
-    
-
-### Flow
-
-*   RecordLoginCommand | ForceLogoutAllSessionsCommand | EnforceMFAOnLoginCommand →GetRecentlyActiveUsersQuery | ListActiveSessionsQuery →RecordLogin() | ForceLogoutAllSessions() | EnforceMFAOnLogin() (Keycloak actions)
-    
-
-### Projections
-
-*   sessions\_read, users\_read.last\_login
-    
-
-### Events
-
-*   user.login.recorded.v1, user.sessions.revoked.v1, user.mfa.challenged.v1
-    
-
-1.7 Deactivation & Soft Delete (+ Restore)
-------------------------------------------
-
-### Stories
-
-*   As a user, I want to deactivate or soft-delete so that I can pause or leave safely.
-    
-*   As an admin, I want batch deletions with reports so that cleanup is efficient.
-    
-*   As a system, I want retention before hard-delete so that compliance is met.
-    
-*   As a user, I want the ability to restore a soft-deleted account so that I can return later.
-    
-
-### Flow
-
-*   DeactivateUserCommand | DeleteUserCommand | DeleteUserBatchCommand | RestoreSoftDeletedUserCommand →DeactivateUser() | DeleteUser() | RestoreSoftDeletedUser()
-    
-
-### Projections
-
-*   users\_read.status, gdpr\_deletion\_read
-    
-
-### Events
-
-*   user.account.deactivated.v1, user.account.deleted.v1, user.account.batch\_deleted.summary.v1, user.account.restored.v1
-    
-
-1.8 Account Linking & Aliases
+#### Flow
+1. **AddPortfolioItemCommand**(user_id, title, description, url, thumbnail_url, media_files) → ValidateFiles() | Upload() | Persist() → **Outbox:** portfolio_item.added.v1
+2. **UpdatePortfolioItemCommand**(item_id, updates) → AuthorizeOwner() | Update() → **Outbox:** portfolio_item.updated.v1
+3. **DeletePortfolioItemCommand**(item_id) → AuthorizeOwner() | Delete() → **Outbox:** portfolio_item.removed.v1
+4. **ReorderPortfolioCommand**(user_id, item_order) → AuthorizeOwner() | UpdateOrder() → **Outbox:** portfolio.reordered.v1
+5. **ListPortfolioQuery**(user_id) → Fetch() → PortfolioListDTO
+
+#### Projections
+- portfolio_read
+
+#### Events Published
+- portfolio_item.added.v1
+- portfolio_item.updated.v1
+- portfolio_item.removed.v1
+- portfolio.reordered.v1
+
+#### Events Consumed
+- storage.file.uploaded
+- storage.file.deleted
+
+#### RBAC/SLO
+- **RBAC:** OWNER (add/update/delete/reorder), PUBLIC (view)
+- **SLO:** P95 < 250ms (upload), P95 < 140ms (list)
+
+---
+
+## **6 - USER TYPE SPECIFIC DOMAINS**
+
+### 6.1 freelancer/
+
+#### User Stories
+- As a **freelancer**, I want to **set my professional title and overview** so that clients understand my expertise.
+- As a **freelancer**, I want to **set my hourly rate and minimum budget** so that clients know my pricing.
+- As a **freelancer**, I want to **record a video introduction** so that I can personalize my profile.
+- As a **system**, I want to **track freelancer statistics** (total jobs, earnings, success rate) so that reputation is measurable.
+- As a **freelancer**, I want to **view my job statistics** so that I can track my performance.
+
+#### Flow
+1. **UpdateFreelancerProfileCommand**(user_id, title, overview, video_intro_url) → AuthorizeOwner() | Validate() | Persist() → **Outbox:** freelancer_profile.updated.v1
+2. **UpdateRatesCommand**(user_id, hourly_rate, minimum_budget, currency) → AuthorizeOwner() | ValidateRates() | Update() → **Outbox:** rates.updated.v1
+3. **UpdateStatsCommand**(user_id, stats_updates) → ValidateSource() | Update() → **Outbox:** freelancer_stats.updated.v1
+4. **GetFreelancerStatsQuery**(user_id) → Fetch() → FreelancerStatsDTO
+
+#### Projections
+- freelancer_read
+- freelancer_stats_read
+
+#### Events Published
+- freelancer_profile.updated.v1
+- rates.updated.v1
+- freelancer_stats.updated.v1
+
+#### Events Consumed
+- contract.completed.v1 (to update stats)
+- payment.received.v1 (to update earnings)
+
+#### RBAC/SLO
+- **RBAC:** OWNER (update), PUBLIC (view)
+- **SLO:** P95 < 160ms
+
+---
+
+### 6.2 client/
+
+#### User Stories
+- As a **client**, I want to **link my profile to an organization** so that I can hire on behalf of my company.
+- As a **client**, I want to **view my hiring statistics** (total hires, total spent, active contracts) so that I track my activity.
+- As a **system**, I want to **reference organization data from org service** so that there's no duplication of company information.
+- As a **system**, I want to **update client statistics based on contracts** so that metrics stay current.
+
+#### Flow
+1. **UpdateClientProfileCommand**(user_id, client_data) → AuthorizeOwner() | Validate() | Persist() → **Outbox:** client_profile.updated.v1
+2. **LinkToOrgCommand**(user_id, org_id) → ValidateOrgExists() | Link() → **Outbox:** client.linked_to_org.v1
+3. **GetClientStatsQuery**(user_id) → Fetch() → ClientStatsDTO
+
+#### Projections
+- client_read
+- client_stats_read
+
+#### Events Published
+- client_profile.updated.v1
+- client.linked_to_org.v1
+- client_stats.updated.v1
+
+#### Events Consumed
+- contract.created.v1 (to update hiring stats)
+- payment.sent.v1 (to update spending)
+- org.updated.v1 (to refresh org reference)
+
+#### RBAC/SLO
+- **RBAC:** OWNER (update/link), PUBLIC (view)
+- **SLO:** P95 < 150ms
+
+---
+
+## **7 - IDENTITY VERIFICATION DOMAIN (CONSOLIDATED)**
+
+### 7.1 identity_verification/
+
+#### User Stories
+- As a **freelancer**, I want to **submit KYC documents** (ID, passport, proof of address, selfie) so that I can verify my identity.
+- As a **client organization**, I want to **submit KYB documents** so that I can verify my business.
+- As a **system**, I want to **validate submitted documents** so that only legitimate users are verified.
+- As an **admin**, I want to **approve or reject identity verification requests** so that verification quality is maintained.
+- As a **user**, I want to **track my verification status** so that I know when my account is verified.
+
+#### Flow
+1. **SuspendUserCommand**(user_id, reason, duration, suspended_by) → ValidateReason() | ApplySuspension() → **Outbox:** user.suspended.v1
+2. **UnsuspendUserCommand**(user_id, unsuspended_by) → ValidateActive() | Release() → **Outbox:** user.unsuspended.v1
+3. **BanUserCommand**(user_id, reason, is_permanent, expires_at, banned_by) → ValidateReason() | ApplyBan() → **Outbox:** user.banned.v1
+4. **UnbanUserCommand**(user_id, unbanned_by) → ValidateActive() | Release() → **Outbox:** user.unbanned.v1
+5. **IssueWarningCommand**(user_id, reason, severity, issued_by) → ValidateReason() | IssueWarning() → **Outbox:** warning.issued.v1
+6. **AcknowledgeWarningCommand**(warning_id, user_id) → ValidateOwner() | Acknowledge() → **Outbox:** warning.acknowledged.v1
+7. **GetModerationHistoryQuery**(user_id) → Fetch() → ModerationHistoryDTO
+
+#### Projections
+- moderation_read
+- moderation_history_read
+
+#### Events Published
+- user.suspended.v1
+- user.unsuspended.v1
+- user.banned.v1
+- user.unbanned.v1
+- warning.issued.v1
+- warning.acknowledged.v1
+
+#### RBAC/SLO
+- **RBAC:** ADMIN (suspend/ban/warn/release), OWNER (acknowledge warning), ADMIN (view history)
+- **SLO:** P95 < 180ms
+
+---
+
+## **8 - TRUST DOMAIN (CONSOLIDATED)**
+
+### 8.1 trust/
+
+#### User Stories
+- As a **user**, I want to **have a trust level calculated** (Unverified, Basic, Enhanced, Premium) so that clients can gauge my reliability.
+- As a **system**, I want to **award trust badges** (VerifiedPayment, IDVerified) so that trust signals are visible.
+- As a **system**, I want to **revoke trust badges** if conditions change so that trust remains accurate.
+- As a **user**, I want to **see my trust level and badges** so that I understand my standing.
+- As a **client**, I want to **filter freelancers by trust level** so that I find reliable candidates.
+
+#### Flow
+1. **CalculateTrustLevelCommand**(user_id) → AggregateSignals() | ComputeLevel() | Update() → **Outbox:** trust_level.updated.v1
+2. **AwardTrustBadgeCommand**(user_id, badge_type) → ValidateEligibility() | Award() → **Outbox:** trust_badge.awarded.v1
+3. **RevokeTrustBadgeCommand**(user_id, badge_type, reason) → Validate() | Revoke() → **Outbox:** trust_badge.revoked.v1
+4. **GetTrustLevelQuery**(user_id) → Fetch() → TrustLevelDTO
+5. **ListTrustBadgesQuery**(user_id) → Fetch() → TrustBadgeListDTO
+
+#### Projections
+- trust_read
+- trust_badge_read
+
+#### Events Published
+- trust_level.updated.v1
+- trust_badge.awarded.v1
+- trust_badge.revoked.v1
+
+#### Events Consumed
+- identity_verification.approved.v1 (to award IDVerified)
+- payment.verified.v1 (to award VerifiedPayment)
+
+#### RBAC/SLO
+- **RBAC:** SYSTEM (calculate/award/revoke), PUBLIC (view)
+- **SLO:** P95 < 180ms
+
+---
+
+## **9 - BADGING DOMAIN (CONSOLIDATED)**
+
+### 9.1 badging/
+
+#### User Stories
+- As a **freelancer**, I want to **earn achievement badges** (FirstJob, TopRated, QuickResponder) so that I showcase my accomplishments.
+- As a **freelancer**, I want to **earn certification badges** when I complete platform exams so that my skills are verified.
+- As a **system**, I want to **issue trust badges** based on verification events so that trust is signaled.
+- As a **system**, I want to **issue platform badges** (RisingTalent, TopRated, ExpertVetted) so that top performers are recognized.
+- As a **system**, I want to **revoke badges** if criteria are no longer met so that badges remain meaningful.
+- As a **user**, I want to **view all my badges** so that I see my achievements.
+
+#### Flow
+1. **AwardBadgeCommand**(user_id, badge_type, badge_slug, metadata) → ValidateEligibility() | Issue() → **Outbox:** badge.awarded.v1
+2. **RevokeBadgeCommand**(badge_id, reason) → Validate() | Revoke() → **Outbox:** badge.revoked.v1
+3. **CheckBadgeEligibilityQuery**(user_id, badge_type) → EvaluateCriteria() → EligibilityDTO
+4. **GetBadgesQuery**(user_id) → Fetch() → BadgeListDTO
+5. **GetBadgesByTypeQuery**(user_id, badge_type) → Filter() → BadgeListDTO
+
+#### Projections
+- badge_read
+
+#### Events Published
+- badge.awarded.v1
+- badge.revoked.v1
+
+#### Events Consumed
+- achievement.unlocked.v1 (to issue achievement badge)
+- platform_certification.earned.v1 (to issue certification badge)
+- external_certification.verified.v1 (to issue certification badge)
+- trust_badge.awarded.v1 (to issue trust badge)
+
+#### RBAC/SLO
+- **RBAC:** SYSTEM (award/revoke), PUBLIC (view)
+- **SLO:** P95 < 160ms
+
+---
+
+## **10 - SETTINGS & PREFERENCES DOMAINS**
+
+### 10.1 settings/
+
+#### User Stories
+- As a **user**, I want to **configure my notification preferences** (email, SMS, push, in-app) so that I control how I'm contacted.
+- As a **user**, I want to **set my theme preference** (light/dark mode) so that the UI matches my preference.
+- As a **user**, I want to **configure language, timezone, and currency** so that the platform is localized.
+- As a **system**, I want to **store settings as JSON** so that new settings can be added without schema changes.
+
+#### Flow
+1. **UpdateSettingsCommand**(user_id, settings_json) → Validate() | Merge() | Persist() → **Outbox:** settings.updated.v1
+2. **UpdateNotificationPrefsCommand**(user_id, email, sms, push, in_app) → Validate() | Update() → **Outbox:** notification_prefs.updated.v1
+3. **GetSettingsQuery**(user_id) → Fetch() → SettingsDTO
+4. **GetNotificationPrefsQuery**(user_id) → Fetch() → NotificationPrefsDTO
+
+#### Projections
+- settings_read
+
+#### Events Published
+- settings.updated.v1
+- notification_prefs.updated.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (update), OWNER (view)
+- **SLO:** P95 < 140ms
+
+---
+
+### 10.2 privacy/
+
+#### User Stories
+- As a **user**, I want to **control email visibility** (show/hide email) so that I manage my privacy.
+- As a **user**, I want to **control phone visibility** (show/hide phone) so that I control contact methods.
+- As a **user**, I want to **control activity sharing** so that I decide what others see.
+- As a **user**, I want to **enable/disable direct contact** so that I control who can message me.
+- As a **system**, I want to **separate privacy settings from general settings** so that privacy controls are explicit.
+
+#### Flow
+1. **UpdatePrivacySettingsCommand**(user_id, show_email, show_phone, share_activity, allow_direct_contact) → Validate() | Update() → **Outbox:** privacy_settings.updated.v1
+2. **GetPrivacySettingsQuery**(user_id) → Fetch() → PrivacySettingsDTO
+
+#### Projections
+- privacy_read
+
+#### Events Published
+- privacy_settings.updated.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (update/view)
+- **SLO:** P95 < 130ms
+
+---
+
+### 10.3 saved_items/
+
+#### User Stories
+- As a **user**, I want to **save jobs for later** so that I can apply when ready.
+- As a **client**, I want to **save freelancers** so that I can contact them for future projects.
+- As a **user**, I want to **add notes to saved items** so that I remember why I saved them.
+- As a **user**, I want to **unsave items** so that my saved list stays relevant.
+- As a **user**, I want to **search my saved items** so that I can find them easily.
+
+#### Flow
+1. **SaveItemCommand**(user_id, item_type, item_id, notes) → Validate() | CheckDuplicate() | Persist() → **Outbox:** item.saved.v1
+2. **UnsaveItemCommand**(user_id, item_id) → AuthorizeOwner() | Delete() → **Outbox:** item.unsaved.v1
+3. **ListSavedItemsQuery**(user_id, item_type) → Filter() | Fetch() → SavedItemListDTO
+4. **SearchSavedQuery**(user_id, query) → Search() → SavedItemListDTO
+
+#### Projections
+- saved_items_read
+
+#### Events Published
+- item.saved.v1
+- item.unsaved.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (save/unsave/view)
+- **SLO:** P95 < 140ms
+
+---
+
+### 10.4 blocked_users/
+
+#### User Stories
+- As a **user**, I want to **block other users** so that I don't see their content or receive messages.
+- As a **user**, I want to **provide a reason for blocking** so that context is recorded.
+- As a **user**, I want to **unblock users** so that I can restore communication if needed.
+- As a **system**, I want to **enforce blocking in messaging and search** so that blocked users can't interact.
+
+#### Flow
+1. **BlockUserCommand**(blocker_id, blocked_id, reason) → Validate() | Persist() → **Outbox:** user.blocked.v1
+2. **UnblockUserCommand**(blocker_id, blocked_id) → Validate() | Delete() → **Outbox:** user.unblocked.v1
+3. **ListBlockedUsersQuery**(blocker_id) → Fetch() → BlockedUserListDTO
+
+#### Projections
+- blocked_users_read
+
+#### Events Published
+- user.blocked.v1
+- user.unblocked.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (block/unblock/view)
+- **SLO:** P95 < 130ms
+
+---
+11 - Moderation (Consolidated)
 -----------------------------
 
-### Stories
+### 11.1 Moderation Aggregate
 
-*   As a user, I want to link/unlink secondary emails/phones/socials so that recovery is easier.
-    
-*   As a user, I want to promote a verified alias to primary so that my preferred contact is used.
-    
-*   As a system, I want alias limits so that abuse is prevented.
-    
-*   As a user, I want deliverability checks and OTP proof so that ownership is verified.
-    
-
-### Flow
-
-*   LinkIdentityCommand | UnlinkIdentityCommand | PromotePrimaryIdentityCommand →ListLinkedIdentitiesQuery | GetPrimaryIdentityQuery →LinkIdentity() | UnlinkIdentity() | PromotePrimaryIdentity()
-    
-
-### Projections
-
-*   user\_identities\_read
-    
-
-### Events
-
-*   user.identity.linked.v1, user.identity.unlinked.v1, user.identity.primary.changed.v1
-    
-
-### Policy
-
-*   Max aliases = 5/user.
-    
+#### Stories
 
-1.9 Delegated Access
---------------------
-
-### Stories
-
-*   As an org owner, I want to grant scoped, expiring delegation so that assistants can help safely.
+*   As a **system**, I want a **single moderation aggregate per user** so that all actions are tracked coherently.
     
-*   As a delegate, I want to accept delegation explicitly so that consent is auditable.
+*   As an **admin**, I want to **view a user’s active moderation state** (clean/limited/warned/suspended/banned) so that I can act quickly.
     
-*   As a system, I want auto-expiry and revocation logs so that risk is low.
+*   As a **system**, I want **chronological action history** so that repeat offenses are visible.
     
 
-### Flow
+#### Flow
 
-*   GrantDelegatedAccessCommand | RevokeDelegatedAccessCommand | AcceptDelegationCommand →ListDelegationsQuery | GetDelegationStatusQuery →GrantDelegatedAccess() | RevokeDelegatedAccess() | AcceptDelegation()
+*   **GetModerationAggregateQuery(user\_id)** → AuthorizeAdmin() | FetchAggregate() → ModerationAggregateDTO
     
-
-### Projections
-
-*   delegations\_read
+*   **GetActiveStatusQuery(user\_id)** → CheckSuspension() | CheckBan() | CheckUnackWarnings() → ActiveStatusDTO
     
-
-### Events
-
-*   user.delegation.granted.v1, user.delegation.accepted.v1, user.delegation.revoked.v1
+*   **GetActionCountsQuery(user\_id)** → CountByType() → ModerationActionCountsDTO
     
 
-1.10 Security Freeze / Account Lock
------------------------------------
+#### Projections
 
-### Stories
-
-*   As a user, I want to lock/unlock my account so that activity is frozen after suspicious events.
-    
-*   As a system, I want auto-lock on anomalies so that proactive defense is applied.
+*   moderation\_aggregate\_read
     
-*   As an admin, I want lock history so that investigations are complete.
-    
 
-### Flow
+#### Events
 
-*   LockAccountCommand | UnlockAccountCommand →GetAccountLockStateQuery | GetLockHistoryQuery →LockAccount() | UnlockAccount()
+*   moderation.aggregate.created.v1, moderation.aggregate.updated.v1
     
 
-### Projections
+#### RBAC/SLO
 
-*   account\_locks\_read
+*   **RBAC:** ADMIN view; SYSTEM update
     
-
-### Events
-
-*   user.account.locked.v1, user.account.unlocked.v1
+*   **SLO:** reads **P95 < 100 ms**
     
 
-1.11 Username Lifecycle
------------------------
+### 11.2 Suspension
 
-### Stories
+#### Stories
 
-*   As a user, I want to request a username change with a 90-day cooldown so that spam is prevented.
+*   As an **admin**, I want to **suspend users for a bounded duration** so that proportional enforcement is possible.
     
-*   As a system, I want reserved and profanity filters so that names are acceptable.
+*   As a **system**, I want to **record who suspended the user and why** so that accountability exists.
     
-*   As an admin, I want to approve premium names so that brand safety is preserved.
+*   As a **suspended user**, I want to **see reason and expiry** so that I understand the decision.
     
 
-### Flow
+#### Flow
 
-*   RequestUsernameChangeCommand →GetUsernameHistoryQuery | GetUsernameAvailabilityQuery →RequestUsernameChange()
+*   **SuspendUserCommand(user\_id, reason, start\_at, end\_at, suspended\_by, notes?)** → ValidateReason() | ValidateDates() | CreateSuspension() | UpdateUserStatus() | NotifyUser() → **Outbox:** suspension.placed.v1
     
-
-### Projections
-
-*   username\_history\_read
+*   **UnsuspendUserCommand(user\_id, by, reason?)** → ValidateActiveSuspension() | DeactivateSuspension() | UpdateUserStatus() | NotifyUser() → **Outbox:** suspension.released.v1
     
-
-### Events
-
-*   user.username.changed.v1, user.username.request.approved.v1
+*   **ExtendSuspensionCommand(suspension\_id, new\_end\_at, by, reason?)** → ValidateActive() | UpdateEnd() | NotifyUser() → **Outbox:** suspension.extended.v1
     
-
-1.12 Admin Impersonation with Audit
------------------------------------
-
-### Stories
-
-*   As a support lead, I want impersonation with banners so that I can troubleshoot.
+*   **AutoExpireSuspensionsJob()** → FindExpiredActive() | Deactivate() → **Outbox:** suspension.expired.v1
     
-*   As a system, I want time-limited, fully logged sessions so that compliance is ensured.
+*   **GetActiveSuspensionQuery(user\_id)** → FetchActive() → SuspensionDTO
     
-*   As a user, I want notifications when impersonation occurs so that transparency is maintained.
+*   **GetSuspensionHistoryQuery(user\_id)** → ListByUser() → SuspensionListDTO
     
 
-### Flow
+#### Projections
 
-*   StartImpersonationCommand | StopImpersonationCommand →GetImpersonationSessionsQuery →StartImpersonation() | StopImpersonation()
+*   suspension\_read, active\_suspensions\_read, suspension\_history\_read
     
 
-### Projections
+#### Events
 
-*   impersonation\_read
+*   suspension.placed.v1, suspension.released.v1, suspension.extended.v1, suspension.expired.v1
     
 
-### Events
+#### Events Consumed
 
-*   user.impersonation.started.v1, user.impersonation.stopped.v1
+*   user.severe\_violation.detected.v1, payment.fraud.confirmed.v1
     
 
-1.13 Referral Program Management
---------------------------------
+#### RBAC/SLO
 
-### Stories
-
-*   As a user, I want referral links and tracking so that I can earn incentives.
-    
-*   As a platform admin, I want referral fraud detection so that abuse is reduced.
+*   **RBAC:** ADMIN (place/extend/release), OWNER (view own), SYSTEM (auto-expire)
     
-*   As a system, I want payouts triggered by milestones so that incentives are automated.
+*   **SLO:** writes **P95 < 160 ms**, reads **P95 < 100 ms**
     
 
-### Flow
+##### 11.2.1 Suspension Reasons (Enum)
 
-*   GenerateReferralLinkCommand | TrackReferralSignupCommand →GetReferralsQuery | GetReferralStatsQuery →GenerateReferralLink() | TrackReferralSignup()
+*   **TOSViolation**, **PaymentIssue**, **QualityIssues**, **AbusiveBehavior**, **SpamReported**, **FakeProfile**, **MultipleAccounts**, **ContractAbandonment**, **ResponseFailure**, **AdminRequest**
     
 
-### Projections
+**Flow:**
 
-*   referrals\_read
+*   **GetSuspensionReasonsQuery()** → ListReasons()
     
-
-### Events
-
-*   user.referral.link.generated.v1, user.referral.signup.tracked.v1
+*   **ValidateSuspensionReasonCommand(reason)** → CheckEnum() → is\_valid
     
-
-1.14 Sharding & Migration
--------------------------
-
-### Stories
 
-*   As a platform engineer, I want regional/hash sharding so that we scale to millions.
-    
-*   As a system, I want zero-downtime migrations so that operations are uninterrupted.
-    
+**RBAC/SLO:** PUBLIC view, ADMIN use; **P95 < 50 ms**
 
-### Flow
+##### 11.2.2 Suspension Duration
 
-*   MigrateUserToShardCommand →GetUserShardQuery | ListShardMigrationJobsQuery →MigrateUserToShard()
+*   **Types:** Days (1–30), Weeks (1–12), Months (1–12), **Permanent**
     
-1.15 Engagement Metrics (New Subsection)
-----------------------------------------
-
-**Stories**
-
-*   **(New)** As a support agent, I want real-time user engagement tracking (e.g., live session activity) so that I can assist users proactively.
+*   **Escalation:** 1st=3–7d, 2nd=2–4w, 3rd=1–3m, 4th+=≥6m or permanent
     
 
-**Flow**
+**Flow:**
 
-*   **(New)** GetRealTimeEngagementQuery → GetRealTimeEngagement()
+*   **CalculateEndDateCommand(duration\_type, value, start\_at)** → ComputeEnd()
     
-
-**Projections**
-
-*   **(New)** realtime\_engagement\_read
-
-### Projections
-
-*   shard\_migrations\_read
+*   **GetRecommendedDurationQuery(reason, offense\_count)** → ApplyEscalationRules()
     
-
-### Events
-
-*   user.shard.migrated.v1
+*   **IsPermanentQuery(suspension\_id)** → CheckFlag()
     
 
-2) Profile
-==========
+**RBAC/SLO:** ADMIN set, SYSTEM calculate; **P95 < 50 ms**
 
-2.1 Profile Completion & Update (+ Video Intro & Transcription)
----------------------------------------------------------------
+### 11.3 Ban
 
-### Stories
-
-*   As a freelancer, I want to complete/update my profile so that clients can evaluate me.
-    
-*   As a user, I want real-time completeness % so that I know what to improve.
-    
-*   As a user, I want optional AI suggestions so that I can improve quickly.
-    
-*   **(Added)** As a freelancer, I want to upload a video intro so that I can personalize my profile.
-    
-*   **(Added)** As a system, I want video transcription for searchability so that AI/search can index it.
-    
-*   **(Added)** As a compliance officer, I want profile versioning so that all changes are auditable.
+#### Stories
 
-*   **(New)** As a freelancer, I want badges for profile completion milestones so that I’m motivated to improve my profile.
+*   As an **admin**, I want to **ban malicious users** (temporary or permanent) so that platform safety is protected.
     
-*   **(New)** As a freelancer, I want my profile dynamically personalized for clients so that relevant skills are highlighted.
-
-### Flow
-
-*   (Updated) UpdateProfileCommand | CalculateCompletenessCommand | UploadProfileVideoCommand | ProcessVideoTranscriptionCommand | LogProfileVersionCommand | AwardProfileCompletionBadgeCommand | PersonalizeProfileDisplayCommand → GetProfileByUserIDQuery | ListProfilesByCompletenessQuery | GetProfileVersionHistoryQuery | GetProfileCompletionMilestonesQuery | GetPersonalizedProfileQuery → UpdateProfile() | CalculateCompleteness() | UploadProfileVideo() | ProcessVideoTranscription() | LogProfileVersion() | AwardProfileCompletionBadge() | PersonalizeProfileDisplay()
+*   As a **system**, I want to **revoke sessions/devices immediately** on ban so that access is cut off.
     
-
-### Projections
-
-*   profiles\_read, profile\_completeness\_read, profile\_media\_read, profile\_transcripts\_read
 
-*   **(New)** personalized\_profiles\_read
+#### Flow
 
-### Events
-
-*   profile.updated.v1, profile.completeness.updated.v1, profile.video.uploaded.v1, profile.video.transcribed.v1, **profile.version.logged.v1**
-
-*   **(New)** profile.completion.badge.awarded.v1, profile.personalization.applied.v1
+*   **BanUserCommand(user\_id, reason, is\_permanent, expires\_at?, banned\_by, notes?)** → ValidateReason() | ValidateSeverity() | CreateBan() | RevokeAllSessions() | RevokeAllDevices() | UpdateUserStatus() | NotifyUser() → **Outbox:** ban.placed.v1
     
-
-2.2 Preferences & Visibility
-----------------------------
-
-### Stories
-
-*   As a user, I want to set language/timezone so that my experience matches my locale.
+*   **UnbanUserCommand(user\_id, by, reason?)** → ValidateActiveBan() | DeactivateBan() | UpdateUserStatus() | NotifyUser() → **Outbox:** ban.released.v1
     
-*   As a user, I want visibility scopes (public/invited/private) with previews so that I understand exposure.
+*   **ConvertToPermanentBanCommand(ban\_id, by, reason?)** → ValidateTempBan() | MarkPermanent() | NotifyUser() → **Outbox:** ban.converted\_to\_permanent.v1
     
-
-### Flow
-
-*   UpdatePreferencesCommand | SetProfileVisibilityCommand →GetPublicProfileQuery | GetVisibilityPreviewQuery →UpdatePreferences() | SetProfileVisibility()
+*   **AutoExpireTempBansJob()** → FindExpired() | Deactivate() → **Outbox:** ban.expired.v1
     
-
-### Projections
-
-*   profiles\_read.visibility
+*   **GetActiveBanQuery(user\_id)** → FetchActive() → BanDTO
     
-
-### Events
-
-*   profile.preferences.updated.v1, profile.visibility.updated.v1
+*   **GetBanHistoryQuery(user\_id)** → ListByUser() → BanListDTO
     
-
-2.3 Locale Variants
--------------------
 
-### Stories
+#### Projections
 
-*   As a user, I want multi-language profile content so that I can target different audiences.
+*   ban\_read, active\_bans\_read, ban\_history\_read
     
-*   As a system, I want auto-translation suggestions so that creating locales is easier.
-    
-*   As a client, I want to view in my preferred locale so that it’s accessible.
-    
 
-### Flow
+#### Events
 
-*   AddProfileLocaleVariantCommand | RemoveProfileLocaleVariantCommand | SuggestTranslationCommand →GetProfileLocalesQuery | GetProfileInLocaleQuery →AddProfileLocaleVariant() | RemoveProfileLocaleVariant() | SuggestTranslation()
+*   ban.placed.v1, ban.released.v1, ban.converted\_to\_permanent.v1, ban.expired.v1
     
 
-### Events
+#### Events Consumed
 
-*   profile.locale.added.v1, profile.locale.removed.v1, profile.translation.suggested.v1
+*   fraud.detection.confirmed.v1, security.severe\_breach.detected.v1, moderation.repeated\_violations.threshold\_met.v1
     
 
-2.4 Snapshots & Restore
------------------------
+#### RBAC/SLO
 
-### Stories
-
-*   As an admin, I want to snapshot/restore profiles so that I can revert bad or accidental changes.
-    
-*   As a user, I want self-restore so that I can fix mistakes.
+*   **RBAC:** ADMIN (ban/unban/convert), OWNER (view own), SYSTEM (auto-expire)
     
-*   As a system, I want auto-snapshots on major updates.
+*   **SLO:** writes **P95 < 200 ms**, reads **P95 < 100 ms**
     
 
-### Flow
+##### 11.3.1 Ban Reasons (Enum)
 
-*   CreateProfileSnapshotCommand | RestoreProfileFromSnapshotCommand →ListProfileSnapshotsQuery | GetProfileSnapshotQuery →CreateProfileSnapshot() | RestoreProfileFromSnapshot()
+*   **Fraud**, **SevereAbuse**, **MultipleViolations**, **SecurityThreat**, **CriminalActivity**, **ChargebackAbuse**, **ImitationAccount**, **PlatformManipulation**, **DataBreach**, **CoordinatedAttack**
     
-
-### Events
-
-*   profile.snapshot.created.v1, profile.snapshot.restored.v1
-    
-
-2.5 AI Profile Optimization + AI Training Opt-Out
--------------------------------------------------
 
-### Stories
+**Flow:**
 
-*   As a user, I want AI optimization suggestions so that my visibility improves.
+*   **GetBanReasonsQuery()** → ListReasons()
     
-*   As a user, I want to control data usage and consent so that privacy is respected.
+*   **ValidateBanReasonCommand(reason)** → CheckEnum() | CheckSeverity() → is\_valid
     
-*   **(Added)** As a user, I want to opt-out of AI training so that my data is not used for model training.
+*   **RequiresEvidenceQuery(reason)** → CheckPolicy() → boolean
     
 
-### Flow
+**RBAC/SLO:** ADMIN use; SUPER\_ADMIN approve severe; **P95 < 50 ms**
 
-*   OptimizeProfileWithAICommand | ToggleAIOptOutCommand →GetProfileOptimizationSuggestionsQuery | GetAIOptOutStatusQuery →OptimizeProfileWithAI() | ToggleAIOptOut()
-    
-
-### Events
-
-*   profile.ai.optimized.v1, profile.ai.optout.updated.v1
-    
+##### 11.3.2 Permanent Ban Flag
 
-3) Skill
-========
+**Flow:**
 
-3.1 Manage Skills + Skill Tests
--------------------------------
-
-### Stories
-
-*   As a freelancer, I want to add/update/remove/reorder skills so that my expertise is clear.
+*   **MarkAsPermanentCommand(ban\_id)** → ValidateBan() | SetPermanent() | RemoveExpiry() → **Outbox:** ban.marked\_permanent.v1
     
-*   As a freelancer, I want proficiency validated and duplicates prevented so that data is clean.
+*   **IsPermanentQuery(ban\_id)** → CheckFlag()
     
-*   **(Added)** As a freelancer, I want to take skills tests so that my proficiency is certified.
-
-*   **(New)** As a freelancer, I want to set skill-based pricing tiers (e.g., beginner/intermediate/expert) so that I can offer flexible pricing.
-
-### Flow
-
-*   (Updated) AddSkillCommand | UpdateSkillCommand | RemoveSkillCommand | ReorderSkillsCommand | TakeSkillTestCommand | SetSkillPricingTierCommand → GetSkillsByUserQuery | ListSkillsQuery | SearchSkillsQuery | GetSkillTestResultsQuery | GetSkillPricingTiersQuery → AddSkill() | UpdateSkill() | RemoveSkill() | ReorderSkills() | TakeSkillTest() | SetSkillPricingTier()
+*   **OverridePermanentBanCommand(ban\_id, by, justification)** → AuthorizeSuperAdmin() | Approve() | Release() → **Outbox:** permanent\_ban.overridden.v1
     
-
-### Projections
-
-*   skills\_read, skill\_tests\_read
-
-*   **(New)** skill\_pricing\_read
 
-### Events
+**RBAC/SLO:** ADMIN mark; SUPER\_ADMIN override; **P95 < 100 ms**
 
-*   skill.entry.added.v1, skill.entry.updated.v1, skill.entry.removed.v1, skill.entries.reordered.v1, skill.test.completed.v1
+### 11.4 Warning
 
-*   **(New)** skill.pricing.tier.set.v1
-    
-
-3.2 Normalize to Taxonomy
--------------------------
+#### Stories
 
-### Stories
-
-*   As a platform admin, I want skills normalized to a taxonomy so that search is consistent.
+*   As an **admin**, I want to **issue warnings** for minor violations so that users are nudged before penalties.
     
-*   As a system, I want batch normalization so that legacy data is fixed efficiently.
+*   As a **user**, I want to **acknowledge warnings** so that receipt is confirmed.
     
-
-### Flow
-
-*   NormalizeSkillCommand | NormalizeSkillsBatchCommand →GetSkillsByTaxonomyVersionQuery →NormalizeSkill() | NormalizeSkillsBatch()
+*   As a **system**, I want **auto-escalation** for repeats or missed acknowledgements.
     
 
-### Events
+#### Flow
 
-*   skill.taxonomy.normalized.v1, skill.taxonomy.batch\_normalized.summary.v1
+*   **IssueWarningCommand(user\_id, reason, severity, issued\_by, message?)** → ValidateReason() | CreateWarning() | NotifyUser() | SetAckDeadline() → **Outbox:** warning.issued.v1
     
-
-3.3 Endorsements (+ Abuse Limits)
----------------------------------
-
-### Stories
-
-*   As a client, I want to endorse a skill so that credible signals appear.
+*   **AcknowledgeWarningCommand(warning\_id, user\_id, at)** → ValidateOwner() | ValidatePending() | MarkAcknowledged() → **Outbox:** warning.acknowledged.v1
     
-*   As a freelancer, I want moderation of endorsements so that spam is prevented.
+*   **EscalateWarningCommand(warning\_id, new\_severity, by, reason?)** → ValidateUnacknowledged() | UpdateSeverity() | NotifyUser() → **Outbox:** warning.escalated.v1
     
-*   As a system, I want endorsements to influence ranking so that relevance improves.
+*   **DismissWarningCommand(warning\_id, by, reason?)** → AuthorizeAdmin() | Dismiss() → **Outbox:** warning.dismissed.v1
     
-*   **(Added Policy)** Max endorsements per client per year = 10 (prevent gaming).
+*   **AutoExpireUnackedWarningsJob()** → FindPastDeadline() | MarkExpired() | MaybeEscalate() → **Outbox:** warning.expired\_unacknowledged.v1
     
-
-### Flow
-
-*   EndorseSkillCommand | RevokeSkillEndorsementCommand →GetSkillEndorsementsQuery | ListEndorsedSkillsQuery →EndorseSkill() | RevokeSkillEndorsement() (enforce limit)
+*   **GetActiveWarningsQuery(user\_id)** → ListUnacknowledged()
     
-
-### Events
-
-*   skill.endorsement.added.v1, skill.endorsement.revoked.v1
+*   **GetWarningHistoryQuery(user\_id)** → ListByUser()
     
 
-3.4 Taxonomy Sync
------------------
+#### Projections
 
-### Stories
-
-*   As a system, I want to sync skills to latest taxonomy so that indexing stays current.
-    
-*   As a user, I want notifications on deprecated skills.
+*   warning\_read, active\_warnings\_read, warning\_history\_read
     
 
-### Flow
+#### Events
 
-*   SyncSkillTaxonomyCommand →GetDeprecatedSkillsQuery | GetSkillsByTaxonomyVersionQuery →SyncSkillTaxonomy()
+*   warning.issued.v1, warning.acknowledged.v1, warning.escalated.v1, warning.dismissed.v1, warning.expired\_unacknowledged.v1
     
 
-### Events
+#### Events Consumed
 
-*   skill.taxonomy.synced.v1, skill.deprecated.notified.v1
+*   contract.quality\_issue.detected.v1, communication.unresponsive.threshold\_met.v1
     
 
-3.5 Skill Proficiency Proof
----------------------------
+#### RBAC/SLO
 
-### Stories
-
-*   As a freelancer, I want to attach test scores as proof so that claims are substantiated.
-    
-*   As a client, I want verified proofs visible.
+*   **RBAC:** ADMIN (issue/escalate/dismiss), OWNER (acknowledge/view)
     
-
-### Flow
-
-*   AttachSkillProofCommand →GetSkillProofsQuery →AttachSkillProof()
+*   **SLO:** writes **P95 < 140 ms**
     
 
-### Events
+##### 11.4.1 Warning Reasons (Enum)
 
-*   skill.proof.attached.v1
+*   **LateDelivery**, **PoorQuality**, **UnresponsiveCommunication**, **MissedDeadlines**, **InappropriateLanguage**, **MinorToSViolation**, **InaccurateProposal**, **PaymentDispute**, **ProfileMisrepresentation**, **IncompleteWork**
     
 
-3.6 Skill-Based Job Recommendations **(Added)**
------------------------------------------------
+**Flow:**
 
-### Stories
-
-*   As a freelancer, I want skill-based job recommendations so that I find relevant opportunities.
+*   **GetWarningReasonsQuery()** → ListReasons()
     
-
-### Flow
-
-*   GetSkillBasedJobRecommendationsQuery → GetSkillBasedJobRecommendations()
+*   **ValidateWarningReasonCommand(reason)** → CheckEnum() → is\_valid
     
-
-### Projections
-
-*   job\_recommendations\_read
+*   **GetHelpResourceQuery(reason)** → MapToGuidance() → ResourceDTO
     
-
-4) Experience
-=============
 
-4.1 Manage Experiences (+ Client References)
---------------------------------------------
+**RBAC/SLO:** PUBLIC view, ADMIN use; **P95 < 50 ms**
 
-### Stories
+##### 11.4.2 Warning Severity
 
-*   As a freelancer, I want CRUD with valid ranges so that my timeline is credible.
+*   **Levels:** Low, Medium, High, Critical
     
-*   As a system, I want overlap detection and sorting so that display is correct.
-    
-*   **(Added)** As a freelancer, I want to add client references/testimonials to experiences so that entries are verifiable.
-    
-
-### Flow
-
-*   AddExperienceCommand | UpdateExperienceCommand | RemoveExperienceCommand | FlagCurrentExperienceCommand | ValidateDateRangesCommand | AddExperienceReferenceCommand →GetExperiencesByUserQuery | ListExperiencesQuery | SearchExperiencesQuery | GetExperienceReferencesQuery →AddExperience() | UpdateExperience() | RemoveExperience() | FlagCurrentExperience() | ValidateDateRanges() | AddExperienceReference()
+*   **Escalation:** 3×Low→Medium; 2×Medium→High; 2×High→Critical→Suspension; Critical+new violation→Ban
     
 
-### Events
+**Flow:**
 
-*   experience.entry.added.v1, experience.entry.updated.v1, experience.entry.removed.v1, experience.entry.flagged\_current.v1, experience.reference.added.v1
+*   **SetSeverityCommand(warning\_id, level)** → Validate() | Update() → **Outbox:** warning.severity\_updated.v1
     
-
-4.2 Experience Verification
----------------------------
-
-### Stories
-
-*   As a user, I want employment verification so that clients trust my background.
+*   **AutoEscalateSeverityCommand(user\_id)** → CheckRepeatedWarnings() | IncreaseSeverity() → **Outbox:** warning.auto\_escalated.v1
     
-*   As an admin, I want third-party checks so that verification is robust.
+*   **ConvertToSuspensionCommand(warning\_id, by)** → ValidateCritical() | CreateSuspension() | CloseWarning() → **Outbox:** warning.converted\_to\_suspension.v1
     
 
-### Flow
+**RBAC/SLO:** ADMIN set; SYSTEM auto-escalate/convert; **P95 < 100 ms**
 
-*   VerifyExperienceCommand | RejectExperienceVerificationCommand →GetExperienceVerificationsQuery →VerifyExperience() | RejectExperienceVerification()
-    
+### 11.5 Shared Moderation Components
 
-### Events
+#### 11.5.1 Shared Reason Model
 
-*   experience.verification.approved.v1, experience.verification.rejected.v1
+*   **Goal:** common structures for reasons; DRY validation and severity mapping.
     
 
-4.3 Experience Gaps Analysis
-----------------------------
+**Flow:**
 
-### Stories
-
-*   As a freelancer, I want gap analysis so that I can add clarifications.
-    
-*   As an admin, I want gap reports to flag suspicious timelines.
+*   **ValidateAnyReasonCommand(reason, action\_type)** → CheckEnum() | ValidateForAction()
     
-
-### Flow
-
-*   AnalyzeExperienceGapsCommand →GetExperienceGapsQuery →AnalyzeExperienceGaps()
+*   **GetAllReasonsQuery()** → FetchAllGrouped()
     
-
-### Events
-
-*   experience.gaps.analyzed.v1
+*   **MapReasonToSeverityQuery(reason)** → PolicyMap()
     
-
-5) Education
-============
-
-5.1 Manage Educations
----------------------
 
-### Stories
+**RBAC/SLO:** SYSTEM; **P95 < 50 ms**
 
-*   As a freelancer, I want CRUD with year validation so that my qualifications are verifiable.
-    
-*   As a system, I want search and sort by year so that reviews are easy.
-    
+#### 11.5.2 Moderation Actor
 
-### Flow
-
-*   AddEducationCommand | UpdateEducationCommand | RemoveEducationCommand →GetEducationsByUserQuery | ListEducationsQuery | SearchEducationsQuery →AddEducation() | UpdateEducation() | RemoveEducation()
+*   **Actor Types:** admin, system, automated, super\_admin, appeal\_reviewer
     
-
-### Events
-
-*   education.entry.added.v1, education.entry.updated.v1, education.entry.removed.v1
+*   **Fields:** actor\_type, actor\_id, timestamp, reason
     
-
-5.2 Credential Registry Link
-----------------------------
 
-### Stories
+**Flow:**
 
-*   As a user, I want to attach registry links so that third parties can validate degrees.
+*   **RecordActorCommand(action\_id, actor\_type, actor\_id)** → Validate() | Record() → **Outbox:** actor.recorded.v1
     
-*   As a system, I want to verify links so that dead URLs are avoided.
+*   **GetActionActorQuery(action\_id)** → Fetch()
     
-
-### Flow
-
-*   AttachCredentialRegistryLinkCommand →GetEducationLinksQuery →AttachCredentialRegistryLink()
+*   **GetActorHistoryQuery(actor\_id)** → ListActions()
     
 
-### Events
+**RBAC/SLO:** SYSTEM record; ADMIN view; **P95 < 50 ms**
 
-*   education.credential.link.attached.v1
-    
-
-5.3 GPA/Transcript Attachment
------------------------------
+### 11.6 Repository, Errors, and Events
 
-### Stories
+#### 11.6.1 Repository Interface (consolidated)
 
-*   As a freelancer, I want to attach transcripts securely so that details are shareable.
+*   **Suspension:** Create, GetActive, Release, ListHistory
     
-*   As a client, I want transcript metadata so that I can verify claims.
+*   **Ban:** Create, GetActive, Release, ListHistory
     
-
-### Flow
-
-*   AttachEducationTranscriptCommand →GetEducationAttachmentsQuery →AttachEducationTranscript()
+*   **Warning:** Create, Acknowledge, ListActive, ListHistory
     
-
-### Events
-
-*   education.transcript.attached.v1
+*   **Aggregate:** GetAggregate, GetStats
     
 
-6) Certification
-================
+**RBAC/SLO:** SYSTEM/ADMIN; writes **P95 < 120 ms**, reads **P95 < 80 ms**
 
-6.1 Certification Lifecycle (+ Provider Import)
------------------------------------------------
+#### 11.6.2 Domain Errors
 
-### Stories
-
-*   As a freelancer, I want certifications tracked and verified so that clients see credible credentials.
-    
-*   As a user, I want renewal reminders so that I stay current.
+*   **Suspension:** ErrSuspensionNotFound, ErrSuspensionAlreadyActive, ErrSuspensionExpired, ErrInvalidSuspensionDuration, ErrCannotUnsuspendBannedUser
     
-*   As a system, I want expiries handled automatically so that statuses are accurate.
+*   **Ban:** ErrBanNotFound, ErrBanAlreadyActive, ErrCannotBanSuspendedUser, ErrPermanentBanCannotExpire, ErrBanRequiresSuperAdmin
     
-*   **(Added)** As a freelancer, I want auto-import from external providers (e.g., Coursera) so that updates are easy.
+*   **Warning:** ErrWarningNotFound, ErrWarningAlreadyAcknowledged, ErrWarningExpired, ErrCannotEscalateDismissedWarning, ErrMaxWarningsReached
     
-
-### Flow
-
-*   AddCertificationCommand | VerifyCertificationCommand | RejectCertificationCommand | ExpireCertificationCommand | SendCertificationRenewalReminderCommand | ImportCertificationFromProviderCommand →ListCertificationsQuery | GetExpiredCertificationsQuery | GetUpcomingExpiriesQuery →AddCertification() | VerifyCertification() | RejectCertification() | ExpireCertification() | SendCertificationRenewalReminder() | ImportCertificationFromProvider()
-    
-
-### Events
-
-*   certification.entry.added.v1, certification.verification.approved.v1, certification.verification.rejected.v1, certification.expired.v1, certification.renewal.reminder.sent.v1, certification.imported.v1
+*   **General:** ErrModerationActionNotFound, ErrInvalidModerationReason, ErrUnauthorizedModerationAction, ErrConflictingModerationActions
     
-
-6.2 Proctoring & Provider Webhooks
-----------------------------------
 
-### Stories
+#### 11.6.3 Event Payloads (envelope-only PII rules)
 
-*   As a system, I want to store proctoring metadata so that integrity is provable.
+*   **SuspensionPlacedEvent:** user\_id, suspension\_id, reason, start\_at, end\_at, suspended\_by
     
-*   As a system, I want provider webhooks processed (HMAC) with retry/DLQ so that status is consistent.
-    
-
-### Flow
-
-*   AttachProctoringMetadataCommand | ProcessCertificationWebhookCommand →GetCertificationProviderStatusQuery →AttachProctoringMetadata() | ProcessCertificationWebhook()
+*   **BanPlacedEvent:** user\_id, ban\_id, reason, is\_permanent, expires\_at?, banned\_by
     
-
-### Events
-
-*   certification.proctoring.metadata.attached.v1, certification.provider.webhook.processed.v1
+*   **WarningIssuedEvent:** user\_id, warning\_id, reason, severity, issued\_by, deadline\_at
     
-
-7) Portfolio
-============
 
-7.1 Portfolio Items & Media (+ Share Links)
--------------------------------------------
+**RBAC/SLO:** SYSTEM publish; **P95 < 50 ms**
 
-### Stories
+### Operational Notes (applies to §11)
 
-*   As a freelancer, I want to add/update/remove/reorder items so that my work is showcased.
+*   **Idempotency:** all commands accept Idempotency-Key; safe retries return original success; dedupe by (aggregate\_id,event\_type,idempotency\_key).
     
-*   As a system, I want async media processing so that UX stays snappy.
+*   **Non-PII Events:** only IDs and codes; no raw emails/phones; fetch details via API if needed.
     
-*   **(Added)** As a freelancer, I want shareable public portfolio links so that I can promote outside the platform.
+*   **Caching:** active bans/suspensions (TTL 5m); unacknowledged warning counts (TTL 1m); invalidate on write.
     
-*   **(Added)** As a freelancer, I want to categorize portfolio items by type/industry so that clients can filter easily.
+*   **Automation:** cron to expire time-boxed actions; auto-escalation from warnings → suspension → ban.
     
+*   **Notifications:** email + in-app with appeal links on every action.
 
-### Flow
 
-*   AddPortfolioItemCommand | UpdatePortfolioItemCommand | RemovePortfolioItemCommand | ReorderPortfolioItemsCommand | ProcessMediaCommand | GeneratePortfolioShareLinkCommand | AddPortfolioItemCategoryCommand →GetPortfolioItemsByUserQuery | ListPortfolioItemsQuery | SearchPortfolioItemsQuery | GetPortfolioShareLinksQuery | GetPortfolioCategoriesQuery →AddPortfolioItem() | UpdatePortfolioItem() | RemovePortfolioItem() | ReorderPortfolioItems() | ProcessMedia() | GeneratePortfolioShareLink() | AddPortfolioItemCategory()
-    
+## **12 - SCORING DOMAINS (CONSOLIDATED)**
 
-### Events
+### 12.1 user_metrics/
 
-*   portfolio.item.added.v1, portfolio.item.updated.v1, portfolio.item.removed.v1, portfolio.items.reordered.v1, portfolio.media.processed.v1, portfolio.share.link.generated.v1, **portfolio.item.category.added.v1**
-    
+#### User Stories
+- As a **system**, I want to **store raw user metrics** (response time, completion rate, client satisfaction) so that all scoring contexts have a single source of truth.
+- As a **system**, I want to **record metric updates** as events occur so that metrics stay current.
+- As a **system**, I want to **aggregate metrics periodically** so that derived scores are computed efficiently.
+- As a **system**, I want to **provide metric history** so that trends can be analyzed.
 
-7.2 Safe-Media Pipeline
------------------------
+#### Flow
+1. **RecordMetricCommand**(user_id, metric_name, metric_value, timestamp) → Validate() | Persist() → **Outbox:** metric.recorded.v1
+2. **UpdateMetricsCommand**(user_id, metrics_batch) → ValidateBatch() | BulkUpdate() → **Outbox:** metrics.updated.v1
+3. **AggregateMetricsCommand**(user_id, aggregation_period) → Compute() | Store() → **Outbox:** metrics.aggregated.v1
+4. **GetMetricsQuery**(user_id) → AuthorizeInternal() | Fetch() → UserMetricsDTO
+5. **GetMetricHistoryQuery**(user_id, metric_name, time_range) → Fetch() → MetricHistoryDTO
 
-### Stories
+#### Projections
+- user_metrics_read
+- metric_history_read
 
-*   As a moderation system, I want AV/DLP/policy scans so that unsafe media is blocked.
-    
-*   As a user, I want scan results and appeals so that false positives can be resolved.
-    
+#### Events Published
+- metric.recorded.v1
+- metrics.updated.v1
+- metrics.aggregated.v1
 
-### Flow
+#### Events Consumed
+- contract.completed.v1 (to update completion rate)
+- message.sent.v1 (to update response time)
+- review.submitted.v1 (to update satisfaction)
 
-*   ScanPortfolioMediaCommand →GetMediaScanResultsQuery →ScanPortfolioMedia()
-    
+#### RBAC/SLO
+- **RBAC:** SYSTEM (record/update), INTERNAL (view raw metrics)
+- **SLO:** P95 < 120ms
 
-### Events
+---
 
-*   portfolio.media.scanned.v1, portfolio.media.blocked.v1
-    
+### 12.2 reputation/
 
-7.3 External Showcases
-----------------------
+#### User Stories
+- As a **freelancer**, I want to **have a reputation score calculated** so that clients can assess my reliability.
+- As a **system**, I want to **compute reputation from user_metrics** (reviews, completion, response, quality) so that scoring is standardized.
+- As a **freelancer**, I want to **view my reputation components** so that I understand what affects my score.
+- As a **system**, I want to **recalculate reputation periodically** so that scores reflect recent activity.
+- As a **client**, I want to **filter freelancers by reputation** so that I find reliable talent.
 
-### Stories
+#### Flow
+1. **RecalculateReputationCommand**(user_id) → FetchMetrics() | ComputeScore() | Update() → **Outbox:** reputation.updated.v1
+2. **RecordReputationEventCommand**(user_id, event_type, impact) → Apply() | Trigger Recalc() → **Outbox:** reputation.score_changed.v1
+3. **GetReputationScoreQuery**(user_id) → Fetch() → ReputationDTO
+4. **GetReputationComponentsQuery**(user_id) → Fetch() → ReputationComponentsDTO
+5. **GetReputationHistoryQuery**(user_id, time_range) → Fetch() → ReputationHistoryDTO
 
-*   As a freelancer, I want to link GitHub/Behance/Dribbble so that my work stays in sync.
-    
-*   As a system, I want scheduled refreshes with change detection so that updates are automatic.
-    
+#### Projections
+- reputation_read
+- reputation_history_read
 
-### Flow
+#### Events Published
+- reputation.updated.v1
+- reputation.score_changed.v1
 
-*   AttachExternalShowcaseCommand | RefreshExternalShowcaseCommand →GetExternalShowcasesQuery →AttachExternalShowcase() | RefreshExternalShowcase()
-    
+#### Events Consumed
+- metrics.updated.v1 (trigger recalculation)
+- review.submitted.v1 (trigger recalculation)
 
-### Events
+#### RBAC/SLO
+- **RBAC:** SYSTEM (recalculate), PUBLIC (view), OWNER (view components/history)
+- **SLO:** P95 < 150ms
 
-*   portfolio.external.attached.v1, portfolio.external.refreshed.v1
-    
+---
 
-7.4 Portfolio Analytics
------------------------
+### 12.3 quality/
 
-### Stories
+#### User Stories
+- As a **freelancer**, I want to **have a quality score calculated** so that clients see my work quality.
+- As a **system**, I want to **compute quality from user_metrics** (completion rate, response time, satisfaction, work quality) so that quality is measurable.
+- As a **freelancer**, I want to **view my quality scoring factors** so that I know what to improve.
+- As a **system**, I want to **analyze quality trends** (improving, declining, stable) so that issues are detected early.
 
-*   As a freelancer, I want views/engagement stats so that I can optimize.
-    
-*   As an analyst, I want time-series analytics so that growth can be measured.
-    
+#### Flow
+1. **RecalculateQualityScoreCommand**(user_id) → FetchMetrics() | ComputeScore() | Update() → **Outbox:** quality_score.updated.v1
+2. **RecordQualityMetricCommand**(user_id, metric_type, value) → Validate() | Apply() → **Outbox:** quality_metric.recorded.v1
+3. **GetQualityScoreQuery**(user_id) → Fetch() → QualityScoreDTO
+4. **GetScoringFactorsQuery**(user_id) → Fetch() → ScoringFactorsDTO
+5. **GetScoreTrendQuery**(user_id, time_range) → AnalyzeTrend() → TrendAnalysisDTO
 
-### Flow
+#### Projections
+- quality_read
+- quality_trend_read
 
-*   GetPortfolioAnalyticsQuery → GetPortfolioAnalytics()
-    
+#### Events Published
+- quality_score.updated.v1
+- quality_metric.recorded.v1
+- quality.improved.v1
+- quality.declined.v1
 
-### Projections
+#### Events Consumed
+- metrics.updated.v1 (trigger recalculation)
 
-*   portfolio\_analytics\_read
-    
+#### RBAC/SLO
+- **RBAC:** SYSTEM (recalculate), PUBLIC (view score), OWNER (view factors/trends)
+- **SLO:** P95 < 150ms
 
-8) Language
-===========
+---
 
-8.1 Language Proficiency
-------------------------
+### 12.4 account_health/
 
-### Stories
+#### User Stories
+- As a **freelancer**, I want to **have an account health score** so that I know my overall account status.
+- As a **system**, I want to **compute health from user_metrics** (profile completeness, activity, responsiveness, quality) so that health is measurable.
+- As a **freelancer**, I want to **see detected health issues** so that I can address them.
+- As a **system**, I want to **generate health recommendations** so that users can improve their accounts.
 
-*   As a freelancer, I want to manage languages with proficiency so that clients can filter multilingual talent.
-    
-*   As a system, I want CEFR-style enums and dedupe so that quality is high.
-    
+#### Flow
+1. **RecalculateHealthScoreCommand**(user_id) → FetchMetrics() | ComputeScore() | DetectIssues() | Update() → **Outbox:** health_score.updated.v1
+2. **RecordHealthIssueCommand**(user_id, issue_type, severity) → Validate() | Record() → **Outbox:** health_issue.detected.v1
+3. **GetAccountHealthQuery**(user_id) → Fetch() → AccountHealthDTO
+4. **GetHealthIssuesQuery**(user_id) → Fetch() → HealthIssueListDTO
+5. **GetHealthRecommendationsQuery**(user_id) → Generate() → RecommendationListDTO
 
-### Flow
+#### Projections
+- account_health_read
+- health_issues_read
 
-*   AddLanguageCommand | UpdateLanguageCommand | RemoveLanguageCommand →GetLanguagesByUserQuery | ListLanguagesQuery | SearchLanguagesQuery →AddLanguage() | UpdateLanguage() | RemoveLanguage()
-    
+#### Events Published
+- health_score.updated.v1
+- health_issue.detected.v1
+- health.improved.v1
 
-### Events
+#### Events Consumed
+- metrics.updated.v1 (trigger recalculation)
+- profile_completeness.updated.v1 (trigger recalculation)
 
-*   language.entry.added.v1, language.entry.updated.v1, language.entry.removed.v1
-    
+#### RBAC/SLO
+- **RBAC:** SYSTEM (recalculate), OWNER (view)
+- **SLO:** P95 < 160ms
 
-8.2 CEFR & Certificates
------------------------
+---
 
-### Stories
+### 12.5 risk/
 
-*   As a user, I want CEFR mapping and certificate attachments so that my level is standardized.
-    
-*   As a system, I want link verification so that broken links are avoided.
-    
+#### User Stories
+- As a **system**, I want to **compute risk scores from user_metrics and signals** so that fraud/safety risks are detected.
+- As a **system**, I want to **record risk signals** (ip_geo_mismatch, disputes, chargebacks) so that patterns are tracked.
+- As an **admin**, I want to **place account holds** so that risky accounts are restricted.
+- As an **admin**, I want to **release account holds** so that false positives can be corrected.
+- As a **system**, I want to **update risk scores when signals change** so that risk assessment is current.
 
-### Flow
+#### Flow
+1. **RecordRiskSignalCommand**(user_id, signal_type, severity, occurred_at, metadata) → Validate() | Record() | TriggerRecalc() → **Outbox:** risk_signal.recorded.v1
+2. **RecalculateRiskScoreCommand**(user_id) → FetchMetrics() | FetchSignals() | ComputeScore() | Update() → **Outbox:** risk_score.updated.v1
+3. **ApplyAccountHoldCommand**(user_id, hold_type, reason, actor, until) → Validate() | Apply() → **Outbox:** risk_hold.placed.v1
+4. **ReleaseAccountHoldCommand**(user_id, released_by, reason) → Validate() | Release() → **Outbox:** risk_hold.released.v1
+5. **GetRiskScoreQuery**(user_id) → AuthorizeAdmin() | Fetch() → RiskScoreDTO
+6. **ListRiskSignalsQuery**(user_id) → AuthorizeAdmin() | Fetch() → RiskSignalListDTO
+7. **GetAccountStateQuery**(user_id) → AuthorizeAdmin() | Fetch() → AccountStateDTO
 
-*   MapLanguageToCEFRCommand | AttachLanguageCertificateCommand →GetLanguageCertificationsQuery →MapLanguageToCEFR() | AttachLanguageCertificate()
-    
+#### Projections
+- risk_read
+- risk_signals_read
+- account_holds_read
 
-### Events
+#### Events Published
+- risk_signal.recorded.v1
+- risk_score.updated.v1
+- risk_hold.placed.v1
+- risk_hold.released.v1
 
-*   language.cefr.mapped.v1, language.certificate.attached.v1
-    
+#### Events Consumed
+- payment.chargeback.v1 (record signal)
+- dispute.created.v1 (record signal)
+- login.ip_geo_mismatch.v1 (record signal)
+- financial.risk.alert.emitted.v1 (record signal)
 
-8.3 Language Fluency Tests
---------------------------
+#### RBAC/SLO
+- **RBAC:** SYSTEM (record/recalculate), ADMIN (view/hold/release)
+- **SLO:** P95 < 170ms
 
-### Stories
+---
 
-*   As a freelancer, I want integrated fluency tests so that proficiency is measured.
-    
-*   As a client, I want to see verified fluency so that selection is easier.
-    
+## **13 - ORGANIZATION & TEAM DOMAIN**
 
-### Flow
+### 13.1 org/
 
-*   CompleteLanguageFluencyTestCommand →GetFluencyTestResultsQuery →CompleteLanguageFluencyTest()
-    
+#### User Stories
+- As a **client**, I want to **create an organization** so that multiple team members can hire on behalf of the company.
+- As an **org owner**, I want to **invite team members** so that they can collaborate on hiring.
+- As an **org admin**, I want to **assign roles** (owner, admin, member) so that permissions are managed.
+- As an **org owner**, I want to **set seat limits** so that team size is controlled.
+- As a **system**, I want to **track seat usage** so that limits are enforced.
+- As a **client service**, I want to **reference org data** so that there's no duplication of company information.
 
-### Events
+#### Flow
+1. **CreateOrgCommand**(name, industry, size, founded, employees, created_by) → Validate() | Persist() | AssignOwner() → **Outbox:** org.created.v1
+2. **UpdateOrgCommand**(org_id, updates) → AuthorizeAdmin() | Validate() | Update() → **Outbox:** org.updated.v1
+3. **InviteMemberCommand**(org_id, user_id, role, invited_by) → CheckSeats() | ValidateRole() | Invite() → **Outbox:** org.member_invited.v1
+4. **RemoveMemberCommand**(org_id, user_id, removed_by) → AuthorizeAdmin() | Remove() → **Outbox:** org.member_removed.v1
+5. **AssignRoleCommand**(org_id, user_id, role, assigned_by) → AuthorizeAdmin() | Update() → **Outbox:** org.role_assigned.v1
+6. **SetSeatCountCommand**(org_id, seat_limit) → AuthorizeOwner() | ValidateUsage() | Update() → **Outbox:** org.seats_updated.v1
+7. **GetOrgQuery**(org_id) → AuthorizeMember() | Fetch() → OrgDTO
+8. **ListOrgsForUserQuery**(user_id) → Fetch() → OrgListDTO
+9. **ListMembersQuery**(org_id) → AuthorizeMember() | Fetch() → MemberListDTO
+10. **GetSeatUsageQuery**(org_id) → AuthorizeAdmin() | Calculate() → SeatUsageDTO
 
-*   language.fluency.tested.v1
-    
+#### Projections
+- org_read
+- org_members_read
+- org_seats_read
 
-9) Freelancer
-=============
+#### Events Published
+- org.created.v1
+- org.updated.v1
+- org.member_invited.v1
+- org.member_added.v1
+- org.member_removed.v1
+- org.role_assigned.v1
+- org.seats_updated.v1
 
-9.1 Profile, Rates, Stats, Earnings, Connects (+ JSS)
------------------------------------------------------
+#### RBAC/SLO
+- **RBAC:** OWNER (create/update/seats), ADMIN (invite/remove/assign roles), MEMBER (view)
+- **SLO:** P95 < 170ms
 
-### Stories
+---
 
-*   As a freelancer, I want to manage my profile, rates, stats, earnings, and connects so that I can present and price my services.
-    
-*   As a freelancer, I want connects deductions to fail on insufficient balance so that I don’t overspend.
-    
-*   As a system, I want rate history recorded so that trends are visible.
-    
-*   **(Added)** As a freelancer, I want Job Success Score (JSS) computed from history so that my ranking improves.
-    
-*   **(New)** As a freelancer, I want to apply for a vetted elite tier through a screening pipeline so that I can access premium opportunities.
-    
-### Flow
+## **14 - SECURITY DOMAIN (CONSOLIDATED)**
 
-*   (Updated) UpdateFreelancerProfileCommand | UpdateRatesCommand | UpdateStatsCommand | UpdateEarningsCommand | AddConnectsCommand | DeductConnectsCommand | ComputeJSSCommand | ApplyForVettingCommand → GetFreelancerByUserQuery | GetFreelancerStatsQuery | GetConnectsBalanceQuery | GetJSSQuery | GetVettingStatusQuery → UpdateFreelancerProfile() | UpdateRates() | UpdateStats() | UpdateEarnings() | AddConnects() | DeductConnects() | ComputeJSS() | ApplyForVetting()
-    
+### 14.1 security/
 
-### Projections
+#### User Stories
+- As a **user**, I want to **enable 2FA** (TOTP, SMS, Email) so that my account is more secure.
+- As a **user**, I want to **generate backup codes** so that I can recover access if I lose my 2FA device.
+- As a **user**, I want to **register trusted devices** so that I don't need 2FA on familiar devices.
+- As a **user**, I want to **view active sessions** so that I can see where I'm logged in.
+- As a **user**, I want to **revoke sessions** so that I can log out remotely.
+- As a **user**, I want to **revoke devices** so that lost devices can't access my account.
+- As a **user**, I want to **initiate account recovery** if I lose access so that I can regain control.
+- As a **system**, I want to **rate limit recovery attempts** so that brute force attacks are prevented.
 
-*   freelancers\_read, freelancer\_stats\_read, connects\_read, freelancer\_jss\_read
+#### Flow
+1. **Enable2FACommand**(user_id, method, secret) → GenerateSecret() | StoreSecret() | GenerateBackupCodes() → **Outbox:** two_fa.enabled.v1
+2. **Disable2FACommand**(user_id, verification_code) → ValidateCode() | Disable() → **Outbox:** two_fa.disabled.v1
+3. **RegisterDeviceCommand**(user_id, device_fingerprint, device_info) → ValidateFingerprint() | Register() → **Outbox:** device.registered.v1
+4. **RevokeDeviceCommand**(user_id, device_id) → AuthorizeOwner() | Revoke() → **Outbox:** device.revoked.v1
+5. **RevokeSessionCommand**(user_id, session_id) → AuthorizeOwner() | Revoke() → **Outbox:** session.revoked.v1
+6. **InitiateRecoveryCommand**(email, recovery_method) → ValidateAccount() | RateLimitCheck() | SendToken() → **Outbox:** recovery.initiated.v1
+7. **CompleteRecoveryCommand**(recovery_token, new_password) → ValidateToken() | ResetPassword() → **Outbox:** recovery.completed.v1
+8. **Get2FAStatusQuery**(user_id) → AuthorizeOwner() | Fetch() → TwoFAStatusDTO
+9. **ListDevicesQuery**(user_id) → AuthorizeOwner() | Fetch() → DeviceListDTO
+10. **ListSessionsQuery**(user_id) → AuthorizeOwner() | Fetch() → SessionListDTO
+11. **GetSecuritySettingsQuery**(user_id) → AuthorizeOwner() | Fetch() → SecuritySettingsDTO
 
-*   **(New)** vetting\_status\_read
+#### Projections
+- security_read
+- devices_read
+- sessions_read
 
-### Events
+#### Events Published
+- two_fa.enabled.v1
+- two_fa.disabled.v1
+- device.registered.v1
+- device.revoked.v1
+- session.revoked.v1
+- recovery.initiated.v1
+- recovery.completed.v1
 
-*   freelancer.profile.updated.v1, freelancer.rates.updated.v1, freelancer.stats.updated.v1, freelancer.earnings.updated.v1, freelancer.connects.added.v1, freelancer.connects.deducted.v1, freelancer.jss.updated.v1
+#### RBAC/SLO
+- **RBAC:** OWNER (all security operations)
+- **SLO:** P95 < 160ms (non-recovery), P95 < 300ms (recovery)
 
-*   **(New)** freelancer.vetting.applied.v1, freelancer.vetting.approved.v1
+---
 
-9.2 Open-to-Work & Calendar
----------------------------
+## **15 - PROFILE ENHANCEMENT DOMAINS (CONSOLIDATED)**
 
-### Stories
+### 15.1 profile_depth/
 
-*   As a freelancer, I want to toggle Open-to-Work and sync availability so that clients know when I’m available.
-    
-*   As a system, I want Google/Outlook sync so that calendars stay aligned.
-    
+#### User Stories
+- As a **system**, I want to **track rate history** so that rate changes over time are visible.
+- As a **freelancer**, I want to **view my rate history** so that I can track pricing evolution.
+- As a **system**, I want to **map skills to normalized taxonomy** so that skills are standardized across the platform.
+- As a **system**, I want to **store taxonomy mapping** so that search and matching work effectively.
 
-### Flow
+#### Flow
+1. **AddHourlyRateEntryCommand**(user_id, amount, currency, effective_at) → Validate() | Append() → **Outbox:** rate_history.updated.v1
+2. **NormalizeSkillSetCommand**(user_id, skills) → MapToTaxonomy() | Update() → **Outbox:** taxonomy.updated.v1
+3. **GetRateHistoryQuery**(user_id) → Fetch() → RateHistoryDTO
+4. **GetNormalizedSkillsQuery**(user_id) → Fetch() → NormalizedSkillsDTO
 
-*   SetOpenToWorkCommand | SyncAvailabilityCalendarCommand →GetOpenToWorkStateQuery | GetAvailabilityCalendarQuery →SetOpenToWork() | SyncAvailabilityCalendar()
-    
+#### Projections
+- profile_depth_read
+- rate_history_read
+- taxonomy_mapping_read
 
-### Events
+#### Events Published
+- rate_history.updated.v1
+- taxonomy.updated.v1
 
-*   freelancer.open\_to\_work.updated.v1, freelancer.calendar.synced.v1
-    
+#### RBAC/SLO
+- **RBAC:** SYSTEM (normalize), OWNER (add rate), PUBLIC (view)
+- **SLO:** P95 < 140ms
 
-9.3 Rate Bands & Auto Top-Up
-----------------------------
+---
 
-### Stories
+### 15.2 profile_completeness/
 
-*   As a freelancer, I want rate bands (hour/day/retainer) so that pricing is flexible.
-    
-*   As a freelancer, I want connects auto top-up so that proposals don’t get blocked.
-    
-*   As a system, I want auto-top-up via financial-be when balance dips below threshold.
-    
+#### User Stories
+- As a **freelancer**, I want to **see my profile completeness score** so that I know how complete my profile is.
+- As a **freelancer**, I want to **see missing sections** so that I know what to add.
+- As a **system**, I want to **calculate completeness based on section weights** so that important sections are prioritized.
+- As a **system**, I want to **provide recommendations** so that users know how to improve.
+- As a **freelancer**, I want to **reach completeness milestones** so that I'm encouraged to complete my profile.
 
-### Flow
+#### Flow
+1. **RecalculateCompletenessCommand**(user_id) → FetchProfileSections() | CalculateScore() | IdentifyMissing() | GenerateRecommendations() → **Outbox:** completeness.updated.v1
+2. **MarkSectionCompleteCommand**(user_id, section_name) → Validate() | Update() | TriggerRecalc() → **Outbox:** section.completed.v1
+3. **GetCompletenessScoreQuery**(user_id) → Fetch() → ProfileCompletenessDTO
+4. **GetMissingSectionsQuery**(user_id) → Fetch() → MissingSectionsDTO
+5. **GetRecommendationsQuery**(user_id) → Fetch() → RecommendationListDTO
 
-*   UpdateRateBandsCommand | ConfigureConnectsAutoTopUpCommand →GetRateBandsQuery | GetAutoTopUpConfigQuery →UpdateRateBands() | ConfigureConnectsAutoTopUp()
-    
+#### Projections
+- profile_completeness_read
 
-### Events
+#### Events Published
+- completeness.updated.v1
+- section.completed.v1
+- milestone.reached.v1
 
-*   freelancer.rate\_bands.updated.v1, freelancer.connects.autotopup.configured.v1
-    
+#### Events Consumed
+- profile.updated.v1 (trigger recalculation)
+- skill.added.v1 (trigger recalculation)
+- experience.added.v1 (trigger recalculation)
 
-9.4 Freelancer Tiering (+ Freelancer Plus)
-------------------------------------------
+#### RBAC/SLO
+- **RBAC:** SYSTEM (recalculate), OWNER (view)
+- **SLO:** P95 < 150ms
 
-### Stories
+---
 
-*   As a system, I want to assign tiers (basic/pro/elite) from stats so that benefits unlock.
-    
-*   As a freelancer, I want to know my tier so that I understand eligibility.
-    
-*   **(Added)** As a freelancer, I want to upgrade to Plus (subscription) for extra connects and premium benefits (e.g., reduced fees/direct contracts) so that I can compete better.
-    
+### 15.3 profile_analytics/
 
-### Flow
+#### User Stories
+- As a **freelancer**, I want to **track profile views** so that I know how much exposure I'm getting.
+- As a **freelancer**, I want to **see view sources** (search, direct link, referral) so that I understand where traffic comes from.
+- As a **freelancer**, I want to **track search appearances** so that I know how visible I am.
+- As a **system**, I want to **record engagement metrics** (click-through rates, interest signals) so that profile performance is measurable.
 
-*   AssignFreelancerTierCommand | UpgradeToPlusCommand (subscriptions-be) →GetFreelancerTierQuery | GetTierBenefitsQuery →AssignFreelancerTier() | UpgradeToPlus()
-    
+#### Flow
+1. **RecordViewCommand**(profile_id, viewer_id, source, viewed_at) → Validate() | Record() → **Outbox:** profile.viewed.v1
+2. **RecordSearchImpressionCommand**(profile_id, search_query, rank, appeared_at) → Validate() | Record() → **Outbox:** search.appearance.v1
+3. **RecordEngagementCommand**(profile_id, engagement_type, metadata) → Validate() | Record() → **Outbox:** engagement.recorded.v1
+4. **GetProfileViewsQuery**(user_id, time_range) → AuthorizeOwner() | Fetch() → ProfileViewsDTO
+5. **GetSearchAnalyticsQuery**(user_id, time_range) → AuthorizeOwner() | Fetch() → SearchAnalyticsDTO
+6. **GetEngagementMetricsQuery**(user_id, time_range) → AuthorizeOwner() | Fetch() → EngagementMetricsDTO
 
-### Events
+#### Projections
+- profile_analytics_read
+- profile_views_read
+- search_analytics_read
 
-*   freelancer.tier.assigned.v1, freelancer.tier.plus.upgraded.v1
-    
+#### Events Published
+- profile.viewed.v1
+- search.appearance.v1
+- engagement.recorded.v1
 
-9.5 Proposal Analytics **(Added)**
-----------------------------------
+#### RBAC/SLO
+- **RBAC:** SYSTEM (record), OWNER (view)
+- **SLO:** P95 < 140ms
 
-### Stories
+---
 
-*   As a freelancer, I want proposal analytics (views, acceptance rates) so that I can optimize submissions.
+### 15.4 profile_optimization/
 
-*   **(New)** As a freelancer, I want to see client-provided rejection reasons for my proposals so that I can improve.
+#### User Stories
+- As a **freelancer**, I want to **receive AI-powered profile suggestions** so that I can improve my profile quality.
+- As a **freelancer**, I want to **get keyword optimization recommendations** so that I appear in more searches.
+- As a **freelancer**, I want to **receive headline suggestions** so that my profile is more attractive.
+- As a **system**, I want to **track applied suggestions** so that effectiveness can be measured.
 
-### Flow
+#### Flow
+1. **GenerateAISuggestionsCommand**(user_id) → AnalyzeProfile() | GenerateSuggestions() | Store() → **Outbox:** suggestions.generated.v1
+2. **ApplyOptimizationCommand**(user_id, suggestion_id) → FetchSuggestion() | ApplyToProfile() | MarkApplied() → **Outbox:** optimization.applied.v1
+3. **GetOptimizationsQuery**(user_id) → AuthorizeOwner() | Fetch() → ProfileOptimizationDTO
+4. **GetKeywordSuggestionsQuery**(user_id) → Generate() → KeywordSuggestionsDTO
 
-*   (Updated) GetProposalAnalyticsQuery | RecordProposalRejectionReasonCommand → GetProposalAnalytics() | RecordProposalRejectionReason() → GetProposalRejectionReasonsQuery
+#### Projections
+- profile_optimization_read
 
-**Events**
+#### Events Published
+- suggestions.generated.v1
+- optimization.applied.v1
+- optimization.completed.v1
 
-*   **(New)** proposal.rejection.reason.recorded.v1
+#### RBAC/SLO
+- **RBAC:** SYSTEM (generate), OWNER (apply/view)
+- **SLO:** P95 < 250ms (generate), P95 < 180ms (apply)
 
-### Projections
+---
 
-*   proposal\_analytics\_read
-    
+## **16 - PROFILE VISIBILITY DOMAIN (CONSOLIDATED)**
 
-9.6 Direct Contracts for Plus/Elite **(Added)**
------------------------------------------------
+### 16.1 profile_visibility/
 
-### Stories
+#### User Stories
+- As a **freelancer**, I want to **set my visibility level** (Public, LimitedPublic, Private, AnonymousMode) so that I control who sees my profile.
+- As a **freelancer**, I want to **control searchable categories** so that I appear in relevant searches only.
+- As a **freelancer**, I want to **hide my profile from specific users** so that I manage visibility granularly.
+- As a **freelancer**, I want to **enable stealth mode** so that I can browse profiles anonymously.
+- As a **system**, I want to **enforce visibility rules in search** so that privacy preferences are respected.
 
-*   As a Plus/elite freelancer, I want no-fee direct contracts so that I keep more earnings.
-    
+#### Flow
+1. **ChangeVisibilityLevelCommand**(user_id, visibility_level) → Validate() | Update() → **Outbox:** visibility.changed.v1
+2. **UpdateSearchableCategoriesCommand**(user_id, categories) → Validate() | Update() → **Outbox:** searchable_categories.updated.v1
+3. **ToggleStealthModeCommand**(user_id, enabled) → Update() → **Outbox:** stealth_mode.toggled.v1
+4. **GetVisibilitySettingsQuery**(user_id) → AuthorizeOwner() | Fetch() → ProfileVisibilityDTO
+5. **GetSearchPreferencesQuery**(user_id) → AuthorizeOwner() | Fetch() → SearchPreferencesDTO
 
-### Flow
+#### Projections
+- profile_visibility_read
 
-*   CreateDirectContractCommand (integrate contracts-be, check tier) →GetDirectContractEligibilityQuery →CreateDirectContract()
-    
+#### Events Published
+- visibility.changed.v1
+- searchable_categories.updated.v1
+- stealth_mode.toggled.v1
 
-### Events
+#### RBAC/SLO
+- **RBAC:** OWNER (update/view)
+- **SLO:** P95 < 140ms
 
-*   freelancer.contract.direct.created.v1
+---
 
-9.7 Real-Time Collaboration Tools (New Subsection)
---------------------------------------------------
+## **17 - AVAILABILITY DOMAIN (CONSOLIDATED)**
 
-**Stories**
+### 17.1 availability/
 
-*   **(New)** As a freelancer, I want real-time collaboration tools (e.g., live document editing, chat) so that I can work with clients efficiently.
-    
+#### User Stories
+- As a **freelancer**, I want to **set my availability status** (Available, Busy, Away, DoNotDisturb) so that clients know when I can work.
+- As a **freelancer**, I want to **create recurring availability schedules** (weekly/monthly) so that my availability is predictable.
+- As a **freelancer**, I want to **enable vacation mode** so that I can take time off without losing visibility.
+- As a **freelancer**, I want to **sync with external calendars** (Google Calendar, Outlook) so that availability is automatic.
+- As a **system**, I want to **provide single source of availability** so that profile and other services reference consistent data.
 
-**Flow**
+#### Flow
+1. **SetAvailabilityStatusCommand**(user_id, status) → Validate() | Update() → **Outbox:** availability.updated.v1
+2. **CreateRecurringScheduleCommand**(user_id, schedule_rules) → Validate() | Store() → **Outbox:** recurring_schedule.created.v1
+3. **ToggleVacationModeCommand**(user_id, enabled, start_date, end_date) → Validate() | Update() → **Outbox:** vacation_mode.toggled.v1
+4. **SyncExternalCalendarCommand**(user_id, calendar_provider, auth_token) → AuthorizeProvider() | Sync() → **Outbox:** calendar.synced.v1
+5. **GetAvailabilityQuery**(user_id) → Fetch() → AvailabilityDTO
+6. **GetRecurringScheduleQuery**(user_id) → Fetch() → RecurringScheduleDTO
 
-*   **(New)** InitiateCollaborationSessionCommand → GetCollaborationSessionQuery → InitiateCollaborationSession()
-    
+#### Projections
+- availability_read
 
-**Events**
+#### Events Published
+- availability.updated.v1
+- recurring_schedule.created.v1
+- recurring_schedule.updated.v1
+- vacation_mode.toggled.v1
+- calendar.synced.v1
 
-*   **(New)** freelancer.collaboration.session.started.v1
-    
+#### RBAC/SLO
+- **RBAC:** OWNER (update), PUBLIC (view status)
+- **SLO:** P95 < 150ms
 
-**Projections**
+---
 
-*   **(New)** collaboration\_sessions\_read
+### 17.2 workload_capacity/
 
-9.9 Subscription Bundles for Freelancers (New Subsection)
-----------------------------------------------------------
+#### User Stories
+- As a **freelancer**, I want to **track my current workload** so that I don't overcommit.
+- As a **freelancer**, I want to **set maximum capacity** so that the platform prevents overbooking.
+- As a **freelancer**, I want to **see available hours** so that I know how much work I can take.
+- As a **system**, I want to **calculate capacity automatically** so that availability is accurate.
+- As a **system**, I want to **prevent overcommitment** so that freelancers maintain quality.
 
-**Stories**
+#### Flow
+1. **UpdateCurrentLoadCommand**(user_id, current_hours, commitments) → Calculate() | Update() → **Outbox:** workload.updated.v1
+2. **AddCommitmentCommand**(user_id, commitment_hours, start_date, end_date) → ValidateCapacity() | Add() → **Outbox:** commitment.added.v1
+3. **RemoveCommitmentCommand**(user_id, commitment_id) → Remove() | RecalculateCapacity() → **Outbox:** commitment.removed.v1
+4. **SetMaxCapacityCommand**(user_id, max_hours_per_week) → Validate() | Update() → **Outbox:** max_capacity.updated.v1
+5. **GetCapacityQuery**(user_id) → Calculate() → WorkloadCapacityDTO
+6. **GetAvailableHoursQuery**(user_id, time_range) → Calculate() → AvailableHoursDTO
 
-*   **(New)** As a freelancer, I want bundled subscription plans (e.g., Plus + analytics) so that I get premium features at a discount.
-    
+#### Projections
+- workload_capacity_read
 
-**Flow**
+#### Events Published
+- workload.updated.v1
+- commitment.added.v1
+- commitment.removed.v1
+- max_capacity.updated.v1
+- capacity.full.v1
+- capacity.available.v1
 
-*   **(New)** SubscribeToBundleCommand → GetBundleSubscriptionStatusQuery → SubscribeToBundle() (integrates with subscriptions-be)
-    
+#### Events Consumed
+- contract.created.v1 (add commitment)
+- contract.completed.v1 (remove commitment)
 
-**Events**
+#### RBAC/SLO
+- **RBAC:** OWNER (update), SYSTEM (auto-calculate), PUBLIC (view available hours)
+- **SLO:** P95 < 160ms
 
-*   **(New)** freelancer.subscription.bundle.subscribed.v1
-    
+---
 
-**Projections**
+## **18 - NETWORKING & CONNECTIONS DOMAINS**
 
-*   **(New)** subscription\_bundles\_read
+### 18.1 professional_network/
 
-10) Client
-==========
+#### User Stories
+- As a **user**, I want to **send connection requests** so that I can build my professional network.
+- As a **user**, I want to **accept or decline connection requests** so that I control my network.
+- As a **user**, I want to **specify relationship types** (Colleague, Client, Peer, Mentor) so that connections are categorized.
+- As a **user**, I want to **remove connections** so that I can manage my network.
+- As a **user**, I want to **view network analytics** (size, growth, strength) so that I understand my network.
 
-10.1 Client Profile, Spending & Stats (+ Payment Methods)
----------------------------------------------------------
+#### Flow
+1. **CreateConnectionRequestCommand**(requester_id, target_id, relationship_type, message) → ValidateNoDuplicate() | Send() → **Outbox:** connection.requested.v1
+2. **AcceptRequestCommand**(request_id, acceptor_id) → Validate() | CreateConnection() → **Outbox:** connection.accepted.v1
+3. **DeclineRequestCommand**(request_id, decliner_id) → Validate() | Decline() → **Outbox:** connection.declined.v1
+4. **RemoveConnectionCommand**(user_id, connection_id) → Validate() | Remove() → **Outbox:** connection.removed.v1
+5. **GetConnectionsQuery**(user_id) → Fetch() → ConnectionListDTO
+6. **GetConnectionRequestsQuery**(user_id) → Fetch() → ConnectionRequestListDTO
+7. **GetNetworkAnalyticsQuery**(user_id) → Calculate() → NetworkAnalyticsDTO
 
-### Stories
+#### Projections
+- professional_network_read
+- connection_requests_read
+- network_analytics_read
 
-*   As a client, I want to manage company profile so that freelancers understand us.
-    
-*   As a client, I want spending/hiring stats so that I can plan.
-    
-*   As a client, I want budget caps so that spending is controlled.
-    
-*   **(Added)** As a client, I want to add/verify payment methods so that I receive a verified payment badge.
+#### Events Published
+- connection.requested.v1
+- connection.accepted.v1
+- connection.declined.v1
+- connection.removed.v1
 
-*   **(New)** As a client, I want a dashboard with job performance analytics (e.g., hire rates, response times) so that I can optimize postings.
+#### RBAC/SLO
+- **RBAC:** OWNER (send/accept/decline/remove), PUBLIC (view connections)
+- **SLO:** P95 < 160ms
 
-### Flow
+---
 
-*   UpdateClientProfileCommand | UpdateCompanyDetailsCommand | UpdateClientStatsCommand | UpdateSpendingCommand | AddPaymentMethodCommand →GetClientByUserQuery | GetClientStatsQuery | VerifyPaymentMethodQuery →UpdateClientProfile() | UpdateCompanyDetails() | UpdateClientStats() | UpdateSpending() | AddPaymentMethod() | GetClientJobAnalytics()
-    
+### 18.2 referrals/
 
-### Projections
+#### User Stories
+- As a **user**, I want to **generate a referral code** so that I can invite others to the platform.
+- As a **user**, I want to **track referral clicks** so that I know who's using my code.
+- As a **system**, I want to **mark referrals as converted** when referred users sign up so that rewards can be issued.
+- As a **user**, I want to **receive referral rewards** so that I'm incentivized to invite others.
+- As a **user**, I want to **view referral statistics** so that I can track my referrals.
 
-*   clients\_read, client\_stats\_read, client\_payment\_methods\_read
+#### Flow
+1. **CreateReferralCodeCommand**(user_id) → GenerateUniqueCode() | Persist() → **Outbox:** referral_code.created.v1
+2. **RecordReferralClickCommand**(referral_code, clicked_at, metadata) → Validate() | Track() → **Outbox:** referral.clicked.v1
+3. **MarkReferralConvertedCommand**(referral_code, referred_user_id) → Validate() | Convert() | CalculateReward() → **Outbox:** referral.converted.v1
+4. **IssueRewardCommand**(user_id, reward_amount, reward_type) → ValidateEligibility() | Issue() → **Outbox:** reward.earned.v1
+5. **GetReferralCodeQuery**(user_id) → Fetch() → ReferralCodeDTO
+6. **GetReferralStatsQuery**(user_id) → Fetch() → ReferralStatsDTO
+7. **GetReferralRewardsQuery**(user_id) → Fetch() → ReferralRewardListDTO
 
-*   **(New)** client\_job\_analytics\_read
+#### Projections
+- referrals_read
+- referral_stats_read
 
-### Events
+#### Events Published
+- referral_code.created.v1
+- referral.clicked.v1
+- referral.converted.v1
+- reward.earned.v1
 
-*   client.profile.updated.v1, client.company.updated.v1, client.stats.updated.v1, client.spending.updated.v1, client.payment.method.added.v1
-    
+#### Events Consumed
+- user.created.v1 (to mark conversion)
 
-10.2 Verified Payment & Hire Visibility
----------------------------------------
+#### RBAC/SLO
+- **RBAC:** OWNER (create code/view stats), SYSTEM (track/convert/reward)
+- **SLO:** P95 < 150ms
 
-### Stories
+---
 
-*   As a client, I want a verified payment badge so that freelancers trust us.
-    
-*   As an org admin, I want org-wide hire visibility so that teams coordinate invites.
-    
+### 18.3 user_groups/
 
-### Flow
+#### User Stories
+- As a **user**, I want to **create community groups** (by skill, location, industry) so that I can connect with like-minded people.
+- As a **user**, I want to **join groups** so that I can participate in communities.
+- As a **user**, I want to **leave groups** so that I can manage my memberships.
+- As a **group owner**, I want to **assign moderators** so that groups are well-managed.
+- As a **system**, I want to **track group activity** so that engagement is measurable.
+- As a **system**, I want to **enforce member limits** so that groups remain manageable.
 
-*   SetVerifiedPaymentStatusCommand | EnableOrgHireVisibilityCommand →GetPaymentVerificationStatusQuery →SetVerifiedPaymentStatus() | EnableOrgHireVisibility()
-    
+#### Flow
+1. **CreateUserGroupCommand**(creator_id, name, category, description, member_limit) → Validate() | Create() | AssignOwner() → **Outbox:** group.created.v1
+2. **AddMemberCommand**(group_id, user_id) → CheckMemberLimit() | Add() → **Outbox:** group.member_added.v1
+3. **RemoveMemberCommand**(group_id, user_id, removed_by) → AuthorizeModerator() | Remove() → **Outbox:** group.member_removed.v1
+4. **AssignModeratorCommand**(group_id, user_id, assigned_by) → AuthorizeOwner() | Assign() → **Outbox:** group.moderator_assigned.v1
+5. **GetGroupQuery**(group_id) → Fetch() → UserGroupDTO
+6. **ListUserGroupsQuery**(user_id) → Fetch() → UserGroupListDTO
+7. **GetGroupMembersQuery**(group_id) → Fetch() → GroupMemberListDTO
 
-### Events
+#### Projections
+- user_groups_read
+- group_members_read
+- group_activity_read
 
-*   client.payment.verified.v1 (and client.payment.unverified.v1), client.org.visibility.enabled.v1
-    
+#### Events Published
+- group.created.v1
+- group.member_added.v1
+- group.member_removed.v1
+- group.moderator_assigned.v1
 
-10.3 Budget Forecasting
------------------------
+#### RBAC/SLO
+- **RBAC:** PUBLIC (create/join), OWNER (assign moderators), MODERATOR (remove members), PUBLIC (view)
+- **SLO:** P95 < 170ms
 
-### Stories
+---
 
-*   As a client, I want spending forecasts from active contracts so that budgeting is accurate.
-    
-*   As an analyst, I want forecast reports so that finance can plan.
-    
-*   **(Added)** As a client, I want budget overrun alerts so that I can control spending.
-    
+## **19 - FINANCIAL PROFILE DOMAINS**
 
-### Flow
+### 19.1 payment_methods/
 
-*   GetSpendingForecastQuery | SendBudgetOverrunAlertCommand →GetSpendingForecast() | SendBudgetOverrunAlert()
-    
+#### User Stories
+- As a **user**, I want to **add payment methods** (bank account, card, PayPal, crypto, Wise) so that I can receive payments.
+- As a **user**, I want to **verify payment methods** so that they're activated.
+- As a **user**, I want to **set a default payment method** so that withdrawals are automatic.
+- As a **user**, I want to **delete payment methods** so that I can remove outdated methods.
+- As a **system**, I want to **validate payment method details** so that transactions succeed.
 
-### Projections
+#### Flow
+1. **CreatePaymentMethodCommand**(user_id, method_type, details, is_default) → ValidateDetails() | Encrypt() | Persist() → **Outbox:** payment_method.added.v1
+2. **VerifyMethodCommand**(method_id, verification_code) → ValidateCode() | Activate() → **Outbox:** payment_method.verified.v1
+3. **SetAsDefaultCommand**(user_id, method_id) → Validate() | UpdateDefault() → **Outbox:** default_method.changed.v1
+4. **DeletePaymentMethodCommand**(user_id, method_id) → ValidateNotDefault() | Delete() → **Outbox:** payment_method.deleted.v1
+5. **GetPaymentMethodsQuery**(user_id) → AuthorizeOwner() | Fetch() → PaymentMethodListDTO
+6. **GetDefaultMethodQuery**(user_id) → AuthorizeOwner() | Fetch() → PaymentMethodDTO
 
-*   client\_budget\_forecast\_read
-    
+#### Projections
+- payment_methods_read
 
-### Events
+#### Events Published
+- payment_method.added.v1
+- payment_method.verified.v1
+- default_method.changed.v1
+- payment_method.deleted.v1
 
-*   **client.budget.overrun.alerted.v1**
-    
+#### RBAC/SLO
+- **RBAC:** OWNER (add/verify/set default/delete/view)
+- **SLO:** P95 < 180ms
 
-10.4 Client Subscription Tiers **(Added)**
-------------------------------------------
+---
 
-### Stories
+### 19.2 financial_profile/
 
-*   As a client, I want to subscribe to a premium tier for priority job posting and higher budgets.
-    
+#### User Stories
+- As a **freelancer**, I want to **set my preferred currency** so that I'm paid in my currency.
+- As a **freelancer**, I want to **customize invoice settings** (logo, footer, terms) so that invoices are branded.
+- As a **freelancer**, I want to **set default payment terms** (NET 30, upfront, milestones) so that clients know expectations.
+- As a **system**, I want to **validate currency codes** so that only supported currencies are used.
 
-### Flow
+#### Flow
+1. **UpdateCurrencyPreferencesCommand**(user_id, preferred_currencies) → ValidateCurrencyCodes() | Update() → **Outbox:** currency_preference.updated.v1
+2. **UpdateInvoiceSettingsCommand**(user_id, logo_url, footer_text, custom_terms) → Validate() | Update() → **Outbox:** invoice_settings.updated.v1
+3. **SetDefaultPaymentTermsCommand**(user_id, payment_terms) → Validate() | Update() → **Outbox:** payment_terms.updated.v1
+4. **GetFinancialProfileQuery**(user_id) → AuthorizeOwner() | Fetch() → FinancialProfileDTO
+5. **GetCurrencyPreferencesQuery**(user_id) → Fetch() → CurrencyPreferencesDTO
+6. **GetInvoiceSettingsQuery**(user_id) → AuthorizeOwner() | Fetch() → InvoiceSettingsDTO
 
-*   UpgradeClientToPremiumCommand (subscriptions-be) →GetClientTierQuery →UpgradeClientToPremium()
-    
+#### Projections
+- financial_profile_read
 
-### Events
+#### Events Published
+- currency_preference.updated.v1
+- invoice_settings.updated.v1
+- payment_terms.updated.v1
 
-*   client.tier.upgraded.v1
-    
-10.5 Client-Freelancer Matchmaking Feedback (New Subsection)
-------------------------------------------------------------
+#### RBAC/SLO
+- **RBAC:** OWNER (update/view)
+- **SLO:** P95 < 150ms
 
-**Stories**
+---
 
-*   **(New)** As a client, I want to provide feedback on AI matchmaking results so that recommendations improve.
-    
+### 19.3 earning_goals/
 
-**Flow**
+#### User Stories
+- As a **freelancer**, I want to **set earning goals** (monthly, quarterly, annual) so that I can track my progress.
+- As a **freelancer**, I want to **track progress toward goals** so that I know how I'm doing.
+- As a **system**, I want to **notify users when goals are achieved** so that accomplishments are celebrated.
+- As a **freelancer**, I want to **view goal achievements** so that I can see my history.
 
-*   **(New)** SubmitMatchmakingFeedbackCommand → GetMatchmakingFeedbackQuery → SubmitMatchmakingFeedback()
-    
+#### Flow
+1. **CreateEarningGoalCommand**(user_id, target_amount, period, goal_type) → Validate() | Persist() → **Outbox:** goal.created.v1
+2. **UpdateGoalProgressCommand**(goal_id, current_amount) → Calculate() | Update() → **Outbox:** goal_progress.updated.v1
+3. **MarkGoalAchievedCommand**(goal_id) → Validate() | MarkAchieved() → **Outbox:** goal.achieved.v1
+4. **GetEarningGoalsQuery**(user_id) → Fetch() → EarningGoalListDTO
+5. **GetGoalProgressQuery**(goal_id) → Calculate() → GoalProgressDTO
+6. **GetAchievementsQuery**(user_id) → Fetch() → GoalAchievementListDTO
 
-**Events**
+#### Projections
+- earning_goals_read
+- goal_progress_read
 
-*   **(New)** client.matchmaking.feedback.submitted.v1
-    
+#### Events Published
+- goal.created.v1
+- goal_progress.updated.v1
+- goal.achieved.v1
 
-**Projections**
+#### Events Consumed
+- payment.received.v1 (to update progress)
 
-*   **(New)** matchmaking\_feedback\_read
+#### RBAC/SLO
+- **RBAC:** OWNER (create/view), SYSTEM (update progress)
+- **SLO:** P95 < 150ms
 
-10.6 Enterprise SLA Guarantees (New Subsection)
------------------------------------------------
+---
 
-**Stories**
+## **20 - PROFESSIONAL DEVELOPMENT DOMAINS**
 
-*   **(New)** As an enterprise client, I want SLA guarantees (e.g., response times, match quality) so that my needs are prioritized.
-    
+### 20.1 learning_path/
 
-**Flow**
+#### User Stories
+- As a **freelancer**, I want to **receive personalized learning paths** so that I can develop relevant skills.
+- As a **freelancer**, I want to **see my skill gaps** so that I know what to learn.
+- As a **system**, I want to **recommend courses** based on skill gaps so that learning is targeted.
+- As a **freelancer**, I want to **enroll in courses** so that I can start learning.
+- As a **freelancer**, I want to **track course completion** so that I see my progress.
 
-*   **(New)** ConfigureEnterpriseSLACommand → GetSLAStatusQuery → ConfigureEnterpriseSLA()
-    
+#### Flow
+1. **GenerateLearningPathCommand**(user_id) → AnalyzeSkills() | IdentifyGaps() | RecommendCourses() | Create() → **Outbox:** learning_path.created.v1
+2. **EnrollInCourseCommand**(user_id, course_id) → Validate() | Enroll() → **Outbox:** course.enrolled.v1
+3. **CompleteCourseCommand**(user_id, course_id, completion_data) → Validate() | MarkComplete() → **Outbox:** course.completed.v1
+4. **GetLearningPathQuery**(user_id) → Fetch() → LearningPathDTO
+5. **GetSkillGapsQuery**(user_id) → Analyze() → SkillGapListDTO
+6. **GetCourseRecommendationsQuery**(user_id) → Generate() → CourseRecommendationListDTO
 
-**Events**
+#### Projections
+- learning_path_read
+- skill_gaps_read
 
-*   **(New)** client.sla.configured.v1
-    
+#### Events Published
+- learning_path.created.v1
+- course.enrolled.v1
+- course.completed.v1
+- skill.acquired.v1
 
-**Projections**
+#### RBAC/SLO
+- **RBAC:** SYSTEM (generate), OWNER (enroll/view)
+- **SLO:** P95 < 200ms
 
-*   **(New)** sla\_configs\_read
+---
 
-11) Verification (KYC/KYB)
-==========================
+### 20.2 mentorship/
 
-11.1 Submit & Review (+ Sanctions/OFAC/PEP)
--------------------------------------------
+#### User Stories
+- As a **freelancer**, I want to **request mentorship** so that I can learn from experienced professionals.
+- As a **mentor**, I want to **set my availability and expertise** so that mentees can find me.
+- As a **system**, I want to **match mentors with mentees** based on skills and goals so that pairings are effective.
+- As a **user**, I want to **schedule mentorship sessions** so that meetings are organized.
+- As a **system**, I want to **track mentorship progress** so that outcomes are measurable.
 
-### Stories
+#### Flow
+1. **CreateMentorshipRequestCommand**(mentee_id, desired_skills, goals) → Validate() | Create() → **Outbox:** mentorship.requested.v1
+2. **AcceptMentorshipCommand**(mentor_id, request_id) → Validate() | CreatePairing() → **Outbox:** mentorship.accepted.v1
+3. **ScheduleMentorshipSessionCommand**(mentorship_id, scheduled_at, duration) → ValidateAvailability() | Schedule() → **Outbox:** session.scheduled.v1
+4. **CompleteMentorshipCommand**(mentorship_id, completion_notes) → Validate() | Complete() → **Outbox:** mentorship.completed.v1
+5. **GetMentorshipQuery**(mentorship_id) → Fetch() → MentorshipDTO
+6. **GetMentorProfileQuery**(mentor_id) → Fetch() → MentorProfileDTO
+7. **ListAvailableMentorsQuery**(skills) → Filter() | Fetch() → MentorListDTO
 
-*   As a user, I want to submit KYC docs so that I can unlock trusted features.
-    
-*   As a compliance reviewer, I want to approve/reject (batch) so that trust is enforced.
-    
-*   As a system, I want encrypted storage via storage-be so that privacy is protected.
-    
-*   **(Added)** As a compliance system, I want sanctions/OFAC/PEP screening so that risky users are flagged.
+#### Projections
+- mentorship_read
+- mentor_profile_read
 
-*   **(New)** As a system, I want to validate VAT/GST for international users so that cross-border tax compliance is ensured.
+#### Events Published
+- mentorship.requested.v1
+- mentorship.accepted.v1
+- session.scheduled.v1
+- mentorship.completed.v1
 
-### Flow
+#### RBAC/SLO
+- **RBAC:** OWNER (request), MENTOR (accept/schedule), PUBLIC (view mentors)
+- **SLO:** P95 < 170ms
 
-*   SubmitVerificationCommand | ApproveVerificationCommand | RejectVerificationCommand | BatchApproveVerificationsCommand | ListVerificationsQuery | ScreenForSanctionsCommand | ValidateInternationalTaxCommand → SubmitVerification() | ApproveVerification() | RejectVerification() | BatchApproveVerifications() | ScreenForSanctions() | ValidateInternationalTax() → GetScreeningResultsQuery | GetInternationalTaxStatusQuery
-    
+---
 
-### Projections
+### 20.3 achievements/
 
-*   kyc\_read, kyb\_read, verification\_audit\_read, sanctions\_screening\_read
-    
+#### User Stories
+- As a **freelancer**, I want to **unlock achievements** (FirstJob, 10Jobs, TopRated, QuickResponder) so that my progress is recognized.
+- As a **system**, I want to **track achievement progress** so that users see how close they are.
+- As a **system**, I want to **have achievement tiers** (Bronze, Silver, Gold, Platinum) so that progression is gamified.
+- As a **system**, I want to **emit achievement events** so that badging service can issue badges.
+- As a **freelancer**, I want to **view my achievements** so that I see my accomplishments.
 
-### Events
+#### Flow
+1. **RecordAchievementProgressCommand**(user_id, achievement_type, progress_increment) → Update() | CheckUnlock() → **Outbox:** achievement_progress.updated.v1
+2. **UnlockAchievementCommand**(user_id, achievement_type, tier) → Validate() | Unlock() → **Outbox:** achievement.unlocked.v1
+3. **GetAchievementsQuery**(user_id) → Fetch() → AchievementListDTO
+4. **GetAchievementProgressQuery**(user_id, achievement_type) → Fetch() → AchievementProgressDTO
 
-*   verification.submitted.v1, verification.approved.v1, verification.rejected.v1, verification.batch\_approved.summary.v1, verification.sanctions.flagged.v1
+#### Projections
+- achievements_read
+- achievement_progress_read
 
-*   **(New)** verification.tax.international.validated.v1
+#### Events Published
+- achievement_progress.updated.v1
+- achievement.unlocked.v1
+- tier.reached.v1
 
+#### Events Consumed
+- contract.completed.v1 (to update progress)
+- review.submitted.v1 (to update progress)
 
-### RBAC
+#### RBAC/SLO
+- **RBAC:** SYSTEM (record/unlock), OWNER (view)
+- **SLO:** P95 < 150ms
 
-*   role:COMPLIANCE\_REVIEWER
-    
+---
 
-11.2 Trigger Re-Verification
-----------------------------
+## **21 - COMPLIANCE DOMAIN**
 
-### Stories
+### 21.1 compliance/
 
-*   As a system, I want re-verification on expiry/risk so that statuses stay current.
-    
-*   As a compliance reviewer, I want a queue of candidates so that workloads are clear.
-    
+#### User Stories
+- As a **freelancer**, I want to **submit my tax profile** (country, VAT/GST, TIN) so that I comply with tax regulations.
+- As a **freelancer**, I want to **update my residency information** so that my location is current.
+- As a **freelancer**, I want to **attach tax documents** (W-8/W-9/VAT docs) so that I can prove compliance.
+- As a **system**, I want to **validate country-specific fields** so that compliance data is accurate.
+- As an **admin**, I want to **review compliance artifacts** so that I can verify legitimacy.
 
-### Flow
+#### Flow
+1. **CreateOrUpdateTaxProfileCommand**(user_id, country, vat_gst, tin, w_form_refs) → ValidateCountryFields() | Persist() → **Outbox:** tax_profile.updated.v1
+2. **SetResidencyCommand**(user_id, country, since, proof_docs) → Validate() | Update() → **Outbox:** residency.updated.v1
+3. **AttachWFormCommand**(user_id, form_type, document_url) → ValidateForm() | Attach() → **Outbox:** w_form.attached.v1
+4. **AttachVATCommand**(user_id, vat_number, document_url) → ValidateVAT() | Attach() → **Outbox:** vat.attached.v1
+5. **GetTaxProfileQuery**(user_id) → AuthorizeOwner() | Fetch() → TaxProfileDTO
+6. **GetResidencyQuery**(user_id) → AuthorizeOwner() | Fetch() → ResidencyDTO
+7. **ListComplianceArtifactsQuery**(user_id) → AuthorizeOwner() | Fetch() → ComplianceArtifactListDTO
 
-*   TriggerReVerificationCommand →GetReverificationCandidatesQuery →TriggerReVerification()
-    
+#### Projections
+- compliance_read
+- tax_profile_read
+- residency_read
 
-### Events
+#### Events Published
+- tax_profile.updated.v1
+- residency.updated.v1
+- w_form.attached.v1
+- vat.attached.v1
+- compliance_artifact.added.v1
 
-*   verification.reverify.triggered.v1
-    
+#### RBAC/SLO
+- **RBAC:** OWNER (submit/update/view), ADMIN (review artifacts)
+- **SLO:** P95 < 170ms
 
-11.3 Risk-Tiered KYC
---------------------
+---
 
-### Stories
+## **22 - COMMUNICATION PREFERENCES DOMAINS**
 
-*   As a risk engine, I want to set KYC tier so that checks match risk.
-    
-*   As a system, I want automatic tier upgrades on high-value actions.
-    
+### 22.1 communication_channels/
 
-### Flow
+#### User Stories
+- As a **user**, I want to **add communication channels** (Email, SMS, Push, InApp, WhatsApp, Slack) so that I can be reached.
+- As a **user**, I want to **set channel preferences** so that I control where notifications go.
+- As a **user**, I want to **define quiet hours** so that I'm not disturbed during specific times.
+- As a **system**, I want to **route notifications to preferred channels** so that communication is effective.
 
-*   SetKYCTierCommand →GetKYCTierQuery →SetKYCTier()
-    
+#### Flow
+1. **AddChannelCommand**(user_id, channel_type, channel_details) → Validate() | Add() → **Outbox:** channel.added.v1
+2. **RemoveChannelCommand**(user_id, channel_id) → Validate() | Remove() → **Outbox:** channel.removed.v1
+3. **SetChannelPreferencesCommand**(user_id, preferences) → Validate() | Update() → **Outbox:** channel_preferences.updated.v1
+4. **ConfigureQuietHoursCommand**(user_id, start_time, end_time, timezone) → Validate() | Configure() → **Outbox:** quiet_hours.set.v1
+5. **GetChannelsQuery**(user_id) → AuthorizeOwner() | Fetch() → CommunicationChannelListDTO
+6. **GetChannelPreferencesQuery**(user_id) → AuthorizeOwner() | Fetch() → ChannelPreferencesDTO
+7. **GetQuietHoursQuery**(user_id) → AuthorizeOwner() | Fetch() → QuietHoursDTO
 
-### Events
+#### Projections
+- communication_channels_read
 
-*   verification.tier.updated.v1
-    
+#### Events Published
+- channel.added.v1
+- channel.removed.v1
+- channel_preferences.updated.v1
+- quiet_hours.set.v1
 
-11.4 Liveness Check
--------------------
+#### RBAC/SLO
+- **RBAC:** OWNER (add/remove/configure/view)
+- **SLO:** P95 < 150ms
 
-### Stories
+---
 
-*   As a user, I want a liveness check so that spoofing is prevented.
-    
-*   As a system, I want integration with external liveness APIs.
-    
+### 22.2 email_preferences/
 
-### Flow
+#### User Stories
+- As a **user**, I want to **set email frequency** (RealTime, Daily, Weekly, Never) so that I control email volume.
+- As a **user**, I want to **configure email categories** (JobAlerts, Messages, Updates, Marketing) so that I receive relevant emails.
+- As a **user**, I want to **enable email digests** so that I get batched updates instead of individual emails.
+- As a **user**, I want to **mute specific categories** so that I don't receive certain types of emails.
 
-*   RecordLivenessCheckCommand →GetLivenessResultsQuery →RecordLivenessCheck()
-    
+#### Flow
+1. **UpdateEmailFrequencyCommand**(user_id, category, frequency) → Validate() | Update() → **Outbox:** email_frequency.updated.v1
+2. **UpdateCategoryPreferencesCommand**(user_id, category_prefs) → Validate() | Update() → **Outbox:** category_preferences.updated.v1
+3. **EnableDigestCommand**(user_id, digest_type, schedule) → Validate() | Enable() → **Outbox:** digest.enabled.v1
+4. **MuteCategoryCommand**(user_id, category) → Validate() | Mute() → **Outbox:** category.muted.v1
+5. **GetEmailPreferencesQuery**(user_id) → AuthorizeOwner() | Fetch() → EmailPreferencesDTO
+6. **GetFrequencySettingsQuery**(user_id) → AuthorizeOwner() | Fetch() → FrequencySettingsDTO
+7. **GetDigestSettingsQuery**(user_id) → AuthorizeOwner() | Fetch() → DigestSettingsDTO
 
-### Events
+#### Projections
+- email_preferences_read
 
-*   verification.liveness.recorded.v1
-    
+#### Events Published
+- email_frequency.updated.v1
+- category_preferences.updated.v1
+- digest.enabled.v1
+- category.muted.v1
 
-11.5 KYB for Orgs
------------------
+#### RBAC/SLO
+- **RBAC:** OWNER (update/view)
+- **SLO:** P95 < 140ms
 
-### Stories
-
-*   As an org admin, I want KYB submission so that enterprise features unlock.
-    
-*   As a compliance reviewer, I want KYB status tracking.
-    
-
-### Flow
-
-*   SubmitKYBCommand →GetKYBStatusQuery →SubmitKYB()
-    
-
-### Events
-
-*   verification.kyb.submitted.v1
-    
-
-11.6 Automated Tax Withholding Verification **(Added)**
--------------------------------------------------------
-
-### Stories
-
-*   As a system, I want automated tax withholding verification (e.g., TIN matching) so that tax compliance is ensured.
-    
-
-### Flow
-
-*   VerifyTaxWithholdingCommand →GetTaxWithholdingStatusQuery →VerifyTaxWithholding()
-    
-
-### Events
-
-*   verification.tax.withholding.verified.v1
-    
-11.7 Compliance Certifications (New Subsection)
------------------------------------------------
-
-**Stories**
-
-*   **(New)** As an org admin, I want a SOC 2/ISO 27001 compliance badge so that clients trust my organization.
-    
-
-**Flow**
-
-*   **(New)** AssignComplianceBadgeCommand → GetComplianceBadgeStatusQuery → AssignComplianceBadge()
-    
-
-**Events**
-
-*   **(New)** verification.compliance.badge.assigned.v1
-    
-
-**Projections**
-
-*   **(New)** compliance\_badges\_read
-
-12) Settings
-============
-
-12.1 Personalization & Privacy
-------------------------------
-
-### Stories
-
-*   As a user, I want to set theme/language/timezone so that my UI is comfortable.
-    
-*   As a user, I want privacy controls so that I manage my exposure.
-    
-
-### Flow
-
-*   UpdateSettingsCommand | UpdatePrivacySettingsCommand →GetSettingsByUserQuery | ListSettingsQuery →UpdateSettings() | UpdatePrivacySettings()
-    
-
-### Events
-
-*   settings.updated.v1
-    
-
-12.2 Notification Preferences
------------------------------
-
-### Stories
-
-*   As a user, I want notification preferences so that I choose how I’m alerted.
-    
-
-### Flow
-
-*   UpdateNotificationPrefsCommand →GetNotificationPrefsQuery →UpdateNotificationPrefs()
-    
-
-### Events
-
-*   settings.notification\_prefs.updated.v1
-    
-
-12.3 Channel Matrix per Event
------------------------------
-
-### Stories
-
-*   As a user, I want per-event channel routing (email/SMS/push/in-app/webhook) so that control is granular.
-    
-*   As a developer, I want webhook channel selection so that integrations work.
-    
-
-### Flow
-
-*   UpdateChannelMatrixCommand →GetChannelMatrixQuery →UpdateChannelMatrix()
-    
-
-### Events
-
-*   settings.channels.updated.v1
-    
-
-12.4 Data Residency Preference
-------------------------------
-
-### Stories
-
-*   As a user, I want to pick a data residency (EU/US) so that compliance is met.
-    
-*   As a system, I want migration on change.
-    
-
-### Flow
-
-*   SetDataResidencyPreferenceCommand →GetDataResidencyQuery →SetDataResidencyPreference()
-    
-
-### Events
-
-*   settings.data\_residency.updated.v1
-    
-
-12.5 Accessibility Settings
----------------------------
-
-### Stories
-
-*   As a user, I want high-contrast/screen-reader prefs so that the platform is accessible.
-    
-
-### Flow
-
-*   UpdateAccessibilitySettingsCommand →GetAccessibilitySettingsQuery →UpdateAccessibilitySettings()
-    
-
-### Events
-
-*   settings.accessibility.updated.v1
-    
-
-13) Saved Items
-===============
-
-13.1 Save / Unsave / Notes
---------------------------
-
-### Stories
-
-*   As a user, I want to save/unsave jobs or freelancers so that I can revisit later.
-    
-*   As a user, I want to add notes so that context is remembered.
-    
-*   As a system, I want duplicate prevention so that lists are clean.
-    
-
-### Flow
-
-*   SaveItemCommand | UnsaveItemCommand | UpdateSavedItemNoteCommand →GetSavedItemsByUserQuery | ListSavedItemsQuery | SearchSavedItemsQuery →SaveItem() | UnsaveItem() | UpdateSavedItemNote()
-    
-
-### Events
-
-*   saved.item.saved.v1, saved.item.unsaved.v1, saved.item.note.updated.v1
-    
-
-13.2 Collections & Sharing
---------------------------
-
-### Stories
-
-*   As an org member, I want collections and sharing/permissions so that my team collaborates.
-    
-*   As a user, I want to move items between collections.
-    
-
-### Flow
-
-*   CreateSavedCollectionCommand | MoveSavedItemToCollectionCommand | ShareSavedCollectionCommand →GetSavedCollectionsQuery →CreateSavedCollection() | MoveSavedItemToCollection() | ShareSavedCollection()
-    
-
-### Events
-
-*   saved.collection.created.v1, saved.item.moved.v1, saved.collection.shared.v1
-    
-
-13.3 Expiry & Reminders
------------------------
-
-### Stories
-
-*   As a user, I want expiries/reminders so that my list stays fresh.
-    
-*   As a system, I want scheduled reminders.
-    
-
-### Flow
-
-*   SetSavedItemExpiryCommand | SendSavedItemReminderCommand →GetExpiringSavedItemsQuery →SetSavedItemExpiry() | SendSavedItemReminder()
-    
-
-### Events
-
-*   saved.item.expiry.set.v1, saved.item.reminder.sent.v1
-    
-
-14) Blocked Users
-=================
-
-14.1 Block / Unblock
---------------------
-
-### Stories
-
-*   As a user, I want to block/unblock with a reason so that I control interactions.
-    
-*   As a system, I want self-block prevention.
-    
-
-### Flow
-
-*   BlockUserCommand | UnblockUserCommand →GetBlockedUsersByUserQuery | IsBlockedQuery →BlockUser() | UnblockUser()
-    
-
-### Events
-
-*   user.blocked.v1, user.unblocked.v1
-    
-
-14.2 Scoped & Time-Bound
-------------------------
-
-### Stories
-
-*   As a user, I want scoped (messaging/invites/full) and time-bound blocks so that restrictions fit my needs.
-    
-*   As a system, I want auto-unblock on expiry.
-    
-
-### Flow
-
-*   BlockUserScopedCommand | ExtendBlockDurationCommand →GetBlockScopesQuery →BlockUserScoped() | ExtendBlockDuration()
-    
-
-### Events
-
-*   user.block.scoped.v1, user.block.duration.extended.v1
-    
-
-14.3 Block Appeals
-------------------
-
-### Stories
-
-*   As a blocked user, I want to appeal a block so that mistakes get resolved.
-    
-
-### Flow
-
-*   AppealBlockCommand →GetBlockAppealsQuery →AppealBlock()
-    
-
-### Events
-
-*   user.block.appealed.v1
-    
-
-15) User Suspension
-===================
-
-15.1 Place / Release / Extend
------------------------------
-
-### Stories
-
-*   As a moderator, I want to place/release/extend suspensions so that policy is enforced.
-    
-*   As a system, I want history logged.
-    
-
-### Flow
-
-*   SuspendUserCommand | ReleaseSuspensionCommand | ExtendSuspensionCommand | AddSuspensionHistoryCommand →GetSuspensionsByUserQuery | ListActiveSuspensionsQuery | GetSuspensionHistoryQuery →SuspendUser() | ReleaseSuspension() | ExtendSuspension() | AddSuspensionHistory()
-    
-
-### Events
-
-*   user.suspension.placed.v1, user.suspension.released.v1, user.suspension.extended.v1, user.suspension.history.added.v1
-    
-
-15.2 Schedule / Cancel
-----------------------
-
-### Stories
-
-*   As a moderator, I want to schedule/cancel future suspensions so that grace periods are honored.
-    
-
-### Flow
-
-*   ScheduleSuspensionCommand | CancelScheduledSuspensionCommand →GetScheduledSuspensionsQuery →ScheduleSuspension() | CancelScheduledSuspension()
-    
-
-### Events
-
-*   user.suspension.scheduled.v1, user.suspension.canceled.v1
-    
-
-15.3 Auto-Suspend Matrix
-------------------------
-
-### Stories
-
-*   As a system, I want auto-suspend based on warnings+risk with grace so that enforcement is consistent.
-    
-
-### Flow
-
-*   AutoSuspendUserCommand →GetAutoSuspendCandidatesQuery →AutoSuspendUser()
-    
-
-### Events
-
-*   user.suspension.auto.placed.v1
-    
-
-15.4 Suspension Appeals
------------------------
-
-### Stories
-
-*   As a user, I want to appeal suspensions with evidence so that fairness is preserved.
-    
-
-### Flow
-
-*   AppealSuspensionCommand →GetSuspensionAppealsQuery →AppealSuspension()
-    
-
-### Events
-
-*   user.suspension.appealed.v1
-    
-
-16) User Ban
-============
-
-16.1 Ban / Release / History
-----------------------------
-
-### Stories
-
-*   As a trust & safety admin, I want to ban/release users and log history so that severe cases are handled.
-    
-*   As a system, I want expiry for temporary bans.
-    
-
-### Flow
-
-*   BanUserCommand | ReleaseBanCommand | AddBanHistoryCommand →GetBansByUserQuery | ListActiveBansQuery | GetBanHistoryQuery →BanUser() | ReleaseBan() | AddBanHistory()
-    
-
-### Events
-
-*   user.ban.placed.v1, user.ban.released.v1, user.ban.history.added.v1
-    
-
-16.2 Shadow-Ban
----------------
-
-### Stories
-
-*   As a moderator, I want to enable/disable shadow-ban so that spam is dampened during investigations.
-    
-
-### Flow
-
-*   EnableShadowBanCommand | DisableShadowBanCommand →GetShadowBanStatusQuery →EnableShadowBan() | DisableShadowBan()
-    
-
-### Events
-
-*   user.shadowban.enabled.v1, user.shadowban.disabled.v1
-    
-
-16.3 Ban Evasion Detection
---------------------------
-
-### Stories
-
-*   As a system, I want to detect ban evasion via IP/device so that repeat offenders are caught.
-    
-
-### Flow
-
-*   DetectBanEvasionCommand →GetEvasionLinksQuery →DetectBanEvasion()
-    
-
-### Events
-
-*   user.ban.evasion.detected.v1
-    
-
-17) User Warning
-================
-
-17.1 Issue / Acknowledge / Escalate
------------------------------------
-
-### Stories
-
-*   As a moderator, I want to issue warnings so that users can correct behavior.
-    
-*   As a user, I want to acknowledge warnings so that my record is accurate.
-    
-*   As a system, I want escalation on repeated warnings so that enforcement is predictable.
-    
-
-### Flow
-
-*   IssueWarningCommand | AcknowledgeWarningCommand | EscalateWarningsCommand →GetWarningsByUserQuery | ListUnacknowledgedWarningsQuery | GetWarningHistoryQuery →IssueWarning() | AcknowledgeWarning() | EscalateWarnings()
-    
-
-### Events
-
-*   user.warning.issued.v1, user.warning.acknowledged.v1, user.warning.escalated.v1
-    
-
-17.2 Acknowledgement SLA & Appeal Link
---------------------------------------
-
-### Stories
-
-*   As a system, I want an acknowledgement deadline so that users respond in time.
-    
-*   As a moderator, I want to link an appeal ticket so that due process is auditable.
-    
-
-### Flow
-
-*   SetWarningAcknowledgementDeadlineCommand | LinkWarningAppealTicketCommand →GetWarningSLAsQuery →SetWarningAcknowledgementDeadline() | LinkWarningAppealTicket()
-    
-
-### Events
-
-*   user.warning.deadline.set.v1, user.warning.appeal.linked.v1
-    
-
-17.3 Warning Decay
-------------------
-
-### Stories
-
-*   As a system, I want warnings to decay over time so that good behavior is rewarded.
-    
-
-### Flow
-
-*   DecayWarningsCommand →GetDecayingWarningsQuery →DecayWarnings()
-    
-
-### Events
-
-*   user.warning.decayed.v1
-    
-
-18) Org (Agencies/Companies)
-============================
-
-18.1 Org Lifecycle & Membership (+ Shared Billing)
---------------------------------------------------
-
-### Stories
-
-*   As an org admin, I want to create/update an org so that my team can collaborate.
-    
-*   As an org admin, I want to manage members/roles/invites/seats so that permissions and capacity are controlled.
-    
-*   As a member, I want to accept invites so that I can join.
-    
-*   **(Added)** As an org admin, I want shared billing integration so that seats and hires are charged centrally.
-    
-
-### Flow
-
-*   CreateOrgCommand | UpdateOrgCommand | AddMemberCommand | RemoveMemberCommand | InviteMemberCommand | ManageSeatsCommand | LinkOrgBillingCommand →GetOrgByIDQuery | GetOrgsByUserQuery | ListMembersQuery | GetSeatUsageQuery | GetOrgBillingStatusQuery →CreateOrg() | UpdateOrg() | AddMember() | RemoveMember() | InviteMember() | ManageSeats() | LinkOrgBilling()
-    
-
-### Events
-
-*   org.account.created.v1, org.account.updated.v1, org.member.added.v1, org.member.removed.v1, org.invite.sent.v1, org.seats.updated.v1, org.billing.linked.v1
-    
-
-18.2 Seat Policy Templates
---------------------------
-
-### Stories
-
-*   As an org admin, I want seat policy templates so that permissions are consistent.
-    
-
-### Flow
-
-*   ApplySeatPolicyTemplateCommand →GetSeatPoliciesQuery →ApplySeatPolicyTemplate()
-    
-
-### Events
-
-*   org.policy.applied.v1
-    
-
-18.3 Talent Pools
------------------
-
-### Stories
-
-*   As a recruiter, I want to create talent pools and add users so that hiring pipelines are organized.
-
-*   **(New)** As an org admin, I want AI-curated talent pool recommendations so that I can quickly find vetted freelancers.
-
-### Flow
-
-*   CreateOrgTalentPoolCommand | AddUserToTalentPoolCommand →ListTalentPoolsQuery | GetTalentPoolMembersQuery →CreateOrgTalentPool() | AddUserToTalentPool()
-    
-*   **(New)** GetAITalentPoolRecommendationsQuery → GetAITalentPoolRecommendations() (integrates with 9.1 JSS, vetting)
-
-### Events
-
-*   org.talent\_pool.created.v1, org.talent\_pool.member.added.v1
-    
-**Projections**
-
-*   **(New)** talent\_pool\_recommendations\_read
-
-18.4 Org Hierarchy
-------------------
-
-### Stories
-
-*   As an enterprise admin, I want parent/child org hierarchies so that conglomerates are modeled.
-    
-
-### Flow
-
-*   CreateOrgHierarchyCommand | LinkChildOrgCommand →GetOrgHierarchyQuery →CreateOrgHierarchy() | LinkChildOrg()
-    
-
-### Events
-
-*   org.hierarchy.created.v1, org.child.linked.v1
-    
-
-19) Security Center
-===================
-
-19.1 Two-Factor, Devices & Sessions
------------------------------------
-
-### Stories
-
-*   As a user, I want to enable/disable 2FA so that my account is secure.
-    
-*   As a user, I want to register devices and revoke sessions so that I control access.
-    
-*   As a system, I want recovery keys so that lockouts are avoided.
-    
-
-### Flow
-
-*   Enable2FACommand | Disable2FACommand | RegisterDeviceCommand | RevokeSessionCommand | GenerateRecoveryKeysCommand →GetSecuritySettingsQuery | ListDevicesQuery | ListActiveSessionsQuery →Enable2FA() | Disable2FA() | RegisterDevice() | RevokeSession() | GenerateRecoveryKeys()
-    
-
-### Events
-
-*   security.2fa.enabled.v1, security.2fa.disabled.v1, security.device.registered.v1, security.session.revoked.v1, security.recovery.keys.generated.v1
-    
-
-19.2 Device Fingerprint & Anomalies
------------------------------------
-
-### Stories
-
-*   As a system, I want device fingerprints so that risky device reuse is tracked.
-    
-*   As a system, I want impossible-travel detection so that anomalies are flagged.
-    
-
-### Flow
-
-*   RecordDeviceFingerprintCommand | RecordLoginAnomalyCommand →GetDeviceFingerprintsQuery | GetAnomalyLogsQuery →RecordDeviceFingerprint() | RecordLoginAnomaly()
-    
-
-### Events
-
-*   security.device.fingerprint.recorded.v1, security.anomaly.detected.v1
-    
-
-19.3 Passkeys
--------------
-
-### Stories
-
-*   As a user, I want passwordless passkeys so that login is secure and easy.
-    
-
-### Flow
-
-*   RegisterPasskeyCommand | AuthenticateWithPasskeyCommand →GetPasskeysQuery →RegisterPasskey() | AuthenticateWithPasskey()
-    
-
-### Events
-
-*   security.passkey.registered.v1, security.passkey.authenticated.v1
-    
-
-20) Compliance
-==============
-
-20.1 Tax, Residency & Artifacts (+ Tax Form Validation)
--------------------------------------------------------
-
-### Stories
-
-*   As a freelancer, I want to submit tax profiles and residency so that I’m compliant.
-    
-*   As a user, I want to upload compliance artifacts so that audits pass.
-    
-*   As a system, I want GDPR/CCPA-friendly storage so that regulations are obeyed.
-    
-*   **(Added)** As a freelancer, I want tax form validation (W-9/W-8BEN) so that submissions are error-free.
-    
-*   **(New)** As a compliance officer, I want configurable audit log retention policies so that regulatory requirements are met.
-    
-
-### Flow
-
-*   UpdateTaxProfileCommand | UpdateResidencyCommand | SubmitComplianceArtifactCommand | ValidateTaxFormCommand | SetAuditLogRetentionPolicyCommand → GetComplianceByUserQuery | GetTaxProfileQuery | ListComplianceArtifactsQuery | GetAuditLogRetentionPolicyQuery → UpdateTaxProfile() | UpdateResidency() | SubmitComplianceArtifact() | ValidateTaxForm() | SetAuditLogRetentionPolicy()
-    
-
-### Events
-
-*   compliance.tax.updated.v1, compliance.residency.updated.v1, compliance.artifact.submitted.v1, compliance.taxform.validated.v1
-    
-*   **(New)** compliance.audit.retention.set.v1
-
-
-20.2 GDPR/CCPA Export
----------------------
-
-### Stories
-
-*   As a user, I want a full data export so that I can receive my data.
-    
-*   As a compliance officer, I want export status so that I can track completion.
-    
-
-### Flow
-
-*   BulkExportDataCommand →GetAuditLogsQuery | GetExportStatusQuery →ExportData()
-    
-
-### Events
-
-*   compliance.export.requested.v1, compliance.export.completed.v1
-    
-
-20.3 Consent Management & Receipts
-----------------------------------
-
-### Stories
-
-*   As a user, I want to grant/revoke consents so that data usage is under my control.
-    
-*   As a user, I want signed consent receipts so that changes are auditable.
-    
-
-### Flow
-
-*   UpdateConsentCommand | GenerateConsentReceiptCommand →GetConsentsQuery →UpdateConsent() | GenerateConsentReceipt()
-    
-
-### Events
-
-*   compliance.consent.updated.v1, compliance.receipt.generated.v1
-    
-
-20.4 GDPR Deletion Orchestration
---------------------------------
-
-### Stories
-
-*   As a user, I want to request account deletion so that my personal data is erased.
-    
-*   As a system, I want to orchestrate deletion across services so that consistency is achieved.
-    
-
-### Flow
-
-*   StartGDPRDeletionCommand | CompleteGDPRDeletionCommand →GetDeletionStatusQuery →StartGDPRDeletion() | CompleteGDPRDeletion()
-    
-
-### Events
-
-*   compliance.deletion.started.v1, compliance.deletion.completed.v1
-    
-
-20.5 Audit Trail Export
------------------------
-
-### Stories
-
-*   As a compliance officer, I want audit trail exports (JSON/CSV) so that regulators can review.
-    
-
-### Flow
-
-*   ExportAuditTrailCommand →GetAuditTrailQuery →ExportAuditTrail()
-    
-
-### Events
-
-*   compliance.audit.exported.v1
-    
-20.6 Data Breach Notification Workflow (New Subsection)
--------------------------------------------------------
-
-**Stories**
-
-*   **(New)** As a compliance officer, I want an automated data breach notification system so that users are informed per GDPR/CCPA.
-    
-
-**Flow**
-
-*   **(New)** TriggerBreachNotificationCommand → GetBreachNotificationStatusQuery → TriggerBreachNotification()
-    
-
-**Events**
-
-*   **(New)** compliance.breach.notification.sent.v1
-    
-
-**Projections**
-
-*   **(New)** breach\_notifications\_read
-
-21) Risk Signals
-================
-
-21.1 Signals, Scoring & Holds
------------------------------
-
-### Stories
-
-*   As a risk engine, I want to ingest signals and compute scores so that platform risk is managed.
-    
-*   As a moderator, I want to place/release risk holds so that funds or features are protected.
-    
-
-### Flow
-
-*   RecordRiskSignalCommand | ComputeRiskScoreCommand | PlaceHoldCommand | ReleaseHoldCommand →GetRiskSignalsByUserQuery | GetRiskScoreQuery | ListHighRiskUsersQuery →RecordRiskSignal() | ComputeRiskScore() | PlaceHold() | ReleaseHold()
-    
-
-### Events
-
-*   risk.signal.recorded.v1, risk.score.updated.v1, risk.hold.placed.v1, risk.hold.released.v1
-    
-
-21.2 Explainable Score
-----------------------
-
-### Stories
-
-*   As a reviewer, I want explainable risk components so that I understand decisions.
-    
-
-### Flow
-
-*   ComputeExplainableRiskScoreCommand →GetRiskExplanationQuery →ComputeExplainableRiskScore()
-    
-
-### Events
-
-*   risk.score.explainable.v1
-    
-
-21.3 Risk Rate-Limit Policy
----------------------------
-
-### Stories
-
-*   As a system, I want stricter write rate-limits at high risk so that abuse is mitigated.
-    
-
-### Flow
-
-*   ApplyRiskRateLimitPolicyCommand →GetRiskPoliciesQuery →ApplyRiskRateLimitPolicy()
-    
-
-### Events
-
-*   risk.policy.applied.v1
-    
-
-21.4 Signal Correlation
------------------------
-
-### Stories
-
-*   As a risk analyst, I want correlated signals (IP+device+payment) so that fraud rings are detected.
-    
-
-### Flow
-
-*   CorrelateRiskSignalsCommand →GetCorrelatedSignalsQuery →CorrelateRiskSignals()
-    
-
-### Events
-
-*   risk.signals.correlated.v1
-    
-
-21.5 Real-Time Risk Alerts **(Added)**
---------------------------------------
-
-### Stories
-
-*   As a moderator, I want real-time risk alerts so that I can act on high-risk actions immediately.
-    
-
-### Flow
-
-*   SendRiskAlertCommand →GetRealTimeRiskAlertsQuery →SendRiskAlert()
-    
-
-### Events
-
-*   risk.alert.sent.v1
-    
-
-22) Profile Depth
-=================
-
-22.1 Rates, Availability, Badges, Normalized Skills
----------------------------------------------------
-
-### Stories
-
-*   As a freelancer, I want rate history and availability schedules so that my market presence is clear.
-    
-*   As a system, I want normalized skills so that search is consistent.
-    
-*   As a client, I want badges to reflect achievements.
-    
-
-### Flow
-
-*   UpdateRateHistoryCommand | UpdateAvailabilityScheduleCommand | AssignBadgeCommand | RemoveBadgeCommand | NormalizeSkillsCommand →GetRateHistoryQuery | GetAvailabilityScheduleQuery | ListBadgesByUserQuery | GetNormalizedSkillsQuery →UpdateRateHistory() | UpdateAvailabilitySchedule() | AssignBadge() | RemoveBadge() | NormalizeSkills()
-    
-
-### Events
-
-*   profile.rate\_history.updated.v1, profile.availability.updated.v1, profile.badge.assigned.v1, profile.badge.removed.v1, profile.skills.normalized.v1
-    
-
-22.2 Milestone Badges
----------------------
-
-### Stories
-
-*   As a system, I want to assign/revoke milestone badges via a versioned engine so that recognition is consistent.
-    
-
-### Flow
-
-*   AssignMilestoneBadgeCommand | RevokeMilestoneBadgeCommand →GetMilestoneCriteriaQuery →AssignMilestoneBadge() | RevokeMilestoneBadge()
-    
-
-### Events
-
-*   profile.badge.milestone.assigned.v1, profile.badge.milestone.revoked.v1
-    
-
-22.3 Availability Exceptions
-----------------------------
-
-### Stories
-
-*   As a freelancer, I want holiday/leave exceptions so that my schedule reflects reality.
-    
-
-### Flow
-
-*   AddAvailabilityExceptionCommand | RemoveAvailabilityExceptionCommand →GetAvailabilityExceptionsQuery →AddAvailabilityException() | RemoveAvailabilityException()
-    
-
-### Events
-
-*   profile.availability.exception.added.v1, profile.availability.exception.removed.v1
-    
-
-22.4 Depth Scoring
-------------------
-
-### Stories
-
-*   As a system, I want a depth score (content/verifications/history) so that search ranking is improved.
-    
-
-### Flow
-
-*   ComputeProfileDepthScoreCommand →GetProfileDepthScoreQuery →ComputeProfileDepthScore()
-    
-
-### Events
-
-*   profile.depth.score.updated.v1
-    
-
-23) Cross-Cutting (All Domains)
-===============================
-
-23.1 Webhooks (HMAC) & Personal Access Tokens (+ Event Filters)
----------------------------------------------------------------
-
-### Stories
-
-*   As a developer, I want to register secure webhooks so that I can integrate.
-    
-*   As a developer, I want PATs so that I can access APIs programmatically.
-    
-*   **(Added)** As a developer, I want event filters/subscriptions so that I only receive relevant events.
-    
-*   **(Added)** As a developer, I want webhook delivery status logs so that I can debug failures.
-    
-
-### Flow
-
-*   RegisterWebhookEndpointCommand | DisableWebhookEndpointCommand | CreatePersonalAccessTokenCommand | RevokePersonalAccessTokenCommand | UpdateWebhookFiltersCommand →ListWebhooksQuery | ListPATsQuery | GetWebhookDeliveryStatusQuery →RegisterWebhookEndpoint() | DisableWebhookEndpoint() | CreatePersonalAccessToken() | RevokePersonalAccessToken() | UpdateWebhookFilters() | GetWebhookDeliveryStatus()
-    
-
-### Projections
-
-*   **webhook\_delivery\_read**
-    
-
-### Events
-
-*   webhook.endpoint.registered.v1, webhook.endpoint.disabled.v1, pat.created.v1, pat.revoked.v1, webhook.filters.updated.v1
-    
-
-23.2 PII Encryption & Key Rotation
-----------------------------------
-
-### Stories
-
-*   As a compliance officer, I want field-level encryption with rotation so that PII is protected.
-    
-
-### Flow
-
-*   RotatePIIEncryptionKeysCommand →GetEncryptionStatusQuery →RotatePIIEncryptionKeys()
-    
-
-### Events
-
-*   pii.keys.rotated.v1
-    
-
-23.3 Idempotency & Outbox v2 (Observability for Rate Limits)
-------------------------------------------------------------
-
-### Stories
-
-*   As a platform engineer, I want idempotent writes and deduped outbox so that events are exactly-once.
-    
-
-### Flow
-
-*   Infra: IdempotencyCheck() middleware; PublishOutbox() with dedupe.
-    
-
-### Metrics
-
-*   idempotency\_hits\_total, outbox\_publish\_failures\_total, cmd\_latency\_ms{command=\*}
-    
-*   **(Added)** Global rate-limit metrics (requests per endpoint).
-
-**(New: Specific Metrics)**
-
-*   requests\_per\_endpoint\_total{endpoint=\*,method=\*}
-    
-*   rate\_limit\_exceeded\_total{user=\*}
-
-23.4 Global Audit & Logging
----------------------------
-
-### Stories
-
-*   As an auditor, I want cross-domain searchable audit logs so that every change is traceable.
-    
-
-### Flow
-
-*   AuditChangeCommand →GetAuditLogsQuery | SearchAuditLogsQuery →AuditChange()
-    
-
-### Events
-
-*   audit.change.recorded.v1
-    
-
-23.5 Event Retry & DLQ
-----------------------
-
-### Stories
-
-*   As a reliability engineer, I want retries with exponential backoff and DLQ so that transient failures heal and stuck events are visible.
-    
-
-### Flow
-
-*   RetryFailedEventCommand | MoveToDLQCommand →GetFailedEventsQuery →RetryFailedEvent() | MoveToDLQ()
-    
-
-### Events
-
-*   event.retry.attempted.v1, event.dlq.moved.v1
-    
-
-23.6 Sharded Analytics Aggregation
-----------------------------------
-
-### Stories
-
-*   As a data analyst, I want cross-shard aggregation so that global stats are accurate.
-    
-
-### Flow
-
-*   AggregateCrossShardStatsCommand →GetGlobalStatsQuery →AggregateCrossShardStats()
-    
-
-### Events
-
-*   analytics.aggregated.v1
-    
-
-23.7 API Usage Analytics **(NEW)**
-----------------------------------
-
-### Stories
-
-*   As a developer, I want API usage stats (per key/user, rate-limit status) so that I can monitor quotas.
-    
-*   As a platform engineer, I want anomaly detection on API usage so that abuse is prevented.
-    
-*   **(Added)** As a developer, I want API rate-limit notifications so that I can manage usage.
-    
-*   **(New)** As a developer, I want API versioning so that my integrations remain stable across updates.
-    
-### Flow
-
-*   (Updated) GetAPIUsageQuery | GetAPIQuotaQuery | NotifyAPIRateLimitCommand | GetAPIVersionedEndpointQuery → GetAPIUsage() | GetAPIQuota() | NotifyAPIRateLimit() | GetAPIVersionedEndpoint()
-    
-
-### Projections
-
-*   api\_usage\_read, api\_keys\_read — **No events** (read-only for usage/quotas)
-
-*   **(New)** api\_version\_read
-
-### Events
-
-*   **api.rate\_limit.notified.v1**
-
-
-23.8 AI Governance **(NEW)**
-----------------------------
-
-### Stories
-
-*   As a privacy officer, I want explicit opt-in/out controls for AI features so that consent is respected.
-    
-*   As an ethics reviewer, I want bias/fairness audit logs for AI-assisted rankings so that outcomes are explainable.
-    
-
-### Flow
-
-*   ToggleAIOptInCommand (feature\_scope) | RecordAIFairnessAuditCommand →GetAIConsentStateQuery | GetAIFairnessReportsQuery →ToggleAIOptIn() | RecordAIFairnessAudit()
-    
-
-### Events
-
-*   ai.feature.optin.updated.v1, ai.fairness.audit.recorded.v1
-    
-
-23.9 Multi-Tenancy **(Added)**
-------------------------------
-
-### Stories
-
-*   As an enterprise admin, I want tenant-isolated data so that my org’s data is private.
-    
-
-### Flow
-
-*   ConfigureTenantIsolationCommand →GetTenantConfigQuery →ConfigureTenantIsolation()
-    
-
-### Events
-
-*   tenant.isolation.configured.v1
-    
-23.10 Reliability Engineering (New Subsection)
-----------------------------------------------
-
-**Stories**
-
-*   **(New)** As a platform engineer, I want circuit breakers for cross-service calls so that failures are isolated.
-    
-
-**Flow**
-
-*   **(New)** ConfigureCircuitBreakerCommand → GetCircuitBreakerStatusQuery → ConfigureCircuitBreaker()
-    
-
-**Events**
-
-*   **(New)** reliability.circuit\_breaker.configured.v1
-    
-23.11 Feature Experimentation (New Subsection)
-----------------------------------------------
-
-**Stories**
-
-*   **(New)** As a product manager, I want A/B test success metrics (e.g., statistical significance) so that I can validate feature impact.
-    
-
-**Flow**
-
-*   **(New)** GetExperimentSuccessMetricsQuery → GetExperimentSuccessMetrics()
-    
-
-**Projections**
-
-*   **(New)** experiment\_success\_metrics\_read
-    
-
-23.12 Observability Engineering (New Subsection)
-------------------------------------------------
-
-**Stories**
-
-*   **(New)** As a platform engineer, I want error budget tracking for SLOs so that reliability is measurable.
-    
-
-**Flow**
-
-*   **(New)** TrackErrorBudgetCommand → GetErrorBudgetStatusQuery → TrackErrorBudget()
-    
-
-**Events**
-
-*   **(New)** reliability.error\_budget.updated.v1
-    
-
-**Projections**
-
-*   **(New)** error\_budget\_read
-    
-
-23.17 User Experience Feedback (New Subsection)
------------------------------------------------
-
-**Stories**
-
-*   **(New)** As a product manager, I want in-platform user feedback surveys (e.g., NPS) so that I can measure satisfaction.
-    
-
-**Flow**
-
-*   **(New)** SendUserSurveyCommand → GetSurveyResponsesQuery → SendUserSurvey()
-    
-
-**Events**
-
-*   **(New)** user.survey.sent.v1, user.survey.responded.v1
-    
-
-**Projections**
-
-*   **(New)** survey\_responses\_read
-    
-
-24) Platform Enhancements (AI/Search Acceleration)
-==================================================
-
-24.1 Assistive Features
------------------------
-
-Stories
--------
-
-*   As a user, I want AI-assisted search and matching so that I find jobs/talent faster.
-    
-*   As a client, I want intent-based job posts prefilled by AI so that posting is faster.
-    
-*   As a freelancer, I want AI proposal suggestions so that I can iterate quickly.
-    
-*   **(Added)** As a user, I want AI-assisted dispute resolution suggestions so that conflicts resolve faster.
-    
-*   **(New)** As a user, I want AI-assisted contract negotiation suggestions so that agreements are reached faster.
-
-Flow (read/assist)
-------------------
-
-*   GetAISearchRecommendationsQuery | GetAIMatchCandidatesQuery | GetAIProposalSuggestionsQuery | GetAIDisputeResolutionSuggestionsQuery →GetAISearchRecommendations() | GetAIMatchCandidates() | GetAIProposalSuggestions() | GetAIDisputeResolutionSuggestions()
-
-
-
-Projections
------------
-
-*   ai\_search\_read, ai\_match\_read
-
-*   **(New)** ai\_contract\_read
-
-Events
-------
-
-*   — (assistive, read-side); governed by **23.8** consent.
-    
-*   **(Added)** ai.dispute.suggestion.generated.v1 (subject to 23.8 consent)
-
-*   **(New)** ai.contract.suggestion.generated.v1
-
-24.2 Scalable AI Model Management (New Subsection)
---------------------------------------------------
-
-**Stories**
-
-*   **(New)** As a platform engineer, I want AI model versioning and rollback so that AI updates are stable.
-    
-
-**Flow**
-
-*   **(New)** DeployAIModelVersionCommand | RollbackAIModelCommand → GetAIModelVersionQuery → DeployAIModelVersion() | RollbackAIModel()
-    
-
-**Events**
-
-*   **(New)** ai.model.version.deployed.v1, ai.model.version.rolledback.v1
-    
-
-**Projections**
-
-*   **(New)** ai\_model\_versions\_read
-    
-
-24.3 AI-Driven Onboarding Guidance (New Subsection)
----------------------------------------------------
-
-**Stories**
-
-*   **(New)** As a new user, I want an AI-powered onboarding assistant so that setup is personalized and faster.
-    
-
-**Flow**
-
-*   **(New)** GetAIOnboardingRecommendationsQuery → GetAIOnboardingRecommendations() (subject to 23.8 AI consent)
-    
-
-**Events**
-
-*   **(New)** ai.onboarding.recommendation.generated.v1
-    
-
-**Projections**
-
-*   **(New)** ai\_onboarding\_read
-
-24.4 Cross-Domain Search Optimization **(Added)**
---------------------------------------------
-
-### Stories
-
-*   As a system, I want optimized search indexing so that queries are sub-100ms.
-    
-
-### Flow
-
-*   OptimizeSearchIndexCommand →GetSearchIndexStatusQuery →OptimizeSearchIndex()
-    
-
-### Events
-
-*   search.index.optimized.v1
-    
-
-Acceptance Criteria Patterns (apply across endpoints)
-=====================================================
-
-*   **Latency:** Write P95 ≤ 300ms (unless noted), Read P95 ≤ 250ms; batch ops documented (e.g., 10k/60s).
-    
-*   **Idempotency:** Safe retries with Idempotency-Key; duplicate requests return 200 + no duplicate events.
-    
-*   **Audit:** AuditChange() called for write commands with actor attribution.
-    
-*   **Security:** Field-level PII encryption; secrets never logged; RBAC enforced; MFA required on high-risk flows.
-    
-*   **Observability:** cmd\_latency\_ms, projector\_lag\_ms, event\_delivery\_success\_rate, error\_budget\_burn\_rate.
-    
-*   **Search:** Min query length = 2; pagination required; timeouts with partial results allowed.
-    
-*   **Policies:** Endorsement limit (10/client/year), username cooldown (90d), alias cap (5), delegation TTL ≤ 30d.
-    
+---
 
-Folder & Code Shape (aligned with Latest-essential-microserices-folder-structure.md)
-====================================================================================
+## **GLOBAL CONVENTIONS & PLATFORM ALIGNMENT**
 
+### Event Envelope Structure
+All events published from users-be follow the standard envelope:
+```json
+{
+  "event_id": "uuid",
+  "event_type": "user.created.v1",
+  "event_version": "1.0",
+  "aggregate_id": "user_id",
+  "aggregate_type": "user",
+  "timestamp": "ISO8601",
+  "correlation_id": "trace_id",
+  "causation_id": "parent_event_id",
+  "actor": {
+    "user_id": "actor_user_id",
+    "type": "user|system|admin"
+  },
+  "metadata": {
+    "source_service": "users-be",
+    "idempotency_key": "unique_key"
+  },
+  "payload": { }
+}
 ```
-apps/be/users-be/
-  internal/
-    domain/<context>/
-      commands.go
-      service.go            # tx + outbox + retries/DLQ + compensations
-      queries.go
-      projector.go          # read-model updaters
-      policy.go             # limits/cooldowns/endorsement caps
-    interfaces/http/routes/<context>.go
-    interfaces/subscribers/...
-    application/
-      outbox/               # topic mappers, dedupe keys
-      orchestrators/        # gdpr, kyc_tier, taxonomy_sync, shard_migration
-      policies/             # rate-limits, reserved names, abuse limits
-    infrastructure/
-      encryption/           # PII crypto + rotation
-      webhooks/             # HMAC, filters, retries/DLQ
-      tokens/               # PAT issuance/validation
-      ai_governance/        # consent, audits
 
-```
+### Idempotent Write-Path
+- All commands use **idempotency keys** to prevent duplicate processing
+- Idempotency keys stored in outbox table with TTL
+- Responses cached for duplicate requests within TTL window
+- Commands include: `CreateUserCommand`, `UpdateProfileCommand`, `AddSkillCommand`, etc.
+
+### Non-PII Event Payloads
+- Events NEVER contain PII in payload (no emails, phones, addresses, SSNs)
+- Events reference IDs only: `user_id`, `profile_id`, `certification_id`
+- Consumers fetch PII via authenticated API calls if needed
+- Example: `user.created.v1` contains `user_id` but NOT `email`
+
+### Folder Structure Alignment
+- All domain entities map to `internal/domain/{context}/`
+- All repositories map to `internal/infrastructure/persistence/postgres/{context}_repository.go`
+- All services map to `internal/application/{context}/service.go`
+- All handlers map to `internal/interfaces/http/v1/handlers/{context}_handler.go`
+- All routes map to `internal/interfaces/http/v1/routes/{context}_routes.go`
+
+### Events Catalog Integration
+- All events published are registered in `contracts/events/users/` catalog
+- Event schemas versioned with semantic versioning (v1, v2, etc.)
+- Breaking changes require new event version
+- Consumers subscribe via Dapr pub/sub with scopes: `["users-be"]`
+
+### Caching Strategy
+- Cache keys follow pattern: `users:{user_id}:{context}:{version}`
+- TTLs defined in `internal/infrastructure/cache/redis/keys.go`
+- Invalidation rules map events to cache keys in `invalidation_rules.go`
+- Singleflight prevents cache stampedes for hot keys
+
+### Observability
+- All commands/queries emit spans with OpenTelemetry
+- Metrics tracked: P95 latency, error rate, event publish lag
+- Structured logging with correlation_id for tracing
+- Health checks: `/healthz/live` (liveness), `/healthz/ready` (readiness)
+
+### Security
+- All endpoints require JWT authentication via Keycloak
+- RBAC enforced at service layer (OWNER, ADMIN, SYSTEM, PUBLIC)
+- PII encrypted at rest using KMS envelope encryption
+- Sensitive fields redacted in logs via PII redactor
+
+### Data Retention & Erasure
+- User data retention: 7 years (compliance)
+- Event logs retention: 90 days (projections can replay)
+- GDPR/CCPA erasure: `DELETE /users/:id/erase` triggers cascading deletion
+- Erasure emits `user.erased.v1` event for downstream cleanup
+
+---
+
+## **END OF USERS-BE USER STORIES**
+
+**Total Domains Covered:** 22  
+**Total Sections:** 42  
+**Total User Stories:** 350+  
+**Total Flows:** 250+  
+**Total Events:** 200+  
+
+All stories follow the pattern: **Stories → Flow → Projections → Events → RBAC/SLO**  
+All flows include: **idempotent write-path, event envelope, non-PII payloads**  
+All components align with: **folder structure, events catalog, platform conventions**ubmitKYCCommand**(user_id, id_document, passport, address_proof, selfie) → ValidateDocuments() | Persist() → **Outbox:** kyc.submitted.v1
+2. **SubmitKYBCommand**(org_id, business_docs) → ValidateBusinessDocs() | Persist() → **Outbox:** kyb.submitted.v1
+3. **ApproveVerificationCommand**(verification_id, approved_by) → Validate() | Approve() → **Outbox:** identity_verification.approved.v1
+4. **RejectVerificationCommand**(verification_id, reason, rejected_by) → Validate() | Reject() → **Outbox:** identity_verification.rejected.v1
+5. **GetVerificationStatusQuery**(user_id) → Fetch() → VerificationStatusDTO
+
+#### Projections
+- identity_verification_read
+
+#### Events Published
+- kyc.submitted.v1
+- kyb.submitted.v1
+- identity_verification.approved.v1
+- identity_verification.rejected.v1
+
+#### RBAC/SLO
+- **RBAC:** OWNER (submit), ADMIN (approve/reject), OWNER (view status)
+- **SLO:** P95 < 200ms
+
+---
