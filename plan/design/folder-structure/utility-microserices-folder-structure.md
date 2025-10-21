@@ -314,483 +314,735 @@ skillsier/                                    # Monorepo root
 apps/be/communications-be/
 │
 ├── cmd/
-│   └── api/
-│       └── main.go                           # 📝 UPDATED: Application entry point - initializes Gin, Dapr, connects to Postgres (now uses loadConfig from internal/config, platform-shared/logging)
+│   ├── api/
+│   │   └── main.go                               # 📝 API entrypoint - Gin+Dapr+Postgres (uses internal/config & platform-shared/logging)
+│   └── worker/                                   # 🆕 background workers
+│       └── main.go                               # 🆕 boot DI; run digest scheduler, DLQ replayer, bounce/complaint consumers
 │
 ├── internal/
-│   ├── domain/                               # 🛍️ Domain Layer - Business logic & entities
+│   ├── config/                                   # 🔧 Configuration (Load First)
+│   │   ├── schema.go                             # Typed Config (App, Server, Postgres, Kafka, Redis, Auth, WildDuck, WebSocket, WebPush)
+│   │   ├── loader.go                             # Viper loader (flags → env → file → defaults)
+│   │   └── docs/CONFIGURATION.md                 # ENV vars, defaults, examples
+│   │
+│   ├── domain/                                   # 🏛️ Domain Layer (business rules, aggregates, events)
+│   │   # =========================
+│   │   # 💬 CORE CHAT PRIMITIVES
+│   │   # =========================
 │   │   ├── conversation/
-│   │   │   ├── entity.go                     # Chat conversations (ID, Participants, Type, Status, CreatedAt, UpdatedAt)
-│   │   │   ├── participant.go                # Conversation participants (ConversationID, UserID, Role, JoinedAt, LastReadAt)
-│   │   │   ├── settings.go                   # Conversation settings (mute, pin, archive flags per user)
-│   │   │   ├── typing_indicator.go           # Typing indicators (ConversationID, UserID, TypingAt, ExpiresAt)
-│   │   │   ├── errors.go                     # Domain errors (ConversationNotFound, ParticipantNotFound, UnauthorizedAccess)
-│   │   │   ├── repository.go                 # ConversationRepository interface (Create, FindByID, AddParticipant, RemoveParticipant)
-│   │   │   └── events.go                     # 🆕 Domain events: ConversationCreated, ParticipantAdded, ParticipantRemoved, ConversationMuted, ConversationArchived
-│   │   │
+│   │   │   ├── entity.go                         # id, kind(direct,group,system), tenant_id, created_by, visibility, data_zone
+│   │   │   ├── participant.go                    # user_id, role(owner,member), last_read_msg_id, pinned, muted_until
+│   │   │   ├── settings.go                       # ttl_policy_id, legal_hold, slow_mode, allow_replies, allow_files
+│   │   │   ├── typing_indicator.go               # (kept) typing TTL markers per conversation/user
+│   │   │   ├── errors.go                         # ConversationNotFound, ParticipantNotFound, UnauthorizedAccess
+│   │   │   ├── repository.go                     # Create, FindByID, AddParticipant, RemoveParticipant
+│   │   │   └── events.go                         # conversation.created/updated/archived/member_added/removed.v1
+│   │   ├── thread/                               # 🆕 sub-discussions
+│   │   │   ├── entity.go                         # id, conversation_id, root_message_id, title, followers[]
+│   │   │   └── events.go                         # thread.created/renamed/archived.v1
 │   │   ├── message/
-│   │   │   ├── entity.go                     # Chat messages (ID, ConversationID, SenderID, Content, Type, SentAt, EditedAt, DeletedAt)
-│   │   │   ├── attachment.go                 # Message attachments (MessageID, FileURL, FileType, FileName, FileSize, ThumbnailURL)
-│   │   │   ├── read_receipt.go               # Read receipts (MessageID, UserID, ReadAt)
-│   │   │   ├── reaction.go                   # Message reactions (MessageID, UserID, Emoji, ReactedAt)
-│   │   │   ├── mention.go                    # User mentions (@username) (MessageID, MentionedUserID, Position)
-│   │   │   ├── errors.go                     # Message errors (MessageNotFound, InvalidContent, MessageTooLong)
-│   │   │   └── repository.go                 # MessageRepository interface (Create, Update, Delete, FindByConversation, MarkAsRead)
-│   │   │   └── events.go                     # 🆕 Domain events: MessageSent, MessageEdited, MessageDeleted, MessageRead, AttachmentAdded, ReactionAdded
-│   │   │
+│   │   │   ├── entity.go                         # id, conversation_id, sender_id, body(rich), reply_to_id, edited_at, deleted_at, redact_reason
+│   │   │   ├── attachment.go                     # storage-be asset refs (url,id,hash,type,size,thumb), virus_status
+│   │   │   ├── read_receipt.go                   # message_id, user_id, read_at (rollup-friendly)
+│   │   │   ├── reaction.go                       # emoji, user_id, reacted_at
+│   │   │   ├── mention.go                        # mentioned_user_id, offsets
+│   │   │   ├── errors.go                         # MessageNotFound, InvalidContent, MessageTooLong
+│   │   │   ├── repository.go                     # Create, Update, Delete, FindByConversation, MarkAsRead
+│   │   │   └── events.go                         # message.sent/edited/deleted/reacted/mentioned.v1
+│   │   ├── draft/                                # 🆕 per-user unsent drafts
+│   │   │   └── entity.go                         # conversation_id, user_id, content, updated_at
+│   │   ├── pin/                                  # 🆕 pinned highlights
+│   │   │   └── entity.go                         # conversation_id, message_id, pinned_by, pinned_at
+│   │   └── bookmark/                             # 🆕 private bookmarks
+│   │       └── entity.go                         # user_id, message_id, note, created_at
+│   │   # =========================
+│   │   # 🚚 DELIVERY & READ STATE
+│   │   # =========================
+│   │   ├── delivery/                             # server→device delivery state
+│   │   │   └── status.go                         # queued→dispatched→ack; per-device/session acks
+│   │   └── read_receipt/                         # explicit “I read it”
+│   │       └── entity.go                         # message_id, user_id, read_at (compacted)
+│   │   # =========================
+│   │   # ⚡ EPHEMERAL REALTIME SIGNALS
+│   │   # =========================
+│   │   ├── presence/                             # online/away/offline
+│   │   │   ├── session.go                        # session_id, user_id, last_seen_at, ip, ua, device_kind
+│   │   │   └── events.go                         # presence.joined/left/heartbeat.v1
+│   │   └── typing/                               # typing indicators (short TTL)
+│   │       └── signal.go                         # conversation_id, user_id, started_at, stopped_at
+│   │   # =========================
+│   │   # 🛡️ SAFETY & COMPLIANCE
+│   │   # =========================
+│   │   ├── moderation/
+│   │   │   ├── automod_rule.go                   # regex/keyword heuristics; actions(quarantine, mask, notify)
+│   │   │   ├── flag.go                           # reporter_id, reason, status(pending,reviewed,resolved)
+│   │   │   └── quarantine.go                     # hide pending review; emits admin case
+│   │   ├── retention/
+│   │   │   └── policy.go                         # per-room TTL, dispute_hold; purge windows
+│   │   ├── blocklist/                            # 🆕 block phrases/users/domains
+│   │   │   └── entity.go                         # scope(user/tenant/global), subject, reason, expires_at
+│   │   └── url_safety/                           # 🆕 reputation cache
+│   │       └── cache.go                          # open-source feeds only; refresh schedule
+│   │   # =========================
+│   │   # 🔔 NOTIFS & USER FEEDS
+│   │   # =========================
 │   │   ├── notification/
-│   │   │   ├── entity.go                     # All notifications (ID, UserID, Type, Title, Body, Data JSON, Priority, ReadAt, CreatedAt)
-│   │   │   ├── enums.go                      # Type (JobAlert, ProposalUpdate, BidAlert, ContractUpdate, Payment, Review, Message, System), Priority (Low, Medium, High, Urgent), Category (Transactional, Marketing, System)
-│   │   │   ├── preferences.go                # User notification preferences (Email, SMS, Push, InApp enabled/disabled per notification type)
-│   │   │   ├── settings.go                   # Notification settings per type (instant delivery, daily digest, weekly summary, muted)
-│   │   │   ├── quiet_hours.go                # 🆕 Quiet hours per user (start, end, timezone)
-│   │   │   ├── errors.go                     # Notification errors (NotificationNotFound, InvalidType, PreferencesNotSet)
-│   │   │   └── repository.go                 # NotificationRepository interface (Create, MarkAsRead, Delete, FindByUser, GetUnreadCount)
-│   │   │   └── events.go                     # 🆕 Domain events: NotificationCreated, NotificationUpdated, NotificationRead, NotificationDeleted
-│   │   │
+│   │   │   ├── entity.go                         # id, user_id, type, title, body, data, priority, read_at, created_at
+│   │   │   ├── enums.go                          # type/priorities/categories
+│   │   │   ├── preferences.go                    # per-type enablement (email,push,inapp)
+│   │   │   ├── settings.go                       # instant/daily/weekly/muted
+│   │   │   ├── quiet_hours.go                    # quiet hours per user (tz aware)
+│   │   │   ├── repository.go                     # Create, MarkAsRead, Delete, FindByUser, UnreadCount
+│   │   │   └── events.go                         # notification.created/updated/read/deleted.v1
 │   │   ├── in_app_notification/
-│   │   │   ├── entity.go                     # 🆕 In-app real-time notifications (ID, NotificationID, UserID, DisplayedAt, DismissedAt, ClickedAt)
-│   │   │   ├── badge_count.go                # 🆕 Unread notification badges (UserID, Category, UnreadCount, LastUpdatedAt)
-│   │   │   ├── group.go                      # 🆕 Notification grouping (GroupID, NotificationIDs, GroupType, Summary)
-│   │   │   ├── action.go                     # 🆕 Notification actions/CTAs (NotificationID, ActionType, ActionURL, Label)
-│   │   │   ├── errors.go                     # 🆕 In-app notification errors
-│   │   │   └── repository.go                 # 🆕 InAppNotificationRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: InAppNotificationDisplayed, InAppNotificationDismissed, InAppNotificationClicked, BadgeCountUpdated
-│   │   │
+│   │   │   ├── entity.go                         # id, notification_id, user_id, displayed_at, dismissed_at, clicked_at
+│   │   │   ├── badge_count.go                    # per-user badge counters
+│   │   │   ├── group.go                          # grouping rules
+│   │   │   ├── action.go                         # CTAs (url,label,type)
+│   │   │   └── events.go                         # inapp.displayed/dismissed/clicked/badge.updated.v1
 │   │   ├── notification_template/
-│   │   │   ├── entity.go                     # Notification templates (ID, Name, Type, Subject, Body, Variables, IsActive)
-│   │   │   ├── variable.go                   # Template variables ({{user_name}}, {{job_title}}, {{amount}}, {{date}})
-│   │   │   ├── localization.go               # Multi-language templates (TemplateID, Language, TranslatedSubject, TranslatedBody)
-│   │   │   ├── errors.go                     # Template errors (TemplateNotFound, InvalidVariable, MissingTranslation)
-│   │   │   └── repository.go                 # TemplateRepository interface (FindByType, Render, GetTranslation)
-│   │   │   └── events.go                     # 🆕 Domain events: TemplateCreated, TemplateUpdated, TemplateLocalized, TemplateDeactivated
-│   │   │
+│   │   │   ├── entity.go                         # versioned templates + i18n
+│   │   │   ├── variable.go                       # placeholders whitelist
+│   │   │   └── events.go                         # template.created/updated/localized/deactivated.v1
 │   │   ├── email/
-│   │   │   ├── entity.go                     # Email records (ID, RecipientID, RecipientEmail, Subject, Body, TemplateID, Status, SentAt, DeliveredAt)
-│   │   │   ├── template.go                   # Email templates (HTML/Text templates with CSS inlining support)
-│   │   │   ├── batch.go                      # Batch email sending (BatchID, Recipients, Subject, Body, Status, ScheduledFor)
-│   │   │   ├── errors.go                     # Email errors (InvalidEmail, SendFailed, TemplateRenderFailed)
-│   │   │   └── repository.go                 # EmailRepository interface (Create, FindByRecipient, GetDeliveryStatus)
-│   │   │   └── events.go                     # 🆕 Domain events: EmailQueued, EmailSent, EmailDelivered, EmailBounced, EmailFailed
-│   │   │
-│   │   ├── notification_queue/
-│   │   │   ├── entity.go                     # 🆕 Queued notifications (ID, NotificationID, Priority, ScheduledFor, Status, Retries, CreatedAt)
-│   │   │   ├── priority_queue.go             # 🆕 Priority-based queue (urgent notifications processed first)
-│   │   │   ├── errors.go                     # 🆕 Queue errors
-│   │   │   └── repository.go                 # 🆕 NotificationQueueRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: NotificationEnqueued, NotificationDequeued, NotificationRetryScheduled, NotificationDeadLettered
-│   │   │
+│   │   │   ├── entity.go                         # id, to_id, to_email, subject, body, template_id, status, sent_at, delivered_at
+│   │   │   ├── batch.go                          # batch send tracking
+│   │   │   └── events.go                         # email.queued/sent/delivered/bounced/failed.v1
+│   │   ├── notification_queue/                   # queues & priorities
+│   │   │   ├── entity.go                         # notification_id, priority, scheduled_for, status, retries
+│   │   │   └── events.go                         # notification.enqueued/dequeued/retry/deadletter.v1
 │   │   ├── delivery_log/
-│   │   │   ├── entity.go                     # 🆕 Delivery tracking (ID, NotificationID, Channel, Status, DeliveredAt, FailureReason, RetryCount)
-│   │   │   ├── status.go                     # 🆕 Delivery status (Pending, Sent, Delivered, Failed, Bounced)
-│   │   │   ├── errors.go                     # 🆕 Delivery errors
-│   │   │   └── repository.go                 # 🆕 DeliveryLogRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: DeliveryLogged, DeliveryFailed, DeliveryBounced
-│   │   │
+│   │   │   ├── entity.go                         # channel, status, delivered_at, failure_reason, retry_count, latency_ms
+│   │   │   └── events.go                         # delivery.logged/failed/bounced.v1
 │   │   ├── unsubscribe/
-│   │   │   ├── entity.go                     # Unsubscribe management (UserID, NotificationType, UnsubscribedAt, Reason)
-│   │   │   ├── errors.go                     # Unsubscribe errors
-│   │   │   └── repository.go                 # UnsubscribeRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: Unsubscribed, Resubscribed
-│   │   │
-│   │   ├── online_status/
-│   │   │   ├── entity.go                     # User online/offline status (UserID, Status, LastSeenAt, DeviceType)
-│   │   │   ├── errors.go                     # Status errors
-│   │   │   └── repository.go                 # OnlineStatusRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: UserOnline, UserOffline, LastSeenUpdated
-│   │   │
-│   │   ├── message_flag/
-│   │   │   ├── entity.go                     # Flagged messages (ID, MessageID, ReporterID, Reason, Status, ReviewedAt, ReviewedBy)
-│   │   │   ├── reason.go                     # Flag reasons enum (Spam, Harassment, Inappropriate, Scam, Violence)
-│   │   │   ├── status.go                     # Flag status (Pending, UnderReview, Resolved, Dismissed)
-│   │   │   ├── errors.go                     # Flag errors
-│   │   │   └── repository.go                 # MessageFlagRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: MessageFlagSubmitted, MessageFlagResolved, MessageFlagDismissed
-│   │   │
-│   │   ├── system_message/                   # 🆕 System messages domain (events → system feed)
-│   │   │   ├── entity.go                     # SystemMessage (ID, ConversationID, Type, PayloadJSON, CreatedAt)
-│   │   │   ├── types.go                      # Types (MilestoneFunded, MilestoneReleased, Approval, DisputeOpened, DisputeClosed)
-│   │   │   ├── errors.go                     # System message errors
-│   │   │   └── repository.go                 # SystemMessageRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: SystemMessageCreated, SystemMessageBroadcasted
-│   │   │
-│   │   ├── call/                             # 🆕 Voice/Video & scheduling hooks
-│   │   │   ├── entity.go                     # Call (ID, ConversationID, OrganizerID, Link, Provider, StartsAt, EndsAt, Status, Timezone)
-│   │   │   ├── provider.go                   # Providers (Jitsi/Zoom/Meet) abstraction
-│   │   │   ├── errors.go                     # Call errors (InvalidTimeWindow, ProviderError)
-│   │   │   └── repository.go                 # CallRepository interface
-│   │   │   └── events.go                     # 🆕 Domain events: CallScheduled, CallStarted, CallEnded, CallCanceled
-│   │   │
-│   │   └── calendar_invite/                  # 🆕 Calendar invites for scheduling
-│   │       ├── entity.go                     # CalendarInvite (CallID, UserID, ICal, SentAt, Status)
-│   │       ├── errors.go                     # Invite errors
-│   │       └── repository.go                 # CalendarInviteRepository interface
-│   │       └── events.go                     # 🆕 Domain events: CalendarInviteSent, CalendarInviteAccepted, CalendarInviteDeclined, CalendarInviteBounced
+│   │   │   └── entity.go                         # user_id, type, unsubscribed_at, reason
+│   │   ├── preference/                           # 🆕 explicit module for prefs (extends existing)
+│   │   │   ├── entity.go                         # topic/channel prefs + DND, tz, fallbacks
+│   │   │   └── policy.go                         # inheritance global→tenant→user
+│   │   ├── suppression/                          # 🆕 bounce/complaint suppression
+│   │   │   └── rule.go                           # by address/domain; expiry/notes
+│   │   ├── webpush/                              # 🆕 VAPID push (no vendor)
+│   │   │   ├── subscription.go                   # endpoint, p256dh, auth, scope, device_info, expires_at
+│   │   │   └── events.go                         # webpush.subscription.added/expired.v1
+│   │   └── digest/                               # batched notifs
+│   │       └── window.go                         # daily/weekly windows; locale cutoffs
+│   │   # =========================
+│   │   # ✉️ EMAIL BRIDGE (SELF-HOSTED)
+│   │   # =========================
+│   │   ├── email_bridge/                         # 🆕 reply-by-email
+│   │   │   ├── inbound.go                        # plus-address → conversation mapping; signature trim
+│   │   │   └── outbound.go                       # queue → MTA; threading headers
+│   │   └── mail_tracking/                        # 🆕 delivery/complaint signals (self-hosted logs/webhooks)
+│   │       └── event.go                          # delivered, deferred, bounced, complained → suppression
+│   │   # =========================
+│   │   # 📅 SCHEDULING & CALLS
+│   │   # =========================
+│   │   ├── system_message/
+│   │   │   ├── entity.go                         # system feed items (milestones, disputes, approvals)
+│   │   │   └── events.go                         # system_message.created/broadcasted.v1
+│   │   ├── call/
+│   │   │   ├── entity.go                         # call link, starts_at, ends_at, status
+│   │   │   └── events.go                         # call.scheduled/started/ended/canceled.v1
+│   │   └── calendar_invite/
+│   │       ├── entity.go                         # invite (ical, status)
+│   │       └── events.go                         # calendar_invite.sent/accepted/declined/bounced.v1
+│   │   # =========================
+│   │   # 📊 OPS & GOVERNANCE
+│   │   # =========================
+│   │   ├── quota/
+│   │   │   └── token_bucket.go                   # per-user/topic/channel sliding-window limits
+│   │   ├── analytics/
+│   │   │   └── funnel.go                         # requested→sent→delivered→ack/read; histograms; SLOs
+│   │   ├── audit/
+│   │   │   └── trail.go                          # who/what/when for prefs, suppressions, impersonations
+│   │   ├── idempotency/
+│   │   │   └── key.go                            # keys for messages/notifs; replay-safe contracts
+│   │   └── tenancy/
+│   │       └── scope.go                          # tenant_id, data_zone, RLS helpers & partitioning hints
+│   │   # =========================
+│   │   # 🆕 ADDED FOR FREELANCING PLATFORM (UPWORK-LIKE)
+│   │   # =========================
+│   │   ├── interview/
+│   │   │   ├── entity.go                         # id, conversation_id, client_id, freelancer_id, scheduled_at, status, notes
+│   │   │   ├── participant.go                    # participant details (availability, timezone)
+│   │   │   ├── errors.go                         # InterviewConflict, InvalidSchedule, NoAvailability
+│   │   │   ├── repository.go                     # CreateInterview, FindByConversation, UpdateStatus
+│   │   │   └── events.go                         # interview.scheduled/confirmed/cancelled/completed.v1
+│   │   ├── platform_alert/
+│   │   │   ├── entity.go                         # id, severity, message, targets (all/freelancers/clients), expires_at
+│   │   │   ├── errors.go                         # InvalidTarget, ExpiredAlert
+│   │   │   ├── repository.go                     # CreateAlert, FindActiveAlerts, MarkExpired
+│   │   │   └── events.go                         # platform_alert.sent/dismissed.v1
+│   │   └── spam_detection/
+│   │       ├── entity.go                         # spam_score, detected_patterns, quarantine_status
+│   │       ├── errors.go                         # SpamDetected, FalsePositive
+│   │       ├── repository.go                     # LogSpamAttempt, GetSpamHistory
+│   │       └── events.go                          # spam.detected/quarantined/reviewed.v1
 │   │
-│   ├── application/                          # 📋 Application Layer - Use cases & orchestration
-│   │   ├── eventhandler/
-│   │   │   ├── user_handler.go                # Consumes: user.created → send welcome (emails/in-app). 
-│   │   │   │                                     # Ref: Event Consumption Matrix lists communications-be as consumer of user.created. 
-│   │   │   │
-│   │   │   ├── job_handler.go                 # Consumes: job.posted → notify matching freelancers.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes job.posted. 
-│   │   │   │
-│   │   │   ├── proposal_handler.go            # Consumes: proposal.submitted → notify client.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes proposal.submitted. 
-│   │   │   │
-│   │   │   ├── contract_handler.go            # Consumes: contract.created → notify both parties.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes contract.created. 
-│   │   │   │
-│   │   │   ├── payment_handler.go             # Consumes: payment.processed → send receipt.
-│   │   │   │                                     # Ref: Matrix shows communications-be consumes payment.processed. 
-│   │   │   │
-│   │   │   ├── review_handler.go              # Consumes: review.submitted → notify reviewee;
-│   │   │   │                                     #           review.double_blind.window.opened|closed → send reminders (from reviews-be).
-│   │   │   │                                     # Refs: Matrix shows communications-be consumes review.submitted; 
-│   │   │   │                                     #       reviews-be publishes double_blind window events to communications-be. 
-│   │   │   │
-│   │   │   ├── admin_case_handler.go          # Consumes: admin.case.user_report.created|triaged|actioned|dismissed → notify subjects as needed; 
-│   │   │   │                                     #           admin.ticket.note.added (if notify).
-│   │   │   │                                     # Ref: Added-events doc routes these to communications-be. 
-│   │   │   │
-│   │   │   ├── delivery_logger_handler.go     # Emits audit on delivery completion (comm.delivery.logged) for admin-be audit streams.
-│   │   │   │                                     # Ref: Added-events doc notes audit trail feed from communications-be. 
-│   │   │   │
-│   │   │   └── partitioning_notes.go          # (comments only) Partition keys used by handlers:
-│   │   │                                         #   user_id (user events), job_id (job events), contract_id (contract),
-│   │   │                                         #   transaction_id/contract_id (payments), conversation_id (message topics).
-│   │   │                                         # Ref: Partition Key Strategy. 
-│   │   ├── conversation/
-│   │   │   ├── service.go                    # Conversation business logic (Create, Archive, Mute, Delete conversations)
-│   │   │   ├── commands.go                   # CreateConversation, ArchiveConversation, MuteConversation, DeleteConversation
-│   │   │   ├── queries.go                    # GetConversation, ListConversations, SearchConversations
-│   │   │   ├── dto.go                        # ConversationDTO, CreateConversationDTO, ConversationListDTO
-│   │   │   ├── mapper.go                     # Entity-DTO mapping
-│   │   │   └── validators.go                 # Input validation
-│   │   │
-│   │   ├── message/
-│   │   │   ├── service.go                    # Message business logic (Send, Edit, Delete, React to messages)
-│   │   │   ├── commands.go                   # SendMessage, EditMessage, DeleteMessage, ReactToMessage, MarkAsRead
-│   │   │   ├── queries.go                    # GetMessages, SearchMessages, GetUnreadCount
-│   │   │   ├── dto.go                        # MessageDTO, SendMessageDTO, MessageListDTO
-│   │   │   ├── mapper.go                     # Message mappers
-│   │   │   ├── validators.go                 # Message validation (content length, attachment size)
-│   │   │   └── realtime_service.go           # 🆕 WebSocket handling (broadcast messages, typing indicators, presence)
-│   │   │
-│   │   ├── notification/
-│   │   │   ├── service.go                    # Notification business logic (Send, MarkAsRead, Delete, ClearAll)
-│   │   │   ├── commands.go                   # SendNotification, MarkAsRead, DeleteNotification, ClearAllNotifications
-│   │   │   ├── queries.go                    # GetNotifications, GetUnreadCount, GetNotificationHistory
-│   │   │   ├── dto.go                        # NotificationDTO, SendNotificationDTO, NotificationListDTO
-│   │   │   ├── mapper.go                     # Notification mappers
-│   │   │   ├── validators.go                 # Notification validation
-│   │   │   ├── orchestrator.go               # 🆕 Multi-channel orchestration (send to email, push, in-app simultaneously)
-│   │   │   ├── preferences_service.go        # 🆕 Manage user preferences (update notification settings per type)
-│   │   │   └── aggregator.go                 # 🆕 Aggregate similar notifications (group by type, time window)
-│   │   │
-│   │   ├── notification_preferences/         # 🆕 Explicit app module for per-channel prefs / digests / quiet hours
-│   │   │   ├── service.go                    # UpdatePreferences, GetPreferences, SetQuietHours, SetDigestSchedule
-│   │   │   ├── commands.go                   # UpdatePreferences, SetQuietHours, SetDigestSchedule
-│   │   │   ├── queries.go                    # GetPreferences, GetEffectivePreferences
-│   │   │   ├── validators.go                 # Channel validation, time windows, timezone safety
-│   │   │   ├── dto.go                        # NotificationPreferencesDTO, QuietHoursDTO, DigestScheduleDTO
-│   │   │   └── mapper.go                     # Preferences mappers
-│   │   │
-│   │   ├── in_app_notification/
-│   │   │   ├── service.go                    # 🆕 In-app notification logic
-│   │   │   ├── commands.go                   # 🆕 PushInAppNotification, DismissInAppNotification, ClickInAppAction
-│   │   │   ├── queries.go                    # 🆕 GetInAppNotifications, GetBadgeCount
-│   │   │   ├── validators.go                 # 🆕 Action validation, throttling
-│   │   │   ├── real_time_sender.go           # 🆕 Real-time notification delivery via WebSocket/SSE
-│   │   │   ├── badge_manager.go              # 🆕 Badge count management (calculate, update, reset counts)
-│   │   │   ├── grouping_engine.go            # 🆕 Group similar notifications
-│   │   │   ├── dto.go                        # 🆕 InAppNotificationDTO
-│   │   │   └── mapper.go                     # 🆕 In-app notification mappers
-│   │   │
-│   │   ├── email/
-│   │   │   ├── service.go                    # Email business logic (Send, SendBatch, GetDeliveryStatus)
-│   │   │   ├── commands.go                   # 🆕 SendEmail, SendEmailBatch
-│   │   │   ├── queries.go                    # 🆕 GetEmailStatus, ListEmailsForUser
-│   │   │   ├── validators.go                 # 🆕 Email address format, batch sizes, template vars
-│   │   │   ├── sender.go                     # Email sending logic (via WildDuck SMTP)
-│   │   │   ├── template_renderer.go          # Render email templates (inject variables, compile HTML)
-│   │   │   ├── batch_sender.go               # Batch email sending (queue, rate limit, send in batches)
-│   │   │   ├── dto.go                        # EmailDTO, SendEmailDTO, BatchEmailDTO
-│   │   │   ├── mapper.go                     # Email mappers
-│   │   │   └── wildduck_client.go            # 🆕 WildDuck SMTP integration (connect, authenticate, send)
-│   │   │
-│   │   ├── template/
-│   │   │   ├── service.go                    # Template business logic (Create, Update, Render templates)
-│   │   │   ├── commands.go                   # 🆕 CreateTemplate, UpdateTemplate
-│   │   │   ├── queries.go                    # 🆕 GetTemplate, ListTemplates
-│   │   │   ├── validators.go                 # 🆕 Variable whitelisting, translation presence
-│   │   │   ├── renderer.go                   # Template rendering engine (replace variables, compile)
-│   │   │   ├── variable_injector.go          # Inject dynamic variables into templates
-│   │   │   ├── dto.go                        # TemplateDTO, RenderTemplateDTO
-│   │   │   └── mapper.go                     # Template mappers
-│   │   │
-│   │   ├── online_status/
-│   │   │   ├── service.go                    # Online status logic (Update status, GetStatus, GetOnlineUsers)
-│   │   │   ├── commands.go                   # 🆕 SetOnline, SetAway, SetBusy, SetOffline
-│   │   │   ├── queries.go                    # 🆕 GetUserStatus, GetOnlineUsers
-│   │   │   ├── validators.go                 # 🆕 TTL bounds, allowed transitions
-│   │   │   ├── tracker.go                    # Track online/offline status (heartbeat mechanism)
-│   │   │   ├── presence_manager.go           # Manage user presence (online, away, busy, offline)
-│   │   │   └── dto.go                        # OnlineStatusDTO
-│   │   │
-│   │   ├── flag/
-│   │   │   ├── service.go                    # Flag business logic (FlagMessage, UnflagMessage, ReviewFlag)
-│   │   │   ├── commands.go                   # FlagMessage, UnflagMessage, ResolveFlag
-│   │   │   ├── queries.go                    # 🆕 GetFlags, GetFlag
-│   │   │   ├── validators.go                 # 🆕 Reason whitelist, reviewer role checks
-│   │   │   ├── dto.go                        # FlagDTO, FlagMessageDTO
-│   │   │   └── mapper.go                     # Flag mappers
-│   │   │
-│   │   ├── system_message/                   # 🆕 System messages app layer
-│   │   │   ├── service.go                    # PublishSystemMessage (milestones funded/released, approvals, disputes)
-│   │   │   ├── commands.go                   # CreateSystemMessage
-│   │   │   ├── queries.go                    # GetSystemMessagesForConversation
-│   │   │   ├── validators.go                 # Allowed types, payload schema
-│   │   │   ├── dto.go                        # SystemMessageDTO
-│   │   │   └── mapper.go                     # System message mappers
-│   │   │
-│   │   ├── call/                             # 🆕 Voice/Video & scheduling hooks
-│   │   │   ├── service.go                    # CreateCallLink, CancelCall, RescheduleCall
-│   │   │   ├── commands.go                   # CreateCall, CancelCall, RescheduleCall
-│   │   │   ├── queries.go                    # GetCall, ListCallsForConversation
-│   │   │   ├── validators.go                 # Timezone-safe windows, overlaps, provider limits
-│   │   │   ├── dto.go                        # CallDTO
-│   │   │   └── mapper.go                     # Call mappers
-│   │   │
-│   │   ├── calendar_invite/                  # 🆕 Calendar invites surface
-│   │   │   ├── service.go                    # GenerateICal, SendInvites, UpdateInviteStatus
-│   │   │   ├── commands.go                   # SendCalendarInvite
-│   │   │   ├── queries.go                    # GetInvitesForCall
-│   │   │   ├── validators.go                 # Email, timezone, iCal bounds
-│   │   │   ├── dto.go                        # CalendarInviteDTO
-│   │   │   └── mapper.go                     # Invite mappers
-│   │   
+    └── application/                              # 📋 Application Layer (use cases, orchestrators, consumers)
+        │   # =========================
+        │   # 📡 EVENT CONSUMERS (INBOX)
+        │   # =========================
+        ├── eventhandler/
+        │   ├── user_handler.go                   # user.created → welcome message/email
+        │   ├── job_handler.go                    # job.posted → notify matching freelancers
+        │   ├── proposal_handler.go               # proposal.submitted → notify client
+        │   ├── contract_handler.go               # contract.created → notify both parties
+        │   ├── payment_handler.go                # payment.processed → receipt notification
+        │   ├── review_handler.go                 # review.submitted / double_blind window nudges
+        │   ├── admin_case_handler.go             # admin.case.* → subject notifications as needed
+        │   ├── delivery_logger_handler.go        # emit comm.delivery.logged → admin audit
+        │   └── partitioning_notes.go             # (comments) partition keys per stream
+        │
+        │   # =========================
+        │   # 🧠 USE CASES (COMMANDS/QUERIES)
+        │   # =========================
+        │   # =========================
+        │   # 💬 CORE CHAT PRIMITIVES
+        │   # =========================
+        ├── conversation/
+        │   ├── service.go                        # Conversation business logic (Create, Archive, Mute, Delete)
+        │   ├── commands.go                       # CreateConversation, ArchiveConversation, MuteConversation, DeleteConversation
+        │   ├── queries.go                        # GetConversation, ListConversations, SearchConversations
+        │   ├── dto.go                            # ConversationDTO, CreateConversationDTO, ConversationListDTO
+        │   ├── mapper.go                         # Entity ↔ DTO mapping for conversations
+        │   └── validators.go                     # Input validation (membership, visibility, TTL policies)
+        ├── message/
+        │   ├── service.go                        # Message business logic (Send, Edit, Delete, React, MarkAsRead)
+        │   ├── commands.go                       # SendMessage, EditMessage, DeleteMessage, ReactToMessage, MarkAsRead
+        │   ├── queries.go                        # GetMessages, SearchMessages, GetUnreadCount
+        │   ├── dto.go                            # MessageDTO, SendMessageDTO, MessageListDTO
+        │   ├── mapper.go                         # Message entity ↔ DTO mappers
+        │   ├── validators.go                     # Content length, attachment limits, mention bounds
+        │   └── realtime_service.go               # 🆕 WebSocket handling (broadcast, typing, presence fan-out)
+        ├── thread/
+        │   ├── service.go                        # 🆕 Create/Archive thread, follow/unfollow
+        │   ├── commands.go                       # 🆕 CreateThread, ArchiveThread, FollowThread, UnfollowThread
+        │   ├── queries.go                        # 🆕 GetThread, ListThreadsForConversation
+        │   ├── dto.go                            # 🆕 ThreadDTO
+        │   ├── mapper.go                         # 🆕 Thread entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Root message existence, membership checks
+        ├── pin/
+        │   ├── service.go                        # 🆕 PinMessage, UnpinMessage, ListPins
+        │   ├── commands.go                       # 🆕 PinMessage, UnpinMessage
+        │   ├── queries.go                        # 🆕 GetPinsForConversation
+        │   ├── dto.go                            # 🆕 PinDTO
+        │   ├── mapper.go                         # 🆕 Pin entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Role/visibility checks
+        ├── bookmark/
+        │   ├── service.go                        # 🆕 AddBookmark, RemoveBookmark, ListBookmarks
+        │   ├── commands.go                       # 🆕 AddBookmark, RemoveBookmark
+        │   ├── queries.go                        # 🆕 GetBookmarksForUser
+        │   ├── dto.go                            # 🆕 BookmarkDTO
+        │   ├── mapper.go                         # 🆕 Bookmark entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Ownership checks
+        ├── draft/
+        │   ├── service.go                        # 🆕 SaveDraft, ClearDraft, GetDraft
+        │   ├── commands.go                       # 🆕 SaveDraft, ClearDraft
+        │   ├── queries.go                        # 🆕 GetDraftForConversation
+        │   ├── dto.go                            # 🆕 DraftDTO
+        │   ├── mapper.go                         # 🆕 Draft entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Size limits, content sanitization
+        │
+        │   # =========================
+        │   # 🚚 DELIVERY & READ STATE
+        │   # =========================
+        ├── read_receipt/
+        │   ├── service.go                        # 🆕 RecordRead, GetLatestRead, ListReaders
+        │   ├── commands.go                       # 🆕 RecordRead
+        │   ├── queries.go                        # 🆕 GetReadReceiptsForMessage
+        │   ├── dto.go                            # 🆕 ReadReceiptDTO
+        │   ├── mapper.go                         # 🆕 Read receipt entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Membership & ordering checks
+        ├── delivery/
+        │   ├── service.go                        # 🆕 MarkDispatched, AckDelivery, GetDeliveryStatus
+        │   ├── commands.go                       # 🆕 MarkDispatched, AckDelivery
+        │   ├── queries.go                        # 🆕 GetDeliveriesForMessage
+        │   ├── dto.go                            # 🆕 DeliveryStatusDTO
+        │   ├── mapper.go                         # 🆕 Delivery entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Session authenticity, idempotency keys
+        │
+        │   # =========================
+        │   # ⚡ EPHEMERAL REALTIME SIGNALS
+        │   # =========================
+        ├── online_status/
+        │   ├── service.go                        # Presence state machine (online, away, busy, offline)
+        │   ├── commands.go                       # SetOnline, SetAway, SetBusy, SetOffline
+        │   ├── queries.go                        # GetUserStatus, GetOnlineUsers
+        │   ├── validators.go                     # TTL bounds, allowed transitions
+        │   ├── tracker.go                        # Heartbeat ingestion & expiry logic
+        │   ├── presence_manager.go               # Session fan-out & dedupe across devices
+        │   └── dto.go                            # OnlineStatusDTO
+        ├── typing/
+        │   ├── service.go                        # 🆕 StartTyping, StopTyping, GetTypingUsers
+        │   ├── commands.go                       # 🆕 StartTyping, StopTyping
+        │   ├── queries.go                        # 🆕 GetTypingForConversation
+        │   ├── dto.go                            # 🆕 TypingDTO
+        │   ├── mapper.go                         # 🆕 Typing signal ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Rate limits, membership checks
+        │
+        │   # =========================
+        │   # 🛡️ SAFETY & COMPLIANCE
+        │   # =========================
+        ├── flag/
+        │   ├── service.go                        # Message flag lifecycle (Flag, Unflag, Resolve)
+        │   ├── commands.go                       # FlagMessage, UnflagMessage, ResolveFlag
+        │   ├── queries.go                        # GetFlags, GetFlag
+        │   ├── validators.go                     # Reason whitelist, reviewer role checks
+        │   ├── dto.go                            # FlagDTO, FlagMessageDTO
+        │   └── mapper.go                         # Flag entity ↔ DTO mappers
+        ├── moderation/
+        │   ├── service.go                        # 🆕 EvaluateRules, ApplyActions (quarantine/mask/notify)
+        │   ├── commands.go                       # 🆕 UpsertRule, RemoveRule
+        │   ├── queries.go                        # 🆕 ListRules, GetRule
+        │   ├── dto.go                            # 🆕 ModerationRuleDTO
+        │   ├── mapper.go                         # 🆕 Rule entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Pattern safety, action constraints
+        ├── retention_policy/
+        │   ├── service.go                        # 🆕 SetPolicy, GetPolicy, EnforcePolicy
+        │   ├── commands.go                       # 🆕 SetRetentionPolicy
+        │   ├── queries.go                        # 🆕 GetRetentionPolicy
+        │   ├── dto.go                            # 🆕 RetentionPolicyDTO
+        │   ├── mapper.go                         # 🆕 Policy entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 TTL bounds, hold precedence
+        ├── blocklist/
+        │   ├── service.go                        # 🆕 AddBlock, RemoveBlock, IsBlocked
+        │   ├── commands.go                       # 🆕 AddBlock, RemoveBlock
+        │   ├── queries.go                        # 🆕 GetBlocksForScope
+        │   ├── dto.go                            # 🆕 BlockDTO
+        │   ├── mapper.go                         # 🆕 Block entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Scope & expiry checks
+        │
+        │   # =========================
+        │   # 🔔 NOTIFS & USER FEEDS
+        │   # =========================
+        ├── notification/
+        │   ├── service.go                        # Notification business logic (Send, MarkAsRead, Delete, ClearAll)
+        │   ├── commands.go                       # SendNotification, MarkAsRead, DeleteNotification, ClearAllNotifications
+        │   ├── queries.go                        # GetNotifications, GetUnreadCount, GetNotificationHistory
+        │   ├── dto.go                            # NotificationDTO, SendNotificationDTO, NotificationListDTO
+        │   ├── mapper.go                         # Notification mappers
+        │   ├── validators.go                     # Type/category checks, payload schema validation
+        │   ├── orchestrator.go                   # 🆕 Multi-channel orchestration (in-app, email, webpush)
+        │   ├── preferences_service.go            # 🆕 Manage per-topic/channel user preferences + DND windows
+        │   └── aggregator.go                     # 🆕 Aggregate & group similar notifications (collapse keys/time window)
+        ├── notification_preferences/
+        │   ├── service.go                        # UpdatePreferences, GetPreferences, SetQuietHours, SetDigestSchedule
+        │   ├── commands.go                       # UpdatePreferences, SetQuietHours, SetDigestSchedule
+        │   ├── queries.go                        # GetPreferences, GetEffectivePreferences
+        │   ├── validators.go                     # Channel validation, timezone-safe windows
+        │   ├── dto.go                            # NotificationPreferencesDTO, QuietHoursDTO, DigestScheduleDTO
+        │   └── mapper.go                         # Preferences entity ↔ DTO mappers
+        ├── in_app_notification/
+        │   ├── service.go                        # In-app notification logic (render, deliver, state transitions)
+        │   ├── commands.go                       # PushInAppNotification, DismissInAppNotification, ClickInAppAction
+        │   ├── queries.go                        # GetInAppNotifications, GetBadgeCount
+        │   ├── validators.go                     # CTA validation, throttling & dedupe checks
+        │   ├── real_time_sender.go               # Real-time delivery via WS/SSE (user/room fan-out)
+        │   ├── badge_manager.go                  # Badge count calc/update/reset with cache hinting
+        │   ├── grouping_engine.go                # Grouping similar items (collapse keys)
+        │   ├── dto.go                            # InAppNotificationDTO
+        │   └── mapper.go                         # In-app notification mappers
+        ├── template/
+        │   ├── service.go                        # Create/Update/Render templates (versioned + i18n)
+        │   ├── commands.go                       # CreateTemplate, UpdateTemplate
+        │   ├── queries.go                        # GetTemplate, ListTemplates
+        │   ├── validators.go                     # Placeholder whitelist, locale fallback checks
+        │   ├── renderer.go                       # Safe renderer (HTML sanitizer, checksum)
+        │   ├── variable_injector.go              # Merge dynamic variables from context
+        │   ├── dto.go                            # TemplateDTO, RenderTemplateDTO
+        │   └── mapper.go                         # Template entity ↔ DTO mappers
+        ├── email/
+        │   ├── service.go                        # Email orchestration (Send, SendBatch, CheckStatus)
+        │   ├── commands.go                       # SendEmail, SendEmailBatch
+        │   ├── queries.go                        # GetEmailStatus, ListEmailsForUser
+        │   ├── validators.go                     # Address format, batch sizes, template variables
+        │   ├── sender.go                         # SMTP send workflow (retries, backoff, idempotency keys)
+        │   ├── template_renderer.go              # Render HTML/text templates with variable injection
+        │   ├── batch_sender.go                   # Batch queueing & rate limiting
+        │   ├── dto.go                            # EmailDTO, SendEmailDTO, BatchEmailDTO
+        │   ├── mapper.go                         # Email entity ↔ DTO mappers
+        │   └── wildduck_client.go                # 🆕 WildDuck SMTP/API integration (self-hosted MTA)
+        │
+        │   # =========================
+        │   # ✉️ EMAIL BRIDGE (SELF-HOSTED)
+        │   # =========================
+        ├── email_bridge/
+        │   ├── inbound_processor.go              # 🆕 Parse inbound (plus-address) → conversation; trim signatures; auth checks
+        │   └── outbound_processor.go             # 🆕 Generate threading headers; queue to MTA; dedupe by message-id
+        │
+        │   # =========================
+        │   # 📅 SCHEDULING & CALLS
+        │   # =========================
+        ├── system_message/
+        │   ├── service.go                        # Publish system messages (milestones, disputes, approvals)
+        │   ├── commands.go                       # CreateSystemMessage
+        │   ├── queries.go                        # GetSystemMessagesForConversation
+        │   ├── validators.go                     # Type safety & payload schema checks
+        │   ├── dto.go                            # SystemMessageDTO
+        │   └── mapper.go                         # System message entity ↔ DTO mappers
+        ├── call/
+        │   ├── service.go                        # Create/Cancel/Reschedule call links
+        │   ├── commands.go                       # CreateCall, CancelCall, RescheduleCall
+        │   ├── queries.go                        # GetCall, ListCallsForConversation
+        │   ├── validators.go                     # Timezone-safe windows, overlap rules
+        │   ├── dto.go                            # CallDTO
+        │   └── mapper.go                         # Call entity ↔ DTO mappers
+        ├── calendar_invite/
+        │   ├── service.go                        # Generate iCal, SendInvites, UpdateInviteStatus
+        │   ├── commands.go                       # SendCalendarInvite
+        │   ├── queries.go                        # GetInvitesForCall
+        │   ├── validators.go                     # Email, timezone, iCal bounds
+        │   ├── dto.go                            # CalendarInviteDTO
+        │   └── mapper.go                         # Calendar invite entity ↔ DTO mappers
+        │
+        │   # =========================
+        │   # 📊 OPS & GOVERNANCE
+        │   # =========================
+        ├── quota/
+        │   ├── service.go                        # 🆕 CheckQuota, ConsumeQuota, ResetQuota
+        │   ├── commands.go                       # 🆕 ConsumeQuota, ResetQuota
+        │   ├── queries.go                        # 🆕 GetQuotaUsage
+        │   ├── dto.go                            # 🆕 QuotaUsageDTO
+        │   ├── mapper.go                         # 🆕 Quota entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Window sizes, per-topic caps
+        ├── analytics/
+        │   ├── service.go                        # 🆕 RecordFunnelStep, ReportLagDistributions
+        │   ├── commands.go                       # 🆕 RecordRequested, RecordSent, RecordDelivered, RecordRead
+        │   ├── queries.go                        # 🆕 GetFunnel, GetLagHistogram
+        │   ├── dto.go                            # 🆕 FunnelDTO, LagHistogramDTO
+        │   ├── mapper.go                         # 🆕 Analytics model ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Sampling & PII guards
+        │
+        │   # =========================
+        │   # 🆕 ADDED FOR FREELANCING PLATFORM (UPWORK-LIKE)
+        │   # =========================
+        ├── interview/
+        │   ├── service.go                        # 🆕 ScheduleInterview, ConfirmInterview, CancelInterview, CompleteInterview
+        │   ├── commands.go                       # 🆕 ScheduleInterview, ConfirmInterview, CancelInterview
+        │   ├── queries.go                        # 🆕 GetInterview, ListInterviewsForConversation
+        │   ├── dto.go                            # 🆕 InterviewDTO, ScheduleInterviewDTO
+        │   ├── mapper.go                         # 🆕 Interview entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Availability checks, timezone validation, participant consent
+        ├── platform_alert/
+        │   ├── service.go                        # 🆕 SendPlatformAlert, DismissAlert, GetActiveAlerts
+        │   ├── commands.go                       # 🆕 SendPlatformAlert, DismissAlert
+        │   ├── queries.go                        # 🆕 GetActiveAlertsForUser
+        │   ├── dto.go                            # 🆕 PlatformAlertDTO
+        │   ├── mapper.go                         # 🆕 Alert entity ↔ DTO mappers
+        │   └── validators.go                     # 🆕 Target segmentation, expiry bounds
+        └── spam_detection/
+            ├── service.go                        # 🆕 DetectSpam, QuarantineMessage, ReviewSpam
+            ├── commands.go                       # 🆕 QuarantineMessage, ReviewSpam
+            ├── queries.go                        # 🆕 GetSpamHistoryForUser
+            ├── dto.go                            # 🆕 SpamDetectionDTO
+            ├── mapper.go                         # 🆕 Spam entity ↔ DTO mappers
+            ├── rules_engine.go                   # 🆕 Rule-based detection (keywords, links, repetition; no paid ML)
+            └── validators.go                     # 🆕 Score thresholds, false-positive overrides
+
 │   │
-│   ├── infrastructure/                       # 🔧 Infrastructure Layer - External concerns
+│   ├── infrastructure/                          # 🔌 Infrastructure (DB, cache, messaging, realtime, email, push)
+│   │   # =========================
+│   │   # 🗄️ PERSISTENCE (POSTGRES)
+│   │   # =========================
 │   │   ├── persistence/
 │   │   │   └── postgres/
-│   │   │       ├── connection.go             # PostgreSQL connection setup (DSN from config, connection pooling)
-│   │   │       ├── transaction.go            # Transaction helpers (Begin, Commit, Rollback, WithTransaction wrapper)
-│   │   │       ├── migrations.go             # 📝 UPDATED: Auto-migration logic (now with version tracking, GORM AutoMigrate for all tables)
-│   │   │       ├── version.go                # 🆕 Schema version tracking (SchemaVersion table, RecordMigration function)
-│   │   │       ├── safety.go                 # 🆕 Pre-migration safety checks (environment validation, disk space check)
-│   │   │       ├── conversation_repository.go # ConversationRepository implementation with GORM
-│   │   │       ├── message_repository.go     # MessageRepository implementation
-│   │   │       ├── notification_repository.go # NotificationRepository implementation
-│   │   │       ├── in_app_notification_repository.go # 🆕 InAppNotificationRepository implementation
-│   │   │       ├── template_repository.go    # TemplateRepository implementation
-│   │   │       ├── email_repository.go       # EmailRepository implementation
-│   │   │       ├── notification_queue_repository.go # 🆕 NotificationQueueRepository implementation
-│   │   │       ├── delivery_log_repository.go # 🆕 DeliveryLogRepository implementation
-│   │   │       ├── unsubscribe_repository.go # UnsubscribeRepository implementation
-│   │   │       ├── online_status_repository.go # OnlineStatusRepository implementation
-│   │   │       ├── system_message_repository.go # 🆕 SystemMessageRepository implementation
-│   │   │       ├── call_repository.go        # 🆕 CallRepository implementation
-│   │   │       └── calendar_invite_repository.go # 🆕 CalendarInviteRepository implementation
-│   │   │
+│   │   │       # 🧱 COMMON (DB BOOTSTRAP)
+│   │   │       ├── connection.go                    # DSN & pooling
+│   │   │       ├── transaction.go                   # TX helpers
+│   │   │       ├── migrations.go                    # auto-migrate (versioned)
+│   │   │       ├── version.go                       # schema version table
+│   │   │       ├── safety.go                        # pre-flight checks
+│   │   │       # 💬 CORE CHAT PRIMITIVES
+│   │   │       ├── conversation_repository.go       # ConversationRepository implementation (CRUD, members, settings)
+│   │   │       ├── message_repository.go            # MessageRepository (send/edit/delete, reads/reactions)
+│   │   │       ├── thread_repository.go             # 🆕 ThreadRepository (create/archive, follow/unfollow)
+│   │   │       ├── pin_repository.go                # 🆕 PinRepository (pin/unpin, list pins)
+│   │   │       ├── bookmark_repository.go           # 🆕 BookmarkRepository (user private bookmarks)
+│   │   │       ├── draft_repository.go              # 🆕 DraftRepository (per-user unsent drafts)
+│   │   │       # 🚚 DELIVERY & READ STATE
+│   │   │       ├── read_receipt_repository.go       # 🆕 ReadReceiptRepository (record/read rollups)
+│   │   │       ├── delivery_repository.go           # 🆕 DeliveryRepository (queued→dispatched→ack states)
+│   │   │       # ⚡ EPHEMERAL REALTIME SIGNALS
+│   │   │       ├── online_status_repository.go      # OnlineStatusRepository (sessions/heartbeats)
+│   │   │       # 🛡️ SAFETY & COMPLIANCE
+│   │   │       ├── moderation_flag_repository.go    # 🆕 ModerationFlagRepository (reports, statuses, evidence)
+│   │   │       ├── retention_policy_repository.go   # 🆕 RetentionPolicyRepository (TTL/legal holds per conversation)
+│   │   │       ├── blocklist_repository.go          # 🆕 BlocklistRepository (user/phrase/domain blocks)
+│   │   │       ├── audit_trail_repository.go        # 🆕 AuditTrailRepository (immutable ops/security trail)
+│   │   │       # 🔔 NOTIFS & USER FEEDS
+│   │   │       ├── notification_repository.go       # NotificationRepository (feed + counters)
+│   │   │       ├── in_app_notification_repository.go# InAppNotificationRepository (badge/grouping)
+│   │   │       ├── notification_queue_repository.go # NotificationQueueRepository (priority/ETA/retries)
+│   │   │       ├── delivery_log_repository.go       # DeliveryLogRepository (status/latency)
+│   │   │       ├── template_repository.go           # TemplateRepository (versioned + i18n templates)
+│   │   │       ├── unsubscribe_repository.go        # UnsubscribeRepository (per-type/channel)
+│   │   │       ├── suppression_repository.go        # 🆕 SuppressionRepository (bounces/complaints)
+│   │   │       ├── webpush_subscription_repository.go # 🆕 WebPushSubscriptionRepository (VAPID endpoint/keys/scope/expiry)
+│   │   │       # ✉️ EMAIL BRIDGE (SELF-HOSTED)
+│   │   │       ├── email_repository.go              # EmailRepository (status/outbox/history)
+│   │   │       ├── mail_tracking_repository.go      # 🆕 MailTrackingRepository (delivered/deferred/bounced/complained)
+│   │   │       # 📅 SCHEDULING & CALLS
+│   │   │       ├── system_message_repository.go     # SystemMessageRepository (contract/dispute feeds)
+│   │   │       ├── call_repository.go               # CallRepository (links/schedule/state)
+│   │   │       ├── calendar_invite_repository.go    # CalendarInviteRepository (iCal/status)
+│   │   │       # 📊 OPS & GOVERNANCE
+│   │   │       ├── quota_repository.go              # 🆕 QuotaRepository (per-user/topic/channel usage)
+│   │   │       └── analytics_repository.go          # 🆕 AnalyticsRepository (funnel counters, lag aggregates)
+│   │   # =========================
+│   │   # ⚡ CACHE (REDIS)
+│   │   # =========================
 │   │   ├── cache/
 │   │   │   └── redis/
-│   │   │       ├── connection.go             # Redis connection setup (connection pooling, retry logic)
-│   │   │       ├── conversation_cache.go     # Conversation caching (Get, Set, Invalidate with TTL)
-│   │   │       ├── online_status_cache.go    # 🆕 Cache online status (fast reads for presence indicator)
-│   │   │       ├── typing_indicator_cache.go # 🆕 Cache typing indicators (ephemeral data with short TTL)
-│   │   │       ├── notification_cache.go     # 🆕 Cache unread counts (fast badge updates)
-│   │   │       └── presence_cache.go         # 🆕 User presence caching
-│   │   │
+│   │   │       ├── connection.go                   # Redis connection setup (pooling, retry logic)
+│   │   │       ├── conversation_cache.go           # Conversation caching (Get, Set, Invalidate with TTL)
+│   │   │       ├── online_status_cache.go          # fast presence reads
+│   │   │       ├── typing_indicator_cache.go       # short TTL ephemeral typing
+│   │   │       ├── notification_cache.go           # unread/badge counts
+│   │   │       └── presence_cache.go               # session sets per user/device
+│   │   # =========================
+│   │   # 📨 MESSAGING (KAFKA)
+│   │   # =========================
 │   │   ├── messaging/
 │   │   │   └── kafka/
-│   │   │       ├── consumer.go               # 📝 UPDATED: Kafka consumer (now uses platform-shared/inbox for message deduplication)
-│   │   │       ├── producer.go               # 📝 UPDATED: Kafka producer (now uses platform-shared/outbox for reliable publishing)
-│   │   │       ├── topics.go                 # 📝 UPDATED: Topic constants (now imported from contracts/events - message.sent, notification.delivered)
-│   │   │       └── scram.go                  # SCRAM authentication for Kafka (SASL/SCRAM-SHA-256)
-│   │   │
+│   │   │       ├── consumer.go                     # 📝 UPDATED: uses platform-shared/inbox (dedupe, offsets)
+│   │   │       ├── producer.go                     # 📝 UPDATED: uses platform-shared/outbox (reliable publishing)
+│   │   │       ├── topics.go                       # 📝 UPDATED: topic constants imported from contracts/events
+│   │   │       └── scram.go                        # SASL/SCRAM-256
+│   │   # =========================
+│   │   # 🔴 REALTIME (WS/SSE)
+│   │   # =========================
 │   │   ├── realtime/
 │   │   │   ├── websocket/
-│   │   │   │   ├── hub.go                    # 🆕 WebSocket hub - connection manager (manages all active WS connections, broadcast to users/rooms)
-│   │   │   │   ├── client.go                 # 🆕 WebSocket client (represents a single connection, read/write goroutines)
-│   │   │   │   ├── handler.go                # 🆕 WebSocket message handler (handle incoming WS messages, route to services)
-│   │   │   │   ├── broadcaster.go            # 🆕 Broadcast to multiple clients (send to all, send to room, send to user)
-│   │   │   │   └── room.go                   # 🆕 WebSocket rooms/channels (group connections by conversation ID)
+│   │   │   │   ├── hub.go                          # connection manager; rooms; user fan-out
+│   │   │   │   ├── client.go                       # per-conn read/write goroutines
+│   │   │   │   ├── handler.go                      # HTTP→WS upgrade & auth
+│   │   │   │   ├── broadcaster.go                  # send to all/user/room
+│   │   │   │   └── room.go                         # room registry (conversation_id)
 │   │   │   └── sse/
-│   │   │       ├── handler.go                # 🆕 Server-Sent Events handler (alternative to WebSocket for one-way real-time updates)
-│   │   │       └── stream.go                 # 🆕 SSE stream management (maintain open connections, send events)
-│   │   │
+│   │   │       ├── handler.go                      # Server-Sent Events handler
+│   │   │       └── stream.go                       # stream registry & writes
+│   │   # =========================
+│   │   # ✉️ EMAIL (SELF-HOSTED)
+│   │   # =========================
 │   │   ├── email/
 │   │   │   ├── wildduck/
-│   │   │   │   ├── client.go                 # 🆕 WildDuck SMTP/API client (connect to self-hosted WildDuck)
-│   │   │   │   ├── smtp_sender.go            # 🆕 SMTP sending via WildDuck
-│   │   │   │   ├── api_client.go             # 🆕 WildDuck REST API client (manage mailboxes, filters)
-│   │   │   │   └── config.go                 # 🆕 WildDuck configuration (SMTP host, port, credentials)
+│   │   │   │   ├── client.go                       # WildDuck SMTP/API client
+│   │   │   │   ├── smtp_sender.go                  # SMTP send
+│   │   │   │   ├── api_client.go                   # mailbox mgmt / filters
+│   │   │   │   └── config.go                       # SMTP creds/hosts
 │   │   │   └── smtp/
-│   │   │       ├── client.go                 # Generic SMTP fallback (if not using WildDuck)
-│   │   │       └── config.go                 # SMTP configuration
-│   │   │
-│   │   ├── storage/
-│   │   │   └── client.go                     # Storage service client (upload message attachments via HTTP API)
-│   │   │
-│   │   └── outbox/                           # ❌ REMOVED: Use platform-shared/outbox instead
-│   │       ├── processor.go                  # ❌ Use platform-shared/outbox/forwarder.go
-│   │       └── scheduler.go                  # ❌ Use platform-shared/outbox/scheduler.go
+│   │   │       ├── client.go                       # generic SMTP fallback
+│   │   │       └── config.go
+│   │   # =========================
+│   │   # 🔔 WEBPUSH (VAPID)
+│   │   # =========================
+│   │   └── webpush/
+│   │       └── vapid/
+│   │           ├── signer.go                       # 🆕 VAPID JWT/EC keys
+│   │           └── sender.go                       # 🆕 push send with retries
+│   │   # =========================
+│   │   # 📦 INTEGRATIONS
+│   │   # =========================
+│   │   └── storage/
+│   │       └── client.go                           # Storage service client (upload message attachments via HTTP API)
 │   │
 │   ├── interfaces/
 │   │   └── http/
-│   │       ├── handlers/
-│   │       │   ├── conversation_handler.go   # Conversation HTTP handlers (GET, POST, PUT, DELETE /conversations, /conversations/:id)
-│   │       │   ├── message_handler.go        # Message HTTP handlers (POST /conversations/:id/messages, GET /messages/:id, PUT, DELETE)
-│   │       │   ├── notification_handler.go   # Notification HTTP handlers (GET /notifications, PUT /notifications/:id/read, DELETE /notifications/:id)
-│   │       │   ├── in_app_notification_handler.go # 🆕 In-app notification handlers (GET /notifications/in-app, GET /notifications/badge-count)
-│   │       │   ├── email_handler.go          # Email HTTP handlers (POST /emails, GET /emails/:id/status)
-│   │       │   ├── template_handler.go       # Template HTTP handlers (GET /templates, POST /templates, GET /templates/:id)
-│   │       │   ├── preferences_handler.go    # Preferences HTTP handlers (GET /preferences, PUT /preferences)
-│   │       │   ├── websocket_handler.go      # 🆕 WebSocket upgrade handler (HTTP → WebSocket upgrade)
-│   │       │   ├── sse_handler.go            # 🆕 SSE handler (establish SSE connections)
-│   │       │   ├── online_status_handler.go  # Online status HTTP handlers (GET /users/:id/status, PUT /status/online)
-│   │       │   ├── unsubscribe_handler.go    # Unsubscribe HTTP handlers (POST /unsubscribe, GET /unsubscribe/preferences)
-│   │       │   ├── system_message_handler.go # 🆕 System message feed endpoints
-│   │       │   ├── call_handler.go           # 🆕 Call links & scheduling endpoints
-│   │       │   ├── calendar_invite_handler.go# 🆕 Calendar invite endpoints
-│   │       │   ├── flag_handler.go           # Flag HTTP handlers (POST /messages/:id/flag, GET /flags)
-│   │       │   └── health_handler.go         # Health check endpoints (/health, /ready, /live)
-│   │       │
-│   │       ├── routes/                       # 🆕 Route registrars mapped 1:1 to handlers
-│   │       │   ├── conversation_routes.go    # /conversations, /conversations/:id
-│   │       │   ├── message_routes.go         # /conversations/:id/messages
-│   │       │   ├── notification_routes.go    # /notifications/*
-│   │       │   ├── in_app_notification_routes.go # /notifications/in-app/*
-│   │       │   ├── email_routes.go           # /emails/*
-│   │       │   ├── template_routes.go        # /templates/*
-│   │       │   ├── preferences_routes.go     # /preferences/*
-│   │       │   ├── websocket_routes.go       # /ws (upgrade)
-│   │       │   ├── sse_routes.go             # /sse/*
-│   │       │   ├── online_status_routes.go   # /status/*
-│   │       │   ├── unsubscribe_routes.go     # /unsubscribe/*
-│   │       │   ├── system_message_routes.go  # /system-messages/*
-│   │       │   ├── call_routes.go            # /calls/*
-│   │       │   └── calendar_invite_routes.go # /calendar-invites/*
-│   │       │
-│   │       ├── middleware/                   # 📝 UPDATED: Middleware (now uses platform-shared middleware)
-│   │       │   ├── auth.go                   # 📝 UPDATED: Authentication middleware (uses pkg/auth for JWT verification)
-│   │       │   ├── rbac.go                   # 📝 UPDATED: RBAC middleware (uses pkg/auth authorizer for role checks)
-│   │       │   ├── cors.go                   # 📝 UPDATED: CORS middleware (uses platform-shared/ginx CORS)
-│   │       │   ├── rate_limit.go             # Rate limiting middleware (token bucket algorithm)
-│   │       │   └── idempotency.go            # 🆕 Idempotency middleware (uses platform-shared/idempotency)
-│   │       │
-│   │       ├── responses/                    # 📝 UPDATED: Response helpers
-│   │       │   └── README.md                 # 📝 Points to platform-shared/httpx (use shared response wrappers)
-│   │       │
-│   │       └── router.go                     # 📝 UPDATED: HTTP router setup (uses Gin, applies platform-shared/ginx middleware)
-│   │
-│   └── config/                               # 🆕 MEDIUM - Standardized configuration
-│       ├── schema.go                         # 🆕 Typed Config struct (App, Server, Postgres, Kafka, Redis, Auth, WildDuck, WebSocket)
-│       ├── loader.go                         # 🆕 Config loader using Viper (precedence: flags → env → file → defaults)
-│       └── docs/
-│           └── CONFIGURATION.md              # 🆕 Configuration documentation (all ENV vars, defaults, examples)
-│
-├── config/
-│   ├── default.yaml                          # 🆕 Default configuration
-│   ├── dev.yaml                              # 🆕 Development overrides
-│   └── prod.yaml                             # 🆕 Production overrides
-│
-├── dapr/
-│   ├── local/
-│   │   ├── pubsub.yaml                       # Kafka pub/sub component
-│   │   └── statestore.yaml                   # State store component
-│   └── k8s/
-│       ├── pubsub.yaml                       # Kafka with scopes: ["communications-be"]
-│       ├── statestore.yaml                   # State store with scopes
-│       └── secrets.yaml                      # Dapr secret store
-│
-├── pkg/
-│   ├── errors/
-│   │   ├── errors.go                         # Service-specific errors
-│   │   └── codes.go                          # Error codes (MESSAGE_NOT_FOUND, CONVERSATION_NOT_FOUND)
-│   ├── logger/                               # ❌ REMOVED: Use platform-shared/logging
-│   │   └── README.md                         # 📝 Points to platform-shared/logging
-│   ├── utils/
-│   │   ├── validator.go                      # Local validation utilities
-│   │   ├── template_engine.go                # Template rendering utilities
-│   │   ├── sanitizer.go                      # Sanitize message content (prevent XSS)
-│   │   └── html_to_text.go                   # Convert HTML to plain text (for email fallback)
-│   └── constants/
-│       ├── events.go                         # ❌ REMOVED: Use contracts/events
-│       ├── topics.go                         # ❌ REMOVED: Use contracts/events
-│       ├── notification_types.go             # Notification type constants
-│       └── websocket_events.go               # WebSocket event types
+│   │       └── v1/                                 # 🌐 HTTP Interface
+│   │           # =========================
+│   │           # 🧭 HANDLERS
+│   │           # =========================
+│   │           ├── handlers/
+│   │           │   # 💬 CORE CHAT PRIMITIVES
+│   │           │   ├── conversation_handler.go         # CRUD & member ops
+│   │           │   ├── message_handler.go              # send/edit/delete/react/mark-read
+│   │           │   ├── thread_handler.go               # 🆕 create/archive threads; follow/unfollow
+│   │           │   ├── pin_handler.go                  # 🆕 pin/unpin messages; list pins
+│   │           │   ├── bookmark_handler.go             # 🆕 add/remove/list user bookmarks
+│   │           │   ├── draft_handler.go                # 🆕 save/clear/get conversation draft
+│   │           │   # 🚚 DELIVERY & READ STATE
+│   │           │   ├── read_receipt_handler.go         # 🆕 record read; list readers; latest read
+│   │           │   ├── delivery_handler.go             # 🆕 mark dispatched/ack; delivery status
+│   │           │   # ⚡ EPHEMERAL REALTIME SIGNALS
+│   │           │   ├── online_status_handler.go        # GET/SET presence
+│   │           │   ├── typing_handler.go               # 🆕 start/stop typing; list typers
+│   │           │   # 🛡️ SAFETY & COMPLIANCE
+│   │           │   ├── flag_handler.go                 # message flags
+│   │           │   ├── moderation_handler.go           # 🆕 rules CRUD; evaluate; dry-run
+│   │           │   ├── retention_policy_handler.go     # 🆕 set/get retention & legal holds
+│   │           │   ├── blocklist_handler.go            # 🆕 add/remove/list user/phrase/domain blocks
+│   │           │   # 🔔 NOTIFS & USER FEEDS
+│   │           │   ├── notification_handler.go         # list, unread, mark-read, delete
+│   │           │   ├── in_app_notification_handler.go  # list in-app; badge count
+│   │           │   ├── preferences_handler.go          # GET/PUT user prefs & DND
+│   │           │   ├── template_handler.go             # CRUD templates; render preview
+│   │           │   ├── webpush_handler.go              # 🆕 subscribe/unsubscribe push
+│   │           │   ├── unsubscribe_handler.go          # unsubscribe flows
+│   │           │   ├── email_handler.go                # send email / batch status
+│   │           │   # ✉️ EMAIL BRIDGE (SELF-HOSTED)
+│   │           │   ├── mail_tracking_handler.go        # 🆕 provider webhooks: delivered/deferred/bounced/complained
+│   │           │   # 📅 SCHEDULING & CALLS
+│   │           │   ├── system_message_handler.go       # system feed
+│   │           │   ├── call_handler.go                 # call links & scheduling
+│   │           │   ├── calendar_invite_handler.go      # invites
+│   │           │   # 📊 OPS & GOVERNANCE
+│   │           │   └── health_handler.go               # /health, /ready, /live
+│   │           # =========================
+│   │           # 🗺️ ROUTES
+│   │           # =========================
+│   │           └── routes/
+│   │               # 💬 CORE CHAT PRIMITIVES
+│   │               ├── conversation_routes.go          # /conversations/*
+│   │               ├── message_routes.go               # /conversations/:id/messages
+│   │               ├── thread_routes.go                # 🆕 /conversations/:id/threads/*
+│   │               ├── pin_routes.go                   # 🆕 /conversations/:id/pins/*
+│   │               ├── bookmark_routes.go              # 🆕 /bookmarks/*
+│   │               ├── draft_routes.go                 # 🆕 /conversations/:id/draft
+│   │               # 🚚 DELIVERY & READ STATE
+│   │               ├── read_receipt_routes.go          # 🆕 /messages/:id/read-receipts/*
+│   │               ├── delivery_routes.go              # 🆕 /messages/:id/deliveries/*
+│   │               # ⚡ EPHEMERAL REALTIME SIGNALS
+│   │               ├── online_status_routes.go         # /status/*
+│   │               ├── typing_routes.go                # 🆕 /conversations/:id/typing/*
+│   │               ├── websocket_routes.go             # /ws
+│   │               ├── sse_routes.go                   # /sse/*
+│   │               # 🛡️ SAFETY & COMPLIANCE
+│   │               ├── flag_routes.go                  # /messages/:id/flags/*
+│   │               ├── moderation_routes.go            # 🆕 /moderation/rules/*
+│   │               ├── retention_policy_routes.go      # 🆕 /conversations/:id/retention
+│   │               ├── blocklist_routes.go             # 🆕 /blocklist/*
+│   │               # 🔔 NOTIFS & USER FEEDS
+│   │               ├── notification_routes.go          # /notifications/*
+│   │               ├── in_app_notification_routes.go   # /notifications/in-app/*
+│   │               ├── preferences_routes.go           # /preferences/*
+│   │               ├── template_routes.go              # /templates/*
+│   │               ├── webpush_routes.go               # 🆕 /webpush/*
+│   │               ├── unsubscribe_routes.go           # /unsubscribe/*
+│   │               ├── email_routes.go                 # /emails/*
+│   │               # ✉️ EMAIL BRIDGE (SELF-HOSTED)
+│   │               ├── mail_tracking_routes.go         # 🆕 /mail/tracking/*
+│   │               # 📅 SCHEDULING & CALLS
+│   │               ├── system_message_routes.go        # /system-messages/*
+│   │               ├── call_routes.go                  # /calls/*
+│   │               └── calendar_invite_routes.go       # /calendar-invites/*
 │
 ├── templates/
-│   ├── email/                                # Email HTML templates
-│   │   ├── base.html                         # Base email template (header, footer, styles)
-│   │   ├── welcome.html                      # Welcome email
-│   │   ├── job_alert.html                    # Job alert email
-│   │   ├── new_proposal.html                 # New proposal notification
-│   │   ├── proposal_accepted.html            # Proposal accepted notification
-│   │   ├── bid_received.html                 # New bid notification
-│   │   ├── outbid_alert.html                 # Outbid alert
-│   │   ├── contract_created.html             # Contract created notification
-│   │   ├── milestone_completed.html          # Milestone completed notification
-│   │   ├── payment_received.html             # Payment received notification
-│   │   ├── payment_sent.html                 # Payment sent notification
-│   │   ├── review_request.html               # Review request
-│   │   ├── review_received.html              # Review received notification
-│   │   ├── new_message.html                  # New message notification
-│   │   ├── subscription_expiring.html        # Subscription expiring reminder
-│   │   ├── password_reset.html               # Password reset email
-│   │   ├── verify_email.html                 # Email verification
-│   │   └── weekly_summary.html               # Weekly activity summary
-│   └── notification/                         # In-app notification templates (JSON)
-│       ├── job_posted.json                   # Job posted notification template
-│       ├── proposal_received.json            # Proposal received template
-│       ├── contract_created.json             # Contract created template
-│       ├── milestone_completed.json          # Milestone completed template
-│       ├── payment_received.json             # Payment received template
-│       └── review_received.json              # Review received template
+│   ├── email/                                      # Email HTML templates
+│   │   ├── base.html                               # Base email template (header, footer, styles)
+│   │   ├── welcome.html                            # Welcome email
+│   │   ├── job_alert.html                          # Job alert email
+│   │   ├── new_proposal.html                       # New proposal notification
+│   │   ├── proposal_accepted.html                  # Proposal accepted notification
+│   │   ├── bid_received.html                       # New bid notification
+│   │   ├── outbid_alert.html                       # Outbid alert
+│   │   ├── contract_created.html                   # Contract created notification
+│   │   ├── milestone_completed.html                # Milestone completed notification
+│   │   ├── payment_received.html                   # Payment received notification
+│   │   ├── payment_sent.html                       # Payment sent notification
+│   │   ├── review_request.html                     # Review request
+│   │   ├── review_received.html                    # Review received notification
+│   │   ├── new_message.html                        # New message notification
+│   │   ├── password_reset.html                     # Password reset email
+│   │   ├── verify_email.html                       # Email verification
+│   │   └── weekly_summary.html                     # Weekly activity summary
+│   └── notification/                               # In-app notification templates (JSON)
+│       ├── job_posted.json
+│       ├── proposal_received.json
+│       ├── contract_created.json
+│       ├── milestone_completed.json
+│       ├── payment_received.json
+│       └── review_received.json
+│
+├── config/
+│   ├── default.yaml                                # Default configuration
+│   ├── dev.yaml                                    # Development overrides
+│   └── prod.yaml                                   # Production overrides
+│
+├── dapr/                                           # Dapr components split by environment
+│   ├── local/                                      # For dapr run
+│   │   ├── pubsub.yaml                             # Kafka pub/sub component
+│   │   └── statestore.yaml                         # State store component
+│   └── k8s/                                        # For kubectl apply
+│       ├── pubsub.yaml                             # Kafka with scopes: ["communications-be"]
+│       ├── statestore.yaml                         # State store with scopes
+│       └── secrets.yaml                            # Dapr secret store
 │
 ├── deployments/
 │   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       ├── configmap.yaml
-│       ├── secrets.yaml
-│       ├── hpa.yaml
-│       ├── pdb.yaml
-│       └── servicemonitor.yaml
+│       ├── deployment.yaml                         # Kubernetes Deployment
+│       ├── service.yaml                            # Kubernetes Service
+│       ├── configmap.yaml                          # ConfigMap
+│       ├── secrets.yaml                            # Secrets
+│       ├── hpa.yaml                                # HPA
+│       ├── pdb.yaml                                # PDB
+│       └── servicemonitor.yaml                     # Prometheus ServiceMonitor
 │
 ├── scripts/
-│   ├── setup-local.sh
-│   ├── get-secrets.sh
-│   ├── seed-templates.sh
-│   └── seed-data.sh
+│   ├── setup-local.sh                              # Setup local environment
+│   ├── get-secrets.sh                              # Fetch secrets
+│   ├── seed-templates.sh                           # Seed message/email templates
+│   └── seed-data.sh                                # Seed test data
 │
 ├── tests/
 │   ├── unit/
+│   │   ├── domain/
+│   │   │   ├── conversation_test.go               # Conversation domain tests
+│   │   │   ├── message_test.go                    # Message domain tests
+│   │   │   └── notification_test.go               # Notification domain tests
+│   │   ├── application/
+│   │   │   ├── message_service_test.go            # Message service tests
+│   │   │   ├── notification_service_test.go       # Notification service tests
+│   │   │   └── moderation_service_test.go         # Moderation service tests
+│   │   └── infrastructure/
+│   │       ├── postgres_repository_test.go        # Postgres repository tests
+│   │       └── kafka_producer_test.go             # Kafka producer tests
 │   ├── integration/
+│   │   ├── handlers/
+│   │   │   ├── conversation_handler_test.go       # Conversation HTTP tests
+│   │   │   ├── message_handler_test.go            # Message HTTP tests
+│   │   │   └── notification_handler_test.go       # Notification HTTP tests
+│   │   └── repositories/
+│   │       ├── message_repository_test.go         # Message repo tests
+│   │       └── notification_repository_test.go    # Notification repo tests
 │   └── e2e/
+│       └── scenarios/
+│           ├── messaging_flow_test.go             # Send/edit/delete/read flow
+│           ├── notification_flow_test.go          # Orchestrated multi-channel flow
+│           └── moderation_flow_test.go            # Report → quarantine → resolution
 │
 ├── docs/
-│   ├── README.md
-│   ├── API.md
-│   ├── EVENTS.md                             # 🆕 Events (published: message.sent, notification.delivered, consumed: all domain events)
-│   ├── ARCHITECTURE.md
-│   ├── MIGRATIONS.md                         # 🆕 Migration history
-│   ├── SCHEMA.md                             # 🆕 Database schema
-│   ├── RUNBOOK.md                            # 🆕 Operational procedures
-│   ├── websocket-protocol.md                 # 🆕 WebSocket protocol documentation
-│   ├── notification-system.md                # 🆕 Notification system overview
-│   ├── in-app-notifications.md               # 🆕 In-app notifications guide
-│   ├── email-templates.md
-│   └── wildduck-integration.md               # 🆕 WildDuck integration guide
+│   ├── README.md                                  # Service overview
+│   ├── API.md                                     # API documentation
+│   ├── EVENTS.md                                  # 📝 published: message.sent, notification.delivered; consumed: users/jobs/proposals/contracts/payments/reviews/admin
+│   ├── ARCHITECTURE.md                            # High-level diagrams
+│   ├── MIGRATIONS.md                              # Migration history
+│   ├── SCHEMA.md                                  # Database schema
+│   ├── RUNBOOK.md                                 # Operational procedures (DLQ, rate-limit, replayer)
+│   ├── websocket-protocol.md                      # WebSocket protocol documentation
+│   ├── notification-system.md                     # Notification system overview
+│   ├── in-app-notifications.md                    # In-app notifications guide
+│   └── wildduck-integration.md                    # WildDuck integration guide
 │
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml
-│       └── cd.yml
+│       ├── ci.yml                                 # CI workflow
+│       └── cd.yml                                 # CD workflow
 │
-├── go.mod                                    # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
+├── pkg/
+│   ├── errors/
+│   │   ├── errors.go                              # Service-specific errors
+│   │   └── codes.go                               # Error codes (MESSAGE_NOT_FOUND, CONVERSATION_NOT_FOUND)
+│   ├── utils/
+│   │   ├── validator.go                           # Local validation utilities
+│   │   ├── template_engine.go                     # Template rendering utilities
+│   │   ├── sanitizer.go                           # Sanitize message content (prevent XSS)
+│   │   └── html_to_text.go                        # Convert HTML to plain text (for email fallback)
+│   └── constants/
+│       ├── notification_types.go                  # Notification type constants
+│       └── websocket_events.go                    # WebSocket event types
+│
+├── go.mod                                         # 📝 UPDATED: Imports pkg/auth, platform-shared, contracts/events
 ├── go.sum
 ├── .env.example
 ├── Makefile
@@ -798,6 +1050,7 @@ apps/be/communications-be/
 ├── .dockerignore
 ├── .gitignore
 └── README.md
+
 
 ```
 ---
