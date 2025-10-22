@@ -139,86 +139,88 @@ CREATE INDEX idx_wallet_balance_snapshots_wallet ON wallet_balance_snapshots (wa
 CREATE TABLE transactions (
     -- Primary Key
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    
+
     -- Idempotency
     idempotency_key UUID UNIQUE,
-    
+
     -- Transaction Identity
     transaction_number VARCHAR(50) UNIQUE NOT NULL,
-    
+
     -- Type
     transaction_type VARCHAR(30) NOT NULL CHECK (
-        transaction_type IN ('DEPOSIT', 'WITHDRAWAL', 'TRANSFER', 'PAYMENT', 'REFUND', 
-                            'FEE', 'COMMISSION', 'ESCROW_HOLD', 'ESCROW_RELEASE', 
+        transaction_type IN ('DEPOSIT', 'WITHDRAWAL', 'TRANSFER', 'PAYMENT', 'REFUND',
+                            'FEE', 'COMMISSION', 'ESCROW_HOLD', 'ESCROW_RELEASE',
                             'PAYOUT', 'BONUS', 'ADJUSTMENT', 'REVERSAL')
     ),
-    
+
     -- Double-Entry Bookkeeping
     debit_wallet_id UUID,
     credit_wallet_id UUID,
-    
+
     -- Amount (in smallest currency unit)
     amount BIGINT NOT NULL,
     currency CHAR(3) NOT NULL,
-    
+
     -- Fee
     fee_amount BIGINT DEFAULT 0,
     net_amount BIGINT NOT NULL,
-    
+
     -- Status
     status VARCHAR(20) DEFAULT 'PENDING' CHECK (
         status IN ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED', 'REVERSED', 'CANCELLED')
     ),
-    
+
     -- Timeline
     initiated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     processing_at TIMESTAMPTZ,
     completed_at TIMESTAMPTZ,
     failed_at TIMESTAMPTZ,
     reversed_at TIMESTAMPTZ,
-    
+
     -- Reference
     reference_type VARCHAR(30), -- CONTRACT, MILESTONE, TIMESHEET, INVOICE, etc.
     reference_id UUID,
-    
+
     -- Payment Method
     payment_method_id UUID,
     payment_gateway VARCHAR(50),
     gateway_transaction_id VARCHAR(255),
-    
+
     -- Description
     description TEXT,
     internal_notes TEXT,
-    
+
     -- Risk & Fraud
     risk_score DECIMAL(5, 2),
     fraud_check_status VARCHAR(20),
     is_flagged BOOLEAN DEFAULT FALSE,
-    
+
     -- Reversal
     reversed_by_transaction_id UUID,
     reversal_reason TEXT,
-    
+
     -- Failure
     failure_reason TEXT,
     failure_code VARCHAR(50),
-    
+
     -- Metadata
     metadata JSONB,
-    
+
     -- Initiated By
     initiated_by UUID NOT NULL,
-    
+
     -- Immutable Flag
     is_immutable BOOLEAN DEFAULT TRUE,
-    
+
     CONSTRAINT chk_transactions_amount CHECK (amount > 0),
     CONSTRAINT chk_transactions_wallets CHECK (
         (debit_wallet_id IS NOT NULL AND credit_wallet_id IS NULL) OR
         (debit_wallet_id IS NULL AND credit_wallet_id IS NOT NULL) OR
         (debit_wallet_id IS NOT NULL AND credit_wallet_id IS NOT NULL AND debit_wallet_id != credit_wallet_id)
-    )
-);
+    ),
+    CONSTRAINT chk_transactions_net_amount CHECK (net_amount = amount - fee_amount),
+    CONSTRAINT fk_transactions_debit_wallet FOREIGN KEY (debit_wallet_id) REFERENCES wallets(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_transactions_credit_wallet FOREIGN KEY (credit_wallet_id) REFERENCES wallets(id) ON DELETE RESTRICT);
 
 -- Indexes
 CREATE INDEX idx_transactions_debit_wallet ON transactions (debit_wallet_id, completed_at DESC);
@@ -264,93 +266,95 @@ CREATE INDEX idx_transaction_events_transaction ON transaction_events (transacti
 
 CREATE TABLE payments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    
+
     -- Idempotency
     idempotency_key UUID UNIQUE,
-    
+
     -- Payment Identity
     payment_number VARCHAR(50) UNIQUE NOT NULL,
-    
+
     -- Parties
     payer_id UUID NOT NULL,
     payee_id UUID NOT NULL,
-    
+
     -- Amount
     amount BIGINT NOT NULL,
     currency CHAR(3) NOT NULL DEFAULT 'USD',
-    
+
     -- Fee Breakdown
     platform_fee BIGINT DEFAULT 0,
     processing_fee BIGINT DEFAULT 0,
     total_fees BIGINT DEFAULT 0,
     net_amount BIGINT NOT NULL,
-    
+
     -- Payment Method
     payment_method_id UUID NOT NULL,
     payment_method_type VARCHAR(30),
-    
+
     -- Gateway
     payment_gateway VARCHAR(50) NOT NULL,
     gateway_payment_id VARCHAR(255),
     gateway_reference VARCHAR(255),
-    
+
     -- Status
     status VARCHAR(20) DEFAULT 'PENDING' CHECK (
-        status IN ('PENDING', 'PROCESSING', 'REQUIRES_ACTION', 'SUCCEEDED', 'FAILED', 
+        status IN ('PENDING', 'PROCESSING', 'REQUIRES_ACTION', 'SUCCEEDED', 'FAILED',
                   'CANCELLED', 'REFUNDED', 'PARTIALLY_REFUNDED')
     ),
-    
+
     -- 3D Secure
     requires_3ds BOOLEAN DEFAULT FALSE,
     three_ds_status VARCHAR(20),
     three_ds_redirect_url TEXT,
-    
+
     -- Timeline
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     processing_at TIMESTAMPTZ,
     succeeded_at TIMESTAMPTZ,
     failed_at TIMESTAMPTZ,
-    
+
     -- Reference
     reference_type VARCHAR(30),
     reference_id UUID,
-    
+
     -- Description
     description TEXT,
-    
+
     -- Retry Logic
     retry_count INTEGER DEFAULT 0,
     max_retries INTEGER DEFAULT 3,
     next_retry_at TIMESTAMPTZ,
-    
+
     -- Failure
     failure_reason TEXT,
     failure_code VARCHAR(50),
-    
+
     -- Receipt
     receipt_url TEXT,
     receipt_number VARCHAR(100),
-    
+
     -- Risk
     risk_score DECIMAL(5, 2),
     fraud_check_passed BOOLEAN,
-    
+
     -- Refund Tracking
     refunded_amount BIGINT DEFAULT 0,
     refund_count INTEGER DEFAULT 0,
-    
+
     -- Metadata
     metadata JSONB,
-    
+
     -- Transaction Link
     transaction_id UUID,
-    
+
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    CONSTRAINT fk_payments_transaction FOREIGN KEY (transaction_id) 
+
+    CONSTRAINT fk_payments_transaction FOREIGN KEY (transaction_id)
         REFERENCES transactions(id) ON DELETE SET NULL,
-    CONSTRAINT chk_payments_amount CHECK (amount > 0)
-);
+    CONSTRAINT chk_payments_amount CHECK (amount > 0),
+    CONSTRAINT fk_payments_payment_method FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id) ON DELETE RESTRICT,
+    CONSTRAINT chk_payments_total_fees CHECK (total_fees = platform_fee + processing_fee),
+    CONSTRAINT chk_payments_net_amount CHECK (net_amount = amount - total_fees));
 
 CREATE INDEX idx_payments_payer ON payments (payer_id, created_at DESC);
 CREATE INDEX idx_payments_payee ON payments (payee_id, created_at DESC);
@@ -367,24 +371,24 @@ COMMENT ON TABLE payments IS 'Payment processing - maps to internal/domain/payme
 CREATE TABLE payment_attempts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     payment_id UUID NOT NULL,
-    
+
     -- Attempt Details
     attempt_number INTEGER NOT NULL,
-    
+
     -- Gateway Response
     gateway_status VARCHAR(50),
     gateway_response JSONB,
-    
+
     -- Result
     succeeded BOOLEAN DEFAULT FALSE,
     failure_reason TEXT,
     failure_code VARCHAR(50),
-    
+
     attempted_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    CONSTRAINT fk_payment_attempts_payment FOREIGN KEY (payment_id) 
-        REFERENCES payments(id) ON DELETE CASCADE
-);
+
+    CONSTRAINT fk_payment_attempts_payment FOREIGN KEY (payment_id)
+        REFERENCES payments(id) ON DELETE CASCADE,
+    CONSTRAINT uk_payment_attempts UNIQUE (payment_id, attempt_number));
 
 CREATE INDEX idx_payment_attempts_payment ON payment_attempts (payment_id, attempt_number);
 
@@ -419,7 +423,7 @@ CREATE TABLE payment_methods (
     
     -- Gateway Token
     gateway_provider VARCHAR(50) NOT NULL,
-    gateway_token VARCHAR(255) NOT NULL, -- Encrypted
+    gateway_token BYTEA NOT NULL, -- Encrypted
     gateway_customer_id VARCHAR(255),
     
     -- Verification
@@ -534,36 +538,36 @@ COMMENT ON TABLE escrow_accounts IS 'Escrow accounts - maps to internal/domain/e
 CREATE TABLE escrow_holds (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     escrow_account_id UUID NOT NULL,
-    
+
     -- Hold Details
     hold_amount BIGINT NOT NULL,
     hold_reason VARCHAR(100) NOT NULL,
-    
+
     -- Reference
     reference_type VARCHAR(30), -- MILESTONE, TIMESHEET, DISPUTE
     reference_id UUID,
-    
+
     -- Status
     status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (
         status IN ('ACTIVE', 'RELEASED', 'EXPIRED', 'CANCELLED')
     ),
-    
+
     -- Timeline
     held_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     expires_at TIMESTAMPTZ,
     released_at TIMESTAMPTZ,
-    
+
     -- Release
     released_to UUID, -- Freelancer wallet_id
     release_transaction_id UUID,
-    
+
     -- Metadata
     metadata JSONB,
-    
-    CONSTRAINT fk_escrow_holds_account FOREIGN KEY (escrow_account_id) 
+
+    CONSTRAINT fk_escrow_holds_account FOREIGN KEY (escrow_account_id)
         REFERENCES escrow_accounts(id) ON DELETE CASCADE,
-    CONSTRAINT chk_escrow_holds_amount CHECK (hold_amount > 0)
-);
+    CONSTRAINT chk_escrow_holds_amount CHECK (hold_amount > 0),
+    CONSTRAINT fk_escrow_holds_wallet FOREIGN KEY (released_to) REFERENCES wallets(id) ON DELETE SET NULL);
 
 CREATE INDEX idx_escrow_holds_account ON escrow_holds (escrow_account_id, status);
 CREATE INDEX idx_escrow_holds_reference ON escrow_holds (reference_type, reference_id);
@@ -572,41 +576,41 @@ CREATE INDEX idx_escrow_holds_reference ON escrow_holds (reference_type, referen
 CREATE TABLE escrow_releases (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     escrow_account_id UUID NOT NULL,
-    
+
     -- Release Details
     release_amount BIGINT NOT NULL,
     release_type VARCHAR(30) CHECK (
         release_type IN ('MILESTONE', 'FINAL', 'PARTIAL', 'REFUND', 'DISPUTE_SETTLEMENT')
     ),
-    
+
     -- Recipient
     released_to UUID NOT NULL, -- wallet_id
-    
+
     -- Reference
     reference_type VARCHAR(30),
     reference_id UUID,
-    
+
     -- Approval
     approved_by UUID,
     approved_at TIMESTAMPTZ,
-    
+
     -- Transaction
     transaction_id UUID,
-    
+
     -- Status
     status VARCHAR(20) DEFAULT 'PENDING' CHECK (
         status IN ('PENDING', 'APPROVED', 'PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED')
     ),
-    
+
     released_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     completed_at TIMESTAMPTZ,
-    
-    CONSTRAINT fk_escrow_releases_account FOREIGN KEY (escrow_account_id) 
+
+    CONSTRAINT fk_escrow_releases_account FOREIGN KEY (escrow_account_id)
         REFERENCES escrow_accounts(id) ON DELETE CASCADE,
-    CONSTRAINT fk_escrow_releases_transaction FOREIGN KEY (transaction_id) 
+    CONSTRAINT fk_escrow_releases_transaction FOREIGN KEY (transaction_id)
         REFERENCES transactions(id) ON DELETE SET NULL,
-    CONSTRAINT chk_escrow_releases_amount CHECK (release_amount > 0)
-);
+    CONSTRAINT chk_escrow_releases_amount CHECK (release_amount > 0),
+    CONSTRAINT fk_escrow_releases_wallet FOREIGN KEY (released_to) REFERENCES wallets(id) ON DELETE RESTRICT);
 
 CREATE INDEX idx_escrow_releases_account ON escrow_releases (escrow_account_id, released_at DESC);
 CREATE INDEX idx_escrow_releases_status ON escrow_releases (status);
@@ -619,66 +623,66 @@ CREATE INDEX idx_escrow_releases_status ON escrow_releases (status);
 
 CREATE TABLE payouts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    
+
     -- Payout Identity
     payout_number VARCHAR(50) UNIQUE NOT NULL,
-    
+
     -- Recipient
     user_id UUID NOT NULL,
-    
+
     -- Amount
     amount BIGINT NOT NULL,
     currency CHAR(3) DEFAULT 'USD',
-    
+
     -- Fee
     payout_fee BIGINT DEFAULT 0,
     net_amount BIGINT NOT NULL,
-    
+
     -- Destination
     payment_method_id UUID NOT NULL,
     destination_type VARCHAR(30),
-    
+
     -- Gateway
     payout_gateway VARCHAR(50),
     gateway_payout_id VARCHAR(255),
-    
+
     -- Status
     status VARCHAR(20) DEFAULT 'PENDING' CHECK (
         status IN ('PENDING', 'QUEUED', 'PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED', 'REVERSED')
     ),
-    
+
     -- Timeline
     requested_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     queued_at TIMESTAMPTZ,
     processing_at TIMESTAMPTZ,
     completed_at TIMESTAMPTZ,
     failed_at TIMESTAMPTZ,
-    
+
     -- Estimated Arrival
     estimated_arrival_date DATE,
     actual_arrival_date DATE,
-    
+
     -- Batch Processing
     batch_id UUID,
     batch_priority INTEGER DEFAULT 5,
-    
+
     -- Failure
     failure_reason TEXT,
     failure_code VARCHAR(50),
     retry_count INTEGER DEFAULT 0,
-    
+
     -- Transaction Link
     transaction_id UUID,
-    
+
     -- Metadata
     metadata JSONB,
-    
+
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    CONSTRAINT fk_payouts_transaction FOREIGN KEY (transaction_id) 
+
+    CONSTRAINT fk_payouts_transaction FOREIGN KEY (transaction_id)
         REFERENCES transactions(id) ON DELETE SET NULL,
-    CONSTRAINT chk_payouts_amount CHECK (amount > 0)
-);
+    CONSTRAINT chk_payouts_amount CHECK (amount > 0),
+    CONSTRAINT fk_payouts_payment_method FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id) ON DELETE RESTRICT);
 
 CREATE INDEX idx_payouts_user ON payouts (user_id, requested_at DESC);
 CREATE INDEX idx_payouts_status ON payouts (status, requested_at);
@@ -1150,43 +1154,43 @@ COMMENT ON TABLE risk_assessments IS 'Risk assessments - maps to internal/domain
 -- Fraud Alerts
 CREATE TABLE fraud_alerts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    
+
     -- Alert Details
     alert_type VARCHAR(50) NOT NULL,
     severity VARCHAR(20) CHECK (
         severity IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')
     ),
-    
+
     -- Subject
     subject_type VARCHAR(30) NOT NULL,
     subject_id UUID NOT NULL,
+    risk_assessment_id UUID,
     user_id UUID,
-    
+
     -- Detection
     fraud_indicators JSONB,
     confidence_score DECIMAL(5, 2),
-    
+
     -- Description
     description TEXT NOT NULL,
-    
+
     -- Status
     status VARCHAR(20) DEFAULT 'OPEN' CHECK (
         status IN ('OPEN', 'INVESTIGATING', 'CONFIRMED', 'FALSE_POSITIVE', 'RESOLVED')
     ),
-    
+
     -- Investigation
     investigated_by UUID,
     investigation_notes TEXT,
     resolved_at TIMESTAMPTZ,
-    
+
     -- Action
     action_taken VARCHAR(100),
-    
+
     detected_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    CONSTRAINT fk_fraud_alerts_risk_assessment FOREIGN KEY (id) 
-        REFERENCES risk_assessments(id) ON DELETE SET NULL
-);
+
+    CONSTRAINT fk_fraud_alerts_risk_assessment FOREIGN KEY (id)
+        REFERENCES risk_assessments(id) ON DELETE SET NULL);
 
 CREATE INDEX idx_fraud_alerts_subject ON fraud_alerts (subject_type, subject_id);
 CREATE INDEX idx_fraud_alerts_user ON fraud_alerts (user_id, detected_at DESC);
@@ -2213,8 +2217,8 @@ CREATE TABLE gateway_configurations (
     gateway_provider VARCHAR(50) NOT NULL UNIQUE,
     
     -- Credentials (encrypted)
-    api_key_encrypted TEXT,
-    api_secret_encrypted TEXT,
+    api_key_encrypted BYTEA,
+    api_secret_encrypted BYTEA,
     merchant_id VARCHAR(255),
     
     -- Configuration
@@ -2404,30 +2408,6 @@ CREATE INDEX idx_user_financial_summary_earnings ON user_financial_summary (life
 -- =========================================
 
 -- Function to update wallet balance
-CREATE OR REPLACE FUNCTION update_wallet_balance()
-RETURNS TRIGGER AS $
-BEGIN
-    IF TG_OP = 'INSERT' AND NEW.status = 'COMPLETED' THEN
-        -- Update debit wallet
-        IF NEW.debit_wallet_id IS NOT NULL THEN
-            UPDATE wallets
-            SET available_balance = available_balance - NEW.amount,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = NEW.debit_wallet_id;
-        END IF;
-        
-        -- Update credit wallet
-        IF NEW.credit_wallet_id IS NOT NULL THEN
-            UPDATE wallets
-            SET available_balance = available_balance + NEW.net_amount,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = NEW.credit_wallet_id;
-        END IF;
-    END IF;
-    RETURN NEW;
-END;
-$ LANGUAGE plpgsql;
-
 CREATE TRIGGER trg_transaction_update_wallet
     AFTER INSERT OR UPDATE OF status ON transactions
     FOR EACH ROW
@@ -2435,7 +2415,7 @@ CREATE TRIGGER trg_transaction_update_wallet
     EXECUTE FUNCTION update_wallet_balance();
 
 -- Function to update updated_at
-CREATE OR REPLACE FUNCTION update_updated_at()
+CREATE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
@@ -2452,10 +2432,105 @@ CREATE TRIGGER trg_payouts_updated_at BEFORE UPDATE ON payouts
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- =========================================
+
+
+-- =========================================
+-- SECTION 29B: FUNCTIONS & TRIGGERS (IMMUTABILITY, BALANCES, OVERDRAFTS)
+-- =========================================
+
+-- Updated wallet balance updater: runs on insert and on status transition to COMPLETED
+CREATE FUNCTION update_wallet_balance()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'COMPLETED')
+     OR (TG_OP = 'UPDATE' AND OLD.status IS DISTINCT FROM 'COMPLETED' AND NEW.status = 'COMPLETED') THEN
+
+    IF NEW.debit_wallet_id IS NOT NULL THEN
+      UPDATE wallets
+         SET available_balance = available_balance - NEW.amount,
+             updated_at = CURRENT_TIMESTAMP
+       WHERE id = NEW.debit_wallet_id;
+    END IF;
+
+    IF NEW.credit_wallet_id IS NOT NULL THEN
+      UPDATE wallets
+         SET available_balance = available_balance + NEW.net_amount,
+             updated_at = CURRENT_TIMESTAMP
+       WHERE id = NEW.credit_wallet_id;
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_transaction_update_wallet
+  AFTER INSERT OR UPDATE OF status ON transactions
+  FOR EACH ROW
+  WHEN (NEW.status = 'COMPLETED')
+  EXECUTE FUNCTION update_wallet_balance();
+
+-- Prevent overdrafts when completing a transaction
+CREATE FUNCTION prevent_overdrafts()
+RETURNS TRIGGER AS $$
+DECLARE bal BIGINT;
+BEGIN
+  IF (TG_OP = 'INSERT' AND NEW.status = 'COMPLETED')
+     OR (TG_OP = 'UPDATE' AND OLD.status IS DISTINCT FROM 'COMPLETED' AND NEW.status = 'COMPLETED') THEN
+    IF NEW.debit_wallet_id IS NOT NULL THEN
+      SELECT available_balance INTO bal FROM wallets WHERE id = NEW.debit_wallet_id FOR UPDATE;
+      IF bal < NEW.amount THEN
+        RAISE EXCEPTION 'Insufficient funds in debit wallet %', NEW.debit_wallet_id;
+      END IF;
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_transactions_prevent_overdrafts
+  BEFORE INSERT OR UPDATE OF status ON transactions
+  FOR EACH ROW
+  EXECUTE FUNCTION prevent_overdrafts();
+
+-- Enforce transaction immutability for core fields when is_immutable = TRUE
+CREATE FUNCTION enforce_transaction_immutability()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF OLD.is_immutable THEN
+    IF NEW.transaction_number <> OLD.transaction_number
+       OR NEW.amount <> OLD.amount
+       OR NEW.currency <> OLD.currency
+       OR COALESCE(NEW.debit_wallet_id,'00000000-0000-0000-0000-000000000000') <>
+          COALESCE(OLD.debit_wallet_id,'00000000-0000-0000-0000-000000000000')
+       OR COALESCE(NEW.credit_wallet_id,'00000000-0000-0000-0000-000000000000') <>
+          COALESCE(OLD.credit_wallet_id,'00000000-0000-0000-0000-000000000000')
+       OR NEW.fee_amount <> OLD.fee_amount
+       OR NEW.net_amount <> OLD.net_amount
+       OR COALESCE(NEW.payment_method_id,'00000000-0000-0000-0000-000000000000') <>
+          COALESCE(OLD.payment_method_id,'00000000-0000-0000-0000-000000000000')
+       OR NEW.payment_gateway <> OLD.payment_gateway
+       OR NEW.gateway_transaction_id <> OLD.gateway_transaction_id
+       OR NEW.initiated_by <> OLD.initiated_by
+       OR NEW.reference_type <> OLD.reference_type
+       OR COALESCE(NEW.reference_id,'00000000-0000-0000-0000-000000000000') <>
+          COALESCE(OLD.reference_id,'00000000-0000-0000-0000-000000000000')
+    THEN
+      RAISE EXCEPTION 'Cannot modify immutable transaction fields';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_enforce_transaction_immutability
+  BEFORE UPDATE ON transactions
+  FOR EACH ROW
+  EXECUTE FUNCTION enforce_transaction_immutability();
+
 -- SECTION 30: PERFORMANCE VIEWS
 -- =========================================
 
-CREATE OR REPLACE VIEW v_active_payments AS
+CREATE VIEW v_active_payments AS
 SELECT 
     p.id,
     p.payment_number,
@@ -2472,7 +2547,8 @@ FROM payments p
 LEFT JOIN transactions t ON p.transaction_id = t.id
 WHERE p.status IN ('PENDING', 'PROCESSING', 'REQUIRES_ACTION');
 
-CREATE OR REPLACE VIEW v_pending_payouts AS
+
+CREATE VIEW v_pending_payouts AS
 SELECT 
     p.id,
     p.payout_number,
@@ -2480,11 +2556,11 @@ SELECT
     p.amount,
     p.currency,
     p.status,
-    p.next_payment_date AS scheduled_date,
+    ps.next_payment_date AS scheduled_date,
     p.requested_at
 FROM payouts p
+LEFT JOIN payment_schedules ps ON ps.reference_type = 'PAYOUT' AND ps.reference_id = p.id
 WHERE p.status IN ('PENDING', 'QUEUED');
-
 -- =========================================
 -- END OF FINANCIAL-BE DATABASE DESIGN
 -- =========================================
@@ -2582,48 +2658,25 @@ All domains from financial-be folder structure are fully covered!
 
 
 -- =========================================
--- FINANCIAL-BE DATABASE DESIGN - UPDATED
+
+
+CREATE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- =========================================
+-- ADDITIONAL DOMAINS (FOLDED, NO-ALTER)
+-- =========================================
+
 -- Added Missing Domains & Fixes
 -- =========================================
 
 -- This file contains ONLY the additions and fixes to the original design
 -- from financial-be-database-design.md
-
--- =========================================
--- FIXES TO EXISTING TABLES
--- =========================================
-
--- Fix 1: fraud_alerts FK correction
-ALTER TABLE fraud_alerts 
-    ADD COLUMN risk_assessment_id UUID,
-    ADD CONSTRAINT fk_fraud_alerts_risk_assessment 
-        FOREIGN KEY (risk_assessment_id) REFERENCES risk_assessments(id) ON DELETE SET NULL;
-
--- Fix 2: Immutability enforcement trigger
-CREATE OR REPLACE FUNCTION enforce_transaction_immutability()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Allow updates only for status transitions and timestamps
-    IF OLD.is_immutable = TRUE THEN
-        IF NEW.transaction_number != OLD.transaction_number OR
-           NEW.amount != OLD.amount OR
-           NEW.currency != OLD.currency OR
-           NEW.from_wallet_id != OLD.from_wallet_id OR
-           NEW.to_wallet_id != OLD.to_wallet_id THEN
-            RAISE EXCEPTION 'Cannot modify immutable transaction fields';
-        END IF;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_enforce_transaction_immutability
-    BEFORE UPDATE ON transactions
-    FOR EACH ROW
-    EXECUTE FUNCTION enforce_transaction_immutability();
-
--- Fix 3: Double-entry integrity check (will be used with ledger_journal)
--- See ledger_journal section below
 
 -- =========================================
 -- SECTION 29: LEDGER JOURNAL (MISSING)
@@ -3806,7 +3859,6 @@ COMMENT ON TABLE bank_accounts IS 'Bank accounts - maps to internal/domain/bank_
 -- =========================================
 
 -- Update v_pending_payouts view (fix next_payment_date issue)
-DROP VIEW IF EXISTS v_pending_payouts;
 CREATE VIEW v_pending_payouts AS
 SELECT 
     p.id,
@@ -3861,69 +3913,61 @@ CREATE INDEX idx_bank_accounts_verification_pending ON bank_accounts (user_id, v
 -- =========================================
 
 -- Generic updated_at trigger function
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$ LANGUAGE plpgsql;
-
 -- Apply to new tables
 CREATE TRIGGER trg_protection_plans_updated_at
     BEFORE UPDATE ON protection_plans
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_fee_versions_updated_at
     BEFORE UPDATE ON fee_versions
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_international_payments_updated_at
     BEFORE UPDATE ON international_payments
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_insurance_policies_updated_at
     BEFORE UPDATE ON insurance_policies
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_tax_forms_updated_at
     BEFORE UPDATE ON tax_forms
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_payroll_runs_updated_at
     BEFORE UPDATE ON payroll_runs
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_currency_preferences_updated_at
     BEFORE UPDATE ON currency_preferences
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_bank_accounts_updated_at
     BEFORE UPDATE ON bank_accounts
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_insurance_providers_updated_at
     BEFORE UPDATE ON insurance_providers
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_reminder_templates_updated_at
     BEFORE UPDATE ON reminder_templates
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 CREATE TRIGGER trg_local_payout_routes_updated_at
     BEFORE UPDATE ON local_payout_routes
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION update_updated_at();
 
 -- =========================================
 -- PCI COMPLIANCE ENHANCEMENTS
@@ -3933,10 +3977,6 @@ CREATE TRIGGER trg_local_payout_routes_updated_at
 -- Example for gateway tokens (implement per security requirements):
 /*
 -- Encrypt gateway tokens
-ALTER TABLE gateway_configurations 
-    ALTER COLUMN api_key_encrypted TYPE BYTEA 
-    USING pgp_sym_encrypt(api_key_encrypted::text, 'encryption_key');
-
 -- Create decryption view with role-based access
 CREATE VIEW v_gateway_configurations_decrypted AS
 SELECT 

@@ -6,7 +6,8 @@
 -- 
 -- CRITICAL ALIGNMENT RULES:
 -- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
--- 2. Table names match domain folder names exactly
+-- 2. Table names follow domain folder names; when aggregated under Contracts, tables are prefixed with contract_ to reflect the domain boundary
+
 -- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
 -- 4. All domains from folder structure are covered
 -- 5. Rich, production-ready fields for large-scale application
@@ -1676,6 +1677,8 @@ CREATE TABLE contract_search_index (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
+
+CREATE INDEX idx_contract_search_vector ON contract_search_index USING gin(search_vector);
 CREATE INDEX idx_contract_search_index_client ON contract_search_index (client_id);
 CREATE INDEX idx_contract_search_index_freelancer ON contract_search_index (freelancer_id);
 CREATE INDEX idx_contract_search_index_status ON contract_search_index (status, start_date DESC);
@@ -2567,7 +2570,8 @@ CREATE TABLE sla_breaches (
     waiver_reason TEXT,
     
     CONSTRAINT fk_sla_breaches_sla FOREIGN KEY (sla_id) 
-        REFERENCES slas(id) ON DELETE CASCADE
+        REFERENCES slas(id) ON DELETE CASCADE,
+    CONSTRAINT fk_sla_breaches_metric FOREIGN KEY (metric_id) REFERENCES sla_metrics(id) ON DELETE SET NULL
 );
 
 CREATE INDEX idx_sla_breaches_sla ON sla_breaches (sla_id, detected_at DESC);
@@ -4126,7 +4130,7 @@ COMMENT ON TABLE external_references IS 'References to entities in other microse
 -- =========================================
 
 -- Function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at()
+CREATE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
@@ -4141,7 +4145,7 @@ CREATE TRIGGER trg_contracts_updated_at
     EXECUTE FUNCTION update_updated_at();
 
 -- Function to update contract financial totals
-CREATE OR REPLACE FUNCTION update_contract_financial_totals()
+CREATE FUNCTION update_contract_financial_totals()
 RETURNS TRIGGER AS $
 BEGIN
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
@@ -4174,7 +4178,7 @@ CREATE TRIGGER trg_milestone_financial_update
 -- =========================================
 
 -- View for active contracts with key metrics
-CREATE OR REPLACE VIEW v_active_contracts AS
+CREATE VIEW v_active_contracts AS
 SELECT 
     c.id,
     c.contract_number,
@@ -4205,7 +4209,7 @@ WHERE c.status = 'ACTIVE' AND c.is_deleted = FALSE
 GROUP BY c.id, cb.budget_consumed_percentage, cb.is_over_budget, ca.quality_score, ca.on_time_delivery_rate;
 
 -- View for contracts requiring attention
-CREATE OR REPLACE VIEW v_contracts_requiring_attention AS
+CREATE VIEW v_contracts_requiring_attention AS
 SELECT 
     c.id AS contract_id,
     c.contract_number,
@@ -4332,7 +4336,7 @@ COMMENT ON TABLE contract_signatures IS 'E-signatures - maps to internal/domain/
 -- SECTION 45: DATABASE STATISTICS
 -- =========================================
 
-CREATE OR REPLACE VIEW v_table_sizes AS
+CREATE VIEW v_table_sizes AS
 SELECT 
     schemaname,
     tablename,
@@ -4342,7 +4346,7 @@ FROM pg_tables
 WHERE schemaname = 'public'
 ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
 
-CREATE OR REPLACE VIEW v_index_usage AS
+CREATE VIEW v_index_usage AS
 SELECT
     schemaname,
     tablename,
@@ -4356,7 +4360,7 @@ WHERE schemaname = 'public'
 ORDER BY idx_scan DESC;
 
 -- Database health check view
-CREATE OR REPLACE VIEW v_database_health AS
+CREATE VIEW v_database_health AS
 SELECT
     'Active Contracts' AS metric,
     COUNT(*) AS count
@@ -4496,32 +4500,71 @@ All domains from the contracts-be folder structure are fully covered!
 
 
 
+CREATE TRIGGER trg_milestones_updated_at
+    BEFORE UPDATE ON milestones
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_deliverables_updated_at
+    BEFORE UPDATE ON deliverables
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_timesheets_updated_at
+    BEFORE UPDATE ON timesheets
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_slas_updated_at
+    BEFORE UPDATE ON slas
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_contract_renewals_updated_at
+    BEFORE UPDATE ON contract_renewals
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_contract_workspaces_updated_at
+    BEFORE UPDATE ON contract_workspaces
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_workroom_tasks_updated_at
+    BEFORE UPDATE ON workroom_tasks
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_workroom_notes_updated_at
+    BEFORE UPDATE ON workroom_notes
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
+CREATE TRIGGER trg_agency_contracts_updated_at
+    BEFORE UPDATE ON agency_contracts
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
 
 
-
+CREATE TRIGGER trg_performance_kpis_updated_at
+    BEFORE UPDATE ON performance_kpis
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at();
 
