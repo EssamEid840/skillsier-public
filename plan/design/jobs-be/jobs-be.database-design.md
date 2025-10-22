@@ -1,17 +1,17 @@
-*/-- =========================================
--- JOBS-BE DATABASE DESIGN
--- Skillsier Platform - Enterprise Scale
--- PostgreSQL 16+
--- =========================================
---
--- CRITICAL ALIGNMENT RULES:
--- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
--- 2. Table names match domain folder names exactly
--- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
--- 4. All domains from folder structure are covered
--- 5. Rich, production-ready fields for large-scale application
+# JOBS-BE DATABASE DESIGN
+- Skillsier Platform - Enterprise Scale
+- PostgreSQL 16+
+
+
+* CRITICAL ALIGNMENT RULES:
+* 1. Each domain folder in internal/domain/{domain}/ = ONE main table
+* 2. Table names match domain folder names exactly
+* 3. Sub-entities within domain create related tables with {domain}_{sub} naming
+* 4. All domains from folder structure are covered
+* 5. Rich, production-ready fields for large-scale application
 -- =========================================
 
+```sql
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -19,8 +19,10 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 CREATE EXTENSION IF NOT EXISTS "btree_gin";
 CREATE EXTENSION IF NOT EXISTS "postgis"; -- For geo location features
 
--- =========================================
--- SECTION 1: CORE JOB DOMAIN
+```
+=========================================
+##  SECTION 1: CORE JOB DOMAIN
+```sql
 -- Domain: internal/domain/job/
 -- Entity: job/entity.go
 -- =========================================
@@ -174,8 +176,10 @@ CREATE TABLE job_lifecycle_history (
 
 CREATE INDEX idx_job_lifecycle_job ON job_lifecycle_history (job_id, created_at DESC);
 
--- =========================================
--- SECTION 2: CATEGORY DOMAIN
+```
+=========================================
+##  SECTION 2: CATEGORY DOMAIN
+```sql
 -- Domain: internal/domain/category/
 -- Entity: category/entity.go
 -- =========================================
@@ -216,8 +220,10 @@ CREATE INDEX idx_categories_slug ON categories (slug);
 CREATE INDEX idx_categories_level ON categories (level, display_order);
 CREATE INDEX idx_categories_path ON categories (path) WHERE path IS NOT NULL;
 
--- =========================================
--- SECTION 3: SKILL DOMAIN
+```
+=========================================
+##  SECTION 3: SKILL DOMAIN
+```sql
 -- Domain: internal/domain/skill/
 -- Entity: skill/entity.go
 -- =========================================
@@ -261,8 +267,10 @@ CREATE INDEX idx_skills_category ON skills (category_id) WHERE is_active = TRUE;
 CREATE INDEX idx_skills_popularity ON skills (popularity_score DESC) WHERE is_active = TRUE;
 CREATE INDEX idx_skills_deprecated ON skills (is_deprecated);
 
--- =========================================
--- SECTION 4: JOB SKILL DOMAIN
+```
+=========================================
+##  SECTION 4: JOB SKILL DOMAIN
+```sql
 -- Domain: internal/domain/job_skill/
 -- Entity: job_skill/entity.go
 -- =========================================
@@ -293,8 +301,10 @@ CREATE INDEX idx_job_skills_job ON job_skills (job_id);
 CREATE INDEX idx_job_skills_skill ON job_skills (skill_id);
 CREATE INDEX idx_job_skills_required ON job_skills (job_id, is_required);
 
--- =========================================
--- SECTION 5: SCREENING DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 5: SCREENING DOMAIN (CONSOLIDATED)
+```sql
 -- Domain: internal/domain/screening/
 -- Entity: screening/entity.go
 -- =========================================
@@ -361,8 +371,10 @@ CREATE TABLE screening_questions (
 
 CREATE INDEX idx_screening_questions_job ON screening_questions (job_id, display_order);
 
--- =========================================
--- SECTION 6: ATTACHMENTS DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 6: ATTACHMENTS DOMAIN (CONSOLIDATED)
+```sql
 -- Domain: internal/domain/attachments/
 -- Entity: attachments/entity.go
 -- =========================================
@@ -408,8 +420,10 @@ CREATE INDEX idx_attachments_job ON attachments (job_id);
 CREATE INDEX idx_attachments_type ON attachments (attachment_type);
 CREATE INDEX idx_attachments_scan ON attachments (scan_status) WHERE scan_status IN ('PENDING', 'THREAT_DETECTED');
 
--- =========================================
--- SECTION 7: INVITATION DOMAIN
+```
+=========================================
+##  SECTION 7: INVITATION DOMAIN
+```sql
 -- Domain: internal/domain/invitation/
 -- Entity: invitation/entity.go
 -- =========================================
@@ -453,8 +467,10 @@ CREATE INDEX idx_invitations_job ON invitations (job_id);
 CREATE INDEX idx_invitations_freelancer ON invitations (freelancer_id, status);
 CREATE INDEX idx_invitations_status ON invitations (status, expires_at);
 
--- =========================================
--- SECTION 8: SOURCING DOMAIN
+```
+=========================================
+##  SECTION 8: SOURCING DOMAIN
+```sql
 -- Domain: internal/domain/sourcing/
 -- Entity: sourcing/entity.go
 -- =========================================
@@ -492,8 +508,10 @@ CREATE INDEX idx_sourcing_job ON sourcing (job_id);
 CREATE INDEX idx_sourcing_mode ON sourcing (mode);
 CREATE INDEX idx_sourcing_private_link ON sourcing (private_link) WHERE private_link IS NOT NULL;
 
--- =========================================
--- SECTION 9: BUDGET CONTROLS DOMAIN
+```
+=========================================
+##  SECTION 9: BUDGET CONTROLS DOMAIN
+```sql
 -- Domain: internal/domain/budget_controls/
 -- Entity: budget_controls/entity.go
 -- =========================================
@@ -543,8 +561,10 @@ CREATE INDEX idx_budget_controls_job ON budget_controls (job_id);
 CREATE INDEX idx_budget_controls_amount ON budget_controls (fixed_amount) WHERE budget_type = 'FIXED';
 CREATE INDEX idx_budget_controls_range ON budget_controls (min_amount, max_amount) WHERE budget_type = 'RANGE';
 
--- =========================================
--- SECTION 10: VISIBILITY LIFECYCLE DOMAIN
+```
+=========================================
+##  SECTION 10: VISIBILITY LIFECYCLE DOMAIN
+```sql
 -- Domain: internal/domain/visibility_lifecycle/
 -- Entity: visibility_lifecycle/entity.go
 -- =========================================
@@ -586,8 +606,10 @@ CREATE INDEX idx_visibility_lifecycle_job ON visibility_lifecycle (job_id);
 CREATE INDEX idx_visibility_lifecycle_scheduled ON visibility_lifecycle (scheduled_publish_at) WHERE scheduled_publish_at IS NOT NULL;
 CREATE INDEX idx_visibility_lifecycle_auto_close ON visibility_lifecycle (auto_close_at) WHERE auto_close_enabled = TRUE;
 
--- =========================================
--- SECTION 11: TEMPLATE DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 11: TEMPLATE DOMAIN (CONSOLIDATED)
+```sql
 -- Domain: internal/domain/template/
 -- Entity: template/entity.go
 -- =========================================
@@ -672,8 +694,10 @@ CREATE TABLE template_versions (
 CREATE INDEX idx_template_versions_template ON template_versions (template_id, created_at DESC);
 CREATE INDEX idx_template_versions_deprecated ON template_versions (is_deprecated);
 
--- =========================================
--- SECTION 12: ELIGIBILITY RULES DOMAIN
+```
+=========================================
+##  SECTION 12: ELIGIBILITY RULES DOMAIN
+```sql
 -- Domain: internal/domain/eligibility_rules/
 -- Entity: eligibility_rules/entity.go
 -- =========================================
@@ -720,8 +744,10 @@ CREATE TABLE eligibility_rules (
 
 CREATE INDEX idx_eligibility_rules_job ON eligibility_rules (job_id);
 
--- =========================================
--- SECTION 13: REQUIREMENTS MATRIX DOMAIN
+```
+=========================================
+##  SECTION 13: REQUIREMENTS MATRIX DOMAIN
+```sql
 -- Domain: internal/domain/requirements_matrix/
 -- Entity: requirements_matrix/entity.go
 -- =========================================
@@ -753,8 +779,10 @@ CREATE TABLE requirements_matrix (
 
 CREATE INDEX idx_requirements_matrix_job ON requirements_matrix (job_id);
 
--- =========================================
--- SECTION 14: HIRING TEAM DOMAIN
+```
+=========================================
+##  SECTION 14: HIRING TEAM DOMAIN
+```sql
 -- Domain: internal/domain/hiring_team/
 -- Entity: hiring_team/entity.go
 -- =========================================
@@ -793,8 +821,10 @@ CREATE INDEX idx_hiring_teams_job ON hiring_teams (job_id);
 CREATE INDEX idx_hiring_teams_user ON hiring_teams (user_id);
 CREATE INDEX idx_hiring_teams_role ON hiring_teams (role);
 
--- =========================================
--- SECTION 15: A/B EXPERIMENTS DOMAIN
+```
+=========================================
+##  SECTION 15: A/B EXPERIMENTS DOMAIN
+```sql
 -- Domain: internal/domain/ab_experiments/
 -- Entity: ab_experiments/entity.go
 -- =========================================
@@ -871,8 +901,10 @@ CREATE TABLE experiment_metrics (
 CREATE INDEX idx_experiment_metrics_experiment ON experiment_metrics (experiment_id, variant_id);
 CREATE INDEX idx_experiment_metrics_job ON experiment_metrics (job_id);
 
--- =========================================
--- SECTION 16: SYNDICATION DOMAIN
+```
+=========================================
+##  SECTION 16: SYNDICATION DOMAIN
+```sql
 -- Domain: internal/domain/syndication/
 -- Entity: syndication/entity.go
 -- =========================================
@@ -919,8 +951,10 @@ CREATE INDEX idx_syndication_job ON syndication (job_id);
 CREATE INDEX idx_syndication_status ON syndication (status);
 CREATE INDEX idx_syndication_board ON syndication (board_id);
 
--- =========================================
--- SECTION 17: DRAFTS DOMAIN
+```
+=========================================
+##  SECTION 17: DRAFTS DOMAIN
+```sql
 -- Domain: internal/domain/drafts/
 -- Entity: drafts/entity.go
 -- =========================================
@@ -953,8 +987,10 @@ CREATE TABLE drafts (
 CREATE INDEX idx_drafts_user ON drafts (user_id, updated_at DESC);
 CREATE INDEX idx_drafts_template ON drafts (template_id);
 
--- =========================================
--- SECTION 18: MODERATION DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 18: MODERATION DOMAIN (CONSOLIDATED)
+```sql
 -- Domain: internal/domain/moderation/
 -- Entity: moderation/entity.go
 -- =========================================
@@ -999,8 +1035,10 @@ CREATE INDEX idx_moderation_flags_job ON moderation_flags (job_id);
 CREATE INDEX idx_moderation_flags_status ON moderation_flags (status);
 CREATE INDEX idx_moderation_flags_type ON moderation_flags (flag_type);
 
--- =========================================
--- SECTION 19: LEGAL CONTROLS DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 19: LEGAL CONTROLS DOMAIN (CONSOLIDATED)
+```sql
 -- Domain: internal/domain/legal_controls/
 -- Entity: legal_controls/entity.go
 -- =========================================
@@ -1039,8 +1077,10 @@ CREATE TABLE legal_controls (
 CREATE INDEX idx_legal_controls_job ON legal_controls (job_id);
 CREATE INDEX idx_legal_controls_hold ON legal_controls (legal_hold_active) WHERE legal_hold_active = TRUE;
 
--- =========================================
--- SECTION 20: CAMPAIGN TAGS DOMAIN
+```
+=========================================
+##  SECTION 20: CAMPAIGN TAGS DOMAIN
+```sql
 -- Domain: internal/domain/campaign_tags/
 -- Entity: campaign_tags/entity.go
 -- =========================================
@@ -1069,8 +1109,10 @@ CREATE TABLE campaign_tags (
 CREATE INDEX idx_campaign_tags_job ON campaign_tags (job_id);
 CREATE INDEX idx_campaign_tags_tag ON campaign_tags (tag);
 
--- =========================================
--- SECTION 21: RETENTION RULES DOMAIN
+```
+=========================================
+##  SECTION 21: RETENTION RULES DOMAIN
+```sql
 -- Domain: internal/domain/retention_rules/
 -- Entity: retention_rules/entity.go
 -- =========================================
@@ -1102,8 +1144,10 @@ CREATE TABLE retention_rules (
 CREATE INDEX idx_retention_rules_job ON retention_rules (job_id);
 CREATE INDEX idx_retention_rules_archive ON retention_rules (archive_after_days) WHERE archived_at IS NULL;
 
--- =========================================
--- SECTION 22: PROMOTION DOMAIN
+```
+=========================================
+##  SECTION 22: PROMOTION DOMAIN
+```sql
 -- Domain: internal/domain/promotion/
 -- Entity: promotion/entity.go
 -- =========================================
@@ -1149,8 +1193,10 @@ CREATE INDEX idx_promotions_job ON promotions (job_id);
 CREATE INDEX idx_promotions_status ON promotions (status);
 CREATE INDEX idx_promotions_dates ON promotions (start_at, end_at);
 
--- =========================================
--- SECTION 23: JOB PREFERENCE DOMAIN
+```
+=========================================
+##  SECTION 23: JOB PREFERENCE DOMAIN
+```sql
 -- Domain: internal/domain/job_preference/
 -- Entity: job_preference/entity.go
 -- =========================================
@@ -1195,8 +1241,10 @@ CREATE TABLE job_preferences (
 
 CREATE INDEX idx_job_preferences_job ON job_preferences (job_id);
 
--- =========================================
--- SECTION 24: ARCHIVE DOMAIN
+```
+=========================================
+##  SECTION 24: ARCHIVE DOMAIN
+```sql
 -- Domain: internal/domain/archive/
 -- Entity: archive/entity.go
 -- =========================================
@@ -1227,8 +1275,10 @@ CREATE TABLE archive (
 CREATE INDEX idx_archive_job ON archive (job_id, created_at DESC);
 CREATE INDEX idx_archive_type ON archive (archive_type);
 
--- =========================================
--- SECTION 25: CUSTOM FIELDS DOMAIN
+```
+=========================================
+##  SECTION 25: CUSTOM FIELDS DOMAIN
+```sql
 -- Domain: internal/domain/custom_fields/
 -- Entity: custom_fields/entity.go
 -- =========================================
@@ -1280,8 +1330,10 @@ CREATE TABLE custom_field_values (
 
 CREATE INDEX idx_custom_field_values_field ON custom_field_values (custom_field_id);
 
--- =========================================
--- SECTION 26: LOCALIZATION DOMAIN
+```
+=========================================
+##  SECTION 26: LOCALIZATION DOMAIN
+```sql
 -- Domain: internal/domain/localization/
 -- Entity: localization/entity.go
 -- =========================================
@@ -1311,8 +1363,10 @@ CREATE TABLE localization (
 CREATE INDEX idx_localization_job ON localization (job_id);
 CREATE INDEX idx_localization_primary ON localization (job_id, is_primary) WHERE is_primary = TRUE;
 
--- =========================================
--- SECTION 27: PAYMENT SCHEDULE DOMAIN
+```
+=========================================
+##  SECTION 27: PAYMENT SCHEDULE DOMAIN
+```sql
 -- Domain: internal/domain/payment_schedule/
 -- Entity: payment_schedule/entity.go
 -- =========================================
@@ -1375,8 +1429,10 @@ CREATE TABLE payment_milestones (
 
 CREATE INDEX idx_payment_milestones_schedule ON payment_milestones (payment_schedule_id, milestone_order);
 
--- =========================================
--- SECTION 28: ANALYTICS DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 28: ANALYTICS DOMAIN (CONSOLIDATED)
+```sql
 -- Domain: internal/domain/analytics/
 -- Entity: analytics/entity.go
 -- =========================================
@@ -1421,8 +1477,10 @@ CREATE TABLE analytics (
 
 CREATE INDEX idx_analytics_job ON analytics (job_id);
 
--- =========================================
--- SECTION 29: FRAUD DETECTION DOMAIN
+```
+=========================================
+##  SECTION 29: FRAUD DETECTION DOMAIN
+```sql
 -- Domain: internal/domain/fraud_detection/
 -- Entity: fraud_detection/entity.go
 -- =========================================
@@ -1466,8 +1524,10 @@ CREATE INDEX idx_fraud_signals_job ON fraud_signals (job_id);
 CREATE INDEX idx_fraud_signals_risk ON fraud_signals (risk_level, detected_at DESC);
 CREATE INDEX idx_fraud_signals_unreviewed ON fraud_signals (reviewed) WHERE reviewed = FALSE;
 
--- =========================================
--- SECTION 30: ESG DOMAIN
+```
+=========================================
+##  SECTION 30: ESG DOMAIN
+```sql
 -- Domain: internal/domain/esg/
 -- Entity: esg/entity.go
 -- =========================================
@@ -1500,8 +1560,10 @@ CREATE TABLE esg (
 CREATE INDEX idx_esg_job ON esg (job_id);
 CREATE INDEX idx_esg_remote_first ON esg (remote_first) WHERE remote_first = TRUE;
 
--- =========================================
--- SECTION 31: SHARING DOMAIN
+```
+=========================================
+##  SECTION 31: SHARING DOMAIN
+```sql
 -- Domain: internal/domain/sharing/
 -- Entity: sharing/entity.go
 -- =========================================
@@ -1567,8 +1629,10 @@ CREATE TABLE share_link_clicks (
 CREATE INDEX idx_share_clicks_link ON share_link_clicks (share_link_id);
 CREATE INDEX idx_share_clicks_visitor ON share_link_clicks (visitor_id) WHERE visitor_id IS NOT NULL;
 
--- =========================================
--- SECTION 32: BULK OPERATIONS DOMAIN
+```
+=========================================
+##  SECTION 32: BULK OPERATIONS DOMAIN
+```sql
 -- Domain: internal/domain/bulk_ops/
 -- Entity: bulk_ops/entity.go
 -- =========================================
@@ -1617,8 +1681,10 @@ CREATE TABLE bulk_operations (
 CREATE INDEX idx_bulk_ops_initiator ON bulk_operations (initiated_by, created_at DESC);
 CREATE INDEX idx_bulk_ops_status ON bulk_operations (status);
 
--- =========================================
--- SECTION 33: WEBHOOKS DOMAIN
+```
+=========================================
+##  SECTION 33: WEBHOOKS DOMAIN
+```sql
 -- Domain: internal/domain/webhooks/
 -- Entity: webhooks/entity.go
 -- =========================================
@@ -1696,8 +1762,10 @@ CREATE INDEX idx_webhook_deliveries_webhook ON webhook_deliveries (webhook_id, c
 CREATE INDEX idx_webhook_deliveries_status ON webhook_deliveries (status);
 CREATE INDEX idx_webhook_deliveries_retry ON webhook_deliveries (next_retry_at) WHERE status = 'RETRYING';
 
--- =========================================
--- SECTION 34: HEALTH CHECKPOINTS DOMAIN
+```
+=========================================
+##  SECTION 34: HEALTH CHECKPOINTS DOMAIN
+```sql
 -- Domain: internal/domain/health_checkpoints/
 -- Entity: health_checkpoints/entity.go
 -- =========================================
@@ -1760,8 +1828,10 @@ CREATE TABLE checkpoint_history (
 
 CREATE INDEX idx_checkpoint_history_checkpoint ON checkpoint_history (checkpoint_id, triggered_at DESC);
 
--- =========================================
--- SECTION 35: UPSELL DOMAIN
+```
+=========================================
+##  SECTION 35: UPSELL DOMAIN
+```sql
 -- Domain: internal/domain/upsell/
 -- Entity: upsell/entity.go
 -- =========================================
@@ -1806,8 +1876,11 @@ CREATE TABLE upsell_suggestions (
 CREATE INDEX idx_upsell_suggestions_job ON upsell_suggestions (job_id);
 CREATE INDEX idx_upsell_suggestions_status ON upsell_suggestions (status);
 
--- =========================================
--- SECTION 36: EVENT SOURCING & OUTBOX
+```
+=========================================
+##  SECTION 36: EVENT SOURCING & OUTBOX
+
+```sql
 -- =========================================
 
 CREATE TABLE outbox_events (
@@ -1857,8 +1930,11 @@ CREATE INDEX idx_outbox_aggregate ON outbox_events (aggregate_id, aggregate_type
 CREATE INDEX idx_outbox_event_type ON outbox_events (event_type, created_at DESC);
 CREATE INDEX idx_outbox_correlation ON outbox_events (correlation_id);
 
--- =========================================
--- SECTION 37: READ MODELS / PROJECTIONS
+```
+=========================================
+##  SECTION 37: READ MODELS / PROJECTIONS
+
+```sql
 -- =========================================
 
 -- Job Read Model (Optimized for Queries)
@@ -1951,8 +2027,11 @@ CREATE TABLE job_search_index (
 CREATE INDEX idx_job_search_vector ON job_search_index USING gin(search_vector);
 CREATE INDEX idx_job_search_filters ON job_search_index (job_type, experience_level, remote_allowed);
 
--- =========================================
--- SECTION 38: AUDIT & COMPLIANCE
+```
+=========================================
+##  SECTION 38: AUDIT & COMPLIANCE
+
+```sql
 -- =========================================
 
 CREATE TABLE audit_logs (
@@ -1991,8 +2070,11 @@ CREATE INDEX idx_audit_entity ON audit_logs (entity_type, entity_id, occurred_at
 CREATE INDEX idx_audit_actor ON audit_logs (actor_user_id, occurred_at DESC);
 CREATE INDEX idx_audit_action ON audit_logs (action, occurred_at DESC);
 
--- =========================================
--- SECTION 39: EXTERNAL REFERENCES
+```
+=========================================
+##  SECTION 39: EXTERNAL REFERENCES
+
+```sql
 -- (Relations with other microservices)
 -- =========================================
 
@@ -2020,9 +2102,10 @@ CREATE TABLE external_references (
 
 CREATE INDEX idx_external_refs_job ON external_references (job_id, service_name);
 CREATE INDEX idx_external_refs_entity ON external_references (service_name, entity_type, entity_id);
-
--- =========================================
--- TRIGGERS & FUNCTIONS
+```
+=========================================
+## TRIGGERS & FUNCTIONS
+```sql
 -- =========================================
 
 -- Update updated_at timestamp
@@ -2088,8 +2171,12 @@ BEGIN
 END;
 $ LANGUAGE plpgsql;
 
--- =========================================
--- VIEWS FOR COMMON QUERIES
+```
+
+=========================================
+## VIEWS FOR COMMON QUERIES
+
+```sql
 -- =========================================
 
 -- View: Active Jobs with Full Details
@@ -2161,8 +2248,11 @@ WHERE s.is_active = TRUE
 GROUP BY s.id, s.name, s.skill_category
 ORDER BY jobs_count DESC;
 
--- =========================================
--- CRITICAL FIXES AND MISSING DOMAINS
+```
+
+=========================================
+## CRITICAL FIXES AND MISSING DOMAINS
+```sql
 -- =========================================
 
 -- =========================================
@@ -2450,8 +2540,11 @@ ALTER INDEX idx_analytics_job RENAME TO idx_job_analytics_read_job;
 
 COMMENT ON TABLE job_analytics_read IS 'Read model projection - detailed analytics in search-be/analytics-be';
 
--- =========================================
--- MISSING DOMAIN 1: HIRING OPTION
+```
+=========================================
+##  MISSING DOMAIN 1: HIRING OPTION
+
+```sql
 -- Domain: internal/domain/hiring_option/
 -- =========================================
 
@@ -2494,9 +2587,11 @@ CREATE TABLE hiring_options (
 CREATE INDEX idx_hiring_options_job ON hiring_options (job_id);
 CREATE INDEX idx_hiring_options_duplicate_hash ON hiring_options (duplicate_check_hash) WHERE duplicate_check_hash IS NOT NULL;
 CREATE INDEX idx_hiring_options_multi_hire ON hiring_options (multi_hire_enabled, open_slots) WHERE multi_hire_enabled = TRUE;
+```
+=========================================
+## MISSING DOMAIN 2: INCLUSIVITY
 
--- =========================================
--- MISSING DOMAIN 2: INCLUSIVITY
+```sql
 -- Domain: internal/domain/inclusivity/
 -- =========================================
 
@@ -2542,9 +2637,11 @@ CREATE INDEX idx_inclusivity_flags_job ON inclusivity_flags (job_id);
 CREATE INDEX idx_inclusivity_flags_flexible ON inclusivity_flags (flexible_hours) WHERE flexible_hours = TRUE;
 CREATE INDEX idx_inclusivity_flags_accessible ON inclusivity_flags (screen_reader_friendly, no_video_required)
     WHERE screen_reader_friendly = TRUE OR no_video_required = TRUE;
+```
+=========================================
+## MISSING DOMAIN 3: AI ASSIST
 
--- =========================================
--- MISSING DOMAIN 3: AI ASSIST
+```sql
 -- Domain: internal/domain/ai_assist/
 -- =========================================
 
@@ -2622,9 +2719,13 @@ CREATE TABLE ai_optimizations (
 
 CREATE INDEX idx_ai_optimizations_job ON ai_optimizations (job_id, applied_at DESC);
 CREATE INDEX idx_ai_optimizations_suggestion ON ai_optimizations (ai_suggestion_id);
+```
 
--- =========================================
--- MISSING DOMAIN 4: DUPLICATE DETECTION
+=========================================
+## MISSING DOMAIN 4: DUPLICATE DETECTION
+
+```sql
+
 -- Domain: internal/domain/duplicate_detection/
 -- =========================================
 
@@ -2712,9 +2813,11 @@ CREATE TABLE duplicate_matches (
 CREATE INDEX idx_duplicate_matches_job ON duplicate_matches (job_id);
 CREATE INDEX idx_duplicate_matches_unreviewed ON duplicate_matches (reviewed) WHERE reviewed = FALSE;
 CREATE INDEX idx_duplicate_matches_score ON duplicate_matches (similarity_score DESC);
+```
+=========================================
+## MISSING DOMAIN 5: CONTRACT TRANSITION
 
--- =========================================
--- MISSING DOMAIN 5: CONTRACT TRANSITION
+```sql
 -- Domain: internal/domain/contract_transition/
 -- =========================================
 
@@ -2773,9 +2876,11 @@ CREATE UNIQUE INDEX uk_localization_primary ON localization (job_id)
 -- =========================================
 
 CREATE INDEX idx_jobs_title_normalized ON jobs (title_normalized);
+```
+=========================================
+## UPDATED VIEWS WITH FIXES
 
--- =========================================
--- UPDATED VIEWS WITH FIXES
+```sql
 -- =========================================
 
 -- Update v_active_jobs_full with correct category join
@@ -2808,10 +2913,12 @@ WHERE j.status = 'OPEN'
     AND j.is_deleted = FALSE
     AND j.moderation_status = 'APPROVED'
 GROUP BY j.id, c.name, c.slug, bc.budget_min, bc.budget_max, bc.currency;
+```
+=========================================
+## UPDATED COMMENTS
+=========================================
 
--- =========================================
--- UPDATED COMMENTS
--- =========================================
+```sql
 
 COMMENT ON TABLE hiring_options IS 'Multi-hire and repost configuration - maps to internal/domain/hiring_option/entity.go';
 COMMENT ON TABLE inclusivity_flags IS 'Inclusivity and accessibility flags - maps to internal/domain/inclusivity/entity.go';
@@ -2822,13 +2929,12 @@ COMMENT ON TABLE duplicate_clusters IS 'Duplicate job clusters - maps to interna
 COMMENT ON TABLE contract_transitions IS 'Job to contract transitions - maps to internal/domain/contract_transition/entity.go';
 COMMENT ON TABLE moderation_state IS 'Moderation state machine - maps to internal/domain/moderation/state.go';
 COMMENT ON TABLE job_analytics_read IS 'Analytics read model (projection) - detailed analytics in search-be/analytics-be';
+```
+=========================================
+## FINAL SUMMARY WITH ALL FIXES
+=========================================
 
--- =========================================
--- FINAL SUMMARY WITH ALL FIXES
--- =========================================
-
-/*
-COMPLETE JOBS-BE DATABASE DESIGN WITH ALL FIXES:
+## COMPLETE JOBS-BE DATABASE DESIGN WITH ALL FIXES:
 
 ✅ FIXED ISSUES:
 1. Added explicit job.category_id FK + job_categories many-to-many table
@@ -2855,14 +2961,16 @@ COMPLETE JOBS-BE DATABASE DESIGN WITH ALL FIXES:
 4. duplicate_keys + duplicate_clusters + duplicate_matches - Duplicate detection with simhash
 5. contract_transitions - Job → contract workflow
 
-FINAL STATISTICS:
+## FINAL STATISTICS:
 - Total Tables: 80+
 - Total Indexes: 220+
 - Total Domains: 41 (all covered)
 - 100% folder structure alignment
 - Production-ready for enterprise scale
 - All correctness issues resolved
-*/
+
+```sql
+
 COMMENT ON TABLE categories IS 'Hierarchical job categories - maps to internal/domain/category/entity.go';
 COMMENT ON TABLE skills IS 'Global skills taxonomy - maps to internal/domain/skill/entity.go';
 COMMENT ON TABLE job_skills IS 'Skills required per job - maps to internal/domain/job_skill/entity.go';
@@ -2900,11 +3008,12 @@ COMMENT ON TABLE webhooks IS 'Webhook subscriptions - maps to internal/domain/we
 COMMENT ON TABLE health_checkpoints IS 'Health checkpoints - maps to internal/domain/health_checkpoints/entity.go';
 COMMENT ON TABLE upsell_suggestions IS 'Upsell suggestions - maps to internal/domain/upsell/entity.go';
 COMMENT ON TABLE outbox_events IS 'Transactional outbox for event publishing';
+```
+=========================================
+## DATABASE STATISTICS
+=========================================
 
--- =========================================
--- DATABASE STATISTICS
--- =========================================
-
+```sql
 CREATE VIEW v_table_sizes AS
 SELECT
     schemaname,
@@ -2914,13 +3023,13 @@ SELECT
 FROM pg_tables
 WHERE schemaname = 'public'
 ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+```
 
--- =========================================
--- END OF JOBS-BE DATABASE DESIGN
--- =========================================
+=========================================
+## END OF JOBS-BE DATABASE DESIGN
+=========================================
 
-/*
-FINAL SUMMARY:
+## FINAL SUMMARY:
 - Total Tables: 70+
 - Total Indexes: 200+
 - Total Domains Covered: 36

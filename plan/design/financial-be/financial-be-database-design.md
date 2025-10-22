@@ -1,19 +1,18 @@
-*/-- =========================================
--- FINANCIAL-BE DATABASE DESIGN
--- Skillsier Platform - Enterprise Scale
--- PostgreSQL 16+
--- =========================================
--- 
--- CRITICAL ALIGNMENT RULES:
--- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
--- 2. Table names match domain folder names exactly
--- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
--- 4. All domains from folder structure are covered
--- 5. Rich, production-ready fields for large-scale application
--- 6. PCI-DSS compliant for payment data
--- 7. Immutable ledger for auditability
--- =========================================
+## FINANCIAL-BE DATABASE DESIGN
+- Skillsier Platform - Enterprise Scale
+- PostgreSQL 16+
+=========================================
 
+## CRITICAL ALIGNMENT RULES:
+- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
+- 2. Table names match domain folder names exactly
+- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
+- 4. All domains from folder structure are covered
+- 5. Rich, production-ready fields for large-scale application
+- 6. PCI-DSS compliant for payment data
+- 7. Immutable ledger for auditability
+
+```sql
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -22,8 +21,10 @@ CREATE EXTENSION IF NOT EXISTS "btree_gin";
 CREATE EXTENSION IF NOT EXISTS "citext";
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
 
--- =========================================
--- SECTION 1: CORE WALLET & BALANCE DOMAIN
+```
+=========================================
+##  SECTION 1: CORE WALLET & BALANCE DOMAIN
+```sql
 -- Domain: internal/domain/wallet/
 -- Entity: wallet/entity.go
 -- =========================================
@@ -130,8 +131,10 @@ CREATE TABLE wallet_balance_snapshots (
 
 CREATE INDEX idx_wallet_balance_snapshots_wallet ON wallet_balance_snapshots (wallet_id, snapshot_at DESC);
 
--- =========================================
--- SECTION 2: TRANSACTION LEDGER (IMMUTABLE)
+```
+=========================================
+##  SECTION 2: TRANSACTION LEDGER (IMMUTABLE)
+```sql
 -- Domain: internal/domain/transaction/
 -- Entity: transaction/entity.go
 -- =========================================
@@ -258,8 +261,10 @@ CREATE TABLE transaction_events (
 
 CREATE INDEX idx_transaction_events_transaction ON transaction_events (transaction_id, occurred_at);
 
--- =========================================
--- SECTION 3: PAYMENT PROCESSING
+```
+=========================================
+##  SECTION 3: PAYMENT PROCESSING
+```sql
 -- Domain: internal/domain/payment/
 -- Entity: payment/entity.go
 -- =========================================
@@ -392,8 +397,10 @@ CREATE TABLE payment_attempts (
 
 CREATE INDEX idx_payment_attempts_payment ON payment_attempts (payment_id, attempt_number);
 
--- =========================================
--- SECTION 4: PAYMENT METHODS
+```
+=========================================
+##  SECTION 4: PAYMENT METHODS
+```sql
 -- Domain: internal/domain/payment_method/
 -- Entity: payment_method/entity.go
 -- =========================================
@@ -469,8 +476,10 @@ CREATE INDEX idx_payment_methods_fingerprint ON payment_methods (card_fingerprin
 
 COMMENT ON TABLE payment_methods IS 'Payment methods - maps to internal/domain/payment_method/entity.go';
 
--- =========================================
--- SECTION 5: ESCROW MANAGEMENT
+```
+=========================================
+##  SECTION 5: ESCROW MANAGEMENT
+```sql
 -- Domain: internal/domain/escrow/
 -- Entity: escrow/entity.go
 -- =========================================
@@ -615,8 +624,10 @@ CREATE TABLE escrow_releases (
 CREATE INDEX idx_escrow_releases_account ON escrow_releases (escrow_account_id, released_at DESC);
 CREATE INDEX idx_escrow_releases_status ON escrow_releases (status);
 
--- =========================================
--- SECTION 6: PAYOUT PROCESSING
+```
+=========================================
+##  SECTION 6: PAYOUT PROCESSING
+```sql
 -- Domain: internal/domain/payout/
 -- Entity: payout/entity.go
 -- =========================================
@@ -724,8 +735,10 @@ CREATE TABLE payout_batches (
 
 CREATE INDEX idx_payout_batches_status ON payout_batches (status, created_at DESC);
 
--- =========================================
--- SECTION 7: REFUND PROCESSING
+```
+=========================================
+##  SECTION 7: REFUND PROCESSING
+```sql
 -- Domain: internal/domain/refund/
 -- Entity: refund/entity.go
 -- =========================================
@@ -790,8 +803,10 @@ CREATE INDEX idx_refunds_requested_by ON refunds (requested_by);
 
 COMMENT ON TABLE refunds IS 'Refund processing - maps to internal/domain/refund/entity.go';
 
--- =========================================
--- SECTION 8: PLATFORM FEES & COMMISSION
+```
+=========================================
+##  SECTION 8: PLATFORM FEES & COMMISSION
+```sql
 -- Domain: internal/domain/fee/
 -- Entity: fee/entity.go
 -- =========================================
@@ -880,8 +895,10 @@ CREATE TABLE fee_transactions (
 CREATE INDEX idx_fee_transactions_transaction ON fee_transactions (transaction_id);
 CREATE INDEX idx_fee_transactions_collected_from ON fee_transactions (collected_from, collected_at DESC);
 
--- =========================================
--- SECTION 9: TAX MANAGEMENT
+```
+=========================================
+##  SECTION 9: TAX MANAGEMENT
+```sql
 -- Domain: internal/domain/tax/
 -- Entity: tax/entity.go
 -- =========================================
@@ -1019,8 +1036,10 @@ CREATE TABLE tax_documents (
 CREATE INDEX idx_tax_documents_user ON tax_documents (user_id, tax_year DESC);
 CREATE INDEX idx_tax_documents_type ON tax_documents (document_type, tax_year);
 
--- =========================================
--- SECTION 10: FOREIGN EXCHANGE
+```
+=========================================
+##  SECTION 10: FOREIGN EXCHANGE
+```sql
 -- Domain: internal/domain/forex/
 -- Entity: forex/entity.go
 -- =========================================
@@ -1097,8 +1116,10 @@ CREATE TABLE currency_conversions (
 CREATE INDEX idx_currency_conversions_transaction ON currency_conversions (transaction_id);
 CREATE INDEX idx_currency_conversions_date ON currency_conversions (converted_at DESC);
 
--- =========================================
--- SECTION 11: RISK & FRAUD DETECTION
+```
+=========================================
+##  SECTION 11: RISK & FRAUD DETECTION
+```sql
 -- Domain: internal/domain/risk/
 -- Entity: risk/entity.go
 -- =========================================
@@ -1196,8 +1217,10 @@ CREATE INDEX idx_fraud_alerts_subject ON fraud_alerts (subject_type, subject_id)
 CREATE INDEX idx_fraud_alerts_user ON fraud_alerts (user_id, detected_at DESC);
 CREATE INDEX idx_fraud_alerts_status ON fraud_alerts (status, severity DESC);
 
--- =========================================
--- SECTION 12: CHARGEBACKS
+```
+=========================================
+##  SECTION 12: CHARGEBACKS
+```sql
 -- Domain: internal/domain/chargeback/
 -- Entity: chargeback/entity.go
 -- =========================================
@@ -1268,8 +1291,10 @@ CREATE INDEX idx_chargebacks_respond_by ON chargebacks (respond_by_date)
 
 COMMENT ON TABLE chargebacks IS 'Chargebacks - maps to internal/domain/chargeback/entity.go';
 
--- =========================================
--- SECTION 13: BONUSES & INCENTIVES
+```
+=========================================
+##  SECTION 13: BONUSES & INCENTIVES
+```sql
 -- Domain: internal/domain/bonus/
 -- Entity: bonus/entity.go
 -- =========================================
@@ -1338,8 +1363,10 @@ CREATE INDEX idx_bonuses_vesting ON bonuses (status, vesting_start_date)
 
 COMMENT ON TABLE bonuses IS 'Bonuses and incentives - maps to internal/domain/bonus/entity.go';
 
--- =========================================
--- SECTION 14: INVOICES
+```
+=========================================
+##  SECTION 14: INVOICES
+```sql
 -- Domain: internal/domain/invoice/
 -- Entity: invoice/entity.go
 -- =========================================
@@ -1441,8 +1468,10 @@ CREATE TABLE invoice_line_items (
 
 CREATE INDEX idx_invoice_line_items_invoice ON invoice_line_items (invoice_id, line_number);
 
--- =========================================
--- SECTION 15: PROMOTIONAL CREDITS & COUPONS
+```
+=========================================
+##  SECTION 15: PROMOTIONAL CREDITS & COUPONS
+```sql
 -- Domain: internal/domain/promo/
 -- Entity: promo/entity.go
 -- =========================================
@@ -1562,8 +1591,10 @@ CREATE TABLE coupon_redemptions (
 CREATE INDEX idx_coupon_redemptions_coupon ON coupon_redemptions (coupon_id);
 CREATE INDEX idx_coupon_redemptions_user ON coupon_redemptions (user_id, redeemed_at DESC);
 
--- =========================================
--- SECTION 16: SUBSCRIPTION BILLING
+```
+=========================================
+##  SECTION 16: SUBSCRIPTION BILLING
+```sql
 -- Domain: internal/domain/subscription/
 -- Entity: subscription/entity.go
 -- =========================================
@@ -1643,8 +1674,10 @@ CREATE TABLE subscription_invoices (
 
 CREATE INDEX idx_subscription_invoices_billing ON subscription_invoices (subscription_billing_id);
 
--- =========================================
--- SECTION 17: WITHDRAWAL LIMITS
+```
+=========================================
+##  SECTION 17: WITHDRAWAL LIMITS
+```sql
 -- Domain: internal/domain/withdrawal_limit/
 -- Entity: withdrawal_limit/entity.go
 -- =========================================
@@ -1690,8 +1723,10 @@ CREATE INDEX idx_withdrawal_limits_user ON withdrawal_limits (user_id);
 
 COMMENT ON TABLE withdrawal_limits IS 'Withdrawal limits - maps to internal/domain/withdrawal_limit/entity.go';
 
--- =========================================
--- SECTION 18: BANK VERIFICATION
+```
+=========================================
+##  SECTION 18: BANK VERIFICATION
+```sql
 -- Domain: internal/domain/bank_verification/
 -- Entity: bank_verification/entity.go
 -- =========================================
@@ -1740,8 +1775,10 @@ CREATE INDEX idx_bank_verifications_status ON bank_verifications (status);
 
 COMMENT ON TABLE bank_verifications IS 'Bank verifications - maps to internal/domain/bank_verification/entity.go';
 
--- =========================================
--- SECTION 19: PAYMENT DISPUTES
+```
+=========================================
+##  SECTION 19: PAYMENT DISPUTES
+```sql
 -- Domain: internal/domain/dispute/
 -- Entity: dispute/entity.go
 -- =========================================
@@ -1809,8 +1846,10 @@ CREATE INDEX idx_payment_disputes_status ON payment_disputes (status, respond_by
 
 COMMENT ON TABLE payment_disputes IS 'Payment disputes - maps to internal/domain/dispute/entity.go';
 
--- =========================================
--- SECTION 20: RECONCILIATION
+```
+=========================================
+##  SECTION 20: RECONCILIATION
+```sql
 -- Domain: internal/domain/reconciliation/
 -- Entity: reconciliation/entity.go
 -- =========================================
@@ -1897,8 +1936,10 @@ CREATE TABLE reconciliation_discrepancies (
 CREATE INDEX idx_reconciliation_discrepancies_report ON reconciliation_discrepancies (report_id);
 CREATE INDEX idx_reconciliation_discrepancies_status ON reconciliation_discrepancies (status);
 
--- =========================================
--- SECTION 21: FINANCIAL ANALYTICS
+```
+=========================================
+##  SECTION 21: FINANCIAL ANALYTICS
+```sql
 -- Domain: internal/domain/analytics/
 -- Entity: analytics/entity.go
 -- =========================================
@@ -1989,8 +2030,10 @@ CREATE TABLE platform_financial_metrics (
 
 CREATE INDEX idx_platform_financial_metrics_date ON platform_financial_metrics (metric_date DESC);
 
--- =========================================
--- SECTION 22: PAYMENT SCHEDULES
+```
+=========================================
+##  SECTION 22: PAYMENT SCHEDULES
+```sql
 -- Domain: internal/domain/payment_schedule/
 -- Entity: payment_schedule/entity.go
 -- =========================================
@@ -2049,8 +2092,10 @@ CREATE INDEX idx_payment_schedules_next_payment ON payment_schedules (next_payme
 
 COMMENT ON TABLE payment_schedules IS 'Payment schedules - maps to internal/domain/payment_schedule/entity.go';
 
--- =========================================
--- SECTION 23: EXPENSE REIMBURSEMENTS
+```
+=========================================
+##  SECTION 23: EXPENSE REIMBURSEMENTS
+```sql
 -- Domain: internal/domain/expense/
 -- Entity: expense/entity.go
 -- =========================================
@@ -2113,8 +2158,10 @@ CREATE INDEX idx_expense_reimbursements_status ON expense_reimbursements (status
 
 COMMENT ON TABLE expense_reimbursements IS 'Expense reimbursements - maps to internal/domain/expense/entity.go';
 
--- =========================================
--- SECTION 24: CONNECTS PURCHASE (INTEGRATION)
+```
+=========================================
+##  SECTION 24: CONNECTS PURCHASE (INTEGRATION)
+```sql
 -- Domain: internal/domain/connects/
 -- Entity: connects/entity.go
 -- =========================================
@@ -2165,8 +2212,10 @@ CREATE INDEX idx_connects_purchases_status ON connects_purchases (status);
 
 COMMENT ON TABLE connects_purchases IS 'Connects purchases - maps to internal/domain/connects/entity.go';
 
--- =========================================
--- SECTION 25: GATEWAY INTEGRATIONS
+```
+=========================================
+##  SECTION 25: GATEWAY INTEGRATIONS
+```sql
 -- Domain: internal/domain/gateway/
 -- Entity: gateway/entity.go
 -- =========================================
@@ -2243,8 +2292,10 @@ CREATE TABLE gateway_configurations (
 
 CREATE INDEX idx_gateway_configurations_active ON gateway_configurations (is_active);
 
--- =========================================
--- SECTION 26: OUTBOX PATTERN FOR EVENTS
+```
+=========================================
+##  SECTION 26: OUTBOX PATTERN FOR EVENTS
+```sql
 -- Domain: internal/domain/outbox/
 -- Entity: outbox/entity.go
 -- =========================================
@@ -2301,8 +2352,11 @@ CREATE INDEX idx_outbox_events_topic ON outbox_events (topic, occurred_at DESC);
 
 COMMENT ON TABLE outbox_events IS 'Transactional outbox for event publishing';
 
--- =========================================
--- SECTION 27: AUDIT LOGS
+```
+=========================================
+##  SECTION 27: AUDIT LOGS
+
+```sql
 -- =========================================
 
 CREATE TABLE financial_audit_logs (
@@ -2342,8 +2396,11 @@ CREATE INDEX idx_financial_audit_logs_actor ON financial_audit_logs (actor_user_
 CREATE INDEX idx_financial_audit_logs_compliance ON financial_audit_logs (occurred_at DESC) 
     WHERE pci_relevant = TRUE OR sox_relevant = TRUE;
 
--- =========================================
--- SECTION 28: READ MODELS (CQRS)
+```
+=========================================
+##  SECTION 28: READ MODELS (CQRS)
+
+```sql
 -- =========================================
 
 -- Wallet Read Model
@@ -2403,8 +2460,11 @@ CREATE TABLE user_financial_summary (
 
 CREATE INDEX idx_user_financial_summary_earnings ON user_financial_summary (lifetime_earnings DESC);
 
--- =========================================
--- SECTION 29: DATABASE FUNCTIONS & TRIGGERS
+```
+=========================================
+##  SECTION 29: DATABASE FUNCTIONS & TRIGGERS
+
+```sql
 -- =========================================
 
 -- Function to update wallet balance
@@ -2434,8 +2494,11 @@ CREATE TRIGGER trg_payouts_updated_at BEFORE UPDATE ON payouts
 -- =========================================
 
 
--- =========================================
--- SECTION 29B: FUNCTIONS & TRIGGERS (IMMUTABILITY, BALANCES, OVERDRAFTS)
+```
+=========================================
+##  SECTION 29B: FUNCTIONS & TRIGGERS (IMMUTABILITY, BALANCES, OVERDRAFTS)
+
+```sql
 -- =========================================
 
 -- Updated wallet balance updater: runs on insert and on status transition to COMPLETED
@@ -2526,8 +2589,9 @@ CREATE TRIGGER trg_enforce_transaction_immutability
   BEFORE UPDATE ON transactions
   FOR EACH ROW
   EXECUTE FUNCTION enforce_transaction_immutability();
-
--- SECTION 30: PERFORMANCE VIEWS
+```
+### SECTION 30: PERFORMANCE VIEWS
+```sql
 -- =========================================
 
 CREATE VIEW v_active_payments AS
@@ -2564,9 +2628,9 @@ WHERE p.status IN ('PENDING', 'QUEUED');
 -- =========================================
 -- END OF FINANCIAL-BE DATABASE DESIGN
 -- =========================================
+```
 
-/*
-FINAL SUMMARY:
+## FINAL SUMMARY:
 - Total Tables: 75+
 - Total Indexes: 250+
 - Total Domains Covered: 25+ (all from financial-be folder structure)
@@ -2584,42 +2648,42 @@ FINAL SUMMARY:
 - Tax compliance
 - Reconciliation support
 
-ALIGNMENT WITH FOLDER STRUCTURE:
-✅ wallet/ → wallets table
-✅ transaction/ → transactions, transaction_events tables
-✅ payment/ → payments, payment_attempts tables
-✅ payment_method/ → payment_methods table
-✅ escrow/ → escrow_accounts, escrow_holds, escrow_releases tables
-✅ payout/ → payouts, payout_batches tables
-✅ refund/ → refunds table
-✅ fee/ → platform_fees, fee_transactions tables
-✅ tax/ → tax_profiles, tax_withholdings, tax_documents tables
-✅ forex/ → exchange_rates, currency_conversions tables
-✅ risk/ → risk_assessments, fraud_alerts tables
-✅ chargeback/ → chargebacks table
-✅ bonus/ → bonuses table
-✅ invoice/ → invoices, invoice_line_items tables
-✅ promo/ → promotional_credits, coupons, coupon_redemptions tables
-✅ subscription/ → subscription_billing, subscription_invoices tables
-✅ withdrawal_limit/ → withdrawal_limits table
-✅ bank_verification/ → bank_verifications table
-✅ dispute/ → payment_disputes table
-✅ reconciliation/ → reconciliation_reports, reconciliation_discrepancies tables
-✅ analytics/ → financial_analytics, platform_financial_metrics tables
-✅ payment_schedule/ → payment_schedules table
-✅ expense/ → expense_reimbursements table
-✅ connects/ → connects_purchases table
-✅ gateway/ → gateway_webhooks, gateway_configurations tables
-✅ outbox/ → outbox_events table
-
-SECURITY & COMPLIANCE:
+## ALIGNMENT WITH FOLDER STRUCTURE:
+- ✅ wallet/ → wallets table
+- ✅ transaction/ → transactions, transaction_events tables
+- ✅ payment/ → payments, payment_attempts tables
+- ✅ payment_method/ → payment_methods table
+- ✅ escrow/ → escrow_accounts, escrow_holds, escrow_releases tables
+- ✅ payout/ → payouts, payout_batches tables
+- ✅ refund/ → refunds table
+- ✅ fee/ → platform_fees, fee_transactions tables
+- ✅ tax/ → tax_profiles, tax_withholdings, tax_documents tables
+- ✅ forex/ → exchange_rates, currency_conversions tables
+- ✅ risk/ → risk_assessments, fraud_alerts tables
+- ✅ chargeback/ → chargebacks table
+- ✅ bonus/ → bonuses table
+- ✅ invoice/ → invoices, invoice_line_items tables
+- ✅ promo/ → promotional_credits, coupons, coupon_redemptions tables
+- ✅ subscription/ → subscription_billing, subscription_invoices tables
+- ✅ withdrawal_limit/ → withdrawal_limits table
+- ✅ bank_verification/ → bank_verifications table
+- ✅ dispute/ → payment_disputes table
+- ✅ reconciliation/ → reconciliation_reports, reconciliation_discrepancies tables
+- ✅ analytics/ → financial_analytics, platform_financial_metrics tables
+- ✅ payment_schedule/ → payment_schedules table
+- ✅ expense/ → expense_reimbursements table
+- ✅ connects/ → connects_purchases table
+- ✅ gateway/ → gateway_webhooks, gateway_configurations tables
+- ✅ outbox/ → outbox_events table
+- 
+## SECURITY & COMPLIANCE:
 - PCI-DSS: Tokenized payment data, encrypted sensitive fields
 - SOX: Immutable transaction ledger, complete audit trails
 - AML: Risk scoring, fraud detection, transaction monitoring
 - KYC: Verification levels, withdrawal limits
 - GDPR: Non-PII events, pseudonymization where required
 
-FINANCIAL SAFEGUARDS:
+## FINANCIAL SAFEGUARDS:
 - Double-entry bookkeeping for accuracy
 - Immutable transaction records
 - Balance consistency checks
@@ -2678,8 +2742,10 @@ $$ LANGUAGE plpgsql;
 -- This file contains ONLY the additions and fixes to the original design
 -- from financial-be-database-design.md
 
--- =========================================
--- SECTION 29: LEDGER JOURNAL (MISSING)
+```
+=========================================
+##  SECTION 29: LEDGER JOURNAL (MISSING)
+```sql
 -- Domain: internal/domain/ledger_journal/
 -- Entity: ledger_journal/entity.go
 -- =========================================
@@ -2777,8 +2843,10 @@ CREATE INDEX idx_ledger_adjustments_original ON ledger_adjustments (original_ent
 CREATE INDEX idx_ledger_adjustments_status ON ledger_adjustments (status, created_at DESC);
 CREATE INDEX idx_ledger_adjustments_created_by ON ledger_adjustments (created_by);
 
--- =========================================
--- SECTION 30: PROTECTION PLANS (MISSING)
+```
+=========================================
+##  SECTION 30: PROTECTION PLANS (MISSING)
+```sql
 -- Domain: internal/domain/protection_plan/
 -- Entity: protection_plan/entity.go
 -- =========================================
@@ -2906,8 +2974,10 @@ CREATE TABLE protection_plan_eligibility (
 CREATE INDEX idx_protection_eligibility_user ON protection_plan_eligibility (user_id);
 CREATE INDEX idx_protection_eligibility_contract ON protection_plan_eligibility (contract_id);
 
--- =========================================
--- SECTION 31: FEE UPDATES V2 (MISSING)
+```
+=========================================
+##  SECTION 31: FEE UPDATES V2 (MISSING)
+```sql
 -- Domain: internal/domain/fee_update/
 -- Entity: fee_update/entity.go
 -- =========================================
@@ -3070,8 +3140,10 @@ CREATE TABLE fee_migrations (
 
 CREATE INDEX idx_fee_migrations_status ON fee_migrations (status, created_at DESC);
 
--- =========================================
--- SECTION 32: INTERNATIONAL PAYMENTS (MISSING)
+```
+=========================================
+##  SECTION 32: INTERNATIONAL PAYMENTS (MISSING)
+```sql
 -- Domain: internal/domain/international_payment/
 -- Entity: international_payment/entity.go
 -- =========================================
@@ -3208,8 +3280,10 @@ CREATE TABLE local_payout_routes (
 
 CREATE INDEX idx_local_payout_routes_country ON local_payout_routes (country, currency) WHERE is_active = TRUE;
 
--- =========================================
--- SECTION 33: REMINDERS (MISSING)
+```
+=========================================
+##  SECTION 33: REMINDERS (MISSING)
+```sql
 -- Domain: internal/domain/reminder/
 -- Entity: reminder/entity.go
 -- =========================================
@@ -3331,8 +3405,10 @@ CREATE TABLE reminder_escalations (
 CREATE INDEX idx_reminder_escalations_reminder ON reminder_escalations (reminder_id, escalation_level);
 CREATE INDEX idx_reminder_escalations_status ON reminder_escalations (acknowledged, escalated_at DESC);
 
--- =========================================
--- SECTION 34: INSURANCE (MISSING)
+```
+=========================================
+##  SECTION 34: INSURANCE (MISSING)
+```sql
 -- Domain: internal/domain/insurance/
 -- Entity: insurance/entity.go
 -- =========================================
@@ -3473,8 +3549,10 @@ CREATE TABLE insurance_providers (
 
 CREATE INDEX idx_insurance_providers_code ON insurance_providers (provider_code) WHERE is_active = TRUE;
 
--- =========================================
--- SECTION 35: TAX FORMS (MISSING)
+```
+=========================================
+##  SECTION 35: TAX FORMS (MISSING)
+```sql
 -- Domain: internal/domain/tax_form/
 -- Entity: tax_form/entity.go
 -- =========================================
@@ -3532,8 +3610,10 @@ CREATE INDEX idx_tax_forms_type ON tax_forms (form_type, tax_year);
 
 COMMENT ON TABLE tax_forms IS 'Tax forms - maps to internal/domain/tax_form/entity.go';
 
--- =========================================
--- SECTION 36: PAYROLL (MISSING)
+```
+=========================================
+##  SECTION 36: PAYROLL (MISSING)
+```sql
 -- Domain: internal/domain/payroll/
 -- Entity: payroll/entity.go
 -- =========================================
@@ -3712,8 +3792,10 @@ CREATE TABLE payroll_withholdings (
 CREATE INDEX idx_payroll_withholdings_line_item ON payroll_withholdings (payroll_line_item_id);
 CREATE INDEX idx_payroll_withholdings_type ON payroll_withholdings (withholding_type);
 
--- =========================================
--- SECTION 37: CURRENCY (MISSING)
+```
+=========================================
+##  SECTION 37: CURRENCY (MISSING)
+```sql
 -- Domain: internal/domain/currency/
 -- Entity: currency/entity.go
 -- =========================================
@@ -3786,8 +3868,10 @@ CREATE INDEX idx_rate_locks_user ON rate_locks (user_id, status);
 CREATE INDEX idx_rate_locks_validity ON rate_locks (valid_until) WHERE status = 'ACTIVE';
 CREATE INDEX idx_rate_locks_pair ON rate_locks (from_currency, to_currency, status);
 
--- =========================================
--- SECTION 38: BANK ACCOUNTS (MISSING)
+```
+=========================================
+##  SECTION 38: BANK ACCOUNTS (MISSING)
+```sql
 -- Domain: internal/domain/bank_account/
 -- Entity: bank_account/entity.go
 -- =========================================

@@ -27,9 +27,10 @@ CREATE EXTENSION IF NOT EXISTS "btree_gist";
 
 ## SECTION 1–30 (Existing Schema)
 
+
+=========================================
+##  SECTION 1: CORE CONVERSATION DOMAIN
 ```sql
--- =========================================
--- SECTION 1: CORE CONVERSATION DOMAIN
 -- Domain: internal/domain/conversation/
 -- Entity: conversation/entity.go
 -- =========================================
@@ -76,8 +77,10 @@ CREATE INDEX idx_conversations_metadata ON conversations USING gin(metadata);
 
 COMMENT ON TABLE conversations IS 'Conversations - maps to internal/domain/conversation/entity.go';
 
--- =========================================
--- SECTION 2: CONVERSATION PARTICIPANTS
+```
+=========================================
+##  SECTION 2: CONVERSATION PARTICIPANTS
+```sql
 -- Domain: internal/domain/conversation/participant.go
 -- =========================================
 
@@ -121,8 +124,10 @@ CREATE INDEX idx_participants_role ON participants (conversation_id, role);
 
 COMMENT ON TABLE participants IS 'Conversation participants - maps to internal/domain/conversation/participant.go';
 
--- =========================================
--- SECTION 3: TYPING INDICATORS
+```
+=========================================
+##  SECTION 3: TYPING INDICATORS
+```sql
 -- Domain: internal/domain/conversation/typing_indicator.go
 -- =========================================
 
@@ -143,8 +148,10 @@ CREATE INDEX idx_typing_expires ON typing_indicators (expires_at);
 
 COMMENT ON TABLE typing_indicators IS 'Real-time typing indicators - maps to internal/domain/conversation/typing_indicator.go';
 
--- =========================================
--- SECTION 4: THREADS (SUB-DISCUSSIONS)
+```
+=========================================
+##  SECTION 4: THREADS (SUB-DISCUSSIONS)
+```sql
 -- Domain: internal/domain/thread/
 -- Entity: thread/entity.go
 -- =========================================
@@ -186,8 +193,10 @@ CREATE INDEX idx_thread_followers_user ON thread_followers (user_id);
 
 COMMENT ON TABLE thread_followers IS 'Thread followers for notifications';
 
--- =========================================
--- SECTION 5: MESSAGES (CORE MESSAGING)
+```
+=========================================
+##  SECTION 5: MESSAGES (CORE MESSAGING)
+```sql
 -- Domain: internal/domain/message/
 -- Entity: message/entity.go
 -- =========================================
@@ -268,8 +277,10 @@ CREATE INDEX idx_message_edit_history_message ON message_edit_history (message_i
 
 COMMENT ON TABLE message_edit_history IS 'Message edit audit trail';
 
--- =========================================
--- SECTION 6: MESSAGE REACTIONS
+```
+=========================================
+##  SECTION 6: MESSAGE REACTIONS
+```sql
 -- Domain: internal/domain/message/reaction.go
 -- =========================================
 
@@ -289,8 +300,10 @@ CREATE INDEX idx_reactions_user ON reactions (user_id, created_at DESC);
 
 COMMENT ON TABLE reactions IS 'Message reactions - maps to internal/domain/message/reaction.go';
 
--- =========================================
--- SECTION 7: MESSAGE ATTACHMENTS
+```
+=========================================
+##  SECTION 7: MESSAGE ATTACHMENTS
+```sql
 -- Domain: internal/domain/message/attachment.go
 -- =========================================
 
@@ -328,8 +341,10 @@ CREATE INDEX idx_attachments_scan_status ON attachments (virus_scan_status, crea
 
 COMMENT ON TABLE attachments IS 'Message attachments - maps to internal/domain/message/attachment.go';
 
--- =========================================
--- SECTION 8: READ RECEIPTS
+```
+=========================================
+##  SECTION 8: READ RECEIPTS
+```sql
 -- Domain: internal/domain/message/read_receipt.go
 -- =========================================
 
@@ -351,8 +366,10 @@ CREATE INDEX idx_read_receipts_user ON read_receipts (user_id, read_at DESC);
 
 COMMENT ON TABLE read_receipts IS 'Message read receipts - maps to internal/domain/message/read_receipt.go';
 
--- =========================================
--- SECTION 9: MENTIONS
+```
+=========================================
+##  SECTION 9: MENTIONS
+```sql
 -- Domain: internal/domain/mention/
 -- Entity: mention/entity.go
 -- =========================================
@@ -380,8 +397,10 @@ CREATE INDEX idx_mentions_conversation ON mentions (conversation_id, created_at 
 
 COMMENT ON TABLE mentions IS 'User mentions - maps to internal/domain/mention/entity.go';
 
--- =========================================
--- SECTION 10: CONVERSATION EXPORT
+```
+=========================================
+##  SECTION 10: CONVERSATION EXPORT
+```sql
 -- Domain: internal/domain/export/
 -- Entity: export/entity.go
 -- =========================================
@@ -417,8 +436,10 @@ CREATE INDEX idx_exports_expiration ON conversation_exports (expires_at) WHERE s
 
 COMMENT ON TABLE conversation_exports IS 'Conversation exports - maps to internal/domain/export/entity.go';
 
--- =========================================
--- SECTION 11: NOTIFICATIONS (IN-APP)
+```
+=========================================
+##  SECTION 11: NOTIFICATIONS (IN-APP)
+```sql
 -- Domain: internal/domain/notification/
 -- Entity: notification/entity.go
 -- =========================================
@@ -468,8 +489,10 @@ CREATE INDEX idx_notifications_expiration ON notifications (expires_at) WHERE ex
 
 COMMENT ON TABLE notifications IS 'In-app notifications - maps to internal/domain/notification/entity.go';
 
--- =========================================
--- SECTION 12: NOTIFICATION PREFERENCES
+```
+=========================================
+##  SECTION 12: NOTIFICATION PREFERENCES
+```sql
 -- Domain: internal/domain/notification/preference.go
 -- =========================================
 
@@ -512,8 +535,10 @@ CREATE INDEX idx_notification_prefs_dnd ON notification_preferences (dnd_enabled
 
 COMMENT ON TABLE notification_preferences IS 'User notification preferences - maps to internal/domain/notification/preference.go';
 
--- =========================================
--- SECTION 13: EMAIL NOTIFICATIONS
+```
+=========================================
+##  SECTION 13: EMAIL NOTIFICATIONS
+```sql
 -- Domain: internal/domain/email/
 -- Entity: email/entity.go
 -- =========================================
@@ -584,8 +609,10 @@ CREATE INDEX idx_email_templates_category ON email_templates (category);
 
 COMMENT ON TABLE email_templates IS 'Email templates for notifications';
 
--- =========================================
--- SECTION 14: PUSH NOTIFICATIONS (WebPush)
+```
+=========================================
+##  SECTION 14: PUSH NOTIFICATIONS (WebPush)
+```sql
 -- Domain: internal/domain/push/
 -- Entity: push/entity.go
 -- =========================================
@@ -655,8 +682,10 @@ CREATE INDEX idx_push_subscriptions_expires ON push_subscriptions (expires_at) W
 
 COMMENT ON TABLE push_subscriptions IS 'WebPush subscriptions';
 
--- =========================================
--- SECTION 15: SMS NOTIFICATIONS (Optional)
+```
+=========================================
+##  SECTION 15: SMS NOTIFICATIONS (Optional)
+```sql
 -- Domain: internal/domain/sms/
 -- Entity: sms/entity.go
 -- =========================================
@@ -693,8 +722,10 @@ CREATE INDEX idx_sms_notifications_phone ON sms_notifications (phone_number, cre
 
 COMMENT ON TABLE sms_notifications IS 'SMS notifications - maps to internal/domain/sms/entity.go';
 
--- =========================================
--- SECTION 16: WEBSOCKET CONNECTIONS
+```
+=========================================
+##  SECTION 16: WEBSOCKET CONNECTIONS
+```sql
 -- Domain: internal/domain/websocket/
 -- Entity: websocket/entity.go
 -- =========================================
@@ -733,8 +764,10 @@ CREATE INDEX idx_websocket_connections_heartbeat ON websocket_connections (last_
 
 COMMENT ON TABLE websocket_connections IS 'WebSocket connections - maps to internal/domain/websocket/entity.go';
 
--- =========================================
--- SECTION 17: REAL-TIME PRESENCE
+```
+=========================================
+##  SECTION 17: REAL-TIME PRESENCE
+```sql
 -- Domain: internal/domain/presence/
 -- Entity: presence/entity.go
 -- =========================================
@@ -774,8 +807,10 @@ CREATE INDEX idx_presence_history_user ON presence_history (user_id, changed_at 
 
 COMMENT ON TABLE presence_history IS 'Presence status change history';
 
--- =========================================
--- SECTION 18: COLLABORATION (REAL-TIME EDITING)
+```
+=========================================
+##  SECTION 18: COLLABORATION (REAL-TIME EDITING)
+```sql
 -- Domain: internal/domain/collaboration/
 -- Entity: collaboration/entity.go
 -- =========================================
@@ -841,8 +876,10 @@ CREATE INDEX idx_document_versions_session ON document_versions (session_id, ver
 
 COMMENT ON TABLE document_versions IS 'Document version history';
 
--- =========================================
--- SECTION 19: EMAIL DIGEST
+```
+=========================================
+##  SECTION 19: EMAIL DIGEST
+```sql
 -- Domain: internal/domain/digest/
 -- Entity: digest/entity.go
 -- =========================================
@@ -871,8 +908,10 @@ CREATE INDEX idx_email_digests_scheduled ON email_digests (scheduled_at) WHERE s
 
 COMMENT ON TABLE email_digests IS 'Email digest notifications - maps to internal/domain/digest/entity.go';
 
--- =========================================
--- SECTION 20: WEBHOOKS
+```
+=========================================
+##  SECTION 20: WEBHOOKS
+```sql
 -- Domain: internal/domain/webhook/
 -- Entity: webhook/entity.go
 -- =========================================
@@ -934,8 +973,10 @@ CREATE INDEX idx_webhook_deliveries_retry ON webhook_deliveries (next_retry_at) 
 
 COMMENT ON TABLE webhook_deliveries IS 'Webhook delivery attempts';
 
--- =========================================
--- SECTION 21: MESSAGE SEARCH INDEX
+```
+=========================================
+##  SECTION 21: MESSAGE SEARCH INDEX
+```sql
 -- Domain: internal/domain/search/
 -- Entity: search/entity.go
 -- =========================================
@@ -967,8 +1008,10 @@ CREATE INDEX idx_message_search_filters ON message_search_index (message_type, h
 
 COMMENT ON TABLE message_search_index IS 'Message search index - maps to internal/domain/search/entity.go';
 
--- =========================================
--- SECTION 22: COMPLIANCE & RETENTION
+```
+=========================================
+##  SECTION 22: COMPLIANCE & RETENTION
+```sql
 -- Domain: internal/domain/compliance/
 -- Entity: compliance/entity.go
 -- =========================================
@@ -1017,8 +1060,10 @@ CREATE INDEX idx_gdpr_requests_status ON gdpr_requests (status, requested_at);
 
 COMMENT ON TABLE gdpr_requests IS 'GDPR data subject requests';
 
--- =========================================
--- SECTION 23: RATE LIMITING & QUOTAS
+```
+=========================================
+##  SECTION 23: RATE LIMITING & QUOTAS
+```sql
 -- Domain: internal/domain/quota/
 -- Entity: quota/entity.go
 -- =========================================
@@ -1074,8 +1119,10 @@ CREATE INDEX idx_usage_metrics_period ON usage_metrics (period_start, period_typ
 
 COMMENT ON TABLE usage_metrics IS 'Usage metrics aggregation';
 
--- =========================================
--- SECTION 24: EVENT SOURCING & OUTBOX
+```
+=========================================
+##  SECTION 24: EVENT SOURCING & OUTBOX
+```sql
 -- Domain: internal/domain/outbox/
 -- Entity: outbox/entity.go
 -- =========================================
@@ -1137,8 +1184,11 @@ CREATE INDEX idx_dlq_event_type ON dead_letter_queue (event_type, created_at DES
 
 COMMENT ON TABLE dead_letter_queue IS 'Dead letter queue for failed events';
 
--- =========================================
--- SECTION 25: AUDIT LOGS
+```
+=========================================
+##  SECTION 25: AUDIT LOGS
+```sql
+
 -- =========================================
 
 CREATE TABLE audit_logs (
@@ -1168,8 +1218,12 @@ CREATE INDEX idx_audit_logs_compliance ON audit_logs (occurred_at DESC) WHERE gd
 
 COMMENT ON TABLE audit_logs IS 'Comprehensive audit trail';
 
--- =========================================
--- SECTION 26: READ MODELS (CQRS)
+```
+=========================================
+##  SECTION 26: READ MODELS (CQRS)
+
+```sql
+
 -- =========================================
 
 CREATE TABLE conversation_read_model (
@@ -1215,8 +1269,11 @@ CREATE INDEX idx_user_notification_summary_user ON user_notification_summary (us
 
 COMMENT ON TABLE user_notification_summary IS 'User notification summary for quick access';
 
--- =========================================
--- SECTION 27: ANALYTICS & METRICS
+```
+=========================================
+##  SECTION 27: ANALYTICS & METRICS
+
+```sql
 -- =========================================
 
 CREATE TABLE communication_metrics (
@@ -1254,8 +1311,11 @@ CREATE INDEX idx_communication_metrics_conversation ON communication_metrics (co
 
 COMMENT ON TABLE communication_metrics IS 'Communication analytics and metrics';
 
--- =========================================
--- SECTION 28: VIEWS FOR DASHBOARDS
+```
+=========================================
+##  SECTION 28: VIEWS FOR DASHBOARDS
+
+```sql
 -- =========================================
 
 CREATE OR REPLACE VIEW v_active_conversations AS
@@ -1307,8 +1367,11 @@ WHERE n.is_read = FALSE
   AND (n.expires_at IS NULL OR n.expires_at > CURRENT_TIMESTAMP)
 ORDER BY n.priority DESC, n.created_at DESC;
 
--- =========================================
--- SECTION 29: TRIGGERS
+```
+=========================================
+##  SECTION 29: TRIGGERS
+
+```sql
 -- =========================================
 
 CREATE OR REPLACE FUNCTION update_conversation_last_message()
@@ -1390,8 +1453,11 @@ CREATE TRIGGER trg_participants_updated_at BEFORE UPDATE ON participants FOR EAC
 CREATE TRIGGER trg_messages_updated_at BEFORE UPDATE ON messages FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trg_notifications_updated_at BEFORE UPDATE ON notifications FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- =========================================
--- SECTION 30: DATABASE STATISTICS
+```
+=========================================
+##  SECTION 30: DATABASE STATISTICS
+
+```sql
 -- =========================================
 
 CREATE OR REPLACE VIEW v_table_sizes AS
@@ -1417,9 +1483,11 @@ FROM pg_stat_user_indexes
 WHERE schemaname = 'public'
 ORDER BY idx_scan DESC;
 
--- =========================================
--- COMMENTS (from existing)
--- =========================================
+```
+=========================================
+## COMMENTS (from existing)
+
+```sql
 
 COMMENT ON TABLE threads IS 'Message threads - maps to internal/domain/thread/entity.go';
 COMMENT ON TABLE thread_followers IS 'Thread followers for notifications';
@@ -1461,10 +1529,12 @@ COMMENT ON TABLE communication_metrics IS 'Communication analytics and metrics';
 
 ## SECTION 31+ (Added domains to cover all folders)
 
+
+
+=========================================
+##  SECTION 31: draft/
 ```sql
--- =========================================
--- SECTION 31: draft/
--- =========================================
+
 CREATE TABLE draft (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID NOT NULL,
@@ -1479,9 +1549,11 @@ CREATE TABLE draft (
 );
 CREATE INDEX idx_draft_user ON draft (user_id, updated_at DESC);
 
--- =========================================
--- SECTION 32: pin/
--- =========================================
+```
+=========================================
+##  SECTION 32: pin/
+```sql
+
 CREATE TABLE pin (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID NOT NULL,
@@ -1496,9 +1568,11 @@ CREATE TABLE pin (
 CREATE INDEX idx_pin_conv_time ON pin (conversation_id, pinned_at DESC);
 CREATE INDEX idx_pin_by ON pin (pinned_by, pinned_at DESC);
 
--- =========================================
--- SECTION 33: bookmark/
--- =========================================
+```
+=========================================
+##  SECTION 33: bookmark/
+
+```sql
 CREATE TABLE bookmark (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL,
@@ -1510,9 +1584,11 @@ CREATE TABLE bookmark (
 );
 CREATE INDEX idx_bookmark_user_time ON bookmark (user_id, created_at DESC);
 
--- =========================================
--- SECTION 34: read_state/
--- =========================================
+```
+=========================================
+##  SECTION 34: read_state/
+```sql
+
 CREATE TABLE read_state (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID NOT NULL,
@@ -1526,9 +1602,11 @@ CREATE TABLE read_state (
 );
 CREATE INDEX idx_read_state_user ON read_state (user_id, updated_at DESC);
 
--- =========================================
--- SECTION 35: delivery/
--- =========================================
+```
+=========================================
+##  SECTION 35: delivery/
+```sql
+
 CREATE TABLE delivery (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     message_id UUID NOT NULL,
@@ -1552,9 +1630,11 @@ CREATE TABLE delivery (
 CREATE INDEX idx_delivery_user_status ON delivery (user_id, status, updated_at DESC);
 CREATE INDEX idx_delivery_msg ON delivery (message_id, channel, status);
 
--- =========================================
--- SECTION 36: notification_queue/
--- =========================================
+```
+=========================================
+##  SECTION 36: notification_queue/
+```sql
+
 CREATE TABLE notification_queue (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     notification_id UUID NOT NULL,
@@ -1574,9 +1654,11 @@ CREATE INDEX idx_nq_when ON notification_queue (status, scheduled_for);
 CREATE INDEX idx_nq_notif ON notification_queue (notification_id, channel);
 CREATE INDEX idx_nq_priority ON notification_queue (priority, scheduled_for DESC) WHERE status IN ('PENDING','ENQUEUED','PROCESSING');
 
--- =========================================
--- SECTION 37: delivery_log/
--- =========================================
+```
+=========================================
+##  SECTION 37: delivery_log/
+```sql
+
 CREATE TABLE delivery_log (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     channel VARCHAR(20) NOT NULL CHECK (channel IN ('IN_APP','WEBPUSH','EMAIL','SMS','PUSH','WEBHOOK')),
@@ -1594,9 +1676,11 @@ CREATE TABLE delivery_log (
 CREATE INDEX idx_dl_entity ON delivery_log (entity_type, entity_id, occurred_at DESC);
 CREATE INDEX idx_dl_channel_status ON delivery_log (channel, status, occurred_at DESC);
 
--- =========================================
--- SECTION 38: moderation/
--- =========================================
+```
+=========================================
+##  SECTION 38: moderation/
+```sql
+
 CREATE TABLE moderation (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     scope VARCHAR(20) NOT NULL CHECK (scope IN ('MESSAGE','CONVERSATION')),
@@ -1632,9 +1716,11 @@ CREATE TABLE moderation_quarantine (
     CONSTRAINT fk_mq_case FOREIGN KEY (moderation_id) REFERENCES moderation(id) ON DELETE CASCADE
 );
 
--- =========================================
--- SECTION 39: blocklist/
--- =========================================
+```
+=========================================
+##  SECTION 39: blocklist/
+```sql
+
 CREATE TABLE blocklist (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     scope VARCHAR(20) NOT NULL CHECK (scope IN ('USER','TENANT','GLOBAL')),
@@ -1648,9 +1734,11 @@ CREATE TABLE blocklist (
 );
 CREATE INDEX idx_blocklist_exp ON blocklist (expires_at);
 
--- =========================================
--- SECTION 40: url_safety/
--- =========================================
+```
+=========================================
+##  SECTION 40: url_safety/
+```sql
+
 CREATE TABLE url_safety (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     url_hash VARCHAR(64) NOT NULL UNIQUE,
@@ -1664,9 +1752,11 @@ CREATE TABLE url_safety (
 );
 CREATE INDEX idx_url_safety_rep ON url_safety (reputation, updated_at DESC);
 
--- =========================================
--- SECTION 41: suppression/
--- =========================================
+```
+=========================================
+##  SECTION 41: suppression/
+```sql
+
 CREATE TABLE suppression (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     channel VARCHAR(10) NOT NULL CHECK (channel IN ('EMAIL','SMS')),
@@ -1680,9 +1770,11 @@ CREATE TABLE suppression (
 );
 CREATE INDEX idx_suppression_exp ON suppression (expires_at);
 
--- =========================================
--- SECTION 42: unsubscribe/
--- =========================================
+```
+=========================================
+##  SECTION 42: unsubscribe/
+```sql
+
 CREATE TABLE unsubscribe (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID,
@@ -1694,9 +1786,11 @@ CREATE TABLE unsubscribe (
 );
 CREATE INDEX idx_unsubscribe_user ON unsubscribe (user_id, channel, topic);
 
--- =========================================
--- SECTION 43: encryption/
--- =========================================
+```
+=========================================
+##  SECTION 43: encryption/
+```sql
+
 CREATE TABLE encryption (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID NOT NULL UNIQUE,
@@ -1732,9 +1826,11 @@ CREATE TABLE encryption_participant_key (
 );
 CREATE INDEX idx_enc_part_user ON encryption_participant_key (user_id, added_at DESC);
 
--- =========================================
--- SECTION 44: in_app_notification/
--- =========================================
+```
+=========================================
+##  SECTION 44: in_app_notification/
+```sql
+
 CREATE TABLE in_app_notification (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     notification_id UUID NOT NULL,
@@ -1753,9 +1849,11 @@ CREATE TABLE in_app_notification (
 );
 CREATE INDEX idx_inapp_user ON in_app_notification (user_id, created_at DESC);
 
--- =========================================
--- SECTION 45: notification_template/
--- =========================================
+```
+=========================================
+##  SECTION 45: notification_template/
+```sql
+
 CREATE TABLE notification_template (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     key VARCHAR(100) NOT NULL,
@@ -1773,9 +1871,11 @@ CREATE TABLE notification_template (
 );
 CREATE INDEX idx_ntemplate_active ON notification_template (key, channel, locale) WHERE is_active = TRUE;
 
--- =========================================
--- SECTION 46: push_device/
--- =========================================
+```
+=========================================
+##  SECTION 46: push_device/
+```sql
+
 CREATE TABLE push_device (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL,
@@ -1791,9 +1891,11 @@ CREATE TABLE push_device (
 );
 CREATE INDEX idx_push_device_user ON push_device (user_id, last_used_at DESC);
 
--- =========================================
--- SECTION 47: system_message/
--- =========================================
+```
+=========================================
+##  SECTION 47: system_message/
+```sql
+
 CREATE TABLE system_message (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID NOT NULL,
@@ -1805,9 +1907,11 @@ CREATE TABLE system_message (
 );
 CREATE INDEX idx_sysmsg_conv_time ON system_message (conversation_id, created_at DESC);
 
--- =========================================
--- SECTION 48: call/
--- =========================================
+```
+=========================================
+##  SECTION 48: call/
+```sql
+
 CREATE TABLE call (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID,
@@ -1822,9 +1926,11 @@ CREATE TABLE call (
 CREATE INDEX idx_call_conv_time ON call (conversation_id, starts_at DESC);
 CREATE INDEX idx_call_org_time ON call (organizer_id, starts_at DESC);
 
--- =========================================
--- SECTION 49: calendar_invite/
--- =========================================
+```
+=========================================
+##  SECTION 49: calendar_invite/
+```sql
+
 CREATE TABLE calendar_invite (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     call_id UUID,
@@ -1838,9 +1944,11 @@ CREATE TABLE calendar_invite (
 );
 CREATE INDEX idx_calinvite_status ON calendar_invite (status, sent_at DESC);
 
--- =========================================
--- SECTION 50: email_bridge/
--- =========================================
+```
+=========================================
+##  SECTION 50: email_bridge/
+```sql
+
 CREATE TABLE email_bridge (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID NOT NULL,
@@ -1869,9 +1977,11 @@ CREATE TABLE email_bridge_inbound (
 );
 CREATE INDEX idx_ebridge_inbound_time ON email_bridge_inbound (received_at DESC);
 
--- =========================================
--- SECTION 51: mail_tracking/
--- =========================================
+```
+=========================================
+##  SECTION 51: mail_tracking/
+```sql
+
 CREATE TABLE mail_tracking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email_notification_id UUID,
@@ -1884,9 +1994,11 @@ CREATE TABLE mail_tracking (
 CREATE INDEX idx_mailtrack_event ON mail_tracking (event_type, ts DESC);
 CREATE INDEX idx_mailtrack_provider ON mail_tracking (provider_message_id);
 
--- =========================================
--- SECTION 52: interview/
--- =========================================
+```
+=========================================
+##  SECTION 52: interview/
+```sql
+
 CREATE TABLE interview (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     conversation_id UUID,
@@ -1914,9 +2026,11 @@ CREATE TABLE interview_participant (
 );
 CREATE INDEX idx_interview_part_user ON interview_participant (user_id, interview_id);
 
--- =========================================
--- SECTION 53: platform_alert/
--- =========================================
+```
+=========================================
+##  SECTION 53: platform_alert/
+```sql
+
 CREATE TABLE platform_alert (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     severity VARCHAR(10) NOT NULL CHECK (severity IN ('INFO','WARN','ERROR','CRITICAL')),
@@ -1945,9 +2059,11 @@ CREATE TABLE platform_alert_delivery (
 );
 CREATE INDEX idx_palert_delivery_user ON platform_alert_delivery (user_id, delivered_at DESC);
 
--- =========================================
--- SECTION 54: spam_detection/
--- =========================================
+```
+=========================================
+##  SECTION 54: spam_detection/
+```sql
+
 CREATE TABLE spam_detection (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     scope VARCHAR(20) NOT NULL CHECK (scope IN ('MESSAGE','EMAIL')),
@@ -1973,8 +2089,12 @@ CREATE TABLE spam_detection_rule (
 );
 CREATE INDEX idx_spamrule_enabled ON spam_detection_rule (enabled, severity);
 
--- =========================================
--- SECTION 55: Extra updated_at triggers for new tables
+```
+=========================================
+##  SECTION 55: Extra updated_at triggers for new tables
+
+```sql
+
 -- =========================================
 CREATE TRIGGER trg_draft_updated_at                 BEFORE UPDATE ON draft                 FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER trg_delivery_updated_at              BEFORE UPDATE ON delivery              FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -2048,13 +2168,14 @@ Each block includes the **section number (suggested placement)** and the **domai
 
 ---
 
-### -- =========================================
-### -- SECTION 31: IDEMPOTENCY KEYS
-### -- Domain: internal/domain/idempotency/
+=========================================
+### SECTION 31: IDEMPOTENCY KEYS
+```sql
+-- Domain: internal/domain/idempotency/
 ### -- Entity: idempotency/key.go
 ### -- =========================================
 
-```sql
+
 CREATE TABLE idempotency (
     -- Primary Key
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -2119,12 +2240,13 @@ FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 ---
 
-### -- =========================================
-### -- SECTION 32: MESSAGE SEQUENCE ALLOCATOR (SUB-ENTITY)
-### -- Domain: internal/domain/message/ (sub-entity: sequence.go)
+=========================================
+### SECTION 32: MESSAGE SEQUENCE ALLOCATOR (SUB-ENTITY)
+```sql
+-- Domain: internal/domain/message/ (sub-entity: sequence.go)
 ### -- =========================================
 
-```sql
+
 CREATE TABLE message_sequence (
     -- One row per conversation
     conversation_id UUID PRIMARY KEY,

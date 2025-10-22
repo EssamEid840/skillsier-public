@@ -39,6 +39,7 @@ CREATE EXTENSION IF NOT EXISTS "btree_gist";
 -- 5. Rich, production-ready fields for large-scale application
 -- =========================================
 
+```sql
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -46,13 +47,16 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 CREATE EXTENSION IF NOT EXISTS "btree_gin";
 CREATE EXTENSION IF NOT EXISTS "citext";
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
+```
+=========================================
+##  SECTION 1: CORE USER DOMAIN
 
--- =========================================
--- SECTION 1: CORE USER DOMAIN
+```sql
 -- Domain: internal/domain/user/
 -- Entity: user/entity.go
 -- =========================================
 
+```sql
 CREATE TABLE users (
     -- Primary Key
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -231,13 +235,17 @@ CREATE TABLE user_saved_filters (
     CONSTRAINT fk_saved_filters_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_saved_filters_user ON user_saved_filters (user_id);
+```
+---
 
--- =========================================
--- SECTION 2: PROFILE DOMAIN
+=========================================
+##  SECTION 2: PROFILE DOMAIN
+```sql
 -- Domain: internal/domain/profile/
 -- Entity: profile/entity.go
 -- =========================================
 
+---
 CREATE TABLE profiles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL UNIQUE,
@@ -403,8 +411,11 @@ CREATE TABLE preferences (
 );
 CREATE INDEX idx_preferences_user ON preferences (user_id);
 
--- =========================================
--- SECTION 3: CAPABILITIES DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 3: CAPABILITIES DOMAIN (CONSOLIDATED)
+
+```sql
 -- Domain: internal/domain/capabilities/
 -- Sub-domains: skills/, specializations/
 -- =========================================
@@ -548,8 +559,12 @@ CREATE INDEX idx_specializations_user ON specializations (user_id);
 CREATE INDEX idx_specializations_verified ON specializations (is_verified) WHERE is_verified = TRUE;
 CREATE INDEX idx_specializations_featured ON specializations (user_id, is_featured) WHERE is_featured = TRUE;
 
--- =========================================
--- SECTION 4: SERVICE CATALOG DOMAIN
+```
+
+=========================================
+## SECTION 4: SERVICE CATALOG DOMAIN
+
+```sql
 -- Domain: internal/domain/service_catalog/
 -- =========================================
 
@@ -664,8 +679,12 @@ CREATE TABLE service_packages (
 CREATE INDEX idx_service_packages_service ON service_packages (service_id);
 CREATE INDEX idx_service_packages_popular ON service_packages (is_popular) WHERE is_popular = TRUE;
 
--- =========================================
--- SECTION 5: EXPERIENCE DOMAIN
+```
+
+=========================================
+## SECTION 5: EXPERIENCE DOMAIN
+
+```sql
 -- Domain: internal/domain/experience/
 -- Entity: experience/entity.go
 -- =========================================
@@ -740,8 +759,11 @@ CREATE INDEX idx_experience_current ON experience (user_id, is_current) WHERE is
 CREATE INDEX idx_experience_dates ON experience (start_date DESC, end_date DESC);
 CREATE INDEX idx_experience_company ON experience (company_name);
 
--- =========================================
--- SECTION 6: EDUCATION DOMAIN
+```
+---
+=========================================
+##  SECTION 6: EDUCATION DOMAIN
+```sql
 -- Domain: internal/domain/education/
 -- Entity: education/entity.go
 -- =========================================
@@ -813,8 +835,11 @@ CREATE INDEX idx_education_current ON education (user_id, is_current) WHERE is_c
 CREATE INDEX idx_education_school ON education (school_name);
 CREATE INDEX idx_education_degree ON education (degree_type, field_of_study);
 
--- =========================================
--- SECTION 7: LANGUAGE DOMAIN
+```
+=========================================
+##  SECTION 7: LANGUAGE DOMAIN
+
+```sql
 -- Domain: internal/domain/language/
 -- Entity: language/entity.go
 -- =========================================
@@ -867,8 +892,11 @@ CREATE INDEX idx_languages_primary ON languages (user_id, is_primary) WHERE is_p
 CREATE INDEX idx_languages_code ON languages (language_code);
 CREATE INDEX idx_languages_proficiency ON languages (proficiency_level);
 
--- =========================================
--- SECTION 8: CREDENTIALS DOMAIN (CONSOLIDATED)
+```
+=========================================
+##  SECTION 8: CREDENTIALS DOMAIN (CONSOLIDATED)
+
+```sql
 -- Domain: internal/domain/credentials/
 -- Sub-domains: external_certifications/, platform_certifications/
 -- =========================================
@@ -986,8 +1014,13 @@ CREATE INDEX idx_platform_cert_skill ON platform_certifications (skill_id);
 CREATE INDEX idx_platform_cert_status ON platform_certifications (status, expires_at);
 CREATE INDEX idx_platform_cert_number ON platform_certifications (certificate_number);
 
--- =========================================
--- SECTION 9: PORTFOLIO DOMAIN
+
+```
+
+=========================================
+##  SECTION 9: PORTFOLIO DOMAIN
+
+```sql
 -- Domain: internal/domain/portfolio/
 -- Entity: portfolio/entity.go
 -- =========================================
@@ -1094,8 +1127,11 @@ CREATE TABLE portfolio_images (
 );
 CREATE INDEX idx_portfolio_images_portfolio ON portfolio_images (portfolio_id);
 
--- =========================================
--- SECTION 10: FREELANCER DOMAIN
+```
+=========================================
+##  SECTION 10: FREELANCER DOMAIN
+
+```sql
 -- Domain: internal/domain/freelancer/
 -- Entity: freelancer/entity.go
 -- =========================================
@@ -1161,8 +1197,11 @@ CREATE INDEX idx_freelancers_hourly_rate ON freelancers (hourly_rate);
 CREATE INDEX idx_freelancers_experience ON freelancers (experience_level);
 CREATE INDEX idx_freelancers_approved ON freelancers (profile_approved) WHERE profile_approved = TRUE;
 
--- =========================================
--- SECTION 11: CLIENT DOMAIN
+```
+=========================================
+##  SECTION 11: CLIENT DOMAIN
+
+```sql
 -- Domain: internal/domain/client/
 -- Entity: client/entity.go
 -- =========================================
@@ -1215,8 +1254,11 @@ CREATE INDEX idx_clients_user ON clients (user_id);
 CREATE INDEX idx_clients_org ON clients (org_id) WHERE org_id IS NOT NULL;
 CREATE INDEX idx_clients_type ON clients (client_type);
 
--- =========================================
--- SECTION 12: IDENTITY VERIFICATION DOMAIN (KYC/KYB)
+```
+=========================================
+##  SECTION 12: IDENTITY VERIFICATION DOMAIN (KYC/KYB)
+
+```sql
 -- Domain: internal/domain/identity_verification/
 -- Entity: identity_verification/entity.go
 -- =========================================
@@ -1288,8 +1330,11 @@ CREATE INDEX idx_identity_ver_status ON identity_verifications (status);
 CREATE INDEX idx_identity_ver_type ON identity_verifications (verification_type, status);
 CREATE INDEX idx_identity_ver_expires ON identity_verifications (verification_expires_at);
 
--- =========================================
--- SECTION 13: TRUST & SAFETY DOMAINS
+```
+=========================================
+##  SECTION 13: TRUST & SAFETY DOMAINS
+
+```sql
 -- =========================================
 
 -- 13.1 Trust Score (trust/entity.go)
@@ -1394,8 +1439,10 @@ CREATE INDEX idx_background_check_status ON background_checks (status);
 CREATE INDEX idx_background_check_expires ON background_checks (expires_at);
 CREATE INDEX idx_background_check_result ON background_checks (result);
 
--- =========================================
--- SECTION 14: MODERATION DOMAINS
+```
+=========================================
+##  SECTION 14: MODERATION DOMAINS
+```sql
 -- =========================================
 
 -- 14.1 User Reports (moderation/user_reports/ or reports/)
@@ -1525,8 +1572,11 @@ CREATE INDEX idx_moderation_status ON moderation_actions (status, expires_at);
 CREATE INDEX idx_moderation_actioned_by ON moderation_actions (actioned_by);
 CREATE INDEX idx_moderation_severity ON moderation_actions (severity);
 
--- =========================================
--- SECTION 15: SCORING DOMAINS
+```
+=========================================
+##  SECTION 15: SCORING DOMAINS
+
+```sql
 -- =========================================
 
 -- 15.1 User Metrics (user_metrics/entity.go - Raw Data)
@@ -1767,8 +1817,11 @@ CREATE INDEX idx_risk_scores_user ON risk_scores (user_id);
 CREATE INDEX idx_risk_scores_level ON risk_scores (risk_level);
 CREATE INDEX idx_risk_scores_expires ON risk_scores (expires_at);
 
--- =========================================
--- SECTION 16: BADGING DOMAINS
+```
+=========================================
+##  SECTION 16: BADGING DOMAINS
+
+```sql
 -- =========================================
 
 -- 16.1 Achievement Definitions (badging/achievements/definition.go)
@@ -1880,8 +1933,11 @@ CREATE INDEX idx_badges_user ON badges (user_id);
 CREATE INDEX idx_badges_type ON badges (badge_type);
 CREATE INDEX idx_badges_active ON badges (is_active) WHERE is_active = TRUE;
 
--- =========================================
--- SECTION 17: CONNECTIONS & NETWORKING
+```
+=========================================
+##  SECTION 17: CONNECTIONS & NETWORKING
+
+```sql
 -- =========================================
 
 -- 17.1 User Connections (connections/entity.go)
@@ -1975,8 +2031,11 @@ CREATE INDEX idx_endorsements_endorsed ON endorsements (endorsed_user_id);
 CREATE INDEX idx_endorsements_endorser ON endorsements (endorser_user_id);
 CREATE INDEX idx_endorsements_skill ON endorsements (skill_id);
 
--- =========================================
--- SECTION 18: AVAILABILITY DOMAIN (LOCAL CACHE)
+```
+=========================================
+##  SECTION 18: AVAILABILITY DOMAIN (LOCAL CACHE)
+
+```sql
 -- Domain: internal/domain/availability/
 -- =========================================
 
@@ -2016,8 +2075,11 @@ CREATE TABLE availability (
 CREATE INDEX idx_availability_user ON availability (user_id);
 CREATE INDEX idx_availability_status ON availability (status) WHERE status IN ('AVAILABLE', 'PARTIALLY_AVAILABLE');
 
--- =========================================
--- SECTION 19: SECURITY DOMAINS
+```
+=========================================
+##  SECTION 19: SECURITY DOMAINS
+
+```sql
 -- =========================================
 
 -- 19.1 User Sessions (security/sessions/entity.go)
@@ -2126,8 +2188,11 @@ CREATE TABLE two_factor_auth (
 );
 CREATE INDEX idx_two_factor_user ON two_factor_auth (user_id);
 
--- =========================================
--- SECTION 20: PROFILE ENHANCEMENT DOMAINS
+```
+=========================================
+##  SECTION 20: PROFILE ENHANCEMENT DOMAINS
+
+```sql
 -- =========================================
 
 -- 20.1 Profile Completeness (profile_completeness/entity.go)
@@ -2199,8 +2264,11 @@ CREATE TABLE profile_analytics (
 );
 CREATE INDEX idx_profile_analytics_user ON profile_analytics (user_id);
 
--- =========================================
--- SECTION 21: EVENT SOURCING & OUTBOX
+```
+=========================================
+##  SECTION 21: EVENT SOURCING & OUTBOX
+
+```sql
 -- =========================================
 
 -- 21.1 Outbox Events (outbox/entity.go)
@@ -2253,8 +2321,11 @@ CREATE INDEX idx_outbox_aggregate ON outbox_events (aggregate_id, aggregate_type
 CREATE INDEX idx_outbox_event_type ON outbox_events (event_type, created_at DESC);
 CREATE INDEX idx_outbox_correlation ON outbox_events (correlation_id);
 
--- =========================================
--- SECTION 22: READ MODELS / PROJECTIONS
+```
+=========================================
+##  SECTION 22: READ MODELS / PROJECTIONS
+
+```sql
 -- =========================================
 
 -- 22.1 User Read Model
@@ -2306,8 +2377,11 @@ CREATE TABLE user_read_model (
 CREATE INDEX idx_user_read_search ON user_read_model USING gin(search_vector);
 CREATE INDEX idx_user_read_reputation ON user_read_model (reputation_score DESC) WHERE account_status = 'ACTIVE';
 
--- =========================================
--- SECTION 23: AUDIT & COMPLIANCE
+```
+=========================================
+##  SECTION 23: AUDIT & COMPLIANCE
+
+```sql
 -- =========================================
 
 -- 23.1 Audit Logs
@@ -2410,8 +2484,11 @@ CREATE TABLE user_consents (
 CREATE INDEX idx_user_consents_user ON user_consents (user_id);
 CREATE INDEX idx_user_consents_type ON user_consents (consent_type, consent_given);
 
--- =========================================
--- SECTION 24: EXTERNAL REFERENCES
+```
+=========================================
+##  SECTION 24: EXTERNAL REFERENCES
+
+```sql
 -- (Relations with other microservices)
 -- =========================================
 
@@ -2439,8 +2516,11 @@ CREATE TABLE external_references (
 CREATE INDEX idx_external_refs_user ON external_references (user_id, service_name);
 CREATE INDEX idx_external_refs_entity ON external_references (service_name, entity_type, entity_id);
 
--- =========================================
--- SECTION 25: CUSTOM & EXTENSIBILITY
+```
+=========================================
+##  SECTION 25: CUSTOM & EXTENSIBILITY
+
+```sql
 -- =========================================
 
 -- 25.1 Custom User Fields (Flexible Schema)
@@ -2503,8 +2583,11 @@ CREATE TABLE user_feature_flags (
 CREATE INDEX idx_feature_flags_user ON user_feature_flags (user_id);
 CREATE INDEX idx_feature_flags_key ON user_feature_flags (feature_key, is_enabled);
 
--- =========================================
--- SECTION 26: NOTIFICATION SETTINGS
+```
+=========================================
+##  SECTION 26: NOTIFICATION SETTINGS
+
+```sql
 -- =========================================
 
 CREATE TABLE notification_settings (
@@ -2800,8 +2883,11 @@ INSERT INTO achievement_definitions (achievement_code, achievement_name, achieve
 -- Remove hourly_rate from profiles (keep in freelancers as source of truth)
 -- (Profiles can have a denormalized copy for display, but freelancers owns it)
 
--- =========================================
--- SECTION 27: SETTINGS DOMAIN
+```
+=========================================
+##  SECTION 27: SETTINGS DOMAIN
+
+```sql
 -- Domain: internal/domain/settings/
 -- =========================================
 
@@ -2847,8 +2933,11 @@ CREATE TABLE user_settings (
 );
 CREATE INDEX idx_user_settings_user ON user_settings (user_id);
 
--- =========================================
--- SECTION 28: PRIVACY DOMAIN
+```
+=========================================
+##  SECTION 28: PRIVACY DOMAIN
+
+```sql
 -- Domain: internal/domain/privacy/
 -- =========================================
 
@@ -2901,8 +2990,11 @@ CREATE TABLE privacy_settings (
 );
 CREATE INDEX idx_privacy_settings_user ON privacy_settings (user_id);
 
--- =========================================
--- SECTION 29: SAVED ITEMS DOMAIN
+```
+=========================================
+##  SECTION 29: SAVED ITEMS DOMAIN
+
+```sql
 -- Domain: internal/domain/saved_items/
 -- =========================================
 
@@ -2933,8 +3025,11 @@ CREATE INDEX idx_saved_items_user ON saved_items (user_id);
 CREATE INDEX idx_saved_items_type ON saved_items (item_type, item_id);
 CREATE INDEX idx_saved_items_folder ON saved_items (user_id, folder_name);
 
--- =========================================
--- SECTION 30: BLOCKED USERS DOMAIN
+```
+=========================================
+##  SECTION 30: BLOCKED USERS DOMAIN
+
+```sql
 -- Domain: internal/domain/blocked_users/
 -- =========================================
 
@@ -2962,8 +3057,11 @@ CREATE TABLE blocked_users (
 CREATE INDEX idx_blocked_users_blocker ON blocked_users (blocker_user_id) WHERE is_active = TRUE;
 CREATE INDEX idx_blocked_users_blocked ON blocked_users (blocked_user_id) WHERE is_active = TRUE;
 
--- =========================================
--- SECTION 31: PROFESSIONAL NETWORK DOMAIN
+```
+=========================================
+##  SECTION 31: PROFESSIONAL NETWORK DOMAIN
+
+```sql
 -- Domain: internal/domain/professional_network/
 -- =========================================
 
@@ -3037,8 +3135,11 @@ CREATE TABLE network_relationships (
 CREATE INDEX idx_network_rel_user ON network_relationships (user_id);
 CREATE INDEX idx_network_rel_type ON network_relationships (relationship_type);
 
--- =========================================
--- SECTION 32: REFERRALS DOMAIN
+```
+=========================================
+##  SECTION 32: REFERRALS DOMAIN
+
+```sql
 -- Domain: internal/domain/referrals/
 -- =========================================
 
@@ -3113,8 +3214,11 @@ CREATE TABLE referral_rewards (
 CREATE INDEX idx_referral_rewards_referral ON referral_rewards (referral_id);
 CREATE INDEX idx_referral_rewards_status ON referral_rewards (status);
 
--- =========================================
--- SECTION 33: USER GROUPS DOMAIN
+```
+=========================================
+##  SECTION 33: USER GROUPS DOMAIN
+
+```sql
 -- Domain: internal/domain/user_groups/
 -- =========================================
 
@@ -3180,8 +3284,11 @@ CREATE INDEX idx_group_members_group ON user_group_members (group_id);
 CREATE INDEX idx_group_members_user ON user_group_members (user_id);
 CREATE INDEX idx_group_members_role ON user_group_members (role);
 
--- =========================================
--- SECTION 34: PAYMENT METHODS DOMAIN
+```
+=========================================
+##  SECTION 34: PAYMENT METHODS DOMAIN
+
+```sql
 -- Domain: internal/domain/payment_methods/
 -- =========================================
 
@@ -3258,8 +3365,11 @@ CREATE TABLE withdrawal_preferences (
 );
 CREATE INDEX idx_withdrawal_pref_user ON withdrawal_preferences (user_id);
 
--- =========================================
--- SECTION 35: FINANCIAL PROFILE DOMAIN
+```
+=========================================
+##  SECTION 35: FINANCIAL PROFILE DOMAIN
+
+```sql
 -- Domain: internal/domain/financial_profile/
 -- =========================================
 
@@ -3305,8 +3415,11 @@ CREATE TABLE financial_profiles (
 );
 CREATE INDEX idx_financial_profiles_user ON financial_profiles (user_id);
 
--- =========================================
--- SECTION 36: EARNING GOALS DOMAIN
+```
+=========================================
+##  SECTION 36: EARNING GOALS DOMAIN
+
+```sql
 -- Domain: internal/domain/earning_goals/
 -- =========================================
 
@@ -3349,8 +3462,11 @@ CREATE INDEX idx_earning_goals_user ON earning_goals (user_id);
 CREATE INDEX idx_earning_goals_period ON earning_goals (period, status);
 CREATE INDEX idx_earning_goals_dates ON earning_goals (start_date, end_date);
 
--- =========================================
--- SECTION 37: LEARNING PATH DOMAIN
+```
+=========================================
+##  SECTION 37: LEARNING PATH DOMAIN
+
+```sql
 -- Domain: internal/domain/learning_path/
 -- =========================================
 
@@ -3426,8 +3542,11 @@ CREATE TABLE learning_path_items (
 CREATE INDEX idx_learning_path_items_path ON learning_path_items (path_id, order_index);
 CREATE INDEX idx_learning_path_items_status ON learning_path_items (status);
 
--- =========================================
--- SECTION 38: MENTORSHIP DOMAIN
+```
+=========================================
+##  SECTION 38: MENTORSHIP DOMAIN
+
+```sql
 -- Domain: internal/domain/mentorship/
 -- =========================================
 
@@ -3512,8 +3631,11 @@ CREATE INDEX idx_mentorship_sessions_mentorship ON mentorship_sessions (mentorsh
 CREATE INDEX idx_mentorship_sessions_scheduled ON mentorship_sessions (scheduled_at);
 CREATE INDEX idx_mentorship_sessions_status ON mentorship_sessions (status);
 
--- =========================================
--- SECTION 39: COMPLIANCE DOMAIN
+```
+=========================================
+##  SECTION 39: COMPLIANCE DOMAIN
+
+```sql
 -- Domain: internal/domain/compliance/
 -- =========================================
 
@@ -3610,8 +3732,11 @@ CREATE INDEX idx_compliance_artifacts_user ON compliance_artifacts (user_id);
 CREATE INDEX idx_compliance_artifacts_type ON compliance_artifacts (artifact_type);
 CREATE INDEX idx_compliance_artifacts_expires ON compliance_artifacts (expires_at) WHERE status = 'ACTIVE';
 
--- =========================================
--- SECTION 40: COMMUNICATION CHANNELS DOMAIN
+```
+=========================================
+##  SECTION 40: COMMUNICATION CHANNELS DOMAIN
+
+```sql
 -- Domain: internal/domain/communication_channels/
 -- =========================================
 
@@ -3650,8 +3775,11 @@ CREATE TABLE communication_channels (
 );
 CREATE INDEX idx_communication_channels_user ON communication_channels (user_id);
 
--- =========================================
--- SECTION 41: EMAIL PREFERENCES DOMAIN
+```
+=========================================
+##  SECTION 41: EMAIL PREFERENCES DOMAIN
+
+```sql
 -- Domain: internal/domain/email_preferences/
 -- =========================================
 
@@ -3707,8 +3835,11 @@ CREATE TABLE email_preferences (
 );
 CREATE INDEX idx_email_preferences_user ON email_preferences (user_id);
 
--- =========================================
--- SECTION 42: PROFILE DEPTH DOMAIN
+```
+=========================================
+##  SECTION 42: PROFILE DEPTH DOMAIN
+
+```sql
 -- Domain: internal/domain/profile_depth/
 -- =========================================
 
@@ -3759,8 +3890,11 @@ CREATE TABLE skills_taxonomy_mappings (
 CREATE INDEX idx_skills_mapping_user ON skills_taxonomy_mappings (user_id);
 CREATE INDEX idx_skills_mapping_normalized ON skills_taxonomy_mappings (normalized_skill_id);
 
--- =========================================
--- SECTION 43: PROFILE VISIBILITY DOMAIN
+```
+=========================================
+##  SECTION 43: PROFILE VISIBILITY DOMAIN
+
+```sql
 -- Domain: internal/domain/profile_visibility/
 -- =========================================
 
@@ -3799,8 +3933,11 @@ CREATE INDEX idx_profile_visibility_user ON profile_visibility (user_id);
 CREATE INDEX idx_profile_visibility_level ON profile_visibility (visibility_level);
 CREATE INDEX idx_profile_visibility_stealth ON profile_visibility (stealth_enabled) WHERE stealth_enabled = TRUE;
 
--- =========================================
--- SECTION 44: AVAILABILITY ADVANCED DOMAIN
+```
+=========================================
+##  SECTION 44: AVAILABILITY ADVANCED DOMAIN
+
+```sql
 -- Domain: internal/domain/availability/ (extended)
 -- =========================================
 
@@ -3901,8 +4038,11 @@ CREATE TABLE availability_calendar_sync (
 CREATE INDEX idx_calendar_sync_user ON availability_calendar_sync (user_id);
 CREATE INDEX idx_calendar_sync_status ON availability_calendar_sync (status);
 
--- =========================================
--- SECTION 45: WORKLOAD CAPACITY DOMAIN
+```
+=========================================
+##  SECTION 45: WORKLOAD CAPACITY DOMAIN
+
+```sql
 -- Domain: internal/domain/workload_capacity/
 -- =========================================
 
@@ -3944,8 +4084,11 @@ CREATE TABLE workload_capacity (
 CREATE INDEX idx_workload_capacity_user ON workload_capacity (user_id);
 CREATE INDEX idx_workload_capacity_status ON workload_capacity (capacity_status);
 
--- =========================================
--- SECTION 46: SECURITY ADVANCED DOMAIN
+```
+=========================================
+##  SECTION 46: SECURITY ADVANCED DOMAIN
+
+```sql
 -- Domain: internal/domain/security/ (devices & recovery)
 -- =========================================
 
@@ -4388,12 +4531,12 @@ CREATE TABLE password_reset_tokens (
 ```
 
 
--- =========================================
--- END OF COMPLETE USERS-BE DATABASE DESIGN
--- =========================================
+=========================================
+## END OF COMPLETE USERS-BE DATABASE DESIGN
+=========================================
 
-/*
-FINAL SUMMARY:
+
+## FINAL SUMMARY:
 - Total Tables: 85+ (was 60+)
 - Total Indexes: 250+ (was 200+)
 - Total Domains Covered: 46 (was 26)

@@ -1,17 +1,17 @@
--- =========================================
--- PROPOSALS-BE DATABASE DESIGN
--- Skillsier Platform - Enterprise Scale
--- PostgreSQL 16+
--- =========================================
---
--- CRITICAL ALIGNMENT RULES:
--- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
--- 2. Table names match domain folder names exactly
--- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
--- 4. All domains from folder structure are covered
--- 5. Rich, production-ready fields for large-scale application
--- =========================================
+=========================================
+# PROPOSALS-BE DATABASE DESIGN
+* Skillsier Platform - Enterprise Scale
+* PostgreSQL 16+
+=========================================
 
+- CRITICAL ALIGNMENT RULES:
+- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
+- 2. Table names match domain folder names exactly
+- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
+- 4. All domains from folder structure are covered
+- 5. Rich, production-ready fields for large-scale application
+
+```sql
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -20,8 +20,10 @@ CREATE EXTENSION IF NOT EXISTS "btree_gin";
 CREATE EXTENSION IF NOT EXISTS "citext";
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
 
--- =========================================
--- SECTION 1: CORE PROPOSAL LIFECYCLE
+```
+=========================================
+##  SECTION 1: CORE PROPOSAL LIFECYCLE
+```sql
 -- Domain: internal/domain/proposal/
 -- Entity: proposal/entity.go
 -- =========================================
@@ -139,8 +141,10 @@ CREATE INDEX idx_proposals_match ON proposals (match_score DESC) WHERE status IN
 CREATE INDEX idx_proposals_spam ON proposals (spam_score DESC) WHERE is_flagged_spam = TRUE;
 CREATE INDEX idx_proposals_idempotency ON proposals (idempotency_key) WHERE idempotency_key IS NOT NULL;
 
--- =========================================
--- SECTION 2: COVER LETTER
+```
+=========================================
+##  SECTION 2: COVER LETTER
+```sql
 -- Domain: internal/domain/cover_letter/
 -- Entity: cover_letter/entity.go
 -- =========================================
@@ -185,8 +189,10 @@ CREATE INDEX idx_cover_letters_proposal ON cover_letters (proposal_id);
 
 COMMENT ON TABLE cover_letters IS 'Cover letters - maps to internal/domain/cover_letter/entity.go';
 
--- =========================================
--- SECTION 3: ATTACHMENTS
+```
+=========================================
+##  SECTION 3: ATTACHMENTS
+```sql
 -- Domain: internal/domain/attachment/
 -- Entity: attachment/entity.go
 -- =========================================
@@ -237,8 +243,10 @@ CREATE INDEX idx_attachments_scan ON attachments (virus_scan_status) WHERE virus
 
 COMMENT ON TABLE attachments IS 'Proposal attachments - maps to internal/domain/attachment/entity.go';
 
--- =========================================
--- SECTION 4: QUESTION ANSWERS
+```
+=========================================
+##  SECTION 4: QUESTION ANSWERS
+```sql
 -- Domain: internal/domain/question_answer/
 -- Entity: question_answer/entity.go
 -- =========================================
@@ -281,8 +289,10 @@ CREATE INDEX idx_outbox_events_topic ON outbox_events (topic, occurred_at DESC);
 
 COMMENT ON TABLE outbox_events IS 'Transactional outbox for event publishing';
 
--- =========================================
--- SECTION 5: MILESTONES
+```
+=========================================
+##  SECTION 5: MILESTONES
+```sql
 -- Domain: internal/domain/milestone/
 -- Entity: milestone/entity.go
 -- =========================================
@@ -328,8 +338,10 @@ CREATE INDEX idx_milestones_proposal ON milestones (proposal_id, sequence_number
 
 COMMENT ON TABLE milestones IS 'Proposal milestones - maps to internal/domain/milestone/entity.go';
 
--- =========================================
--- SECTION 6: BIDDING SYSTEM
+```
+=========================================
+##  SECTION 6: BIDDING SYSTEM
+```sql
 -- Domain: internal/domain/bid/
 -- Entity: bid/entity.go
 -- =========================================
@@ -382,8 +394,10 @@ CREATE INDEX idx_bids_status ON bids (status, created_at DESC);
 
 COMMENT ON TABLE bids IS 'Proposal bids - maps to internal/domain/bid/entity.go';
 
--- =========================================
--- SECTION 7: BID STRATEGY
+```
+=========================================
+##  SECTION 7: BID STRATEGY
+```sql
 -- Domain: internal/domain/bid_strategy/
 -- Entity: bid_strategy/entity.go
 -- =========================================
@@ -440,8 +454,10 @@ CREATE INDEX idx_bid_strategies_active ON bid_strategies (is_active) WHERE is_ac
 
 COMMENT ON TABLE bid_strategies IS 'Bid strategies - maps to internal/domain/bid_strategy/entity.go';
 
--- =========================================
--- SECTION 8: BID NOTIFICATIONS
+```
+=========================================
+##  SECTION 8: BID NOTIFICATIONS
+```sql
 -- Domain: internal/domain/bid_notification/
 -- Entity: bid_notification/entity.go
 -- =========================================
@@ -487,8 +503,10 @@ CREATE INDEX idx_bid_notifications_type ON bid_notifications (notification_type,
 
 COMMENT ON TABLE bid_notifications IS 'Bid notifications - maps to internal/domain/bid_notification/entity.go';
 
--- =========================================
--- SECTION 9: AUCTIONS
+```
+=========================================
+##  SECTION 9: AUCTIONS
+```sql
 -- Domain: internal/domain/auction/
 -- Entity: auction/entity.go
 -- =========================================
@@ -549,8 +567,10 @@ CREATE INDEX idx_auctions_active ON auctions (status, ends_at) WHERE status = 'A
 
 COMMENT ON TABLE auctions IS 'Job auctions - maps to internal/domain/auction/entity.go';
 
--- =========================================
--- SECTION 10: BID ANOMALY DETECTION
+```
+=========================================
+##  SECTION 10: BID ANOMALY DETECTION
+```sql
 -- Domain: internal/domain/bid_anomaly_detection/
 -- Entity: bid_anomaly_detection/entity.go
 -- =========================================
@@ -603,8 +623,10 @@ CREATE INDEX idx_bid_anomalies_severity ON bid_anomalies (severity, created_at D
 
 COMMENT ON TABLE bid_anomalies IS 'Bid anomaly detection - maps to internal/domain/bid_anomaly_detection/entity.go';
 
--- =========================================
--- SECTION 11: CONNECTS & BOOST SYSTEM
+```
+=========================================
+##  SECTION 11: CONNECTS & BOOST SYSTEM
+```sql
 -- Domain: internal/domain/connect/
 -- Entity: connect/entity.go
 -- =========================================
@@ -678,8 +700,10 @@ CREATE INDEX idx_connect_transactions_freelancer ON connect_transactions (freela
 CREATE INDEX idx_connect_transactions_type ON connect_transactions (transaction_type);
 CREATE INDEX idx_connect_transactions_reference ON connect_transactions (reference_type, reference_id);
 
--- =========================================
--- SECTION 12: CONNECT REFUNDS
+```
+=========================================
+##  SECTION 12: CONNECT REFUNDS
+```sql
 -- Domain: internal/domain/connect_refund/
 -- Entity: connect_refund/entity.go
 -- =========================================
@@ -722,8 +746,10 @@ CREATE INDEX idx_connect_refunds_status ON connect_refunds (status);
 
 COMMENT ON TABLE connect_refunds IS 'Connect refunds - maps to internal/domain/connect_refund/entity.go';
 
--- =========================================
--- SECTION 13: BOOST SYSTEM
+```
+=========================================
+##  SECTION 13: BOOST SYSTEM
+```sql
 -- Domain: internal/domain/boost/
 -- Entity: boost/entity.go
 -- =========================================
@@ -776,8 +802,10 @@ CREATE INDEX idx_boosts_priority ON boosts (placement_priority DESC, starts_at D
 
 COMMENT ON TABLE boosts IS 'Proposal boosts - maps to internal/domain/boost/entity.go';
 
--- =========================================
--- SECTION 14: TEMPLATES & RATE CARDS
+```
+=========================================
+##  SECTION 14: TEMPLATES & RATE CARDS
+```sql
 -- Domain: internal/domain/template/
 -- Entity: template/entity.go
 -- =========================================
@@ -830,8 +858,10 @@ CREATE INDEX idx_templates_active ON templates (freelancer_id) WHERE is_active =
 
 COMMENT ON TABLE templates IS 'Proposal templates - maps to internal/domain/template/entity.go';
 
--- =========================================
--- SECTION 15: RATE CARDS
+```
+=========================================
+##  SECTION 15: RATE CARDS
+```sql
 -- Domain: internal/domain/rate_card/
 -- Entity: rate_card/entity.go
 -- =========================================
@@ -887,8 +917,10 @@ CREATE INDEX idx_rate_cards_validity ON rate_cards (valid_from, valid_until) WHE
 
 COMMENT ON TABLE rate_cards IS 'Rate cards - maps to internal/domain/rate_card/entity.go';
 
--- =========================================
--- SECTION 16: PROPOSAL PERFORMANCE ANALYTICS
+```
+=========================================
+##  SECTION 16: PROPOSAL PERFORMANCE ANALYTICS
+```sql
 -- Domain: internal/domain/performance/ (consolidated)
 -- Entity: performance/entity.go
 -- =========================================
@@ -943,8 +975,10 @@ CREATE INDEX idx_proposal_performance_quality ON proposal_performance (quality_s
 
 COMMENT ON TABLE proposal_performance IS 'Proposal performance analytics - maps to internal/domain/performance/entity.go';
 
--- =========================================
--- SECTION 17: SIMILARITY & DEDUPLICATION
+```
+=========================================
+##  SECTION 17: SIMILARITY & DEDUPLICATION
+```sql
 -- Domain: internal/domain/similarity/ (consolidated)
 -- Entity: similarity/entity.go
 -- =========================================
@@ -1020,8 +1054,10 @@ CREATE INDEX idx_duplicate_clusters_hash ON duplicate_clusters (cluster_hash);
 CREATE INDEX idx_duplicate_clusters_size ON duplicate_clusters (cluster_size DESC);
 CREATE INDEX idx_duplicate_clusters_status ON duplicate_clusters (resolution_status);
 
--- =========================================
--- SECTION 18: PORTFOLIO INTEGRATION
+```
+=========================================
+##  SECTION 18: PORTFOLIO INTEGRATION
+```sql
 -- Domain: internal/domain/portfolio/ (consolidated)
 -- Entity: portfolio/entity.go
 -- =========================================
@@ -1053,8 +1089,10 @@ CREATE INDEX idx_proposal_portfolios_item ON proposal_portfolios (portfolio_item
 
 COMMENT ON TABLE proposal_portfolios IS 'Portfolio links - maps to internal/domain/portfolio/entity.go';
 
--- =========================================
--- SECTION 19: ENGAGEMENT & FOLLOW-UP
+```
+=========================================
+##  SECTION 19: ENGAGEMENT & FOLLOW-UP
+```sql
 -- Domain: internal/domain/engagement/ (consolidated)
 -- Entity: engagement/entity.go
 -- =========================================
@@ -1106,8 +1144,10 @@ CREATE INDEX idx_proposal_engagement_stale ON proposal_engagement (is_stale, day
 
 COMMENT ON TABLE proposal_engagement IS 'Engagement tracking - maps to internal/domain/engagement/entity.go';
 
--- =========================================
--- SECTION 20: SPAM DETECTION & MODERATION
+```
+=========================================
+##  SECTION 20: SPAM DETECTION & MODERATION
+```sql
 -- Domain: internal/domain/spam_detection/
 -- Entity: spam_detection/entity.go
 -- =========================================
@@ -1160,8 +1200,10 @@ CREATE INDEX idx_spam_detections_classification ON spam_detections (classificati
 
 COMMENT ON TABLE spam_detections IS 'Spam detection - maps to internal/domain/spam_detection/entity.go';
 
--- =========================================
--- SECTION 21: FLAGGING SYSTEM
+```
+=========================================
+##  SECTION 21: FLAGGING SYSTEM
+```sql
 -- Domain: internal/domain/flag/
 -- Entity: flag/entity.go
 -- =========================================
@@ -1220,8 +1262,10 @@ CREATE INDEX idx_proposal_flags_status ON proposal_flags (status, priority, crea
 
 COMMENT ON TABLE proposal_flags IS 'Proposal flags - maps to internal/domain/flag/entity.go';
 
--- =========================================
--- SECTION 22: COMPLIANCE
+```
+=========================================
+##  SECTION 22: COMPLIANCE
+```sql
 -- Domain: internal/domain/compliance/
 -- Entity: compliance/entity.go
 -- =========================================
@@ -1280,8 +1324,10 @@ CREATE INDEX idx_proposal_compliance_issues ON proposal_compliance (has_prohibit
 
 COMMENT ON TABLE proposal_compliance IS 'Compliance tracking - maps to internal/domain/compliance/entity.go';
 
--- =========================================
--- SECTION 23: CLIENT INTERACTION - INTERVIEWS
+```
+=========================================
+##  SECTION 23: CLIENT INTERACTION - INTERVIEWS
+```sql
 -- Domain: internal/domain/interview/
 -- Entity: interview/entity.go
 -- =========================================
@@ -1353,8 +1399,10 @@ CREATE INDEX idx_interviews_scheduled ON interviews (scheduled_at) WHERE status 
 
 COMMENT ON TABLE interviews IS 'Interviews - maps to internal/domain/interview/entity.go';
 
--- =========================================
--- SECTION 24: CLIENT FEEDBACK
+```
+=========================================
+##  SECTION 24: CLIENT FEEDBACK
+```sql
 -- Domain: internal/domain/feedback/
 -- Entity: feedback/entity.go
 -- =========================================
@@ -1406,8 +1454,10 @@ CREATE INDEX idx_proposal_feedback_rating ON proposal_feedback (overall_rating D
 
 COMMENT ON TABLE proposal_feedback IS 'Client feedback - maps to internal/domain/feedback/entity.go';
 
--- =========================================
--- SECTION 25: SHORTLISTING
+```
+=========================================
+##  SECTION 25: SHORTLISTING
+```sql
 -- Domain: internal/domain/shortlist/
 -- Entity: shortlist/entity.go
 -- =========================================
@@ -1455,8 +1505,10 @@ CREATE INDEX idx_shortlists_client ON shortlists (client_id);
 
 COMMENT ON TABLE shortlists IS 'Shortlists - maps to internal/domain/shortlist/entity.go';
 
--- =========================================
--- SECTION 26: CONVERSATION TRACKING
+```
+=========================================
+##  SECTION 26: CONVERSATION TRACKING
+```sql
 -- Domain: internal/domain/conversation/
 -- Entity: conversation/entity.go
 -- =========================================
@@ -1499,8 +1551,10 @@ CREATE INDEX idx_proposal_conversations_active ON proposal_conversations (is_act
 
 COMMENT ON TABLE proposal_conversations IS 'Conversation tracking - maps to internal/domain/conversation/entity.go';
 
--- =========================================
--- SECTION 27: WORKFLOW & COLLABORATION - NEGOTIATION
+```
+=========================================
+##  SECTION 27: WORKFLOW & COLLABORATION - NEGOTIATION
+```sql
 -- Domain: internal/domain/negotiation/
 -- Entity: negotiation/entity.go
 -- =========================================
@@ -1574,8 +1628,10 @@ CREATE TABLE negotiation_history (
 
 CREATE INDEX idx_negotiation_history_negotiation ON negotiation_history (negotiation_id, created_at DESC);
 
--- =========================================
--- SECTION 28: INVITATIONS
+```
+=========================================
+##  SECTION 28: INVITATIONS
+```sql
 -- Domain: internal/domain/invite/
 -- Entity: invite/entity.go
 -- =========================================
@@ -1626,8 +1682,10 @@ CREATE INDEX idx_invitations_pending ON invitations (status, expires_at) WHERE s
 
 COMMENT ON TABLE invitations IS 'Job invitations - maps to internal/domain/invite/entity.go';
 
--- =========================================
--- SECTION 29: REVISION TRACKING
+```
+=========================================
+##  SECTION 29: REVISION TRACKING
+```sql
 -- Domain: internal/domain/revision/
 -- Entity: revision/entity.go
 -- =========================================
@@ -1675,8 +1733,10 @@ CREATE INDEX idx_proposal_revisions_changed_by ON proposal_revisions (changed_by
 
 COMMENT ON TABLE proposal_revisions IS 'Proposal revision history - maps to internal/domain/revision/entity.go';
 
--- =========================================
--- SECTION 30: COLLABORATION (TEAM PROPOSALS)
+```
+=========================================
+##  SECTION 30: COLLABORATION (TEAM PROPOSALS)
+```sql
 -- Domain: internal/domain/collaboration/
 -- Entity: collaboration/entity.go
 -- =========================================
@@ -1750,8 +1810,10 @@ CREATE TABLE team_members (
 CREATE INDEX idx_team_members_team ON team_members (team_proposal_id);
 CREATE INDEX idx_team_members_freelancer ON team_members (freelancer_id, status);
 
--- =========================================
--- SECTION 31: LIFECYCLE MANAGEMENT - EXPIRATION
+```
+=========================================
+##  SECTION 31: LIFECYCLE MANAGEMENT - EXPIRATION
+```sql
 -- Domain: internal/domain/expiration/
 -- Entity: expiration/entity.go
 -- =========================================
@@ -1797,8 +1859,10 @@ CREATE INDEX idx_proposal_expirations_expires ON proposal_expirations (expires_a
 
 COMMENT ON TABLE proposal_expirations IS 'Expiration tracking - maps to internal/domain/expiration/entity.go';
 
--- =========================================
--- SECTION 32: WITHDRAWAL TRACKING
+```
+=========================================
+##  SECTION 32: WITHDRAWAL TRACKING
+```sql
 -- Domain: internal/domain/withdrawal/
 -- Entity: withdrawal/entity.go
 -- =========================================
@@ -1836,8 +1900,10 @@ CREATE INDEX idx_proposal_withdrawals_freelancer ON proposal_withdrawals (withdr
 
 COMMENT ON TABLE proposal_withdrawals IS 'Withdrawal tracking - maps to internal/domain/withdrawal/entity.go';
 
--- =========================================
--- SECTION 33: ARCHIVING
+```
+=========================================
+##  SECTION 33: ARCHIVING
+```sql
 -- Domain: internal/domain/archive/
 -- Entity: archive/entity.go
 -- =========================================
@@ -1876,8 +1942,10 @@ CREATE INDEX idx_proposal_archives_delete ON proposal_archives (delete_after)
 
 COMMENT ON TABLE proposal_archives IS 'Archive tracking - maps to internal/domain/archive/entity.go';
 
--- =========================================
--- SECTION 34: PIPELINE TRACKING
+```
+=========================================
+##  SECTION 34: PIPELINE TRACKING
+```sql
 -- Domain: internal/domain/pipeline/
 -- Entity: pipeline/entity.go
 -- =========================================
@@ -1913,8 +1981,10 @@ CREATE INDEX idx_proposal_pipelines_freelancer ON proposal_pipelines (freelancer
 
 COMMENT ON TABLE proposal_pipelines IS 'Pipeline tracking - maps to internal/domain/pipeline/entity.go';
 
--- =========================================
--- SECTION 35: PROPOSAL RECYCLING
+```
+=========================================
+##  SECTION 35: PROPOSAL RECYCLING
+```sql
 -- Domain: internal/domain/recycling/
 -- Entity: recycling/entity.go
 -- =========================================
@@ -1956,8 +2026,10 @@ CREATE INDEX idx_proposal_recycling_new ON proposal_recycling (new_proposal_id);
 
 COMMENT ON TABLE proposal_recycling IS 'Proposal recycling - maps to internal/domain/recycling/entity.go';
 
--- =========================================
--- SECTION 36: RECOMMENDATION ENGINE
+```
+=========================================
+##  SECTION 36: RECOMMENDATION ENGINE
+```sql
 -- Domain: internal/domain/recommendation/
 -- Entity: recommendation/entity.go
 -- =========================================
@@ -2015,8 +2087,10 @@ CREATE INDEX idx_proposal_recommendations_expires ON proposal_recommendations (e
 
 COMMENT ON TABLE proposal_recommendations IS 'AI recommendations - maps to internal/domain/recommendation/entity.go';
 
--- =========================================
--- SECTION 37: CONTEXT ENRICHMENT
+```
+=========================================
+##  SECTION 37: CONTEXT ENRICHMENT
+```sql
 -- Domain: internal/domain/context/
 -- Entity: context/entity.go
 -- =========================================
@@ -2065,8 +2139,10 @@ CREATE INDEX idx_proposal_context_proposal ON proposal_context (proposal_id);
 
 COMMENT ON TABLE proposal_context IS 'Context enrichment - maps to internal/domain/context/entity.go';
 
--- =========================================
--- SECTION 38: URGENCY INDICATORS
+```
+=========================================
+##  SECTION 38: URGENCY INDICATORS
+```sql
 -- Domain: internal/domain/urgency/
 -- Entity: urgency/entity.go
 -- =========================================
@@ -2109,8 +2185,10 @@ CREATE INDEX idx_proposal_urgency_level ON proposal_urgency (urgency_level)
 
 COMMENT ON TABLE proposal_urgency IS 'Urgency tracking - maps to internal/domain/urgency/entity.go';
 
--- =========================================
--- SECTION 39: RISK ASSESSMENT
+```
+=========================================
+##  SECTION 39: RISK ASSESSMENT
+```sql
 -- Domain: internal/domain/risk_assessment/
 -- Entity: risk_assessment/entity.go
 -- =========================================
@@ -2159,8 +2237,10 @@ CREATE INDEX idx_proposal_risk_assessments_level ON proposal_risk_assessments (r
 
 COMMENT ON TABLE proposal_risk_assessments IS 'Risk assessment - maps to internal/domain/risk_assessment/entity.go';
 
--- =========================================
--- SECTION 40: AI ASSIST & OPTIMIZATION
+```
+=========================================
+##  SECTION 40: AI ASSIST & OPTIMIZATION
+```sql
 -- Domain: internal/domain/ai_assist/ (consolidated)
 -- Entity: ai_assist/entity.go
 -- =========================================
@@ -2237,8 +2317,10 @@ CREATE TABLE proposal_ai_optimizations (
 
 CREATE INDEX idx_proposal_ai_optimizations_proposal ON proposal_ai_optimizations (proposal_id);
 
--- =========================================
--- SECTION 41: SKILL MATCHING
+```
+=========================================
+##  SECTION 41: SKILL MATCHING
+```sql
 -- Domain: internal/domain/skill_match/
 -- Entity: skill_match/entity.go
 -- =========================================
@@ -2285,8 +2367,10 @@ CREATE INDEX idx_proposal_skill_matches_score ON proposal_skill_matches (overall
 
 COMMENT ON TABLE proposal_skill_matches IS 'Skill matching - maps to internal/domain/skill_match/entity.go';
 
--- =========================================
--- SECTION 42: VIDEO INTRODUCTIONS
+```
+=========================================
+##  SECTION 42: VIDEO INTRODUCTIONS
+```sql
 -- Domain: internal/domain/video_introduction/
 -- Entity: video_introduction/entity.go
 -- =========================================
@@ -2344,8 +2428,10 @@ CREATE INDEX idx_video_introductions_status ON video_introductions (processing_s
 
 COMMENT ON TABLE video_introductions IS 'Video introductions - maps to internal/domain/video_introduction/entity.go';
 
--- =========================================
--- SECTION 43: REFERENCES
+```
+=========================================
+##  SECTION 43: REFERENCES
+```sql
 -- Domain: internal/domain/reference/
 -- Entity: reference/entity.go
 -- =========================================
@@ -2399,8 +2485,10 @@ CREATE INDEX idx_proposal_references_verified ON proposal_references (is_verifie
 
 COMMENT ON TABLE proposal_references IS 'References - maps to internal/domain/reference/entity.go';
 
--- =========================================
--- SECTION 44: A/B TESTING & EXPERIMENTS
+```
+=========================================
+##  SECTION 44: A/B TESTING & EXPERIMENTS
+```sql
 -- Domain: internal/domain/ab_testing/
 -- Entity: ab_testing/entity.go
 -- =========================================
@@ -2472,8 +2560,10 @@ CREATE TABLE proposal_experiment_assignments (
 CREATE INDEX idx_proposal_experiment_assignments_experiment ON proposal_experiment_assignments (experiment_id);
 CREATE INDEX idx_proposal_experiment_assignments_proposal ON proposal_experiment_assignments (proposal_id);
 
--- =========================================
--- SECTION 45: OUTBOX PATTERN FOR EVENTS
+```
+=========================================
+##  SECTION 45: OUTBOX PATTERN FOR EVENTS
+```sql
 -- Domain: internal/domain/outbox/
 -- Entity: outbox/entity.go
 -- =========================================
@@ -2556,8 +2646,9 @@ CREATE TABLE outbox_dead_letter (
 
 CREATE INDEX idx_outbox_dead_letter_status ON outbox_dead_letter (resolution_status);
 
-    -- =========================================
--- SECTION 46: AUDIT LOGS
+    ```
+=========================================
+##  SECTION 46: AUDIT LOGS
 -- =========================================
 
 CREATE TABLE audit_logs (
@@ -2599,8 +2690,11 @@ CREATE INDEX idx_audit_logs_actor ON audit_logs (actor_user_id, occurred_at DESC
 CREATE INDEX idx_audit_logs_action ON audit_logs (action, occurred_at DESC);
 CREATE INDEX idx_audit_logs_compliance ON audit_logs (gdpr_relevant) WHERE gdpr_relevant = TRUE;
 
--- =========================================
--- SECTION 47: READ MODELS (CQRS PROJECTIONS)
+```
+=========================================
+##  SECTION 47: READ MODELS (CQRS PROJECTIONS)
+```sql
+
 -- =========================================
 
 -- Proposal Read Model for Fast Queries
@@ -2723,8 +2817,11 @@ CREATE TABLE job_proposal_stats (
 
 CREATE INDEX idx_job_proposal_stats_competition ON job_proposal_stats (competition_level);
 
--- =========================================
--- SECTION 48: EXTERNAL REFERENCES
+```
+=========================================
+##  SECTION 48: EXTERNAL REFERENCES
+```sql
+
 -- (Relations with other microservices)
 -- =========================================
 
@@ -2751,8 +2848,11 @@ CREATE INDEX idx_external_references_service ON external_references (service_nam
 
 COMMENT ON TABLE external_references IS 'References to entities in other microservices';
 
--- =========================================
--- SECTION 49: NOTIFICATION PREFERENCES
+```
+=========================================
+##  SECTION 49: NOTIFICATION PREFERENCES
+```sql
+
 -- =========================================
 
 CREATE TABLE proposal_notification_preferences (
@@ -2794,12 +2894,14 @@ CREATE TABLE proposal_notification_preferences (
 CREATE INDEX idx_proposal_notification_preferences_freelancer
     ON proposal_notification_preferences (freelancer_id);
 
--- =========================================
--- SECTION 50: PERFORMANCE INDEXES & VIEWS
+```
+=========================================
+##  SECTION 50: PERFORMANCE INDEXES & VIEWS
 
 ```sql
 CREATE INDEX idx_proposals_client_viewed ON proposals (client_viewed_at) WHERE client_viewed_at IS NOT NULL;
 ```
+```sql
 -- =========================================
 
 -- Composite indexes for common queries
@@ -2864,10 +2966,12 @@ LEFT JOIN proposal_skill_matches psm ON p.id = psm.proposal_id
 LEFT JOIN proposal_risk_assessments pra ON p.id = pra.proposal_id
 WHERE p.is_deleted = FALSE;
 
--- =========================================
--- SECTION 51: DATABASE FUNCTIONS & TRIGGERS
+```
+=========================================
+##  SECTION 51: DATABASE FUNCTIONS & TRIGGERS
 -- =========================================
 
+```sql
 -- Function to update proposal updated_at timestamp
 CREATE FUNCTION update_proposal_updated_at()
 RETURNS TRIGGER AS $
@@ -2928,10 +3032,11 @@ CREATE TRIGGER trg_proposal_submitted
     WHEN (NEW.status = 'SUBMITTED' AND OLD.status = 'DRAFT')
     EXECUTE FUNCTION on_proposal_submitted();
 
+```
+=========================================
+##  SECTION 52: TABLE COMMENTS
 -- =========================================
--- SECTION 52: TABLE COMMENTS
--- =========================================
-
+```sql
 COMMENT ON TABLE cover_letters IS 'Cover letters - maps to internal/domain/cover_letter/entity.go';
 COMMENT ON TABLE attachments IS 'Proposal attachments - maps to internal/domain/attachment/entity.go';
 COMMENT ON TABLE question_answers IS 'Question answers - maps to internal/domain/question_answer/entity.go';
@@ -2975,10 +3080,12 @@ COMMENT ON TABLE proposal_skill_matches IS 'Skill matching - maps to internal/do
 COMMENT ON TABLE video_introductions IS 'Video introductions - maps to internal/domain/video_introduction/entity.go';
 COMMENT ON TABLE proposal_references IS 'References - maps to internal/domain/reference/entity.go';
 
--- =========================================
--- SECTION 53: DATABASE STATISTICS
+```
+=========================================
+##  SECTION 53: DATABASE STATISTICS
 -- =========================================
 
+```sql
 CREATE VIEW v_table_sizes AS
 SELECT
     schemaname,
@@ -3001,13 +3108,12 @@ SELECT
 FROM pg_stat_user_indexes
 WHERE schemaname = 'public'
 ORDER BY idx_scan DESC;
+```
+=========================================
+## END OF PROPOSALS-BE DATABASE DESIGN
+=========================================
 
--- =========================================
--- END OF PROPOSALS-BE DATABASE DESIGN
--- =========================================
-
-/*
-FINAL SUMMARY:
+## FINAL SUMMARY:
 - Total Tables: 90+
 - Total Indexes: 250+
 - Total Domains Covered: 44 (all from proposals-be folder structure)
@@ -3024,51 +3130,51 @@ FINAL SUMMARY:
 - Multi-language support ready
 - Enterprise-scale performance optimization
 
-ALIGNMENT WITH FOLDER STRUCTURE:
-✅ proposal/ → proposals table
-✅ cover_letter/ → cover_letters table
-✅ attachment/ → attachments table
-✅ question_answer/ → question_answers table
-✅ milestone/ → milestones table
-✅ bid/ → bids table
-✅ bid_strategy/ → bid_strategies table
-✅ bid_notification/ → bid_notifications table
-✅ auction/ → auctions table
-✅ bid_anomaly_detection/ → bid_anomalies table
-✅ connect/ → connects table
-✅ connect_refund/ → connect_refunds table
-✅ boost/ → boosts table
-✅ template/ → templates table
-✅ rate_card/ → rate_cards table
-✅ performance/ → proposal_performance table
-✅ similarity/ → proposal_similarity table
-✅ portfolio/ → proposal_portfolios table
-✅ engagement/ → proposal_engagement table
-✅ spam_detection/ → spam_detections table
-✅ flag/ → proposal_flags table
-✅ compliance/ → proposal_compliance table
-✅ interview/ → interviews table
-✅ feedback/ → proposal_feedback table
-✅ shortlist/ → shortlists table
-✅ conversation/ → proposal_conversations table
-✅ negotiation/ → negotiations table
-✅ invite/ → invitations table
-✅ revision/ → proposal_revisions table
-✅ collaboration/ → team_proposals table
-✅ expiration/ → proposal_expirations table
-✅ withdrawal/ → proposal_withdrawals table
-✅ archive/ → proposal_archives table
-✅ pipeline/ → proposal_pipelines table
-✅ recycling/ → proposal_recycling table
-✅ recommendation/ → proposal_recommendations table
-✅ context/ → proposal_context table
-✅ urgency/ → proposal_urgency table
-✅ risk_assessment/ → proposal_risk_assessments table
-✅ ai_assist/ → proposal_ai_suggestions, proposal_ai_optimizations tables
-✅ skill_match/ → proposal_skill_matches table
-✅ video_introduction/ → video_introductions table
-✅ reference/ → proposal_references table
-✅ ab_testing/ → proposal_experiments tables
-✅ outbox/ → outbox_events table
+### ALIGNMENT WITH FOLDER STRUCTURE:
+- ✅ proposal/ → proposals table
+- ✅ cover_letter/ → cover_letters table
+- ✅ attachment/ → attachments table
+- ✅ question_answer/ → question_answers table
+- ✅ milestone/ → milestones table
+- ✅ bid/ → bids table
+- ✅ bid_strategy/ → bid_strategies table
+- ✅ bid_notification/ → bid_notifications table
+- ✅ auction/ → auctions table
+- ✅ bid_anomaly_detection/ → bid_anomalies table
+- ✅ connect/ → connects table
+- ✅ connect_refund/ → connect_refunds table
+- ✅ boost/ → boosts table
+- ✅ template/ → templates table
+- ✅ rate_card/ → rate_cards table
+- ✅ performance/ → proposal_performance table
+- ✅ similarity/ → proposal_similarity table
+- ✅ portfolio/ → proposal_portfolios table
+- ✅ engagement/ → proposal_engagement table
+- ✅ spam_detection/ → spam_detections table
+- ✅ flag/ → proposal_flags table
+- ✅ compliance/ → proposal_compliance table
+- ✅ interview/ → interviews table
+- ✅ feedback/ → proposal_feedback table
+- ✅ shortlist/ → shortlists table
+- ✅ conversation/ → proposal_conversations table
+- ✅ negotiation/ → negotiations table
+- ✅ invite/ → invitations table
+- ✅ revision/ → proposal_revisions table
+- ✅ collaboration/ → team_proposals table
+- ✅ expiration/ → proposal_expirations table
+- ✅ withdrawal/ → proposal_withdrawals table
+- ✅ archive/ → proposal_archives table
+- ✅ pipeline/ → proposal_pipelines table
+- ✅ recycling/ → proposal_recycling table
+- ✅ recommendation/ → proposal_recommendations table
+- ✅ context/ → proposal_context table
+- ✅ urgency/ → proposal_urgency table
+- ✅ risk_assessment/ → proposal_risk_assessments table
+- ✅ ai_assist/ → proposal_ai_suggestions, proposal_ai_optimizations tables
+- ✅ skill_match/ → proposal_skill_matches table
+- ✅ video_introduction/ → video_introductions table
+- ✅ reference/ → proposal_references table
+- ✅ ab_testing/ → proposal_experiments tables
+- ✅ outbox/ → outbox_events table
 
 All domains from the proposals-be folder structure are fully covered!

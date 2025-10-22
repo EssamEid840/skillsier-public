@@ -1,18 +1,16 @@
-*/-- =========================================
--- CONTRACTS-BE DATABASE DESIGN
--- Skillsier Platform - Enterprise Scale
--- PostgreSQL 16+
--- =========================================
--- 
--- CRITICAL ALIGNMENT RULES:
--- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
--- 2. Table names follow domain folder names; when aggregated under Contracts, tables are prefixed with contract_ to reflect the domain boundary
+# CONTRACTS-BE DATABASE DESIGN
+- Skillsier Platform - Enterprise Scale
+- PostgreSQL 16+
 
--- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
--- 4. All domains from folder structure are covered
--- 5. Rich, production-ready fields for large-scale application
--- =========================================
+## CRITICAL ALIGNMENT RULES:
+- 1. Each domain folder in internal/domain/{domain}/ = ONE main table
+- 2. Table names follow domain folder names; when aggregated under Contracts, tables are prefixed with contract_ to reflect the domain boundary
 
+- 3. Sub-entities within domain create related tables with {domain}_{sub} naming
+- 4. All domains from folder structure are covered
+- 5. Rich, production-ready fields for large-scale application
+
+```
 -- Enable required extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -21,8 +19,10 @@ CREATE EXTENSION IF NOT EXISTS "btree_gin";
 CREATE EXTENSION IF NOT EXISTS "citext";
 CREATE EXTENSION IF NOT EXISTS "btree_gist";
 
--- =========================================
--- SECTION 1: CORE CONTRACT DOMAIN
+```
+=========================================
+##  SECTION 1: CORE CONTRACT DOMAIN
+```sql
 -- Domain: internal/domain/contract/
 -- Entity: contract/entity.go
 -- =========================================
@@ -216,8 +216,10 @@ CREATE TABLE contract_state_history (
 
 CREATE INDEX idx_contract_state_history_contract ON contract_state_history (contract_id, changed_at DESC);
 
--- =========================================
--- SECTION 2: STATEMENT OF WORK (SOW)
+```
+=========================================
+##  SECTION 2: STATEMENT OF WORK (SOW)
+```sql
 -- Domain: internal/domain/sow/
 -- Entity: sow/entity.go
 -- =========================================
@@ -296,8 +298,10 @@ CREATE INDEX idx_statements_of_work_number ON statements_of_work (sow_number);
 
 COMMENT ON TABLE statements_of_work IS 'Statements of Work - maps to internal/domain/sow/entity.go';
 
--- =========================================
--- SECTION 3: FINANCIAL HOLDS
+```
+=========================================
+##  SECTION 3: FINANCIAL HOLDS
+```sql
 -- Domain: internal/domain/hold/
 -- Entity: hold/entity.go
 -- =========================================
@@ -360,8 +364,10 @@ CREATE INDEX idx_financial_holds_reference ON financial_holds (reference_type, r
 
 COMMENT ON TABLE financial_holds IS 'Financial holds - maps to internal/domain/hold/entity.go';
 
--- =========================================
--- SECTION 4: MILESTONES
+```
+=========================================
+##  SECTION 4: MILESTONES
+```sql
 -- Domain: internal/domain/milestone/
 -- Entity: milestone/entity.go
 -- =========================================
@@ -472,8 +478,10 @@ CREATE TABLE milestone_activities (
 
 CREATE INDEX idx_milestone_activities_milestone ON milestone_activities (milestone_id, performed_at DESC);
 
--- =========================================
--- SECTION 5: DELIVERABLES
+```
+=========================================
+##  SECTION 5: DELIVERABLES
+```sql
 -- Domain: internal/domain/deliverable/
 -- Entity: deliverable/entity.go
 -- =========================================
@@ -545,8 +553,10 @@ CREATE INDEX idx_deliverables_file ON deliverables (file_id) WHERE file_id IS NO
 
 COMMENT ON TABLE deliverables IS 'Milestone deliverables - maps to internal/domain/deliverable/entity.go';
 
--- =========================================
--- SECTION 6: TIME TRACKING - TIMESHEETS
+```
+=========================================
+##  SECTION 6: TIME TRACKING - TIMESHEETS
+```sql
 -- Domain: internal/domain/timesheet/
 -- Entity: timesheet/entity.go
 -- =========================================
@@ -659,8 +669,10 @@ CREATE TABLE time_entries (
 
 CREATE INDEX idx_time_entries_timesheet ON time_entries (timesheet_id, work_date);
 
--- =========================================
--- SECTION 7: WORK DIARY
+```
+=========================================
+##  SECTION 7: WORK DIARY
+```sql
 -- Domain: internal/domain/work_diary/
 -- Entity: work_diary/entity.go
 -- =========================================
@@ -753,8 +765,10 @@ CREATE TABLE work_diary_daily_summaries (
 
 CREATE INDEX idx_work_diary_daily_summaries_contract ON work_diary_daily_summaries (contract_id, work_date DESC);
 
--- =========================================
--- SECTION 8: CONTRACT TEMPLATES
+```
+=========================================
+##  SECTION 8: CONTRACT TEMPLATES
+```sql
 -- Domain: internal/domain/template/
 -- Entity: template/entity.go
 -- =========================================
@@ -828,8 +842,10 @@ CREATE INDEX idx_contract_templates_public ON contract_templates (is_public, is_
 
 COMMENT ON TABLE contract_templates IS 'Contract templates - maps to internal/domain/template/entity.go';
 
--- =========================================
--- SECTION 9: CONTRACT AMENDMENTS
+```
+=========================================
+##  SECTION 9: CONTRACT AMENDMENTS
+```sql
 -- Domain: internal/domain/amendment/
 -- Entity: amendment/entity.go
 -- =========================================
@@ -905,8 +921,10 @@ CREATE INDEX idx_contract_amendments_pending ON contract_amendments (status, pro
 
 COMMENT ON TABLE contract_amendments IS 'Contract amendments - maps to internal/domain/amendment/entity.go';
 
--- =========================================
--- SECTION 10: DISPUTES
+```
+=========================================
+##  SECTION 10: DISPUTES
+```sql
 -- Domain: internal/domain/dispute/
 -- Entity: dispute/entity.go
 -- =========================================
@@ -1063,8 +1081,10 @@ CREATE TABLE dispute_messages (
 
 CREATE INDEX idx_dispute_messages_dispute ON dispute_messages (dispute_id, sent_at DESC);
 
--- =========================================
--- SECTION 11: BUDGET TRACKING
+```
+=========================================
+##  SECTION 11: BUDGET TRACKING
+```sql
 -- Domain: internal/domain/budget/
 -- Entity: budget/entity.go
 -- =========================================
@@ -1161,8 +1181,10 @@ CREATE TABLE budget_adjustments (
 
 CREATE INDEX idx_budget_adjustments_budget ON budget_adjustments (budget_id, adjusted_at DESC);
 
--- =========================================
--- SECTION 12: REMINDERS & NOTIFICATIONS
+```
+=========================================
+##  SECTION 12: REMINDERS & NOTIFICATIONS
+```sql
 -- Domain: internal/domain/reminder/
 -- Entity: reminder/entity.go
 -- =========================================
@@ -1228,8 +1250,10 @@ CREATE INDEX idx_contract_reminders_type ON contract_reminders (reminder_type, s
 
 COMMENT ON TABLE contract_reminders IS 'Contract reminders - maps to internal/domain/reminder/entity.go';
 
--- =========================================
--- SECTION 13: AUDIT & COMPLIANCE
+```
+=========================================
+##  SECTION 13: AUDIT & COMPLIANCE
+```sql
 -- Domain: internal/domain/audit/
 -- Entity: audit/entity.go
 -- =========================================
@@ -1284,8 +1308,10 @@ CREATE INDEX idx_contract_audit_logs_compliance ON contract_audit_logs (occurred
 
 COMMENT ON TABLE contract_audit_logs IS 'Comprehensive audit trail';
 
--- =========================================
--- SECTION 14: DIRECT CONTRACT INVITATIONS
+```
+=========================================
+##  SECTION 14: DIRECT CONTRACT INVITATIONS
+```sql
 -- Domain: internal/domain/invitation/
 -- Entity: invitation/entity.go
 -- =========================================
@@ -1346,8 +1372,10 @@ CREATE INDEX idx_contract_invitations_contract ON contract_invitations (contract
 
 COMMENT ON TABLE contract_invitations IS 'Direct contract invitations - maps to internal/domain/invitation/entity.go';
 
--- =========================================
--- SECTION 15: RATE CARDS
+```
+=========================================
+##  SECTION 15: RATE CARDS
+```sql
 -- Domain: internal/domain/rate_card/
 -- Entity: rate_card/entity.go
 -- =========================================
@@ -1404,8 +1432,10 @@ CREATE INDEX idx_contract_rate_cards_validity ON contract_rate_cards (effective_
 
 COMMENT ON TABLE contract_rate_cards IS 'Rate cards - maps to internal/domain/rate_card/entity.go';
 
--- =========================================
--- SECTION 16: CONTRACT ANALYTICS
+```
+=========================================
+##  SECTION 16: CONTRACT ANALYTICS
+```sql
 -- Domain: internal/domain/analytics/
 -- Entity: analytics/entity.go
 -- =========================================
@@ -1468,8 +1498,10 @@ CREATE INDEX idx_contract_analytics_satisfaction ON contract_analytics (overall_
 
 COMMENT ON TABLE contract_analytics IS 'Contract analytics - maps to internal/domain/analytics/entity.go';
 
--- =========================================
--- SECTION 17: COMPLIANCE & LEGAL
+```
+=========================================
+##  SECTION 17: COMPLIANCE & LEGAL
+```sql
 -- Domain: internal/domain/compliance/
 -- Entity: compliance/entity.go
 -- =========================================
@@ -1552,8 +1584,10 @@ CREATE INDEX idx_contract_compliance_sanctions ON contract_compliance (sanctions
 
 COMMENT ON TABLE contract_compliance IS 'Compliance tracking - maps to internal/domain/compliance/entity.go';
 
--- =========================================
--- SECTION 18: CONTRACT FEEDBACK
+```
+=========================================
+##  SECTION 18: CONTRACT FEEDBACK
+```sql
 -- Domain: internal/domain/feedback/
 -- Entity: feedback/entity.go
 -- =========================================
@@ -1624,8 +1658,10 @@ CREATE INDEX idx_contract_feedback_public ON contract_feedback (is_public, overa
 
 COMMENT ON TABLE contract_feedback IS 'Contract feedback - maps to internal/domain/feedback/entity.go';
 
--- =========================================
--- SECTION 19: CONTRACT SEARCH INDEX
+```
+=========================================
+##  SECTION 19: CONTRACT SEARCH INDEX
+```sql
 -- Domain: internal/domain/search/
 -- Entity: search/entity.go
 -- =========================================
@@ -1686,8 +1722,10 @@ CREATE INDEX idx_contract_search_index_type ON contract_search_index (contract_t
 
 COMMENT ON TABLE contract_search_index IS 'Contract search index - maps to internal/domain/search/entity.go';
 
--- =========================================
--- SECTION 20: INSURANCE
+```
+=========================================
+##  SECTION 20: INSURANCE
+```sql
 -- Domain: internal/domain/insurance/
 -- Entity: insurance/entity.go
 -- =========================================
@@ -1797,8 +1835,10 @@ CREATE INDEX idx_insurance_claims_insurance ON insurance_claims (insurance_id);
 CREATE INDEX idx_insurance_claims_contract ON insurance_claims (contract_id);
 CREATE INDEX idx_insurance_claims_status ON insurance_claims (status, filed_at DESC);
 
--- =========================================
--- SECTION 21: ESCROW MANAGEMENT
+```
+=========================================
+##  SECTION 21: ESCROW MANAGEMENT
+```sql
 -- Domain: internal/domain/escrow/
 -- Entity: escrow/entity.go
 -- =========================================
@@ -1891,8 +1931,10 @@ CREATE TABLE escrow_transactions (
 CREATE INDEX idx_escrow_transactions_escrow ON escrow_transactions (escrow_id, created_at DESC);
 CREATE INDEX idx_escrow_transactions_reference ON escrow_transactions (reference_type, reference_id);
 
--- =========================================
--- SECTION 22: TERMINATION
+```
+=========================================
+##  SECTION 22: TERMINATION
+```sql
 -- Domain: internal/domain/termination/
 -- Entity: termination/entity.go
 -- =========================================
@@ -1980,8 +2022,10 @@ CREATE INDEX idx_contract_terminations_effective ON contract_terminations (effec
 
 COMMENT ON TABLE contract_terminations IS 'Contract terminations - maps to internal/domain/termination/entity.go';
 
--- =========================================
--- SECTION 23: COLLABORATION WORKSPACE
+```
+=========================================
+##  SECTION 23: COLLABORATION WORKSPACE
+```sql
 -- Domain: internal/domain/workspace/
 -- Entity: workspace/entity.go
 -- =========================================
@@ -2117,8 +2161,10 @@ CREATE INDEX idx_workspace_comments_document ON workspace_comments (document_id,
 CREATE INDEX idx_workspace_comments_parent ON workspace_comments (parent_comment_id) 
     WHERE parent_comment_id IS NOT NULL;
 
--- =========================================
--- SECTION 24: RECURRING CONTRACTS
+```
+=========================================
+##  SECTION 24: RECURRING CONTRACTS
+```sql
 -- Domain: internal/domain/recurring/
 -- Entity: recurring/entity.go
 -- =========================================
@@ -2207,8 +2253,10 @@ CREATE TABLE contract_renewal_history (
 
 CREATE INDEX idx_contract_renewal_history_recurring ON contract_renewal_history (recurring_contract_id, renewal_number DESC);
 
--- =========================================
--- SECTION 25: E-SIGNATURES
+```
+=========================================
+##  SECTION 25: E-SIGNATURES
+```sql
 -- Domain: internal/domain/signature/
 -- Entity: signature/entity.go
 -- =========================================
@@ -2284,8 +2332,10 @@ CREATE INDEX idx_contract_signatures_pending ON contract_signatures (status, inv
 
 COMMENT ON TABLE contract_signatures IS 'E-signatures - maps to internal/domain/signature/entity.go';
 
--- =========================================
--- SECTION 26: INVOICING
+```
+=========================================
+##  SECTION 26: INVOICING
+```sql
 -- Domain: internal/domain/invoice/
 -- Entity: invoice/entity.go
 -- =========================================
@@ -2444,8 +2494,10 @@ CREATE TABLE invoice_payments (
 
 CREATE INDEX idx_invoice_payments_invoice ON invoice_payments (invoice_id, paid_at DESC);
 
--- =========================================
--- SECTION 27: SERVICE LEVEL AGREEMENTS (SLA)
+```
+=========================================
+##  SECTION 27: SERVICE LEVEL AGREEMENTS (SLA)
+```sql
 -- Domain: internal/domain/sla/
 -- Entity: sla/entity.go
 -- =========================================
@@ -2609,8 +2661,10 @@ CREATE TABLE sla_performance_records (
 CREATE INDEX idx_sla_performance_records_sla ON sla_performance_records (sla_id, period_start DESC);
 CREATE INDEX idx_sla_performance_records_metric ON sla_performance_records (metric_id, period_start DESC);
 
--- =========================================
--- SECTION 28: AGENCY CONTRACTS
+```
+=========================================
+##  SECTION 28: AGENCY CONTRACTS
+```sql
 -- Domain: internal/domain/agency/
 -- Entity: agency/entity.go
 -- =========================================
@@ -2730,8 +2784,10 @@ CREATE TABLE agency_billing_splits (
 
 CREATE INDEX idx_agency_billing_splits_agency_contract ON agency_billing_splits (agency_contract_id, billing_period_start DESC);
 
--- =========================================
--- SECTION 29: INTELLECTUAL PROPERTY RIGHTS
+```
+=========================================
+##  SECTION 29: INTELLECTUAL PROPERTY RIGHTS
+```sql
 -- Domain: internal/domain/ip_rights/
 -- Entity: ip_rights/entity.go
 -- =========================================
@@ -2895,8 +2951,10 @@ CREATE TABLE ip_transfers (
 
 CREATE INDEX idx_ip_transfers_ip_rights ON ip_transfers (ip_rights_id);
 
--- =========================================
--- SECTION 30: NON-DISCLOSURE AGREEMENTS (NDA)
+```
+=========================================
+##  SECTION 30: NON-DISCLOSURE AGREEMENTS (NDA)
+```sql
 -- Domain: internal/domain/nda/
 -- Entity: nda/entity.go
 -- =========================================
@@ -3036,8 +3094,10 @@ CREATE TABLE nda_breaches (
 CREATE INDEX idx_nda_breaches_nda ON nda_breaches (nda_id);
 CREATE INDEX idx_nda_breaches_status ON nda_breaches (investigation_status);
 
--- =========================================
--- SECTION 31: CONTRACT NEGOTIATIONS
+```
+=========================================
+##  SECTION 31: CONTRACT NEGOTIATIONS
+```sql
 -- Domain: internal/domain/negotiation/
 -- Entity: negotiation/entity.go
 -- =========================================
@@ -3180,8 +3240,10 @@ CREATE INDEX idx_negotiation_history_negotiation ON negotiation_history (negotia
 
 
 
--- =========================================
--- SECTION 32: CONTRACT REPORTS
+```
+=========================================
+##  SECTION 32: CONTRACT REPORTS
+```sql
 -- Domain: internal/domain/report/
 -- Entity: report/entity.go
 -- =========================================
@@ -3334,8 +3396,10 @@ CREATE TABLE report_runs (
 
 CREATE INDEX idx_report_runs_schedule ON report_runs (schedule_id, started_at DESC);
 
--- =========================================
--- SECTION 33: CONTRACT ATTACHMENTS
+```
+=========================================
+##  SECTION 33: CONTRACT ATTACHMENTS
+```sql
 -- Domain: internal/domain/attachment/
 -- Entity: attachment/entity.go
 -- =========================================
@@ -3407,8 +3471,10 @@ CREATE INDEX idx_contract_attachments_current ON contract_attachments (contract_
 
 COMMENT ON TABLE contract_attachments IS 'Generic contract attachments - maps to internal/domain/attachment/entity.go';
 
--- =========================================
--- SECTION 34: CONTRACT RENEWALS (EXPLICIT WORKFLOW)
+```
+=========================================
+##  SECTION 34: CONTRACT RENEWALS (EXPLICIT WORKFLOW)
+```sql
 -- Domain: internal/domain/renewal/
 -- Entity: renewal/entity.go
 -- =========================================
@@ -3491,8 +3557,10 @@ CREATE INDEX idx_contract_renewals_pending ON contract_renewals (status, decisio
 
 COMMENT ON TABLE contract_renewals IS 'Explicit renewal workflow - maps to internal/domain/renewal/entity.go';
 
--- =========================================
--- SECTION 35: CONTRACT PAUSES
+```
+=========================================
+##  SECTION 35: CONTRACT PAUSES
+```sql
 -- Domain: internal/domain/pause/
 -- Entity: pause/entity.go
 -- =========================================
@@ -3552,8 +3620,10 @@ CREATE INDEX idx_contract_pauses_active ON contract_pauses (status, started_at)
 
 COMMENT ON TABLE contract_pauses IS 'Contract pause history - maps to internal/domain/pause/entity.go';
 
--- =========================================
--- SECTION 36: WORKROOM (ENHANCED WORKSPACE)
+```
+=========================================
+##  SECTION 36: WORKROOM (ENHANCED WORKSPACE)
+```sql
 -- Domain: internal/domain/workroom/
 -- Entity: workroom/entity.go
 -- =========================================
@@ -3683,8 +3753,10 @@ CREATE INDEX idx_workroom_notes_pinned ON workroom_notes (workspace_id, is_pinne
 
 COMMENT ON TABLE workroom_notes IS 'Workroom notes - maps to internal/domain/workroom/notes.go';
 
--- =========================================
--- SECTION 37: PERFORMANCE TRACKING (ENHANCED)
+```
+=========================================
+##  SECTION 37: PERFORMANCE TRACKING (ENHANCED)
+```sql
 -- Domain: internal/domain/performance/
 -- Entity: performance/entity.go
 -- =========================================
@@ -3854,8 +3926,10 @@ CREATE INDEX idx_performance_benchmarks_context ON performance_benchmarks (contr
 
 COMMENT ON TABLE performance_benchmarks IS 'Industry benchmarks - maps to internal/domain/performance/benchmarks.go';
 
--- =========================================
--- SECTION 38: DIRECT CONTRACTS (ENHANCED)
+```
+=========================================
+##  SECTION 38: DIRECT CONTRACTS (ENHANCED)
+```sql
 -- Domain: internal/domain/direct_contract/
 -- Entity: direct_contract/entity.go
 -- =========================================
@@ -3914,8 +3988,10 @@ CREATE INDEX idx_direct_contracts_token ON direct_contracts (invitation_token)
 
 COMMENT ON TABLE direct_contracts IS 'Direct contract flow tracking - maps to internal/domain/direct_contract/entity.go';
 
--- =========================================
--- SECTION 39: OUTBOX PATTERN FOR EVENTS
+```
+=========================================
+##  SECTION 39: OUTBOX PATTERN FOR EVENTS
+```sql
 -- Domain: internal/domain/outbox/
 -- Entity: outbox/entity.go
 -- =========================================
@@ -3998,9 +4074,12 @@ CREATE TABLE outbox_dead_letter (
 
 CREATE INDEX idx_outbox_dead_letter_status ON outbox_dead_letter (resolution_status);
 
--- =========================================
--- SECTION 40: READ MODELS (CQRS PROJECTIONS)
--- =========================================
+```
+=========================================
+##  SECTION 40: READ MODELS (CQRS PROJECTIONS)
+=========================================
+
+```sql
 
 -- Contract Read Model for Fast Queries
 CREATE TABLE contract_read_model (
@@ -4097,8 +4176,12 @@ CREATE TABLE user_contract_stats (
 
 CREATE INDEX idx_user_contract_stats_performance ON user_contract_stats (avg_quality_score DESC);
 
--- =========================================
--- SECTION 41: EXTERNAL REFERENCES
+```
+=========================================
+##  SECTION 41: EXTERNAL REFERENCES
+
+```sql
+
 -- (Relations with other microservices)
 -- =========================================
 
@@ -4125,8 +4208,13 @@ CREATE INDEX idx_external_references_service ON external_references (service_nam
 
 COMMENT ON TABLE external_references IS 'References to entities in other microservices';
 
--- =========================================
--- SECTION 42: DATABASE FUNCTIONS & TRIGGERS
+```
+=========================================
+##  SECTION 42: DATABASE FUNCTIONS & TRIGGERS
+
+
+```sql
+
 -- =========================================
 
 -- Function to update updated_at timestamp
@@ -4173,8 +4261,12 @@ CREATE TRIGGER trg_milestone_financial_update
     FOR EACH ROW
     EXECUTE FUNCTION update_contract_financial_totals();
 
--- =========================================
--- SECTION 43: PERFORMANCE VIEWS
+```
+=========================================
+##  SECTION 43: PERFORMANCE VIEWS
+
+```sql
+
 -- =========================================
 
 -- View for active contracts with key metrics
@@ -4292,10 +4384,15 @@ WHERE c.status = 'ACTIVE'
     AND c.end_date <= CURRENT_DATE + INTERVAL '7 days'
     AND c.is_deleted = FALSE;
 
--- =========================================
--- SECTION 44: TABLE COMMENTS
+```
+=========================================
+##  SECTION 44: TABLE COMMENTS
+
+
+
 -- =========================================
 
+```sql
 COMMENT ON TABLE contracts IS 'Core contracts - maps to internal/domain/contract/entity.go';
 COMMENT ON TABLE contract_state_history IS 'Contract state transitions';
 COMMENT ON TABLE statements_of_work IS 'Statements of Work - maps to internal/domain/sow/entity.go';
@@ -4332,8 +4429,11 @@ COMMENT ON TABLE recurring_contracts IS 'Recurring contracts - maps to internal/
 COMMENT ON TABLE contract_renewal_history IS 'Renewal history';
 COMMENT ON TABLE contract_signatures IS 'E-signatures - maps to internal/domain/signature/entity.go';
 
--- =========================================
--- SECTION 45: DATABASE STATISTICS
+```
+=========================================
+##  SECTION 45: DATABASE STATISTICS
+```sql
+
 -- =========================================
 
 CREATE VIEW v_table_sizes AS
@@ -4397,13 +4497,12 @@ SELECT
     COUNT(*)
 FROM contract_signatures
 WHERE status IN ('PENDING', 'SENT');
+```
+=========================================
+## END OF CONTRACTS-BE DATABASE DESIGN
+=========================================
 
--- =========================================
--- END OF CONTRACTS-BE DATABASE DESIGN
--- =========================================
-
-/*
-FINAL SUMMARY:
+## FINAL SUMMARY:
 - Total Tables: 70+
 - Total Indexes: 200+
 - Total Domains Covered: 26 (all from contracts-be folder structure)
@@ -4420,47 +4519,47 @@ FINAL SUMMARY:
 - Multi-language support ready
 - Enterprise-scale performance optimization
 
-ALIGNMENT WITH FOLDER STRUCTURE:
-✅ contract/ → contracts table
-✅ sow/ → statements_of_work table
-✅ hold/ → financial_holds table
-✅ milestone/ → milestones table
-✅ deliverable/ → deliverables table
-✅ timesheet/ → timesheets, time_entries tables
-✅ work_diary/ → work_diary_entries, work_diary_daily_summaries tables
-✅ template/ → contract_templates table
-✅ amendment/ → contract_amendments table
-✅ dispute/ → disputes, dispute_evidence, dispute_messages tables
-✅ budget/ → contract_budgets, budget_adjustments tables
-✅ reminder/ → contract_reminders table
-✅ audit/ → contract_audit_logs table
-✅ invitation/ → contract_invitations table
-✅ rate_card/ → contract_rate_cards table
-✅ analytics/ → contract_analytics table
-✅ compliance/ → contract_compliance table
-✅ feedback/ → contract_feedback table
-✅ search/ → contract_search_index table
-✅ insurance/ → contract_insurance, insurance_claims tables
-✅ escrow/ → contract_escrow, escrow_transactions tables
-✅ termination/ → contract_terminations table
-✅ workspace/ → contract_workspaces, workspace_documents, workspace_comments tables
-✅ recurring/ → recurring_contracts, contract_renewal_history tables
-✅ signature/ → contract_signatures table
-✅ outbox/ → outbox_events, outbox_dead_letter tables
+## ALIGNMENT WITH FOLDER STRUCTURE:
+- ✅ contract/ → contracts table
+- ✅ sow/ → statements_of_work table
+- ✅ hold/ → financial_holds table
+- ✅ milestone/ → milestones table
+- ✅ deliverable/ → deliverables table
+- ✅ timesheet/ → timesheets, time_entries tables
+- ✅ work_diary/ → work_diary_entries, work_diary_daily_summaries tables
+- ✅ template/ → contract_templates table
+- ✅ amendment/ → contract_amendments table
+- ✅ dispute/ → disputes, dispute_evidence, dispute_messages tables
+- ✅ budget/ → contract_budgets, budget_adjustments tables
+- ✅ reminder/ → contract_reminders table
+- ✅ audit/ → contract_audit_logs table
+- ✅ invitation/ → contract_invitations table
+- ✅ rate_card/ → contract_rate_cards table
+- ✅ analytics/ → contract_analytics table
+- ✅ compliance/ → contract_compliance table
+- ✅ feedback/ → contract_feedback table
+- ✅ search/ → contract_search_index table
+- ✅ insurance/ → contract_insurance, insurance_claims tables
+- ✅ escrow/ → contract_escrow, escrow_transactions tables
+- ✅ termination/ → contract_terminations table
+- ✅ workspace/ → contract_workspaces, workspace_documents, workspace_comments tables
+- ✅ recurring/ → recurring_contracts, contract_renewal_history tables
+- ✅ signature/ → contract_signatures table
+- ✅ outbox/ → outbox_events, outbox_dead_letter tables
+ 
+## ADDITIONAL FEATURES:
+- ✅ Contract state history tracking
+- ✅ Milestone activities log
+- ✅ Work diary daily summaries for analytics
+- ✅ Budget adjustment history
+- ✅ Contract read models for CQRS
+- ✅ User contract statistics projections
+- ✅ External service references
+- ✅ Comprehensive views for dashboards
+- ✅ Database health monitoring
+- ✅ Automated triggers for financial calculations
 
-ADDITIONAL FEATURES:
-✅ Contract state history tracking
-✅ Milestone activities log
-✅ Work diary daily summaries for analytics
-✅ Budget adjustment history
-✅ Contract read models for CQRS
-✅ User contract statistics projections
-✅ External service references
-✅ Comprehensive views for dashboards
-✅ Database health monitoring
-✅ Automated triggers for financial calculations
-
-INTEGRATION POINTS:
+## INTEGRATION POINTS:
 - financial-be: Escrow, payments, holds
 - users-be: Client and freelancer references
 - jobs-be: Job references (for contracts from jobs)
@@ -4470,7 +4569,7 @@ INTEGRATION POINTS:
 - storage-be: File and document storage
 - admin-be: Dispute resolution and compliance
 
-PERFORMANCE OPTIMIZATIONS:
+## PERFORMANCE OPTIMIZATIONS:
 - Partial indexes on frequently filtered columns
 - GIN indexes for full-text search
 - Materialized views for complex aggregations (can be added)
@@ -4478,7 +4577,7 @@ PERFORMANCE OPTIMIZATIONS:
 - JSONB indexes for flexible metadata queries
 - Partitioning strategy ready (by created_at for contracts)
 
-COMPLIANCE & LEGAL:
+## COMPLIANCE & LEGAL:
 - 10-year data retention support
 - GDPR/CCPA compliance fields
 - Audit trail for all changes
@@ -4487,7 +4586,7 @@ COMPLIANCE & LEGAL:
 - Export control and sanctions screening
 - Data protection impact assessments
 
-FINANCIAL SAFEGUARDS:
+## FINANCIAL SAFEGUARDS:
 - Escrow account integration
 - Financial holds for disputes
 - Budget tracking with alerts
@@ -4499,6 +4598,7 @@ All domains from the contracts-be folder structure are fully covered!
 
 
 
+```sql
 
 CREATE TRIGGER trg_milestones_updated_at
     BEFORE UPDATE ON milestones
@@ -4568,3 +4668,4 @@ CREATE TRIGGER trg_performance_kpis_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at();
 
+```

@@ -188,6 +188,64 @@ nonpii_payload (domain DTO; no raw embeddings or PII)
 
 ---
 
+1.5 portfolio\_index/
+---------------------
+
+### Stories
+
+*   As a **system**, I want to index/update/remove portfolio documents so that freelancer portfolios are discoverable in search.
+    
+*   As an **admin**, I want to bulk reindex portfolio docs so that mapping/feature changes roll out safely.
+    
+*   As a **system**, I want to update portfolio engagement fields (views, saves) so that rankings reflect freshness and interest.
+    
+*   As an **admin**, I want to change portfolio visibility (public/restricted/archived) so that sensitive items are gated.
+    
+*   As a **system**, I want to reconcile portfolio assets with storage lifecycle events so that stale/soft-deleted assets are hidden.
+    
+
+### Flow
+
+*   IndexPortfolioDocCommand(portfolio\_id, fields, version) → Validate() | MapToESDoc() | PutDoc(index=portfolios\_vX) → **Outbox:** search.portfolio.indexed.v1
+    
+*   UpdatePortfolioDocCommand(portfolio\_id, patch) → ValidatePatch() | PartialUpdate() → **Outbox:** search.portfolio.updated.v1
+    
+*   RemovePortfolioDocCommand(portfolio\_id) → DeleteDoc() | MarkTombstone() → **Outbox:** search.portfolio.removed.v1
+    
+*   BulkReindexPortfoliosCommand(selector, target\_version) → PlanBatches() | ScrollSource() | Reindex() | AliasSwapOnGreen() → **Outbox:** search.portfolio.reindexed.v1
+    
+*   SetPortfolioVisibilityCommand(portfolio\_id, visibility) → Validate(PUBLIC|RESTRICTED|ARCHIVED) | UpdateDoc() → **Outbox:** search.portfolio.visibility.changed.v1
+    
+*   ApplyPortfolioEngagementCommand(portfolio\_id, views\_delta, saves\_delta) → UpdateCounters() → **Outbox:** search.portfolio.engagement.updated.v1
+    
+*   HandleStorageLifecycleEvent(file\_id, action) → FindAffectedDocs() | MaskOrRestoreAssets() → **Outbox:** search.portfolio.asset.visibility.synced.v1
+    
+
+### Projections
+
+*   portfolio\_index\_read (portfolio\_id → title, skills\[\], media\_refs, engagement, visibility, updated\_at)
+    
+*   portfolio\_engagement\_read (portfolio\_id → views\_7d/30d, saves\_7d/30d, ctr, last\_view\_at)
+    
+*   portfolio\_index\_jobs\_read (bulk runs → status, counts, error\_rate)
+    
+
+### Events
+
+*   search.portfolio.indexed.v1, search.portfolio.updated.v1, search.portfolio.removed.v1, search.portfolio.reindexed.v1, search.portfolio.visibility.changed.v1, search.portfolio.engagement.updated.v1, search.portfolio.asset.visibility.synced.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **ADMIN** for bulk/visibility; **SYSTEM** for event-driven updates; **OWNER** (portfolio owner) for content refresh via upstream service.
+    
+*   **SLO:** single doc index P95 < 800ms; bulk reindex 10k docs < 10m (green-health required).
+    
+*   **Limits:** max 50 media\_refs/doc; doc size ≤ 100KB; bulk batch ≤ 2k docs/batch.
+    
+*   **Idempotency:** index/update by (portfolio\_id, version); remove by (portfolio\_id); engagement by (portfolio\_id, event\_id).
+
+---
 # 2 - TAXONOMY & FACETS
 
 ## 2.1 taxonomy/
@@ -376,7 +434,7 @@ nonpii_payload (domain DTO; no raw embeddings or PII)
 - **Limits:** compute max 100 scores per request; top matches max 50
 - **Idempotency:** by (job_id, freelancer_id, profiles_hash)
 
----
+---TAXONOMY
 
 ## 3.3 similarity/
 
@@ -566,6 +624,116 @@ nonpii_payload (domain DTO; no raw embeddings or PII)
 
 ---
 
+3.8 recommendation\_model/
+--------------------------
+
+### Stories
+
+*   As an **ML admin**, I want to register model versions with metadata so that deployments are auditable.
+    
+*   As an **admin**, I want to deploy or roll back a model version so that recommendations stay healthy.
+    
+*   As a **data scientist**, I want to publish feature catalogs and training snapshots so that scoring stays consistent with training.
+    
+*   As a **system**, I want to validate model/feature compatibility at deploy time so that runtime errors are avoided.
+    
+*   As an **admin**, I want evaluation runs and metrics stored so that I can compare models A/B.
+    
+
+### Flow
+
+*   RegisterModelVersionCommand(model\_key, semver, uri, metrics) → ValidateSemver() | StoreMetadata() → **Outbox:** search.model.version.registered.v1
+    
+*   DeployModelVersionCommand(model\_key, semver) → CheckArtifacts() | FeatureCompatCheck() | MarkActive() → WarmCaches() → **Outbox:** search.model.version.deployed.v1
+    
+*   RollbackModelVersionCommand(model\_key, target\_semver) → ValidateTarget() | MarkActive() → **Outbox:** search.model.version.rolled\_back.v1
+    
+*   PublishFeatureCatalogCommand(model\_key, features\_json, hash) → ValidateSchema() | StoreCatalog() → **Outbox:** search.model.features.updated.v1
+    
+*   RegisterTrainingSnapshotCommand(model\_key, snapshot\_id, stats) → StoreSnapshot() → **Outbox:** search.model.training\_data.updated.v1
+    
+*   RunModelEvaluationCommand(model\_key, semver, dataset\_ref) → ExecuteEval() | PersistMetrics() → **Outbox:** search.model.evaluated.v1
+    
+
+### Projections
+
+*   recommendation\_models\_read (model\_key → versions\[\], active, metrics, artifacts\_uri)
+    
+*   model\_feature\_catalog\_read (model\_key, version → features\_hash, fields\[\])
+    
+*   model\_training\_snapshots\_read (model\_key → snapshots\[\], stats)
+    
+*   model\_eval\_history\_read (model\_key, version → metrics, timestamp)
+    
+
+### Events
+
+*   search.model.version.registered.v1, search.model.version.deployed.v1, search.model.version.rolled\_back.v1, search.model.features.updated.v1, search.model.training\_data.updated.v1, search.model.evaluated.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **ML\_ADMIN/ADMIN** for register/deploy/rollback; **SYSTEM** for compat checks & warmup.
+    
+*   **SLO:** deploy switch P95 < 60s (including warm); feature catalog publish P95 < 5s.
+    
+*   **Limits:** ≤ 50 active models; ≤ 100 versions/model; feature catalog ≤ 5MB.
+    
+*   **Idempotency:** register/deploy by (model\_key, semver); feature catalog by (model\_key, features\_hash).
+    
+
+3.9 user\_preference/
+---------------------
+
+### Stories
+
+*   As a **user**, I want to set preferences (rates, availability, languages, categories) so that recommendations match my goals.
+    
+*   As a **user**, I want to opt in/out of certain job types or freelancer types so that results are aligned with my intent.
+    
+*   As a **system**, I want to aggregate implicit signals (clicks, views, hides) so that personalization can improve over time.
+    
+*   As a **user**, I want to reset preferences to defaults so that I can undo bad tuning.
+    
+
+### Flow
+
+*   UpdatePreferencesCommand(user\_id, prefs) → Validate() | Upsert() → **Outbox:** search.preference.updated.v1
+    
+*   RecordImplicitSignalCommand(user\_id, signal\_id, type, ref\_id, ts) → RateLimit() | UpsertDailySummary() → **Outbox:** search.preference.implicit.recorded.v1
+    
+*   DeletePreferencesCommand(user\_id) → SoftDelete() → **Outbox:** search.preference.deleted.v1
+    
+*   GetPreferencesQuery(user\_id) → ReadModel() → Return prefs + implicit summaries
+    
+
+### Projections
+
+*   user\_preferences\_read (user\_id → explicit prefs, updated\_at, etag)
+    
+*   user\_implicit\_signals\_summary\_read (user\_id, d → views, clicks, hides, dwell\_ms\_p50/p95)
+    
+*   preference\_audit\_log (user\_id → change history)
+    
+
+### Events
+
+*   search.preference.updated.v1, search.preference.deleted.v1, search.preference.implicit.recorded.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **USER** (self) for update/delete; **ADMIN** read-only for support; **SYSTEM** for implicit aggregation.
+    
+*   **SLO:** update P95 < 150ms; read P95 < 100ms.
+    
+*   **Limits:** 50 categories, 10 languages, 5 rate bands per user.
+    
+*   **Idempotency:** explicit updates by (user\_id, etag); implicit signals by (user\_id, signal\_id).
+    
+
+---
+
 # 4 - RANKING & BOOSTING
 
 ## 4.1 ranking/
@@ -678,6 +846,56 @@ nonpii_payload (domain DTO; no raw embeddings or PII)
 - **Idempotency:** by (item_id, target_query, start_date) for create
 
 ---
+4.4 ltr/
+--------
+
+### Stories
+
+*   As a **system**, I want to record LTR signals (query, click, dwell, conversion) so that models can learn from behavior.
+    
+*   As a **data scientist**, I want to snapshot feature stores so that training is reproducible.
+    
+*   As an **admin**, I want to expire stale signals so that features remain current.
+    
+*   As a **system**, I want to export training datasets so that offline training jobs run consistently.
+    
+
+### Flow
+
+*   RecordLTRSignalCommand(doc\_id, query\_hash, features, label, ts) → Validate() | Persist() → **Outbox:** search.ltr.signal.recorded.v1
+    
+*   UpdateFeatureStoreSnapshotCommand(snapshot\_id, scope) → ComputeFeatures() | StoreSnapshot() → **Outbox:** search.ltr.snapshot.created.v1
+    
+*   ExpireStaleSignalsJob(ttl\_days) → Scan() | PurgeExpired() → **Outbox:** search.ltr.signal.expired.v1
+    
+*   ExportTrainingDatasetQuery(scope, window) → ReadSignals() | JoinLabels() | EmitDatasetRef
+    
+
+### Projections
+
+*   ltr\_feature\_store\_read (doc\_id → feature\_vector, effective\_at)
+    
+*   ltr\_signal\_counters\_read (day → clicks, conversions, avg\_dwell\_ms)
+    
+*   ltr\_snapshots\_read (snapshot\_id → scope, counts, created\_at)
+    
+
+### Events
+
+*   search.ltr.signal.recorded.v1, search.ltr.signal.expired.v1, search.ltr.snapshot.created.v1, search.ltr.features.updated.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **SYSTEM** for record/expire; **ML\_ADMIN** for snapshot/export.
+    
+*   **SLO:** record signal P95 < 50ms; export dataset for 1M rows < 10m.
+    
+*   **Limits:** features per doc ≤ 512; snapshot size ≤ 5GB.
+    
+*   **Idempotency:** signals by (doc\_id, ts, query\_hash); snapshots by (snapshot\_id).
+    
+---
 
 # 5 - ANALYTICS & MONITORING
 
@@ -789,7 +1007,7 @@ nonpii_payload (domain DTO; no raw embeddings or PII)
 
 ---
 
-# 6 - INDEX LIFECYCLE & HYGIENE
+# 6 - OPERATIONS & EXPLAINABILITY - INDEX LIFECYCLE & HYGIENE
 
 ## 6.1 lifecycle/
 
@@ -902,6 +1120,201 @@ nonpii_payload (domain DTO; no raw embeddings or PII)
 - **Limits:** export retention 30 days; verify includes all indices + logs
 - **Idempotency:** by (user_id, action_type, timestamp_day)
 
+---
+
+6.4 safety\_filters/
+--------------------
+
+### Stories
+
+*   As an **admin**, I want to define allow/deny/mask rules on subjects (user/job/category/geo) so that query-time visibility is safe.
+    
+*   As a **system**, I want to evaluate rules during search so that restricted content doesn’t appear.
+    
+*   As an **admin**, I want rule TTLs and auto-expiry so that temporary incidents self-heal.
+    
+
+### Flow
+
+*   UpsertSafetyRuleCommand(rule\_id, kind, subject, action, ttl) → Validate() | StoreRule() | WarmCache() → **Outbox:** search.safety.rule.upserted.v1
+    
+*   RemoveSafetyRuleCommand(rule\_id) → DeleteRule() | InvalidateCache() → **Outbox:** search.safety.rule.removed.v1
+    
+*   EvaluateSafetyRulesQuery(context, result\_set) → LoadActiveRules() | Engine.Evaluate() → Apply(allow/deny/mask)
+    
+*   ExpireSafetyRulesJob() → ScanTTL() | Deactivate() → **Outbox:** search.safety.rule.expired.v1
+    
+
+### Projections
+
+*   safety\_rules\_read (rule\_id → kind, subject, action, ttl, state)
+    
+*   safety\_rule\_stats\_read (day → evaluations, denies, masks)
+    
+*   safety\_rules\_cache (Redis: subject → compiled policy, TTL 60s)
+    
+
+### Events
+
+*   search.safety.rule.upserted.v1, search.safety.rule.removed.v1, search.safety.rule.expired.v1, search.safety.evaluation.summary.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **ADMIN** for upsert/remove; **SYSTEM** for evaluation.
+    
+*   **SLO:** evaluation overhead P95 < 10ms/query; cache warm P95 < 200ms.
+    
+*   **Limits:** 10k active rules; subject fan-out ≤ 1k per rule.
+    
+*   **Idempotency:** upsert by (rule\_id, version); remove by (rule\_id).
+    
+
+6.5 backfill/
+-------------
+
+### Stories
+
+*   As an **admin**, I want to start/pause/resume/cancel backfills so that I can safely recover or migrate data.
+    
+*   As a **system**, I want partitioned runs (id/time windows) so that jobs are resumable and parallelizable.
+    
+*   As an **admin**, I want detailed counters and error reports so that I can audit the run.
+    
+
+### Flow
+
+*   StartBackfillCommand(scope, partition\_strategy, from\_ts, to\_ts, admin\_id) → PlanPartitions() | PersistRun(state=running) | EnqueuePartitions() → **Outbox:** search.backfill.started.v1
+    
+*   BackfillWorkerTick(run\_id) → FetchNextPartition() | ExecuteIndexer() | UpdateCounters() → **Outbox:** search.backfill.partition.completed.v1
+    
+*   PauseBackfillCommand(run\_id) → SetState(paused) → **Outbox:** search.backfill.paused.v1
+    
+*   ResumeBackfillCommand(run\_id) → SetState(running) → **Outbox:** search.backfill.resumed.v1
+    
+*   CancelBackfillCommand(run\_id) → SetState(canceled) → **Outbox:** search.backfill.canceled.v1
+    
+*   CompleteWhenDone(run\_id) → AllPartitionsDone? → SetState(completed) → **Outbox:** search.backfill.completed.v1
+    
+
+### Projections
+
+*   backfill\_runs\_read (run\_id → scope, state, partitions\_total/done, errors, started\_at, finished\_at)
+    
+*   backfill\_partitions\_read (partition\_id → window, state, retried, duration\_ms)
+    
+*   backfill\_errors\_read (run\_id → partition\_id, doc\_id, error, ts)
+    
+
+### Events
+
+*   search.backfill.started.v1, search.backfill.partition.completed.v1, search.backfill.paused.v1, search.backfill.resumed.v1, search.backfill.canceled.v1, search.backfill.completed.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **ADMIN** for lifecycle; **SYSTEM** for worker ticks.
+    
+*   **SLO:** partition execution P95 < 2s/1k docs; coordinator tick P95 < 200ms.
+    
+*   **Limits:** ≤ 10 concurrent runs; ≤ 10k partitions/run; retry ≤ 3/partition.
+    
+*   **Idempotency:** by (run\_id, partition\_id); commands dedup by Idempotency-Key.
+---
+
+
+
+# 6-B - OPERATIONS & EXPLAINABILITY - INDEX LIFECYCLE & HYGIENE
+
+
+6-B.1 geo/
+--------
+
+### Stories
+
+*   As an **admin**, I want configurable geo policies (radius, max\_results) so that local discovery behaves consistently.
+    
+*   As a **system**, I want to score results by distance so that closer items are preferred when relevant.
+    
+*   As a **system**, I want to normalize/validate geo points so that bad inputs don’t break searches.
+    
+
+### Flow
+
+*   UpsertGeoPolicyCommand(scope, radius\_km, max\_results) → ValidateBounds() | StorePolicy() → **Outbox:** search.geo.policy.updated.v1
+    
+*   ScoreByDistanceQuery(user\_point, candidates\[\]) → NormalizePoints() | DistanceDecay() → Return scored list
+    
+*   ValidateGeoPointCommand(lat, lon) → RangeCheck() → **Outbox:** search.geo.point.rejected.v1 (on failure)
+    
+
+### Projections
+
+*   geo\_policies\_read (scope → radius\_km, max\_results, updated\_at)
+    
+*   geo\_stats\_read (day → avg\_radius\_used, policy\_hits, rejects)
+    
+
+### Events
+
+*   search.geo.policy.updated.v1, search.geo.point.rejected.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **ADMIN** for policy; **SYSTEM** for scoring/validation.
+    
+*   **SLO:** scoring P95 < 5ms/1k candidates.
+    
+*   **Limits:** radius ≤ 5000km; precision clamp to 5 decimals.
+    
+*   **Idempotency:** policies by (scope, version).
+    
+
+6-B.2 query\_intent/
+------------------
+
+### Stories
+
+*   As a **system**, I want to classify queries (job|talent|navigational) so that routing, ranking, and facets are appropriate.
+    
+*   As an **admin**, I want to adjust thresholds/profiles per locale so that accuracy remains high across languages.
+    
+*   As a **system**, I want drift alerts so that we notice when the classifier degrades.
+    
+
+### Flow
+
+*   ClassifyIntentQuery(query\_text, lang, context) → LoadProfile(lang) | ApplyHeuristicsOrModel() | EmitResult(intent, confidence) → **Outbox:** search.query\_intent.classified.v1
+    
+*   UpsertIntentThresholdsCommand(lang, params) → Validate() | Store() → **Outbox:** search.query\_intent.thresholds.updated.v1
+    
+*   UpdateClassifierProfileCommand(lang, profile\_ref) → Validate() | ActivateProfile() → **Outbox:** search.query\_intent.model.updated.v1
+    
+*   IntentDriftMonitorJob() → CompareLiveVsBaseline() → IfDrift() → **Outbox:** search.query\_intent.drift.detected.v1
+    
+
+### Projections
+
+*   query\_intent\_profiles\_read (lang → profile\_ref, thresholds, updated\_at)
+    
+*   query\_intent\_metrics\_read (day → accuracy, drift\_score, volume)
+    
+
+### Events
+
+*   search.query\_intent.classified.v1, search.query\_intent.thresholds.updated.v1, search.query\_intent.model.updated.v1, search.query\_intent.drift.detected.v1
+    
+
+### RBAC/SLO
+
+*   **RBAC:** **ADMIN** for thresholds/model; **SYSTEM** for runtime classification.
+    
+*   **SLO:** classify P95 < 20ms; profile switch P95 < 3s.
+    
+*   **Limits:** ≤ 100 locales; profile size ≤ 1MB.
+    
+*   **Idempotency:** thresholds/model updates by (lang, version); classifications by (query\_hash, request\_id).
 ---
 
 # 7 - LANGUAGE & INTERNATIONALIZATION
