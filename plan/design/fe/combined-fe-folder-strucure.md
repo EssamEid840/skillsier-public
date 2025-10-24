@@ -180,14 +180,15 @@ fe/
     │   │   │   │   │       # - Add/edit bank/card
     │   │   │   │   │       # BE: financial-be/payout_method
     │   │   │   │   │       # GET/POST/DELETE /v1/payout-methods
-    │   │   │   │   └── wallet/
-    │   │   │   │       └── index.tsx  # Wallet (mobile)
-    │   │   │   │           # - Balance, transactions
-    │   │   │   │           # - Request payout
-    │   │   │   │           # BE: financial-be/wallet|payout
-    │   │   │   │           # GET  /v1/wallet
-    │   │   │   │           # GET  /v1/wallet/transactions
-    │   │   │   │           # POST /v1/payouts
+    │   │   │   │   ├── wallet/
+    │   │   │   │   │   └── index.tsx  # Wallet (mobile)
+    │   │   │   │   │       # - Balance, transactions
+    │   │   │   │   │       # - Request payout
+    │   │   │   │   │       # BE: financial-be/wallet|payout
+    │   │   │   │   │       # GET  /v1/wallet
+    │   │   │   │   │       # GET  /v1/wallet/transactions
+    │   │   │   │   │       # POST /v1/payouts
+    │   │   │   │   └── … (listed above)
     │   │   │   ├── (contracts)/
     │   │   │   │   └── offers/
     │   │   │   │       └── [id]/
@@ -196,6 +197,8 @@ fe/
     │   │   │   │               # BE: contracts-be/offer (proposed if missing)
     │   │   │   │               # GET  /v1/offers/{id}
     │   │   │   │               # POST /v1/offers/{id}/accept|decline
+    │   │   │   │               # Offer accept/decline
+    │   │   │   │               # BE: contracts-be/offer
     │   │   │   ├── (dashboard)/
     │   │   │   │   ├── activity-feed/
     │   │   │   │   │   └── index.tsx  # Activity feed
@@ -204,6 +207,48 @@ fe/
     │   │   │   │   │       # - Quick actions from feed
     │   │   │   │   │       # BE: communications-be/notification, utility/activity
     │   │   │   │   │       # GET /v1/activity/feed
+    │   │   │   │   │       # BE: communications-be/notification
+    │   │   │   │   ├── billing/
+    │   │   │   │   │   └── subscription/
+    │   │   │   │   │       ├── manage.tsx  # Manage subscription (mobile)
+    │   │   │   │   │       │   # BE: financial-be/subscription — GET /v1/subscriptions/me
+    │   │   │   │   │       │   # Manage subscription
+    │   │   │   │   │       └── plans.tsx  # Subscription plans (mobile)
+    │   │   │   │   │           # BE: financial-be/subscription — GET /v1/subscriptions/plans
+    │   │   │   │   │           # Subscription plans
+    │   │   │   │   ├── contracts/
+    │   │   │   │   │   ├── [contractId]/
+    │   │   │   │   │   │   └── work-diary/
+    │   │   │   │   │   │       └── screenshots/
+    │   │   │   │   │   │           └── [entryId].tsx  # Screenshot detail (mobile)
+    │   │   │   │   │   │               # BE: contracts-be/work_diary — GET /v1/work-diary/entries/{id}
+    │   │   │   │   │   │               # Screenshot detail
+    │   │   │   │   │   └── page.tsx  # Contracts list
+    │   │   │   │   │       # - Active & completed, filters, sort
+    │   │   │   │   │       # BE: contracts-be/contract — GET /v1/contracts?status=active
+    │   │   │   │   ├── dashboard/
+    │   │   │   │   │   └── page.tsx  # Dashboard home (role-based)
+    │   │   │   │   │       # Freelancer: active proposals/contracts, earnings, recs
+    │   │   │   │   │       # Client: active jobs, spend overview, recent proposals, recs
+    │   │   │   │   │       # BE: users-be/user — GET /v1/users/me
+    │   │   │   │   │       # BE: analytics — GET /v1/analytics/dashboard
+    │   │   │   │   │       # BE: jobs-be — GET /v1/jobs/my-jobs
+    │   │   │   │   │       # BE: proposals-be — GET /v1/proposals/my-proposals
+    │   │   │   │   │       # Dashboard home
+    │   │   │   │   ├── deliverables/
+    │   │   │   │   │   ├── submit/
+    │   │   │   │   │   │   └── page.tsx  # Submit deliverable (upload files, notes)
+    │   │   │   │   │   │       # BE: contracts-be/deliverable — POST /v1/contracts/{id}/deliverables
+    │   │   │   │   │   │       # BE: storage-be/asset — POST /v1/storage/upload
+    │   │   │   │   │   │       # Submit deliverable (upload)
+    │   │   │   │   │   └── page.tsx  # All deliverables (status, history)
+    │   │   │   │   │       # BE: contracts-be/deliverable — GET /v1/contracts/{id}/deliverables
+    │   │   │   │   │       # BE: storage-be/asset — GET /v1/storage/download/{file_id}
+    │   │   │   │   │       # Deliverables list
+    │   │   │   │   ├── feed/
+    │   │   │   │   │   └── index.tsx  # Mobile feed (same BE as web)
+    │   │   │   │   │       # BE: search-be/feed — GET /v1/search/feed
+    │   │   │   │   │       # Mobile feed
     │   │   │   │   ├── quick-actions/
     │   │   │   │   │   └── index.tsx  # Quick actions screen
     │   │   │   │   │       # - Quick message
@@ -211,6 +256,19 @@ fe/
     │   │   │   │   │       # - Quick time entry
     │   │   │   │   │       # - Quick invoice
     │   │   │   │   │       # BE: Multiple services
+    │   │   │   │   ├── support/
+    │   │   │   │   │   ├── help-center/
+    │   │   │   │   │   │   └── index.tsx  # Help articles (mobile)
+    │   │   │   │   │   │       # BE: communications-be/knowledge — GET /v1/help/articles
+    │   │   │   │   │   │       # Help articles
+    │   │   │   │   │   └── tickets/
+    │   │   │   │   │       ├── [ticketId]/
+    │   │   │   │   │       │   └── index.tsx  # Ticket detail & reply
+    │   │   │   │   │       │       # BE: communications-be/ticket — POST /v1/support/tickets/{id}/messages
+    │   │   │   │   │       │       # Ticket detail
+    │   │   │   │   │       └── index.tsx  # My tickets list (mobile)
+    │   │   │   │   │           # BE: communications-be/ticket — GET /v1/support/tickets?me
+    │   │   │   │   │           # My tickets list
     │   │   │   │   ├── today/
     │   │   │   │   │   └── index.tsx  # Today view
     │   │   │   │   │       # - Today's schedule
@@ -237,15 +295,18 @@ fe/
     │   │   │   │   │   │       # GET  /v1/conversations/{id}
     │   │   │   │   │   │       # GET  /v1/conversations/{id}/messages
     │   │   │   │   │   │       # POST /v1/messages
+    │   │   │   │   │   │       # Thread
     │   │   │   │   │   └── index.tsx  # Messages (mobile - inbox)
     │   │   │   │   │       # - List user conversations
     │   │   │   │   │       # BE: communications-be/conversation
     │   │   │   │   │       # GET /v1/conversations?mine=1
+    │   │   │   │   │       # Inbox
     │   │   │   │   └── proposals/
     │   │   │   │       └── index.tsx  # Proposals inbox (mobile)
     │   │   │   │           # - List/detail, statuses
     │   │   │   │           # BE: proposals-be/proposal
     │   │   │   │           # GET /v1/proposals?mine=1
+    │   │   │   │           # Proposals inbox
     │   │   │   ├── (market)/
     │   │   │   │   └── jobs/
     │   │   │   │       └── index.tsx  # Job discovery (mobile)
@@ -253,6 +314,7 @@ fe/
     │   │   │   │           # BE: search-be/feed|trending|query
     │   │   │   │           # GET /v1/feed
     │   │   │   │           # GET /v1/trending
+    │   │   │   │           # Job discovery
     │   │   │   ├── (onboarding)/  # Onboarding flow
     │   │   │   │   ├── _layout.tsx  # Onboarding layout
     │   │   │   │   ├── complete.tsx  # Onboarding complete
@@ -260,7 +322,129 @@ fe/
     │   │   │   │   ├── profile.tsx  # Basic profile setup
     │   │   │   │   ├── skills.tsx  # Skills selection
     │   │   │   │   └── welcome.tsx  # Welcome screen
+    │   │   │   ├── (shared)/
+    │   │   │   │   └── deliverables/
+    │   │   │   │       ├── components/
+    │   │   │   │       │   └── DeliverableCard.tsx  # BE: none (typed props), actions wired to mutations
+    │   │   │   │       │       # Typed UI component
+    │   │   │   │       ├── mutations.ts  # BE: contracts-be/deliverable — POST /v1/contracts/{id}/deliverables
+    │   │   │   │       │   # POST /v1/contracts/{id}/deliverables
+    │   │   │   │       └── queries.ts  # BE: contracts-be/deliverable — GET /v1/contracts/{id}/deliverables
+    │   │   │   │           # GET  /v1/contracts/{id}/deliverables
     │   │   │   ├── (tabs)/  # Bottom tabs navigation
+    │   │   │   │   ├── (authenticated)/
+    │   │   │   │   │   ├── analytics/
+    │   │   │   │   │   │   └── simple-dashboard/
+    │   │   │   │   │   │       └── index.tsx  # Basic analytics view
+    │   │   │   │   │   │           # BE: users-be/analytics
+    │   │   │   │   │   ├── camera/
+    │   │   │   │   │   │   ├── document-scan/
+    │   │   │   │   │   │   │   └── index.tsx  # Document scanner (OCR)
+    │   │   │   │   │   │   │       # - ID verification, receipts
+    │   │   │   │   │   │   │       # BE: storage-be/asset, admin-be/business_verification
+    │   │   │   │   │   │   ├── photo-upload/
+    │   │   │   │   │   │   │   └── index.tsx  # Native photo upload
+    │   │   │   │   │   │   │       # BE: storage-be/asset
+    │   │   │   │   │   │   └── qr-scan/
+    │   │   │   │   │   │       └── index.tsx  # QR code scanner
+    │   │   │   │   │   │           # BE: users-be/profile
+    │   │   │   │   │   ├── contracts/
+    │   │   │   │   │   │   ├── [id]/
+    │   │   │   │   │   │   │   ├── deliverables/
+    │   │   │   │   │   │   │   │   └── index.tsx  # View/upload deliverables
+    │   │   │   │   │   │   │   │       # BE: contracts-be/deliverable, storage-be/asset
+    │   │   │   │   │   │   │   ├── work-diary/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Mobile work diary
+    │   │   │   │   │   │   │   │       # BE: contracts-be/workdiary
+    │   │   │   │   │   │   │   ├── milestones.tsx  # View milestones
+    │   │   │   │   │   │   │   │   # BE: contracts-be/milestone
+    │   │   │   │   │   │   │   └── timesheet.tsx  # Log time
+    │   │   │   │   │   │   │       # BE: contracts-be/timesheet
+    │   │   │   │   │   │   ├── active.tsx  # Active contracts
+    │   │   │   │   │   │   ├── completed.tsx  # Completed contracts
+    │   │   │   │   │   │   └── index.tsx  # All contracts
+    │   │   │   │   │   ├── financial/
+    │   │   │   │   │   │   ├── disputes/
+    │   │   │   │   │   │   │   └── index.tsx  # Dispute list
+    │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   ├── invoices/  # View invoices
+    │   │   │   │   │   │   │   └── index.tsx  # List
+    │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   ├── payouts/
+    │   │   │   │   │   │   │   └── index.tsx  # Request payout
+    │   │   │   │   │   │   │       # BE: financial-be/payout
+    │   │   │   │   │   │   ├── reports/
+    │   │   │   │   │   │   │   └── simple/
+    │   │   │   │   │   │   │       └── index.tsx  # Basic financial reports
+    │   │   │   │   │   │   │           # BE: financial-be/reports
+    │   │   │   │   │   │   └── transactions.tsx  # Transaction history
+    │   │   │   │   │   │       # BE: financial-be/wallet
+    │   │   │   │   │   ├── jobs/
+    │   │   │   │   │   │   ├── [jobId]/
+    │   │   │   │   │   │   │   ├── applicants/
+    │   │   │   │   │   │   │   │   └── index.tsx  # View applicants (client)
+    │   │   │   │   │   │   │   ├── apply.tsx  # Quick apply
+    │   │   │   │   │   │   │   └── details.tsx  # Job details
+    │   │   │   │   │   │   ├── create.tsx  # Simple job creation
+    │   │   │   │   │   │   ├── drafts.tsx  # Drafts
+    │   │   │   │   │   │   └── index.tsx  # Browse jobs (simplified)
+    │   │   │   │   │   ├── notifications/
+    │   │   │   │   │   │   └── index.tsx  # Native notifications center
+    │   │   │   │   │   │       # BE: communications-be/notification
+    │   │   │   │   │   ├── offline/
+    │   │   │   │   │   │   ├── queue/
+    │   │   │   │   │   │   │   └── index.tsx  # Offline queue
+    │   │   │   │   │   │   └── sync/
+    │   │   │   │   │   │       └── index.tsx  # Sync management
+    │   │   │   │   │   ├── organization/
+    │   │   │   │   │   │   └── team/
+    │   │   │   │   │   │       └── members/
+    │   │   │   │   │   │           └── index.tsx  # View team members
+    │   │   │   │   │   ├── profile/
+    │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   ├── bio.tsx  # Quick bio edit
+    │   │   │   │   │   │   │   ├── experience.tsx  # Experience
+    │   │   │   │   │   │   │   ├── portfolio.tsx  # Portfolio (simple)
+    │   │   │   │   │   │   │   └── skills.tsx  # Skills
+    │   │   │   │   │   │   ├── index.tsx  # Profile view
+    │   │   │   │   │   │   ├── reviews.tsx  # Reviews
+    │   │   │   │   │   │   └── settings.tsx  # Basic settings
+    │   │   │   │   │   ├── proposals/
+    │   │   │   │   │   │   ├── [proposalId]/
+    │   │   │   │   │   │   │   ├── details.tsx  # Proposal details
+    │   │   │   │   │   │   │   ├── edit.tsx  # Quick edit
+    │   │   │   │   │   │   │   └── withdraw.tsx  # Withdraw
+    │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   └── quick/
+    │   │   │   │   │   │   │       └── index.tsx  # Quick proposal templates
+    │   │   │   │   │   │   ├── active.tsx  # Active proposals
+    │   │   │   │   │   │   ├── archived.tsx  # Archived proposals
+    │   │   │   │   │   │   └── drafts.tsx  # Drafts
+    │   │   │   │   │   ├── search/
+    │   │   │   │   │   │   ├── filters.tsx  # Basic filters
+    │   │   │   │   │   │   ├── freelancers.tsx  # Search freelancers
+    │   │   │   │   │   │   ├── jobs.tsx  # Search jobs
+    │   │   │   │   │   │   └── saved.tsx  # Saved searches
+    │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   └── app-preferences/
+    │   │   │   │   │   │       ├── data-usage/
+    │   │   │   │   │   │       │   └── index.tsx  # Data usage controls
+    │   │   │   │   │   │       ├── notifications/
+    │   │   │   │   │   │       │   ├── channels/
+    │   │   │   │   │   │       │   │   └── index.tsx  # Notification channels (Android)
+    │   │   │   │   │   │       │   └── do-not-disturb/
+    │   │   │   │   │   │       │       └── index.tsx  # DND schedule
+    │   │   │   │   │   │       └── theme/
+    │   │   │   │   │   │           └── index.tsx  # Theme settings
+    │   │   │   │   │   ├── work/
+    │   │   │   │   │   │   └── quick-actions/
+    │   │   │   │   │   │       └── index.tsx  # Home screen quick actions
+    │   │   │   │   │   ├── _layout.tsx  # Bottom tab navigator
+    │   │   │   │   │   │   # - Tab bar with icons
+    │   │   │   │   │   │   # - Badge indicators
+    │   │   │   │   │   │   # - Smooth transitions
+    │   │   │   │   │   └── messages.tsx  # Messages tab
+    │   │   │   │   │       # BE: communications-be/conversation|message
     │   │   │   │   ├── admin/
     │   │   │   │   │   ├── kyc/
     │   │   │   │   │   │   ├── [kycId].tsx  # KYC case detail (mobile)
@@ -990,6 +1174,11 @@ fe/
     │   │   │   │   │       # - Image quality
     │   │   │   │   │       # - Video autoplay
     │   │   │   │   │       # BE: None (local storage)
+    │   │   │   │   ├── notifications/
+    │   │   │   │   │   ├── channels.tsx  # Notification channels (mobile)
+    │   │   │   │   │   │   # BE: users-be/communication_channels — GET/PUT
+    │   │   │   │   │   └── digests-quiet-hours.tsx  # Digests & quiet hours (mobile)
+    │   │   │   │   │       # BE: users-be/preferences — GET/PUT
     │   │   │   │   ├── privacy/
     │   │   │   │   │   └── gdpr/
     │   │   │   │   │       └── index.tsx  # GDPR (mobile)
@@ -1000,6 +1189,11 @@ fe/
     │   │   │   │   │           # POST /v1/privacy/export
     │   │   │   │   │           # POST /v1/privacy/erase
     │   │   │   │   │           # GET  /v1/privacy/requests/{id}
+    │   │   │   │   ├── security/
+    │   │   │   │   │   ├── data-export-delete.tsx  # Export / delete account (mobile)
+    │   │   │   │   │   │   # BE: users-be/account — POST /v1/user/export, /delete
+    │   │   │   │   │   └── devices-sessions.tsx  # Active devices & sessions (mobile)
+    │   │   │   │   │       # BE: users-be/account — GET /v1/user/sessions
     │   │   │   │   ├── storage/
     │   │   │   │   │   ├── cache/
     │   │   │   │   │   │   └── index.tsx  # Cache management
@@ -1015,6 +1209,9 @@ fe/
     │   │   │   │   ├── notifications.tsx  # Notification settings
     │   │   │   │   ├── privacy.tsx  # Privacy settings
     │   │   │   │   └── security.tsx  # Security settings
+    │   │   │   ├── status/
+    │   │   │   │   └── index.tsx  # Status & incidents (mobile)
+    │   │   │   │       # BE: utility/status — GET /v1/status, /v1/incidents
     │   │   │   ├── subscription/
     │   │   │   │   ├── connects.tsx  # Connects management
     │   │   │   │   │   # BE: subscriptions-be
@@ -1047,6 +1244,8 @@ fe/
     │   │   │   └── index.tsx  # App entry point
     │   │   │       # - Splash screen
     │   │   │       # - Initial route determination
+    │   │   │       # Home (Dashboard)
+    │   │   │       # BE: users-be, analytics (aggregated)
     │   │   ├── assets/  # Mobile assets
     │   │   │   ├── fonts/  # Custom fonts
     │   │   │   ├── icons/  # App icons
@@ -1111,6 +1310,8 @@ fe/
     │   │   │   │   │   ├── ProposalCard.tsx  # Proposal card
     │   │   │   │   │   ├── ProposalForm.tsx  # Proposal submission form
     │   │   │   │   │   └── ProposalList.tsx  # Proposal list
+    │   │   │   │   ├── QuickActions/
+    │   │   │   │   │   └── README.md  # Home screen quick actions (notes)
     │   │   │   │   └── UI/
     │   │   │   │       ├── Avatar.tsx  # Avatar component
     │   │   │   │       ├── Badge.tsx  # Badge component
@@ -1455,6 +1656,16 @@ fe/
     │   │   │   │   ├── [locale]/  # Internationalized routing (en, ar, zh, hi, de, fr, tr, es, ru)
     │   │   │   │   │   ├── (admin)/
     │   │   │   │   │   │   ├── admin/
+    │   │   │   │   │   │   │   ├── analytics/
+    │   │   │   │   │   │   │   │   ├── experiments/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # A/B testing dashboard
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/analytics
+    │   │   │   │   │   │   │   │   ├── reports/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Analytics reports
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/analytics
+    │   │   │   │   │   │   │   │   └── user-behavior/
+    │   │   │   │   │   │   │   │       └── page.tsx  # User behavior analytics
+    │   │   │   │   │   │   │   │           # BE: admin-be/analytics
     │   │   │   │   │   │   │   ├── audit-logs/
     │   │   │   │   │   │   │   │   ├── [logId]/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Audit log details
@@ -1486,6 +1697,9 @@ fe/
     │   │   │   │   │   │   │   │           # BE: admin-be/admin_session
     │   │   │   │   │   │   │   │           # POST /v1/admin/break-glass/request
     │   │   │   │   │   │   │   ├── business-verification/
+    │   │   │   │   │   │   │   │   ├── [caseId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Business verification case detail
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/business_verification
     │   │   │   │   │   │   │   │   ├── [verificationId]/
     │   │   │   │   │   │   │   │   │   ├── reverify/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Request reverification
@@ -1507,6 +1721,17 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # Business verification dashboard
     │   │   │   │   │   │   │   │       # BE: admin-be/business_verification
     │   │   │   │   │   │   │   │       # GET /v1/admin/business-verification
+    │   │   │   │   │   │   │   │       # Business verification queue
+    │   │   │   │   │   │   │   ├── communications/
+    │   │   │   │   │   │   │   │   ├── broadcasts/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Broadcast management
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/broadcast
+    │   │   │   │   │   │   │   │   ├── campaigns/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Campaign management
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/campaign
+    │   │   │   │   │   │   │   │   └── templates/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Template management
+    │   │   │   │   │   │   │   │           # BE: communications-be/template
     │   │   │   │   │   │   │   ├── communications-ops/
     │   │   │   │   │   │   │   │   ├── broadcasts/
     │   │   │   │   │   │   │   │   │   ├── [broadcastId]/
@@ -1586,6 +1811,32 @@ fe/
     │   │   │   │   │   │   │   │       └── page.tsx  # Templates dashboard
     │   │   │   │   │   │   │   │           # BE: communications-be/template
     │   │   │   │   │   │   │   │           # GET /v1/admin/templates
+    │   │   │   │   │   │   │   ├── compliance/
+    │   │   │   │   │   │   │   │   ├── aml/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # AML monitoring
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/aml
+    │   │   │   │   │   │   │   │   ├── audit-logs/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Audit log viewer
+    │   │   │   │   │   │   │   │   │       # BE: utility/audit
+    │   │   │   │   │   │   │   │   ├── data-exports/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # GDPR data exports
+    │   │   │   │   │   │   │   │   │       # BE: users-be/export
+    │   │   │   │   │   │   │   │   ├── data-retention/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Data retention policies
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/data_retention
+    │   │   │   │   │   │   │   │   └── gdpr/
+    │   │   │   │   │   │   │   │       └── page.tsx  # GDPR compliance
+    │   │   │   │   │   │   │   │           # BE: admin-be/gdpr
+    │   │   │   │   │   │   │   ├── content-moderation/
+    │   │   │   │   │   │   │   │   ├── flagged/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Flagged content review
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/moderation
+    │   │   │   │   │   │   │   │   ├── reports/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # User reports
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/moderation
+    │   │   │   │   │   │   │   │   └── rules/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Moderation rules
+    │   │   │   │   │   │   │   │           # BE: admin-be/moderation
     │   │   │   │   │   │   │   ├── dashboard/
     │   │   │   │   │   │   │   │   └── page.tsx  # Admin dashboard
     │   │   │   │   │   │   │   │       # - Key metrics
@@ -1593,6 +1844,46 @@ fe/
     │   │   │   │   │   │   │   │       # - System alerts
     │   │   │   │   │   │   │   │       # BE: admin-be/dashboard
     │   │   │   │   │   │   │   │       # GET /v1/admin/dashboard
+    │   │   │   │   │   │   │   ├── dispute-resolution/
+    │   │   │   │   │   │   │   │   ├── [disputeId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Dispute case detail
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │   │   ├── arbitration/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Arbitration queue
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │   │   ├── mediation/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Mediation queue
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │   │   └── page.tsx  # Disputes dashboard
+    │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │   ├── feature-flags/
+    │   │   │   │   │   │   │   │   ├── experiments/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Experiments management
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/flags
+    │   │   │   │   │   │   │   │   └── page.tsx  # Feature flags dashboard
+    │   │   │   │   │   │   │   │       # BE: admin-be/flags
+    │   │   │   │   │   │   │   ├── financial/
+    │   │   │   │   │   │   │   │   ├── chargebacks/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Chargeback management
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/chargeback
+    │   │   │   │   │   │   │   │   ├── escrow-monitoring/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Escrow monitoring
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/escrow
+    │   │   │   │   │   │   │   │   ├── fraud-detection/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Fraud detection
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/risk
+    │   │   │   │   │   │   │   │   ├── payouts-review/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Payout review queue
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payout
+    │   │   │   │   │   │   │   │   ├── reconciliation/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Financial reconciliation
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/reconciliation
+    │   │   │   │   │   │   │   │   ├── refunds/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Refund management
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/refund
+    │   │   │   │   │   │   │   │   └── tax-reporting/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Tax reporting
+    │   │   │   │   │   │   │   │           # BE: financial-be/tax_report
     │   │   │   │   │   │   │   ├── financial-ops/
     │   │   │   │   │   │   │   │   ├── disputes/
     │   │   │   │   │   │   │   │   │   ├── [disputeId]/
@@ -1682,6 +1973,28 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # Goodwill credits dashboard
     │   │   │   │   │   │   │   │       # BE: admin-be/goodwill_credit
     │   │   │   │   │   │   │   │       # GET /v1/admin/goodwill-credits
+    │   │   │   │   │   │   │   ├── incidents/
+    │   │   │   │   │   │   │   │   ├── [incidentId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Incident detail
+    │   │   │   │   │   │   │   │   │       # BE: utility/status
+    │   │   │   │   │   │   │   │   ├── maintenance/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Maintenance windows
+    │   │   │   │   │   │   │   │   │       # BE: utility/status
+    │   │   │   │   │   │   │   │   └── page.tsx  # Incident management
+    │   │   │   │   │   │   │   │       # BE: utility/status
+    │   │   │   │   │   │   │   ├── kyc/
+    │   │   │   │   │   │   │   │   ├── [caseId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # KYC case detail
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/kyc_case
+    │   │   │   │   │   │   │   │   ├── dashboard/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # KYC dashboard
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/kyc_case
+    │   │   │   │   │   │   │   │   ├── pending/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Pending cases
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/kyc_case
+    │   │   │   │   │   │   │   │   └── rejected/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Rejected cases
+    │   │   │   │   │   │   │   │           # BE: admin-be/kyc_case
     │   │   │   │   │   │   │   ├── kyc-cases/
     │   │   │   │   │   │   │   │   ├── [caseId]/
     │   │   │   │   │   │   │   │   │   ├── documents/
@@ -1750,6 +2063,15 @@ fe/
     │   │   │   │   │   │   │   │       └── page.tsx  # Reports dashboard
     │   │   │   │   │   │   │   │           # BE: admin-be/moderation
     │   │   │   │   │   │   │   │           # GET /v1/admin/moderation/reports
+    │   │   │   │   │   │   │   ├── performance/
+    │   │   │   │   │   │   │   │   ├── alerts/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Performance alerts
+    │   │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   │   ├── monitoring/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # System monitoring
+    │   │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   │   └── page.tsx  # Performance dashboard
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   ├── search-quality/
     │   │   │   │   │   │   │   │   ├── blacklists/
     │   │   │   │   │   │   │   │   │   ├── [blacklistId]/
@@ -1786,22 +2108,48 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Progress monitoring
     │   │   │   │   │   │   │   │   │       # BE: search-be/admin
     │   │   │   │   │   │   │   │   │       # POST /v1/admin/search/reindex
-    │   │   │   │   │   │   │   │   └── synonyms/
-    │   │   │   │   │   │   │   │       ├── [synonymId]/
-    │   │   │   │   │   │   │   │       │   ├── edit/
-    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # Edit synonym
-    │   │   │   │   │   │   │   │       │   │       # BE: search-be/admin
-    │   │   │   │   │   │   │   │       │   │       # PUT /v1/admin/search/synonyms/{synonym_id}
-    │   │   │   │   │   │   │   │       │   └── page.tsx  # Synonym details
-    │   │   │   │   │   │   │   │       │       # BE: search-be/admin
-    │   │   │   │   │   │   │   │       │       # GET /v1/admin/search/synonyms/{synonym_id}
-    │   │   │   │   │   │   │   │       ├── create/
-    │   │   │   │   │   │   │   │       │   └── page.tsx  # Create synonym
-    │   │   │   │   │   │   │   │       │       # BE: search-be/admin
-    │   │   │   │   │   │   │   │       │       # POST /v1/admin/search/synonyms
-    │   │   │   │   │   │   │   │       └── page.tsx  # Synonyms management
-    │   │   │   │   │   │   │   │           # BE: search-be/admin
-    │   │   │   │   │   │   │   │           # GET /v1/admin/search/synonyms
+    │   │   │   │   │   │   │   │   ├── synonyms/
+    │   │   │   │   │   │   │   │   │   ├── [synonymId]/
+    │   │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit synonym
+    │   │   │   │   │   │   │   │   │   │   │       # BE: search-be/admin
+    │   │   │   │   │   │   │   │   │   │   │       # PUT /v1/admin/search/synonyms/{synonym_id}
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Synonym details
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/admin
+    │   │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/synonyms/{synonym_id}
+    │   │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Create synonym
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/admin
+    │   │   │   │   │   │   │   │   │   │       # POST /v1/admin/search/synonyms
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Synonyms management
+    │   │   │   │   │   │   │   │   │       # BE: search-be/admin
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/synonyms
+    │   │   │   │   │   │   │   │   │       # Search synonyms
+    │   │   │   │   │   │   │   │   │       # BE: search-be/admin/synonym
+    │   │   │   │   │   │   │   │   ├── tuning/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Search tuning
+    │   │   │   │   │   │   │   │   │       # BE: search-be/admin/tuning
+    │   │   │   │   │   │   │   │   └── page.tsx  # Search quality dashboard
+    │   │   │   │   │   │   │   │       # BE: search-be/admin
+    │   │   │   │   │   │   │   ├── security/
+    │   │   │   │   │   │   │   │   ├── sessions/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Break-glass sessions
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/security
+    │   │   │   │   │   │   │   │   ├── two-person-rule/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Two-person approval
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/security
+    │   │   │   │   │   │   │   │   └── page.tsx  # Security dashboard
+    │   │   │   │   │   │   │   │       # BE: admin-be/security
+    │   │   │   │   │   │   │   ├── support/
+    │   │   │   │   │   │   │   │   ├── canned-responses/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Canned responses
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/template
+    │   │   │   │   │   │   │   │   └── tickets/
+    │   │   │   │   │   │   │   │       ├── [ticketId]/
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # Support ticket detail
+    │   │   │   │   │   │   │   │       │       # BE: communications-be/ticket
+    │   │   │   │   │   │   │   │       └── page.tsx  # Support ticket queue
+    │   │   │   │   │   │   │   │           # BE: communications-be/ticket
     │   │   │   │   │   │   │   ├── system/
     │   │   │   │   │   │   │   │   ├── configuration/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # System configuration
@@ -1869,23 +2217,80 @@ fe/
     │   │   │   │   │   │   │   │           # - Custom dashboards
     │   │   │   │   │   │   │   │           # BE: utility-be/metrics
     │   │   │   │   │   │   │   │           # GET /v1/admin/system/metrics
-    │   │   │   │   │   │   │   └── two-person-rules/
-    │   │   │   │   │   │   │       ├── [ruleId]/
-    │   │   │   │   │   │   │       │   ├── approve/
-    │   │   │   │   │   │   │       │   │   └── page.tsx  # Approve rule change
-    │   │   │   │   │   │   │       │   │       # BE: admin-be/change_approval
-    │   │   │   │   │   │   │       │   │       # POST /v1/admin/two-person-rules/{rule_id}/approve
-    │   │   │   │   │   │   │       │   └── page.tsx  # Rule details
-    │   │   │   │   │   │   │       │       # BE: admin-be/change_approval
-    │   │   │   │   │   │   │       │       # GET /v1/admin/two-person-rules/{rule_id}
-    │   │   │   │   │   │   │       ├── pending/
-    │   │   │   │   │   │   │       │   └── page.tsx  # Pending approvals
-    │   │   │   │   │   │   │       │       # BE: admin-be/change_approval
-    │   │   │   │   │   │   │       │       # GET /v1/admin/two-person-rules?status=pending
-    │   │   │   │   │   │   │       └── page.tsx  # Two-person rules dashboard
-    │   │   │   │   │   │   │           # BE: admin-be/change_approval
-    │   │   │   │   │   │   │           # GET /v1/admin/two-person-rules
+    │   │   │   │   │   │   │   ├── system-health/
+    │   │   │   │   │   │   │   │   ├── database/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Database health
+    │   │   │   │   │   │   │   │   │       # BE: utility/status
+    │   │   │   │   │   │   │   │   ├── infrastructure/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Infrastructure status
+    │   │   │   │   │   │   │   │   │       # BE: utility/status
+    │   │   │   │   │   │   │   │   └── services/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Service health
+    │   │   │   │   │   │   │   │           # BE: utility/status
+    │   │   │   │   │   │   │   ├── trust-safety/
+    │   │   │   │   │   │   │   │   ├── appeals/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # User appeals
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/trust_safety
+    │   │   │   │   │   │   │   │   ├── bans/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # User bans
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/trust_safety
+    │   │   │   │   │   │   │   │   ├── warnings/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # User warnings
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/trust_safety
+    │   │   │   │   │   │   │   │   └── page.tsx  # Trust & safety dashboard
+    │   │   │   │   │   │   │   │       # BE: admin-be/trust_safety
+    │   │   │   │   │   │   │   ├── two-person-rules/
+    │   │   │   │   │   │   │   │   ├── [ruleId]/
+    │   │   │   │   │   │   │   │   │   ├── approve/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Approve rule change
+    │   │   │   │   │   │   │   │   │   │       # BE: admin-be/change_approval
+    │   │   │   │   │   │   │   │   │   │       # POST /v1/admin/two-person-rules/{rule_id}/approve
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Rule details
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/change_approval
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/two-person-rules/{rule_id}
+    │   │   │   │   │   │   │   │   ├── pending/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Pending approvals
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/change_approval
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/two-person-rules?status=pending
+    │   │   │   │   │   │   │   │   └── page.tsx  # Two-person rules dashboard
+    │   │   │   │   │   │   │   │       # BE: admin-be/change_approval
+    │   │   │   │   │   │   │   │       # GET /v1/admin/two-person-rules
+    │   │   │   │   │   │   │   ├── user-management/
+    │   │   │   │   │   │   │   │   ├── [userId]/
+    │   │   │   │   │   │   │   │   │   ├── activity/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # User activity
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/activity
+    │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit user
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/admin
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # User detail
+    │   │   │   │   │   │   │   │   │       # BE: users-be/admin
+    │   │   │   │   │   │   │   │   ├── impersonate/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # User impersonation
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/impersonation
+    │   │   │   │   │   │   │   │   └── page.tsx  # User management
+    │   │   │   │   │   │   │   │       # BE: users-be/admin
+    │   │   │   │   │   │   │   ├── webhooks/
+    │   │   │   │   │   │   │   │   ├── [webhookId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook detail
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/webhook
+    │   │   │   │   │   │   │   │   ├── logs/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook logs
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/webhook
+    │   │   │   │   │   │   │   │   └── page.tsx  # Webhook management
+    │   │   │   │   │   │   │   │       # BE: admin-be/webhook
+    │   │   │   │   │   │   │   └── page.tsx  # Admin dashboard
+    │   │   │   │   │   │   │       # BE: admin-be/analytics
+    │   │   │   │   │   │   ├── admin-session/
+    │   │   │   │   │   │   │   └── page.tsx  # JIT break-glass admin sessions
+    │   │   │   │   │   │   │       # BE: admin-be/admin_session — POST /v1/admin/sessions/jit
     │   │   │   │   │   │   ├── audit-reporting/
+    │   │   │   │   │   │   │   ├── audit-logs/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Platform audit trail viewer
+    │   │   │   │   │   │   │   │       # BE: utility/audit — GET /v1/audit/logs
+    │   │   │   │   │   │   │   ├── bi-exports/
+    │   │   │   │   │   │   │   │   └── page.tsx  # BI extracts (CSV/Parquet) request/download
+    │   │   │   │   │   │   │   │       # BE: financial-be/reports — POST/GET /v1/reports/exports
     │   │   │   │   │   │   │   └── page.tsx  # Audit & reporting
     │   │   │   │   │   │   │       # - System logs, CSV/BI exports
     │   │   │   │   │   │   │       # BE: utility/audit | financial-be/reports
@@ -1899,6 +2304,25 @@ fe/
     │   │   │   │   │   │   │       # GET  /v1/admin/business-verifications
     │   │   │   │   │   │   │       # POST /v1/admin/business-verifications/{id}/approve
     │   │   │   │   │   │   │       # POST /v1/admin/business-verifications/{id}/reject
+    │   │   │   │   │   │   ├── case-mgmt/
+    │   │   │   │   │   │   │   └── page.tsx  # Disputes & appeals caseboard (cross-domain)
+    │   │   │   │   │   │   │       # BE: admin-be/case_mgmt — GET /v1/admin/cases ; PATCH /v1/admin/cases/{id}
+    │   │   │   │   │   │   ├── change-approval/
+    │   │   │   │   │   │   │   └── page.tsx  # Two-person approvals (configs/financial)
+    │   │   │   │   │   │   │       # BE: admin-be/change_approval — GET/POST /v1/admin/change-approvals
+    │   │   │   │   │   │   ├── comms/
+    │   │   │   │   │   │   │   ├── broadcasts/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Broadcasts (email/push/SMS)
+    │   │   │   │   │   │   │   │       # BE: communications-be/broadcast — CRUD
+    │   │   │   │   │   │   │   ├── campaigns/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Lifecycle/marketing campaigns
+    │   │   │   │   │   │   │   │       # BE: communications-be/campaign — CRUD
+    │   │   │   │   │   │   │   ├── rate-limits/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Throughput & quotas
+    │   │   │   │   │   │   │   │       # BE: communications-be/admin — GET/PUT /v1/comms/admin/rate-limits
+    │   │   │   │   │   │   │   └── templates/
+    │   │   │   │   │   │   │       └── page.tsx  # Template library (versioning/AB)
+    │   │   │   │   │   │   │           # BE: communications-be/template — CRUD
     │   │   │   │   │   │   ├── communications/
     │   │   │   │   │   │   │   ├── broadcasts/
     │   │   │   │   │   │   │   │   └── page.tsx  # Broadcast messages
@@ -2108,6 +2532,12 @@ fe/
     │   │   │   │   │   │   │           # - Performance trends
     │   │   │   │   │   │   │           # BE: utility/status
     │   │   │   │   │   │   │           # GET /v1/status/health
+    │   │   │   │   │   │   ├── experiments/
+    │   │   │   │   │   │   │   └── page.tsx  # Experiments dashboard (assignments & metrics)
+    │   │   │   │   │   │   │       # BE: utility/experiments — GET /v1/experiments/active ; POST /v1/experiments/{id}/track
+    │   │   │   │   │   │   ├── feature-flags/
+    │   │   │   │   │   │   │   └── page.tsx  # Kill switches & gradual rollout UI
+    │   │   │   │   │   │   │       # BE: utility/flags — GET/PUT /v1/flags
     │   │   │   │   │   │   ├── financial/
     │   │   │   │   │   │   │   └── tax/
     │   │   │   │   │   │   │       └── page.tsx  # Tax ops (admin)
@@ -2115,6 +2545,16 @@ fe/
     │   │   │   │   │   │   │           # BE: financial-be/tax
     │   │   │   │   │   │   │           # GET /v1/tax/forms
     │   │   │   │   │   │   │           # GET /v1/tax/reports
+    │   │   │   │   │   │   ├── financial-ops/
+    │   │   │   │   │   │   │   ├── chargebacks/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Chargeback handling & evidence
+    │   │   │   │   │   │   │   │       # BE: financial-be/chargeback — GET/POST /v1/chargebacks
+    │   │   │   │   │   │   │   ├── payouts-review/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Payout approvals & holds
+    │   │   │   │   │   │   │   │       # BE: financial-be/payout — GET /v1/payouts?status=PENDING ; POST /v1/payouts/{id}/approve
+    │   │   │   │   │   │   │   └── reconciliation/
+    │   │   │   │   │   │   │       └── page.tsx  # Ledger ↔ gateway reconciliation
+    │   │   │   │   │   │   │           # BE: financial-be/recon — GET /v1/recon/runs ; POST /v1/recon/runs
     │   │   │   │   │   │   ├── kyc-cases/
     │   │   │   │   │   │   │   └── page.tsx  # KYC case management
     │   │   │   │   │   │   │       # - Triage, document review
@@ -2125,6 +2565,9 @@ fe/
     │   │   │   │   │   │   │       # POST /v1/admin/kyc/cases/{id}/reject
     │   │   │   │   │   │   │       # POST /v1/admin/kyc/cases/{id}/request-info
     │   │   │   │   │   │   ├── moderation/
+    │   │   │   │   │   │   │   ├── [reportId]/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Review → warn/suspend/ban → notes & audit
+    │   │   │   │   │   │   │   │       # BE: users-be/moderation — POST /v1/admin/users/{id}/moderation/{action}
     │   │   │   │   │   │   │   ├── actions/
     │   │   │   │   │   │   │   │   └── page.tsx  # Enforcement actions
     │   │   │   │   │   │   │   │       # - Warn / Suspend / Ban
@@ -2138,11 +2581,13 @@ fe/
     │   │   │   │   │   │   │   │       # BE: users-be/appeal
     │   │   │   │   │   │   │   │       # GET  /v1/admin/appeals
     │   │   │   │   │   │   │   │       # POST /v1/admin/appeals/{id}/decide
-    │   │   │   │   │   │   │   └── review-queue/
-    │   │   │   │   │   │   │       └── page.tsx  # Moderation queue
-    │   │   │   │   │   │   │           # - Content & report review
-    │   │   │   │   │   │   │           # BE: users-be/moderation
-    │   │   │   │   │   │   │           # GET /v1/admin/moderation/queue
+    │   │   │   │   │   │   │   ├── review-queue/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Moderation queue
+    │   │   │   │   │   │   │   │       # - Content & report review
+    │   │   │   │   │   │   │   │       # BE: users-be/moderation
+    │   │   │   │   │   │   │   │       # GET /v1/admin/moderation/queue
+    │   │   │   │   │   │   │   └── page.tsx  # Reports queue & filters
+    │   │   │   │   │   │   │       # BE: users-be/moderation — GET /v1/admin/moderation/reports
     │   │   │   │   │   │   ├── ops/
     │   │   │   │   │   │   │   ├── admin-session/
     │   │   │   │   │   │   │   │   └── page.tsx  # JIT “break-glass” admin session
@@ -2153,14 +2598,21 @@ fe/
     │   │   │   │   │   │   │   │       # POST /v1/admin/sessions {reason,duration}
     │   │   │   │   │   │   │   │       # GET  /v1/admin/sessions
     │   │   │   │   │   │   │   │       # POST /v1/admin/sessions/{id}/approve
-    │   │   │   │   │   │   │   └── change-approval/
-    │   │   │   │   │   │   │       └── page.tsx  # Two-person change approvals
-    │   │   │   │   │   │   │           # - Risky change queue
-    │   │   │   │   │   │   │           # - Approve / Rollback
-    │   │   │   │   │   │   │           # BE: admin-be/change_approval
-    │   │   │   │   │   │   │           # GET  /v1/admin/change-approvals
-    │   │   │   │   │   │   │           # POST /v1/admin/change-approvals/{id}/approve
-    │   │   │   │   │   │   │           # POST /v1/admin/change-approvals/{id}/rollback
+    │   │   │   │   │   │   │   ├── change-approval/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Two-person change approvals
+    │   │   │   │   │   │   │   │       # - Risky change queue
+    │   │   │   │   │   │   │   │       # - Approve / Rollback
+    │   │   │   │   │   │   │   │       # BE: admin-be/change_approval
+    │   │   │   │   │   │   │   │       # GET  /v1/admin/change-approvals
+    │   │   │   │   │   │   │   │       # POST /v1/admin/change-approvals/{id}/approve
+    │   │   │   │   │   │   │   │       # POST /v1/admin/change-approvals/{id}/rollback
+    │   │   │   │   │   │   │   └── refund-cases/
+    │   │   │   │   │   │   │       ├── [caseId]/
+    │   │   │   │   │   │   │       │   └── page.tsx  # Case detail → approve/deny → post to ledger
+    │   │   │   │   │   │   │       │       # BE: admin-be/refund_case — POST /v1/admin/refund-cases/{id}/decision
+    │   │   │   │   │   │   │       │       # BE: financial-be/refund — POST /v1/refunds
+    │   │   │   │   │   │   │       └── page.tsx  # Intake & queue
+    │   │   │   │   │   │   │           # BE: admin-be/refund_case — GET /v1/admin/refund-cases
     │   │   │   │   │   │   ├── platform-config/
     │   │   │   │   │   │   │   ├── integrations/
     │   │   │   │   │   │   │   │   ├── [integrationId]/
@@ -2247,6 +2699,18 @@ fe/
     │   │   │   │   │   │   │           # BE: search-be/explainability
     │   │   │   │   │   │   │           # GET /v1/explain/{docId}
     │   │   │   │   │   │   ├── search-quality/
+    │   │   │   │   │   │   │   ├── blacklists/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Blocked entities/terms
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/safety_filters — POST/DELETE /v1/search/admin/safety
+    │   │   │   │   │   │   │   ├── boosts/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Query boosts & pinning
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/ranking — PUT /v1/search/admin/boosts
+    │   │   │   │   │   │   │   ├── explainability/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Explain results for sample queries
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/explain — GET (ES _explain proxy)
+    │   │   │   │   │   │   │   ├── facets/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Manage facets & weights
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/facets — GET/PUT
     │   │   │   │   │   │   │   ├── facets-filters/
     │   │   │   │   │   │   │   │   └── page.tsx  # Facets & filters config
     │   │   │   │   │   │   │   │       # - Define schemas & options
@@ -2255,6 +2719,9 @@ fe/
     │   │   │   │   │   │   │   │       # PUT /v1/search/admin/facets
     │   │   │   │   │   │   │   │       # GET /v1/search/admin/filters
     │   │   │   │   │   │   │   │       # PUT /v1/search/admin/filters
+    │   │   │   │   │   │   │   ├── hygiene/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Dedup/archive/visibility ops
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/hygiene — POST /v1/search/admin/hygiene/run
     │   │   │   │   │   │   │   ├── indexing/
     │   │   │   │   │   │   │   │   └── page.tsx  # Indexing & backfills
     │   │   │   │   │   │   │   │       # - Trigger reindex/backfills
@@ -2262,6 +2729,9 @@ fe/
     │   │   │   │   │   │   │   │       # BE: search-be/index
     │   │   │   │   │   │   │   │       # POST /v1/search/admin/reindex
     │   │   │   │   │   │   │   │       # GET  /v1/search/admin/index/jobs
+    │   │   │   │   │   │   │   ├── indices/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Rollover/snapshots, lifecycle ops
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/indices — POST /v1/search/admin/indices/*
     │   │   │   │   │   │   │   ├── language/
     │   │   │   │   │   │   │   │   └── page.tsx  # Language analyzers
     │   │   │   │   │   │   │   │       # - Stopwords, stemming, per-locale
@@ -2273,6 +2743,12 @@ fe/
     │   │   │   │   │   │   │   │       # - Query logs, CTR, latency, drift
     │   │   │   │   │   │   │   │       # BE: search-be/metrics
     │   │   │   │   │   │   │   │       # GET /v1/search/admin/metrics?range=…
+    │   │   │   │   │   │   │   ├── performance/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Metrics & alerts (slow queries, index health)
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/performance — GET /v1/search/admin/performance
+    │   │   │   │   │   │   │   ├── query-logs/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Query logs & filters; view ES explain
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/query-logs — GET /v1/search/admin/query-logs
     │   │   │   │   │   │   │   ├── rewrites/
     │   │   │   │   │   │   │   │   └── page.tsx  # Query rewrites & synonyms
     │   │   │   │   │   │   │   │       # - Edit dictionaries
@@ -2280,11 +2756,16 @@ fe/
     │   │   │   │   │   │   │   │       # BE: search-be/rewrite
     │   │   │   │   │   │   │   │       # GET/PUT /v1/search/admin/rewrites
     │   │   │   │   │   │   │   │       # POST    /v1/search/admin/preview
-    │   │   │   │   │   │   │   └── speller/
-    │   │   │   │   │   │   │       └── page.tsx  # Speller configuration
-    │   │   │   │   │   │   │           # - Dictionaries & thresholds
-    │   │   │   │   │   │   │           # BE: search-be/speller
-    │   │   │   │   │   │   │           # GET/PUT /v1/search/admin/speller
+    │   │   │   │   │   │   │   │       # Query rewrites & pin rules
+    │   │   │   │   │   │   │   │       # BE: search-be/admin/rewrites — GET/POST
+    │   │   │   │   │   │   │   ├── speller/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Speller configuration
+    │   │   │   │   │   │   │   │       # - Dictionaries & thresholds
+    │   │   │   │   │   │   │   │       # BE: search-be/speller
+    │   │   │   │   │   │   │   │       # GET/PUT /v1/search/admin/speller
+    │   │   │   │   │   │   │   └── synonyms/
+    │   │   │   │   │   │   │       └── page.tsx  # Manage synonyms, aliases, taxonomy
+    │   │   │   │   │   │   │           # BE: search-be/admin/taxonomy — POST/PUT /v1/search/admin/synonyms
     │   │   │   │   │   │   ├── status-incidents/
     │   │   │   │   │   │   │   └── page.tsx  # Incidents & maintenance
     │   │   │   │   │   │   │       # - Open/resolve incidents
@@ -2298,6 +2779,7 @@ fe/
     │   │   │   │   │   │           # BE: storage-be/lifecycle
     │   │   │   │   │   │           # GET /v1/storage/lifecycle
     │   │   │   │   │   ├── (auth)/  # Authentication pages (no dashboard layout)
+    │   │   │   │   │   │   # (kept if web needs auth routes)
     │   │   │   │   │   │   ├── callback/
     │   │   │   │   │   │   │   └── page.tsx  # OAuth callback handler
     │   │   │   │   │   │   │       # - Keycloak callback
@@ -3546,6 +4028,9 @@ fe/
     │   │   │   │   │   │   │           # BE: users-be/org
     │   │   │   │   │   │   │           # PUT /v1/agencies/white-label
     │   │   │   │   │   │   ├── analytics/
+    │   │   │   │   │   │   │   ├── advanced/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Advanced analytics
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   ├── clients/
     │   │   │   │   │   │   │   │   └── page.tsx  # Client analytics (freelancer)
     │   │   │   │   │   │   │   │       # - Top clients
@@ -3554,6 +4039,12 @@ fe/
     │   │   │   │   │   │   │   │       # - Client lifetime value
     │   │   │   │   │   │   │   │       # BE: users-be/analytics
     │   │   │   │   │   │   │   │       # GET /v1/users/me/analytics/clients
+    │   │   │   │   │   │   │   ├── cohorts/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Cohort analysis
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   ├── conversion/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Conversion funnel
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   ├── custom-reports/
     │   │   │   │   │   │   │   │   ├── [reportId]/
     │   │   │   │   │   │   │   │   │   ├── edit/
@@ -3563,6 +4054,11 @@ fe/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # View custom report
     │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
     │   │   │   │   │   │   │   │   │       # GET /v1/reports/custom/{report_id}
+    │   │   │   │   │   │   │   │   │       # Custom report viewer
+    │   │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Report builder
+    │   │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   │   ├── new/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Create custom report
     │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
@@ -3570,6 +4066,8 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # Custom reports list
     │   │   │   │   │   │   │   │       # BE: financial-be/reports
     │   │   │   │   │   │   │   │       # GET /v1/reports/custom
+    │   │   │   │   │   │   │   │       # Saved reports
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   ├── earnings/
     │   │   │   │   │   │   │   │   ├── forecast/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Earnings forecast
@@ -3593,6 +4091,9 @@ fe/
     │   │   │   │   │   │   │   │       # - Year-over-year comparison
     │   │   │   │   │   │   │   │       # BE: financial-be/analytics
     │   │   │   │   │   │   │   │       # GET /v1/analytics/earnings
+    │   │   │   │   │   │   │   ├── exports/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Data exports
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   ├── freelancers/
     │   │   │   │   │   │   │   │   └── page.tsx  # Freelancer analytics (client)
     │   │   │   │   │   │   │   │       # - Top freelancers
@@ -3601,6 +4102,9 @@ fe/
     │   │   │   │   │   │   │   │       # - Cost efficiency
     │   │   │   │   │   │   │   │       # BE: users-be/analytics
     │   │   │   │   │   │   │   │       # GET /v1/users/me/analytics/freelancers
+    │   │   │   │   │   │   │   ├── funnels/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Funnel analysis
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   ├── market-insights/
     │   │   │   │   │   │   │   │   └── page.tsx  # Market insights
     │   │   │   │   │   │   │   │       # - Skill demand trends
@@ -3623,6 +4127,12 @@ fe/
     │   │   │   │   │   │   │   │       # - Success metrics
     │   │   │   │   │   │   │   │       # BE: users-be/analytics
     │   │   │   │   │   │   │   │       # GET /v1/users/me/analytics/projects
+    │   │   │   │   │   │   │   ├── retention/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Retention analysis
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   ├── revenue/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Revenue analytics
+    │   │   │   │   │   │   │   │       # BE: financial-be/reports
     │   │   │   │   │   │   │   ├── spending/
     │   │   │   │   │   │   │   │   ├── forecast/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Spending forecast
@@ -3638,6 +4148,9 @@ fe/
     │   │   │   │   │   │   │   │       # - Project breakdown
     │   │   │   │   │   │   │   │       # BE: users-be/analytics
     │   │   │   │   │   │   │   │       # GET /v1/users/me/analytics/spending
+    │   │   │   │   │   │   │   ├── user-segmentation/
+    │   │   │   │   │   │   │   │   └── page.tsx  # User segments
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
     │   │   │   │   │   │   │   └── page.tsx  # Analytics dashboard
     │   │   │   │   │   │   │       # - Overview metrics
     │   │   │   │   │   │   │       # - Customizable widgets
@@ -3713,6 +4226,16 @@ fe/
     │   │   │   │   │   │   │   │       # BE: financial-be/budget
     │   │   │   │   │   │   │   │       # GET  /v1/budgets
     │   │   │   │   │   │   │   │       # POST /v1/budgets
+    │   │   │   │   │   │   │   ├── subscription/
+    │   │   │   │   │   │   │   │   ├── dunning/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Failed invoices & retries
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/invoice — GET failed/retry invoices
+    │   │   │   │   │   │   │   │   ├── manage/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Manage current subscription
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/subscription — GET /v1/subscriptions/me
+    │   │   │   │   │   │   │   │   └── plans/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Subscription plans & checkout
+    │   │   │   │   │   │   │   │           # BE: financial-be/subscription — GET /v1/subscriptions/plans
     │   │   │   │   │   │   │   └── subscriptions/
     │   │   │   │   │   │   │       ├── history/
     │   │   │   │   │   │   │       │   └── page.tsx  # Subscription history
@@ -3727,6 +4250,48 @@ fe/
     │   │   │   │   │   │   │               # GET  /v1/subscriptions/me
     │   │   │   │   │   │   │               # POST /v1/subscriptions/change
     │   │   │   │   │   │   │               # POST /v1/subscriptions/cancel
+    │   │   │   │   │   │   ├── budgets/
+    │   │   │   │   │   │   │   └── page.tsx  # Client org budgets & spend controls
+    │   │   │   │   │   │   │       # BE: financial-be/budget — GET/POST /v1/budgets
+    │   │   │   │   │   │   ├── collaboration/
+    │   │   │   │   │   │   │   ├── boards/
+    │   │   │   │   │   │   │   │   ├── [boardId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Collaboration board
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/conversation
+    │   │   │   │   │   │   │   │   └── page.tsx  # All boards
+    │   │   │   │   │   │   │   │       # BE: communications-be/conversation
+    │   │   │   │   │   │   │   ├── documents/
+    │   │   │   │   │   │   │   │   ├── [documentId]/
+    │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Document editor
+    │   │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
+    │   │   │   │   │   │   │   │   │   ├── history/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Version history
+    │   │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Document viewer
+    │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
+    │   │   │   │   │   │   │   │   ├── shared/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Shared documents
+    │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
+    │   │   │   │   │   │   │   │   └── templates/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Document templates
+    │   │   │   │   │   │   │   │           # BE: storage-be/asset
+    │   │   │   │   │   │   │   ├── meetings/
+    │   │   │   │   │   │   │   │   ├── [meetingId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Meeting detail
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/meeting
+    │   │   │   │   │   │   │   │   ├── recordings/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Meeting recordings
+    │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
+    │   │   │   │   │   │   │   │   └── schedule/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Schedule meeting
+    │   │   │   │   │   │   │   │           # BE: communications-be/meeting
+    │   │   │   │   │   │   │   └── whiteboard/
+    │   │   │   │   │   │   │       ├── [whiteboardId]/
+    │   │   │   │   │   │   │       │   └── page.tsx  # Whiteboard editor
+    │   │   │   │   │   │   │       │       # BE: communications-be/whiteboard
+    │   │   │   │   │   │   │       └── page.tsx  # Whiteboards
+    │   │   │   │   │   │   │           # BE: communications-be/whiteboard
     │   │   │   │   │   │   ├── community/
     │   │   │   │   │   │   │   ├── events/
     │   │   │   │   │   │   │   │   ├── [eventId]/
@@ -3868,6 +4433,9 @@ fe/
     │   │   │   │   │   │   │       # GET /v1/connects/balance
     │   │   │   │   │   │   ├── contracts/  # Contracts management
     │   │   │   │   │   │   │   ├── [contractId]/
+    │   │   │   │   │   │   │   │   ├── acceptance/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Accept deliverables/milestones
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/deliverable — POST accept
     │   │   │   │   │   │   │   │   ├── amendments/
     │   │   │   │   │   │   │   │   │   ├── [amendmentId]/
     │   │   │   │   │   │   │   │   │   │   ├── approve/
@@ -3901,6 +4469,9 @@ fe/
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/amendment
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/amendments
     │   │   │   │   │   │   │   │   │       # Amendments list
+    │   │   │   │   │   │   │   │   ├── approvals/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Approval workflow
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/approval
     │   │   │   │   │   │   │   │   ├── audit-trail/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Complete contract audit trail
     │   │   │   │   │   │   │   │   │       # - All changes
@@ -3908,6 +4479,11 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Access logs
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/contract, utility-be/audit
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/audit-trail
+    │   │   │   │   │   │   │   │   │       # Contract audit trail
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/audit
+    │   │   │   │   │   │   │   │   ├── budget-tracking/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Budget vs actual
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/report
     │   │   │   │   │   │   │   │   ├── change-orders/
     │   │   │   │   │   │   │   │   │   ├── [orderId]/
     │   │   │   │   │   │   │   │   │   │   ├── approve/
@@ -3931,6 +4507,7 @@ fe/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Change orders list
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/change_order
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/change-orders
+    │   │   │   │   │   │   │   │   │       # Change orders
     │   │   │   │   │   │   │   │   ├── complete/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Complete contract
     │   │   │   │   │   │   │   │   │       # - Confirm all deliverables received
@@ -3947,6 +4524,9 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Penalty tracking
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/compliance
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/compliance
+    │   │   │   │   │   │   │   │   ├── compliance-check/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Compliance check
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/compliance
     │   │   │   │   │   │   │   │   ├── deliverables/
     │   │   │   │   │   │   │   │   │   ├── [deliverableId]/
     │   │   │   │   │   │   │   │   │   │   ├── accept/
@@ -3961,6 +4541,9 @@ fe/
     │   │   │   │   │   │   │   │   │   │   │       # - Request revisions
     │   │   │   │   │   │   │   │   │   │   │       # BE: contracts-be/deliverable
     │   │   │   │   │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/deliverables/{deliverable_id}/reject
+    │   │   │   │   │   │   │   │   │   │   ├── versions/
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # File versions (download/preview)
+    │   │   │   │   │   │   │   │   │   │   │       # BE: storage-be/asset — GET versions
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Deliverable detail
     │   │   │   │   │   │   │   │   │   │       # - File preview
     │   │   │   │   │   │   │   │   │   │       # - Download
@@ -3985,6 +4568,7 @@ fe/
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/deliverable
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/deliverables
     │   │   │   │   │   │   │   │   │       # Deliverables list
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/deliverable — GET /v1/contracts/{id}/deliverables
     │   │   │   │   │   │   │   │   ├── details/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Full contract details
     │   │   │   │   │   │   │   │   │       # - Contract terms
@@ -4033,6 +4617,9 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Resolved disputes
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/disputes
+    │   │   │   │   │   │   │   │   ├── documents/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Contract documents
+    │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
     │   │   │   │   │   │   │   │   ├── extensions/
     │   │   │   │   │   │   │   │   │   ├── [extensionId]/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Extension request detail
@@ -4056,6 +4643,9 @@ fe/
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/feedback
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/feedback
     │   │   │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/feedback
+    │   │   │   │   │   │   │   │   ├── gantt/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Gantt chart view
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/schedule
     │   │   │   │   │   │   │   │   ├── invoices/
     │   │   │   │   │   │   │   │   │   ├── [invoiceId]/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Invoice detail
@@ -4142,12 +4732,21 @@ fe/
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/escrow
     │   │   │   │   │   │   │   │   │       # BE: financial-be/payment
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/payments
+    │   │   │   │   │   │   │   │   ├── reports/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Contract reports
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/report
     │   │   │   │   │   │   │   │   ├── resume/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Resume paused contract
     │   │   │   │   │   │   │   │   │       # - Confirm resume
     │   │   │   │   │   │   │   │   │       # - Adjust timeline
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/contract
     │   │   │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/resume
+    │   │   │   │   │   │   │   │   ├── risk-assessment/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Risk assessment
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/risk
+    │   │   │   │   │   │   │   │   ├── signatures/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Signature tracking
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/signature
     │   │   │   │   │   │   │   │   ├── sow/
     │   │   │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit SOW (before signing)
@@ -4159,6 +4758,12 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Timeline
     │   │   │   │   │   │   │   │   │       # BE: contracts-be/sow
     │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/sow
+    │   │   │   │   │   │   │   │   ├── sow-versions/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # SOW versioning
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/sow
+    │   │   │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Contract templates
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/template
     │   │   │   │   │   │   │   │   ├── terminate/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Terminate contract
     │   │   │   │   │   │   │   │   │       # - Termination reason
@@ -4210,6 +4815,10 @@ fe/
     │   │   │   │   │   │   │   │   │   │       # BE: contracts-be/work_diary
     │   │   │   │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/work-diary/entries
     │   │   │   │   │   │   │   │   │   │       # BE: storage-be/uploads
+    │   │   │   │   │   │   │   │   │   ├── screenshots/
+    │   │   │   │   │   │   │   │   │   │   └── [entryId]/
+    │   │   │   │   │   │   │   │   │   │       └── page.tsx  # Screenshot detail (blur/delete if allowed)
+    │   │   │   │   │   │   │   │   │   │           # BE: contracts-be/work_diary — GET /v1/work-diary/entries/{id}
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Work diary overview
     │   │   │   │   │   │   │   │   │       # - Daily activity logs
     │   │   │   │   │   │   │   │   │       # - Screenshots (if enabled)
@@ -4257,6 +4866,9 @@ fe/
     │   │   │   │   │   │   │   │       # - Best practices
     │   │   │   │   │   │   │   │       # BE: contracts-be/analytics
     │   │   │   │   │   │   │   │       # GET /v1/contracts/benchmarking
+    │   │   │   │   │   │   │   ├── bulk-actions/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Bulk operations
+    │   │   │   │   │   │   │   │       # BE: contracts-be/contract
     │   │   │   │   │   │   │   ├── calendar/
     │   │   │   │   │   │   │   │   └── page.tsx  # Contracts calendar view
     │   │   │   │   │   │   │   │       # - Milestone timeline
@@ -4264,16 +4876,25 @@ fe/
     │   │   │   │   │   │   │   │       # - Deliverable deadlines
     │   │   │   │   │   │   │   │       # BE: contracts-be/contract, contracts-be/milestone
     │   │   │   │   │   │   │   │       # GET /v1/contracts/calendar
+    │   │   │   │   │   │   │   │       # Contract calendar
+    │   │   │   │   │   │   │   │       # BE: contracts-be/schedule
     │   │   │   │   │   │   │   ├── completed/
     │   │   │   │   │   │   │   │   └── page.tsx  # Completed contracts
     │   │   │   │   │   │   │   │       # BE: contracts-be/contract
     │   │   │   │   │   │   │   │       # GET /v1/contracts?status=completed
+    │   │   │   │   │   │   │   ├── disputes/
+    │   │   │   │   │   │   │   │   └── [disputeId]/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Dispute detail & submit evidence
+    │   │   │   │   │   │   │   │           # BE: contracts-be/dispute — GET/POST
     │   │   │   │   │   │   │   ├── paused/
     │   │   │   │   │   │   │   │   └── page.tsx  # Paused contracts list
     │   │   │   │   │   │   │   │       # - Temporarily paused
     │   │   │   │   │   │   │   │       # - Resume options
     │   │   │   │   │   │   │   │       # BE: contracts-be/contract
     │   │   │   │   │   │   │   │       # GET /v1/contracts?status=paused
+    │   │   │   │   │   │   │   ├── pipeline/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Contract pipeline
+    │   │   │   │   │   │   │   │       # BE: contracts-be/pipeline
     │   │   │   │   │   │   │   ├── recurring/
     │   │   │   │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   │   │   │   └── renew/
@@ -4335,6 +4956,8 @@ fe/
     │   │   │   │   │   │   │       # GET /v1/jobs/my-jobs (jobs-be)
     │   │   │   │   │   │   │       # GET /v1/proposals/my-proposals (proposals-be)
     │   │   │   │   │   │   │       # GET /v1/contracts/active (contracts-be)
+    │   │   │   │   │   │   │       # Main dashboard (role-based)
+    │   │   │   │   │   │   │       # BE: users-be/user, jobs-be, proposals-be, analytics
     │   │   │   │   │   │   ├── deliverables/
     │   │   │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   │   │   ├── [deliverableId]/
@@ -4378,7 +5001,59 @@ fe/
     │   │   │   │   │   │   │   └── page.tsx  # All deliverables overview
     │   │   │   │   │   │   │       # BE: contracts-be/deliverable
     │   │   │   │   │   │   │       # GET /v1/deliverables
+    │   │   │   │   │   │   ├── discover/
+    │   │   │   │   │   │   │   ├── advanced-search/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Advanced search
+    │   │   │   │   │   │   │   │       # BE: search-be/query
+    │   │   │   │   │   │   │   ├── ai-matching/
+    │   │   │   │   │   │   │   │   └── page.tsx  # AI-powered matching
+    │   │   │   │   │   │   │   │       # BE: search-be/query
+    │   │   │   │   │   │   │   ├── bulk-actions/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Bulk operations
+    │   │   │   │   │   │   │   │       # BE: search-be/query
+    │   │   │   │   │   │   │   ├── collections/
+    │   │   │   │   │   │   │   │   ├── [collectionId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Collection detail
+    │   │   │   │   │   │   │   │   │       # BE: search-be/saved_query
+    │   │   │   │   │   │   │   │   └── page.tsx  # Saved collections
+    │   │   │   │   │   │   │   │       # BE: search-be/saved_query
+    │   │   │   │   │   │   │   ├── filters/
+    │   │   │   │   │   │   │   │   ├── save/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Save filter
+    │   │   │   │   │   │   │   │   │       # BE: search-be/saved_query
+    │   │   │   │   │   │   │   │   └── page.tsx  # Saved filters
+    │   │   │   │   │   │   │   │       # BE: search-be/saved_query
+    │   │   │   │   │   │   │   ├── sourcing/
+    │   │   │   │   │   │   │   │   ├── campaigns/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Sourcing campaigns
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/sourcing
+    │   │   │   │   │   │   │   │   ├── pipeline/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Talent pipeline
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/sourcing
+    │   │   │   │   │   │   │   │   └── templates/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Outreach templates
+    │   │   │   │   │   │   │   │           # BE: communications-be/template
+    │   │   │   │   │   │   │   └── trending/
+    │   │   │   │   │   │   │       └── page.tsx  # Trending talent/jobs
+    │   │   │   │   │   │   │           # BE: search-be/trending
+    │   │   │   │   │   │   ├── feed/
+    │   │   │   │   │   │   │   └── page.tsx  # Personalized feed (jobs/talent/portfolio)
+    │   │   │   │   │   │   │       # BE: search-be/feed — GET /v1/search/feed?type=JOB|FREELANCER
+    │   │   │   │   │   │   │       # BE: search-be/feed-interactions — POST /v1/search/feed/{id}/interact
     │   │   │   │   │   │   ├── financial/
+    │   │   │   │   │   │   │   ├── accounting/
+    │   │   │   │   │   │   │   │   ├── chart-of-accounts/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Chart of accounts
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/accounting
+    │   │   │   │   │   │   │   │   ├── general-ledger/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # General ledger
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/accounting
+    │   │   │   │   │   │   │   │   ├── journal-entries/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Journal entries
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/accounting
+    │   │   │   │   │   │   │   │   └── reconciliation/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Account reconciliation
+    │   │   │   │   │   │   │   │           # BE: financial-be/accounting
     │   │   │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   │   │   ├── history/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Billing history
@@ -4413,6 +5088,26 @@ fe/
     │   │   │   │   │   │   │   │           # - Upgrade/downgrade
     │   │   │   │   │   │   │   │           # BE: financial-be/subscription
     │   │   │   │   │   │   │   │           # GET /v1/subscriptions/billing
+    │   │   │   │   │   │   │   ├── budgets/
+    │   │   │   │   │   │   │   │   ├── [budgetId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Budget detail
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budget
+    │   │   │   │   │   │   │   │   ├── forecasting/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Budget forecasting
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budget
+    │   │   │   │   │   │   │   │   ├── planning/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Budget planning
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budget
+    │   │   │   │   │   │   │   │   └── variance/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Variance analysis
+    │   │   │   │   │   │   │   │           # BE: financial-be/budget
+    │   │   │   │   │   │   │   ├── cash-flow/
+    │   │   │   │   │   │   │   │   ├── forecasting/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Cash flow forecast
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/cashflow
+    │   │   │   │   │   │   │   │   └── statements/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Cash flow statements
+    │   │   │   │   │   │   │   │           # BE: financial-be/cashflow
     │   │   │   │   │   │   │   ├── chargebacks/
     │   │   │   │   │   │   │   │   ├── [chargebackId]/
     │   │   │   │   │   │   │   │   │   ├── respond/
@@ -4517,6 +5212,19 @@ fe/
     │   │   │   │   │   │   │   │       # - Transaction history
     │   │   │   │   │   │   │   │       # BE: financial-be/escrow
     │   │   │   │   │   │   │   │       # GET /v1/escrow
+    │   │   │   │   │   │   │   ├── expenses/
+    │   │   │   │   │   │   │   │   ├── approvals/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Expense approvals
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/expense
+    │   │   │   │   │   │   │   │   ├── categories/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Expense categories
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/expense
+    │   │   │   │   │   │   │   │   ├── policies/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Expense policies
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/expense
+    │   │   │   │   │   │   │   │   └── reimbursements/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Reimbursements
+    │   │   │   │   │   │   │   │           # BE: financial-be/expense
     │   │   │   │   │   │   │   ├── forecasting/
     │   │   │   │   │   │   │   │   └── page.tsx  # Revenue/expense forecasting
     │   │   │   │   │   │   │   │       # - Projected earnings
@@ -4543,6 +5251,19 @@ fe/
     │   │   │   │   │   │   │   │           # - Late fees
     │   │   │   │   │   │   │   │           # BE: financial-be/invoice
     │   │   │   │   │   │   │   │           # GET /v1/invoices?status=overdue
+    │   │   │   │   │   │   │   ├── invoicing/
+    │   │   │   │   │   │   │   │   ├── bulk-invoice/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Bulk invoicing
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │   ├── recurring/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Recurring invoices
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │   ├── reminders/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Payment reminders
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │   └── templates/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Invoice templates
+    │   │   │   │   │   │   │   │           # BE: financial-be/invoice
     │   │   │   │   │   │   │   ├── payment-methods/
     │   │   │   │   │   │   │   │   ├── [methodId]/
     │   │   │   │   │   │   │   │   │   ├── edit/
@@ -4566,6 +5287,18 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Digital wallet
     │   │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
     │   │   │   │   │   │   │   │   │       # POST /v1/financial/payment-methods
+    │   │   │   │   │   │   │   │   ├── bank-accounts/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Bank accounts
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
+    │   │   │   │   │   │   │   │   ├── credit-cards/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Credit cards
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
+    │   │   │   │   │   │   │   │   ├── digital-wallets/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Digital wallets
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
+    │   │   │   │   │   │   │   │   ├── verification/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Payment verification
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
     │   │   │   │   │   │   │   │   └── page.tsx  # Payment methods list
     │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
     │   │   │   │   │   │   │   │       # GET /v1/financial/payment-methods
@@ -4681,6 +5414,9 @@ fe/
     │   │   │   │   │   │   │   │       # BE: financial-be/reports
     │   │   │   │   │   │   │   │       # GET /v1/reports
     │   │   │   │   │   │   │   ├── tax/
+    │   │   │   │   │   │   │   │   ├── 1099-reporting/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # 1099 reporting
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/tax_form
     │   │   │   │   │   │   │   │   ├── forms/
     │   │   │   │   │   │   │   │   │   ├── w9/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # W-9 form management
@@ -4691,17 +5427,29 @@ fe/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Tax forms list
     │   │   │   │   │   │   │   │   │       # BE: financial-be/tax
     │   │   │   │   │   │   │   │   │       # GET /v1/tax/forms
+    │   │   │   │   │   │   │   │   │       # Tax forms
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/tax_form
     │   │   │   │   │   │   │   │   ├── settings/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Tax settings
     │   │   │   │   │   │   │   │   │       # - Tax residency
     │   │   │   │   │   │   │   │   │       # - Withholding preferences
     │   │   │   │   │   │   │   │   │       # BE: financial-be/tax
     │   │   │   │   │   │   │   │   │       # PUT /v1/tax/settings
+    │   │   │   │   │   │   │   │   ├── withholding/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Tax withholding
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/tax
     │   │   │   │   │   │   │   │   └── page.tsx  # Tax overview
     │   │   │   │   │   │   │   │       # - Tax liability
     │   │   │   │   │   │   │   │       # - Forms required
     │   │   │   │   │   │   │   │       # BE: financial-be/tax
     │   │   │   │   │   │   │   │       # GET /v1/tax/overview
+    │   │   │   │   │   │   │   ├── treasury/
+    │   │   │   │   │   │   │   │   ├── investment/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Treasury investment
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/treasury
+    │   │   │   │   │   │   │   │   └── liquidity/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Liquidity management
+    │   │   │   │   │   │   │   │           # BE: financial-be/treasury
     │   │   │   │   │   │   │   └── wallet/
     │   │   │   │   │   │   │       ├── add-funds/
     │   │   │   │   │   │   │       │   └── page.tsx  # Add funds to wallet
@@ -4912,6 +5660,16 @@ fe/
     │   │   │   │   │   │   │       # GET /v1/wallet/balance
     │   │   │   │   │   │   │       # BE: financial-be/transaction
     │   │   │   │   │   │   │       # GET /v1/transactions/recent
+    │   │   │   │   │   │   ├── insights/
+    │   │   │   │   │   │   │   ├── market-trends/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Market trends
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   ├── predictions/
+    │   │   │   │   │   │   │   │   └── page.tsx  # AI predictions
+    │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   └── recommendations/
+    │   │   │   │   │   │   │       └── page.tsx  # AI recommendations
+    │   │   │   │   │   │   │           # BE: utility/analytics
     │   │   │   │   │   │   ├── invitations/
     │   │   │   │   │   │   │   ├── received/
     │   │   │   │   │   │   │   │   ├── [inviteId]/
@@ -5242,6 +6000,15 @@ fe/
     │   │   │   │   │   │   │       # Client: GET /v1/jobs/my-jobs
     │   │   │   │   │   │   ├── learning/
     │   │   │   │   │   │   │   ├── achievements/
+    │   │   │   │   │   │   │   │   ├── badges/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Badges earned
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   │   ├── certifications/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Certifications
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   │   ├── leaderboard/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Leaderboard
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   │   └── page.tsx  # Achievements & badges
     │   │   │   │   │   │   │   │       # - Earned badges
     │   │   │   │   │   │   │   │       # - Progress to next level
@@ -5261,16 +6028,23 @@ fe/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Assessment results
     │   │   │   │   │   │   │   │   │   │       # BE: learning-be/assessment
     │   │   │   │   │   │   │   │   │   │       # GET /v1/learning/assessments/{assessment_id}/results
+    │   │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   │   │   ├── review/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Review answers
+    │   │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   │   │   ├── take/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Take assessment
     │   │   │   │   │   │   │   │   │   │       # BE: learning-be/assessment
     │   │   │   │   │   │   │   │   │   │       # POST /v1/learning/assessments/{assessment_id}/submit
+    │   │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Assessment detail
     │   │   │   │   │   │   │   │   │       # BE: learning-be/assessment
     │   │   │   │   │   │   │   │   │       # GET /v1/learning/assessments/{assessment_id}
     │   │   │   │   │   │   │   │   └── page.tsx  # Assessments list
     │   │   │   │   │   │   │   │       # BE: learning-be/assessment
     │   │   │   │   │   │   │   │       # GET /v1/learning/assessments
+    │   │   │   │   │   │   │   │       # Available assessments
+    │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   ├── certifications/
     │   │   │   │   │   │   │   │   ├── [certId]/
     │   │   │   │   │   │   │   │   │   ├── verify/
@@ -5310,6 +6084,12 @@ fe/
     │   │   │   │   │   │   │   │   │   │           └── page.tsx  # Submit answers
     │   │   │   │   │   │   │   │   │   │               # BE: utility-be/learning
     │   │   │   │   │   │   │   │   │   │               # POST /v1/assessments/{assessment_id}/submit
+    │   │   │   │   │   │   │   │   │   ├── curriculum/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Course curriculum
+    │   │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   │   │   ├── discussions/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Course discussions
+    │   │   │   │   │   │   │   │   │   │       # BE: communications-be/conversation
     │   │   │   │   │   │   │   │   │   ├── lessons/
     │   │   │   │   │   │   │   │   │   │   └── [lessonId]/
     │   │   │   │   │   │   │   │   │   │       └── page.tsx  # Lesson content
@@ -5321,10 +6101,17 @@ fe/
     │   │   │   │   │   │   │   │   │   │           # - Progress tracking
     │   │   │   │   │   │   │   │   │   │           # BE: utility-be/learning OR external LMS
     │   │   │   │   │   │   │   │   │   │           # GET /v1/courses/{course_id}/lessons/{lesson_id}
+    │   │   │   │   │   │   │   │   │   ├── materials/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Course materials
+    │   │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
     │   │   │   │   │   │   │   │   │   ├── progress/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Course progress
     │   │   │   │   │   │   │   │   │   │       # BE: learning-be/progress
     │   │   │   │   │   │   │   │   │   │       # GET /v1/learning/courses/{course_id}/progress
+    │   │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   │   │   ├── quizzes/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Course quizzes
+    │   │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Course detail
     │   │   │   │   │   │   │   │   │       # BE: learning-be/course
     │   │   │   │   │   │   │   │   │       # GET /v1/learning/courses/{course_id}
@@ -5342,6 +6129,9 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Recommendations
     │   │   │   │   │   │   │   │   │       # BE: utility-be/learning
     │   │   │   │   │   │   │   │   │       # GET /v1/courses
+    │   │   │   │   │   │   │   │   ├── catalog/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Course catalog
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   │   ├── my-courses/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Enrolled courses
     │   │   │   │   │   │   │   │   │       # - In progress
@@ -5349,6 +6139,10 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Certificates
     │   │   │   │   │   │   │   │   │       # BE: utility-be/learning
     │   │   │   │   │   │   │   │   │       # GET /v1/users/me/courses
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   │   ├── recommended/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Recommended courses
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   │   └── page.tsx  # Courses catalog
     │   │   │   │   │   │   │   │       # BE: learning-be/course
     │   │   │   │   │   │   │   │       # GET /v1/learning/courses
@@ -5380,6 +6174,11 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Resources
     │   │   │   │   │   │   │   │   │       # BE: users-be/learning_path
     │   │   │   │   │   │   │   │   │       # GET /v1/users/me/learning-path/{path_id}
+    │   │   │   │   │   │   │   │   │       # Learning path detail
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Create learning path
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/learning
     │   │   │   │   │   │   │   │   ├── discover/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Discover learning paths
     │   │   │   │   │   │   │   │   │       # BE: users-be/learning_path
@@ -5387,37 +6186,52 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # My learning paths
     │   │   │   │   │   │   │   │       # BE: users-be/learning_path
     │   │   │   │   │   │   │   │       # GET /v1/users/me/learning-path
-    │   │   │   │   │   │   │   └── skill-tests/
-    │   │   │   │   │   │   │       ├── [testId]/
-    │   │   │   │   │   │   │       │   ├── instructions/
-    │   │   │   │   │   │   │       │   │   └── page.tsx  # Test instructions
-    │   │   │   │   │   │   │       │   │       # BE: users-be/capabilities
-    │   │   │   │   │   │   │       │   │       # GET /v1/skill-tests/{test_id}
-    │   │   │   │   │   │   │       │   ├── results/
-    │   │   │   │   │   │   │       │   │   └── page.tsx  # Test results
-    │   │   │   │   │   │   │       │   │       # - Score
-    │   │   │   │   │   │   │       │   │       # - Percentile
-    │   │   │   │   │   │   │       │   │       # - Badge earned
-    │   │   │   │   │   │   │       │   │       # BE: users-be/capabilities
-    │   │   │   │   │   │   │       │   │       # GET /v1/skill-tests/{test_id}/results
-    │   │   │   │   │   │   │       │   └── take-test/
-    │   │   │   │   │   │   │       │       └── page.tsx  # Take the test
-    │   │   │   │   │   │   │       │           # - Timed test interface
-    │   │   │   │   │   │   │       │           # - Submit answers
-    │   │   │   │   │   │   │       │           # BE: users-be/capabilities
-    │   │   │   │   │   │   │       │           # POST /v1/skill-tests/{test_id}/submit
-    │   │   │   │   │   │   │       └── page.tsx  # Available skill tests
-    │   │   │   │   │   │   │           # - Browse by skill
-    │   │   │   │   │   │   │           # - Test history
-    │   │   │   │   │   │   │           # - Top scores
-    │   │   │   │   │   │   │           # BE: users-be/capabilities
-    │   │   │   │   │   │   │           # GET /v1/skill-tests
+    │   │   │   │   │   │   │   │       # Learning paths
+    │   │   │   │   │   │   │   │       # BE: admin-be/learning
+    │   │   │   │   │   │   │   ├── skill-tests/
+    │   │   │   │   │   │   │   │   ├── [testId]/
+    │   │   │   │   │   │   │   │   │   ├── instructions/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Test instructions
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/capabilities
+    │   │   │   │   │   │   │   │   │   │       # GET /v1/skill-tests/{test_id}
+    │   │   │   │   │   │   │   │   │   ├── results/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Test results
+    │   │   │   │   │   │   │   │   │   │       # - Score
+    │   │   │   │   │   │   │   │   │   │       # - Percentile
+    │   │   │   │   │   │   │   │   │   │       # - Badge earned
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/capabilities
+    │   │   │   │   │   │   │   │   │   │       # GET /v1/skill-tests/{test_id}/results
+    │   │   │   │   │   │   │   │   │   └── take-test/
+    │   │   │   │   │   │   │   │   │       └── page.tsx  # Take the test
+    │   │   │   │   │   │   │   │   │           # - Timed test interface
+    │   │   │   │   │   │   │   │   │           # - Submit answers
+    │   │   │   │   │   │   │   │   │           # BE: users-be/capabilities
+    │   │   │   │   │   │   │   │   │           # POST /v1/skill-tests/{test_id}/submit
+    │   │   │   │   │   │   │   │   └── page.tsx  # Available skill tests
+    │   │   │   │   │   │   │   │       # - Browse by skill
+    │   │   │   │   │   │   │   │       # - Test history
+    │   │   │   │   │   │   │   │       # - Top scores
+    │   │   │   │   │   │   │   │       # BE: users-be/capabilities
+    │   │   │   │   │   │   │   │       # GET /v1/skill-tests
+    │   │   │   │   │   │   │   └── skills/
+    │   │   │   │   │   │   │       ├── assessments/
+    │   │   │   │   │   │   │       │   └── page.tsx  # Skill assessments
+    │   │   │   │   │   │   │       │       # BE: admin-be/learning
+    │   │   │   │   │   │   │       ├── gaps/
+    │   │   │   │   │   │   │       │   └── page.tsx  # Skill gaps
+    │   │   │   │   │   │   │       │       # BE: users-be/profile
+    │   │   │   │   │   │   │       └── recommendations/
+    │   │   │   │   │   │   │           └── page.tsx  # Skill recommendations
+    │   │   │   │   │   │   │               # BE: users-be/profile
     │   │   │   │   │   │   ├── messages/  # Messaging
     │   │   │   │   │   │   │   ├── [conversationId]/
     │   │   │   │   │   │   │   │   ├── archive/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Archive conversation
     │   │   │   │   │   │   │   │   │       # BE: communications-be/conversations
     │   │   │   │   │   │   │   │   │       # POST /v1/conversations/{conversation_id}/archive
+    │   │   │   │   │   │   │   │   ├── attachments/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Attachment manager
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/message
     │   │   │   │   │   │   │   │   ├── info/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Conversation info
     │   │   │   │   │   │   │   │   │       # - Participants
@@ -5426,6 +6240,13 @@ fe/
     │   │   │   │   │   │   │   │   │       # - Search in conversation
     │   │   │   │   │   │   │   │   │       # BE: communications-be/conversations
     │   │   │   │   │   │   │   │   │       # GET /v1/conversations/{conversation_id}/info
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/conversation
+    │   │   │   │   │   │   │   │   ├── search/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Search messages
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/message/search
+    │   │   │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Conversation settings
+    │   │   │   │   │   │   │   │   │       # BE: communications-be/conversation
     │   │   │   │   │   │   │   │   └── page.tsx  # Conversation thread
     │   │   │   │   │   │   │   │       # - Message history
     │   │   │   │   │   │   │   │       # - Real-time new messages
@@ -5451,6 +6272,7 @@ fe/
     │   │   │   │   │   │   │   │       # - View archived messages
     │   │   │   │   │   │   │   │       # - Unarchive capability
     │   │   │   │   │   │   │   │       # BE: communications-be/conversation
+    │   │   │   │   │   │   │   │       # Archived messages
     │   │   │   │   │   │   │   ├── compose/
     │   │   │   │   │   │   │   │   └── page.tsx  # Compose new message
     │   │   │   │   │   │   │   │       # - Recipient search
@@ -5464,6 +6286,8 @@ fe/
     │   │   │   │   │   │   │   │       # - Resume editing
     │   │   │   │   │   │   │   │       # BE: communications-be/draft
     │   │   │   │   │   │   │   │       # GET /v1/messages/drafts
+    │   │   │   │   │   │   │   │       # Draft messages
+    │   │   │   │   │   │   │   │       # BE: communications-be/message
     │   │   │   │   │   │   │   ├── new/
     │   │   │   │   │   │   │   │   └── page.tsx  # Start new conversation
     │   │   │   │   │   │   │   │       # - Select recipient (search users)
@@ -5482,10 +6306,16 @@ fe/
     │   │   │   │   │   │   │   │       # - Quick access
     │   │   │   │   │   │   │   │       # BE: communications-be/conversation
     │   │   │   │   │   │   │   │       # GET /v1/conversations?starred=true
+    │   │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Message templates
+    │   │   │   │   │   │   │   │       # BE: communications-be/template
     │   │   │   │   │   │   │   └── page.tsx  # Inbox
     │   │   │   │   │   │   │       # - User conversations list
     │   │   │   │   │   │   │       # BE: communications-be/conversation
     │   │   │   │   │   │   │       # GET /v1/conversations?mine=1
+    │   │   │   │   │   │   ├── mobile-preview/
+    │   │   │   │   │   │   │   └── page.tsx  # Preview mobile experience
+    │   │   │   │   │   │   │       # BE: none (dev utility)
     │   │   │   │   │   │   ├── network/
     │   │   │   │   │   │   │   ├── connections/
     │   │   │   │   │   │   │   │   ├── [userId]/
@@ -5552,6 +6382,9 @@ fe/
     │   │   │   │   │   │   │   │       # - Filter options
     │   │   │   │   │   │   │   │       # BE: communications-be/notification
     │   │   │   │   │   │   │   │       # GET /v1/notifications
+    │   │   │   │   │   │   │   ├── push-settings/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Configure push notifications
+    │   │   │   │   │   │   │   │       # BE: communications-be/notification
     │   │   │   │   │   │   │   ├── settings/
     │   │   │   │   │   │   │   │   ├── channels/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Notification channels
@@ -5572,6 +6405,9 @@ fe/
     │   │   │   │   │   │   │   │       # GET /v1/notifications/preferences
     │   │   │   │   │   │   │   │       # PUT /v1/notifications/preferences
     │   │   │   │   │   │   │   │       # Notification preferences (completion)
+    │   │   │   │   │   │   │   │       # Notification preferences (email/push/in-app)
+    │   │   │   │   │   │   │   │       # BE: users-be/preferences — PATCH /v1/users/me/preferences
+    │   │   │   │   │   │   │   │       # BE: communications-be/subscription — POST /v1/push/subscribe
     │   │   │   │   │   │   │   ├── unread/
     │   │   │   │   │   │   │   │   └── page.tsx  # Unread notifications only
     │   │   │   │   │   │   │   │       # BE: communications-be/notifications
@@ -5588,6 +6424,12 @@ fe/
     │   │   │   │   │   │   │       # GET /v1/notifications
     │   │   │   │   │   │   │       # POST /v1/notifications/read-all
     │   │   │   │   │   │   │       # WebSocket: ws://communications-be/v1/notifications
+    │   │   │   │   │   │   │       # Notifications inbox (unread, categories, mark read)
+    │   │   │   │   │   │   │       # BE: communications-be/notification — GET /v1/notifications?status=unread
+    │   │   │   │   │   │   ├── offline/
+    │   │   │   │   │   │   │   └── settings/
+    │   │   │   │   │   │   │       └── page.tsx  # Offline mode configuration
+    │   │   │   │   │   │   │           # BE: none (client-side/PWA)
     │   │   │   │   │   │   ├── organization/  # Organization management (for clients)
     │   │   │   │   │   │   │   ├── analytics/
     │   │   │   │   │   │   │   │   └── page.tsx  # Organization analytics
@@ -5597,6 +6439,72 @@ fe/
     │   │   │   │   │   │   │   │       # - Time to hire
     │   │   │   │   │   │   │   │       # BE: analytics-be
     │   │   │   │   │   │   │   │       # GET /v1/analytics/organization/{org_id}
+    │   │   │   │   │   │   │   ├── billing/
+    │   │   │   │   │   │   │   │   ├── contracts/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Billing contracts
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/billing_profile
+    │   │   │   │   │   │   │   │   ├── cost-allocation/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Cost allocation
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/billing_profile
+    │   │   │   │   │   │   │   │   ├── spending-limits/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Spending limits
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/billing_profile
+    │   │   │   │   │   │   │   │   └── usage/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Usage reports
+    │   │   │   │   │   │   │   │           # BE: financial-be/billing_profile
+    │   │   │   │   │   │   │   ├── compliance/
+    │   │   │   │   │   │   │   │   ├── certifications/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Certifications
+    │   │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │   ├── documents/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Compliance docs
+    │   │   │   │   │   │   │   │   │       # BE: storage-be/asset
+    │   │   │   │   │   │   │   │   └── policies/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Company policies
+    │   │   │   │   │   │   │   │           # BE: users-be/org
+    │   │   │   │   │   │   │   ├── hierarchy/
+    │   │   │   │   │   │   │   │   ├── chart/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Org chart
+    │   │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │   ├── departments/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Departments
+    │   │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │   └── teams/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Teams structure
+    │   │   │   │   │   │   │   │           # BE: users-be/team
+    │   │   │   │   │   │   │   ├── integrations/
+    │   │   │   │   │   │   │   │   ├── [integrationId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Integration detail
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integration
+    │   │   │   │   │   │   │   │   ├── available/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Available integrations
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integration
+    │   │   │   │   │   │   │   │   └── installed/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Installed integrations
+    │   │   │   │   │   │   │   │           # BE: users-be/integration
+    │   │   │   │   │   │   │   ├── permissions/
+    │   │   │   │   │   │   │   │   ├── audit/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Permission audit
+    │   │   │   │   │   │   │   │   │       # BE: users-be/permissions
+    │   │   │   │   │   │   │   │   ├── matrix/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Permissions matrix
+    │   │   │   │   │   │   │   │   │       # BE: users-be/permissions
+    │   │   │   │   │   │   │   │   └── roles/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Role management
+    │   │   │   │   │   │   │   │           # BE: users-be/permissions
+    │   │   │   │   │   │   │   ├── procurement/
+    │   │   │   │   │   │   │   │   ├── approvals/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Approval workflows
+    │   │   │   │   │   │   │   │   │       # BE: users-be/procurement
+    │   │   │   │   │   │   │   │   ├── budgets/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Budget management
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budget
+    │   │   │   │   │   │   │   │   ├── purchase-orders/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Purchase orders
+    │   │   │   │   │   │   │   │   │       # BE: users-be/procurement
+    │   │   │   │   │   │   │   │   └── vendors/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Vendor management
+    │   │   │   │   │   │   │   │           # BE: users-be/procurement
     │   │   │   │   │   │   │   ├── settings/
     │   │   │   │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Organization billing
@@ -5631,6 +6539,16 @@ fe/
     │   │   │   │   │   │   │   │       # - By time period
     │   │   │   │   │   │   │   │       # BE: financial-be/reports
     │   │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/spending
+    │   │   │   │   │   │   │   ├── sso/
+    │   │   │   │   │   │   │   │   ├── configuration/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # SSO config
+    │   │   │   │   │   │   │   │   │       # BE: users-be/sso
+    │   │   │   │   │   │   │   │   ├── mapping/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Attribute mapping
+    │   │   │   │   │   │   │   │   │       # BE: users-be/sso
+    │   │   │   │   │   │   │   │   └── providers/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Identity providers
+    │   │   │   │   │   │   │   │           # BE: users-be/sso
     │   │   │   │   │   │   │   ├── team/
     │   │   │   │   │   │   │   │   ├── [memberId]/
     │   │   │   │   │   │   │   │   │   ├── edit/
@@ -5678,6 +6596,13 @@ fe/
     │   │   │   │   │   │   │       # - Active contracts
     │   │   │   │   │   │   │       # BE: users-be/organization
     │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}
+    │   │   │   │   │   │   ├── orgs/
+    │   │   │   │   │   │   │   └── [orgId]/
+    │   │   │   │   │   │   │       └── settings/
+    │   │   │   │   │   │   │           └── billing/
+    │   │   │   │   │   │   │               └── tax-vat/
+    │   │   │   │   │   │   │                   └── page.tsx  # Org tax/VAT profile
+    │   │   │   │   │   │   │                       # BE: admin-be/business_verification — GET/PUT
     │   │   │   │   │   │   ├── portfolio/
     │   │   │   │   │   │   │   ├── analytics/
     │   │   │   │   │   │   │   │   └── page.tsx  # Portfolio analytics
@@ -5985,6 +6910,44 @@ fe/
     │   │   │   │   │   │   │       # GET /v1/reviews?user_id={id}&limit=5
     │   │   │   │   │   │   │       # BE: users-be/availability
     │   │   │   │   │   │   │       # GET /v1/users/{id}/availability
+    │   │   │   │   │   │   ├── projects/
+    │   │   │   │   │   │   │   ├── [projectId]/
+    │   │   │   │   │   │   │   │   ├── board/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Kanban board
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   │   ├── dependencies/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Task dependencies
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   │   ├── gantt/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Gantt chart
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   │   ├── kanban/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Kanban view
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   │   ├── milestones/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Project milestones
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/milestone
+    │   │   │   │   │   │   │   │   ├── resources/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Resource allocation
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   │   ├── risks/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Risk register
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   │   ├── timeline/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Project timeline
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   │   └── workload/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Workload view
+    │   │   │   │   │   │   │   │           # BE: jobs-be/project
+    │   │   │   │   │   │   │   ├── calendar/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Project calendar
+    │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   ├── portfolio/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Project portfolio
+    │   │   │   │   │   │   │   │       # BE: jobs-be/project
+    │   │   │   │   │   │   │   └── templates/
+    │   │   │   │   │   │   │       └── page.tsx  # Project templates
+    │   │   │   │   │   │   │           # BE: jobs-be/project
     │   │   │   │   │   │   ├── proposals/  # Proposals management
     │   │   │   │   │   │   │   ├── [proposalId]/
     │   │   │   │   │   │   │   │   ├── analytics/
@@ -6267,6 +7230,49 @@ fe/
     │   │   │   │   │   │   │       # Client: Received proposals (redirect to jobs)
     │   │   │   │   │   │   │       # BE: proposals-be
     │   │   │   │   │   │   │       # GET /v1/proposals/my-proposals
+    │   │   │   │   │   │   ├── reports/
+    │   │   │   │   │   │   │   ├── earnings/
+    │   │   │   │   │   │   │   │   ├── by-client/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Earnings by client
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │   ├── by-project/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Earnings by project
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │   ├── by-skill/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Earnings by skill
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │   └── forecast/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Earnings forecast
+    │   │   │   │   │   │   │   │           # BE: financial-be/reports
+    │   │   │   │   │   │   │   ├── financial/
+    │   │   │   │   │   │   │   │   ├── expenses/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Expense reports
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │   ├── invoices/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Invoice reports
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │   ├── profit-loss/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # P&L statement
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │   └── tax/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Tax reports
+    │   │   │   │   │   │   │   │           # BE: financial-be/reports
+    │   │   │   │   │   │   │   ├── performance/
+    │   │   │   │   │   │   │   │   ├── delivery/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Delivery metrics
+    │   │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   │   ├── quality/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Quality metrics
+    │   │   │   │   │   │   │   │   │       # BE: utility/analytics
+    │   │   │   │   │   │   │   │   └── velocity/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Velocity metrics
+    │   │   │   │   │   │   │   │           # BE: utility/analytics
+    │   │   │   │   │   │   │   └── scheduled/
+    │   │   │   │   │   │   │       ├── [scheduleId]/
+    │   │   │   │   │   │   │       │   └── page.tsx  # Scheduled report detail
+    │   │   │   │   │   │   │       │       # BE: utility/analytics
+    │   │   │   │   │   │   │       └── page.tsx  # Scheduled reports
+    │   │   │   │   │   │   │           # BE: utility/analytics
     │   │   │   │   │   │   ├── reputation/
     │   │   │   │   │   │   │   ├── badges/
     │   │   │   │   │   │   │   │   └── page.tsx  # Achievement badges
@@ -6385,6 +7391,9 @@ fe/
     │   │   │   │   │   │   │   │       # - All reviews posted
     │   │   │   │   │   │   │   │       # - Edit capability (time-limited)
     │   │   │   │   │   │   │   │       # GET /v1/reviews/given
+    │   │   │   │   │   │   │   ├── my/
+    │   │   │   │   │   │   │   │   └── page.tsx  # My reviews
+    │   │   │   │   │   │   │   │       # BE: reviews-be/review — GET /v1/reviews/me
     │   │   │   │   │   │   │   ├── pending/
     │   │   │   │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Leave review form
@@ -6397,6 +7406,10 @@ fe/
     │   │   │   │   │   │   │   │       # Pending reviews to write
     │   │   │   │   │   │   │   │       # - Completed contracts
     │   │   │   │   │   │   │   │       # - Review prompts
+    │   │   │   │   │   │   │   ├── rate/
+    │   │   │   │   │   │   │   │   └── [targetId]/
+    │   │   │   │   │   │   │   │       └── page.tsx  # Leave a review
+    │   │   │   │   │   │   │   │           # BE: reviews-be/review — POST /v1/reviews
     │   │   │   │   │   │   │   ├── received/
     │   │   │   │   │   │   │   │   ├── [reviewId]/
     │   │   │   │   │   │   │   │   │   ├── respond/
@@ -6455,6 +7468,9 @@ fe/
     │   │   │   │   │   │   │   │       # - Saved search management
     │   │   │   │   │   │   │   │       # BE: search-be/query
     │   │   │   │   │   │   │   │       # POST /v1/search/advanced
+    │   │   │   │   │   │   │   ├── alerts/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Saved-search alerts (channels/schedule)
+    │   │   │   │   │   │   │   │       # BE: search-be/saved_search — GET/PUT schedules
     │   │   │   │   │   │   │   ├── freelancers/
     │   │   │   │   │   │   │   │   ├── advanced/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Advanced freelancer search
@@ -6504,6 +7520,9 @@ fe/
     │   │   │   │   │   │   │   │       # BE: search-be/suggestions
     │   │   │   │   │   │   │   │       # GET /v1/suggestions?q={query}
     │   │   │   │   │   │   │   │       # Basic job search
+    │   │   │   │   │   │   │   ├── personalization/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Pause/reset, prefer/hide entities
+    │   │   │   │   │   │   │   │       # BE: search-be/personalization — GET/PUT /v1/search/personalization
     │   │   │   │   │   │   │   ├── portfolio/
     │   │   │   │   │   │   │   │   └── page.tsx  # Search portfolios
     │   │   │   │   │   │   │   │       # - Search by project keywords
@@ -6535,6 +7554,8 @@ fe/
     │   │   │   │   │   │   │   │   │           # GET /v1/search/saved-searches/{search_id}/results
     │   │   │   │   │   │   │   │   └── page.tsx  # Saved searches list (may be in combined, ensuring here)
     │   │   │   │   │   │   │   │       # Saved searches list
+    │   │   │   │   │   │   │   │       # Saved searches list/CRUD
+    │   │   │   │   │   │   │   │       # BE: search-be/saved_search — GET/POST /v1/saved-searches
     │   │   │   │   │   │   │   ├── saved-searches/
     │   │   │   │   │   │   │   │   ├── [searchId]/
     │   │   │   │   │   │   │   │   │   ├── edit/
@@ -6981,6 +8002,10 @@ fe/
     │   │   │   │   │   │   │   │               # - Test code
     │   │   │   │   │   │   │   │               # BE: users-be/mfa
     │   │   │   │   │   │   │   │               # POST /v1/users/me/mfa/sms
+    │   │   │   │   │   │   │   ├── web-push/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Web Push: subscribe/unsubscribe, device listing
+    │   │   │   │   │   │   │   │       # BE: communications-be/subscription — POST /v1/push/subscribe
+    │   │   │   │   │   │   │   │       # BE: communications-be/subscription — DELETE /v1/push/{id}
     │   │   │   │   │   │   │   └── page.tsx  # Settings overview
     │   │   │   │   │   │   │       # - Quick access to all settings
     │   │   │   │   │   │   │       # - Profile completion indicator
@@ -7119,6 +8144,9 @@ fe/
     │   │   │   │   │   │   │       # - Charts & visualizations
     │   │   │   │   │   │   │       # BE: financial-be/analytics
     │   │   │   │   │   │   │       # GET /v1/analytics/spend
+    │   │   │   │   │   │   ├── status/
+    │   │   │   │   │   │   │   └── page.tsx  # Public status & incidents
+    │   │   │   │   │   │   │       # BE: utility/status — GET /v1/status ; GET /v1/incidents
     │   │   │   │   │   │   ├── subscription/  # Subscription management
     │   │   │   │   │   │   │   ├── addons/
     │   │   │   │   │   │   │   │   └── [addonId]/
@@ -7319,6 +8347,20 @@ fe/
     │   │   │   │   │   │   │           # - Feature usage
     │   │   │   │   │   │   │           # BE: financial-be/subscription
     │   │   │   │   │   │   │           # GET /v1/subscriptions/usage
+    │   │   │   │   │   │   ├── support/
+    │   │   │   │   │   │   │   ├── help-center/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Help center (articles search)
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge — GET /v1/help/articles?q=
+    │   │   │   │   │   │   │   └── tickets/
+    │   │   │   │   │   │   │       ├── [ticketId]/
+    │   │   │   │   │   │   │       │   └── page.tsx  # Ticket detail, replies, SLA
+    │   │   │   │   │   │   │       │       # BE: communications-be/ticket — GET/POST /v1/support/tickets/{id}/messages
+    │   │   │   │   │   │   │       ├── new/
+    │   │   │   │   │   │   │       │   └── page.tsx  # Create ticket (attachments)
+    │   │   │   │   │   │   │       │       # BE: communications-be/ticket — POST /v1/support/tickets
+    │   │   │   │   │   │   │       │       # BE: storage-be/asset — POST /v1/storage/uploads (signed URLs)
+    │   │   │   │   │   │   │       └── page.tsx  # My tickets list
+    │   │   │   │   │   │   │           # BE: communications-be/ticket — GET /v1/support/tickets?me
     │   │   │   │   │   │   ├── talent/
     │   │   │   │   │   │   │   ├── browse/
     │   │   │   │   │   │   │   │   └── page.tsx  # Browse talent
@@ -7639,25 +8681,53 @@ fe/
     │   │   │   │   │   │       # - Help sidebar
     │   │   │   │   │   ├── (public)/  # Public pages (no auth required)
     │   │   │   │   │   │   ├── about/
+    │   │   │   │   │   │   │   ├── careers/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Careers page
+    │   │   │   │   │   │   │   │       # BE: none (static marketing)
+    │   │   │   │   │   │   │   ├── company/
+    │   │   │   │   │   │   │   │   └── page.tsx  # About company
+    │   │   │   │   │   │   │   │       # BE: none (static marketing)
+    │   │   │   │   │   │   │   ├── investors/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Investor relations
+    │   │   │   │   │   │   │   │       # BE: none (static; press CMS optional)
     │   │   │   │   │   │   │   ├── leadership/
     │   │   │   │   │   │   │   │   └── page.tsx  # Leadership team
     │   │   │   │   │   │   │   │       # BE: None (static)
     │   │   │   │   │   │   │   ├── press/
     │   │   │   │   │   │   │   │   └── page.tsx  # Press releases
     │   │   │   │   │   │   │   │       # BE: None (static or CMS)
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge-base (optional CMS)
+    │   │   │   │   │   │   │   ├── team/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Team page
+    │   │   │   │   │   │   │   │       # BE: none (static marketing)
     │   │   │   │   │   │   │   └── page.tsx  # About page
     │   │   │   │   │   │   │       # - Company story
     │   │   │   │   │   │   │       # - Team showcase
     │   │   │   │   │   │   │       # - Mission & values
     │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   ├── api/
+    │   │   │   │   │   │   │   ├── documentation/
+    │   │   │   │   │   │   │   │   └── page.tsx  # API docs
+    │   │   │   │   │   │   │   │       # BE: none (static docs)
+    │   │   │   │   │   │   │   ├── pricing/
+    │   │   │   │   │   │   │   │   └── page.tsx  # API pricing
+    │   │   │   │   │   │   │   │       # BE: none (static)
+    │   │   │   │   │   │   │   └── sdks/
+    │   │   │   │   │   │   │       └── page.tsx  # SDK documentation
+    │   │   │   │   │   │   │           # BE: none (static docs)
     │   │   │   │   │   │   ├── blog/
     │   │   │   │   │   │   │   ├── [slug]/
     │   │   │   │   │   │   │   │   └── page.tsx  # Blog post detail
+    │   │   │   │   │   │   │   │       # Blog post
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
     │   │   │   │   │   │   │   ├── category/
     │   │   │   │   │   │   │   │   └── [category]/
     │   │   │   │   │   │   │   │       └── page.tsx  # Category listing
     │   │   │   │   │   │   │   │           # BE: CMS or separate service
+    │   │   │   │   │   │   │   │           # Blog category
+    │   │   │   │   │   │   │   │           # BE: communications-be/knowledge-base
     │   │   │   │   │   │   │   └── page.tsx  # Blog listing
+    │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
     │   │   │   │   │   │   ├── careers/
     │   │   │   │   │   │   │   ├── [slug]/
     │   │   │   │   │   │   │   │   └── page.tsx  # Individual job posting
@@ -7667,8 +8737,29 @@ fe/
     │   │   │   │   │   │   │   ├── [slug]/
     │   │   │   │   │   │   │   │   └── page.tsx  # Case study detail
     │   │   │   │   │   │   │   │       # BE: None (static or CMS)
+    │   │   │   │   │   │   │   │       # BE: none (static/KB)
     │   │   │   │   │   │   │   └── page.tsx  # Case studies list
     │   │   │   │   │   │   │       # BE: None (static or CMS)
+    │   │   │   │   │   │   │       # Case studies listing
+    │   │   │   │   │   │   │       # BE: none (static/KB)
+    │   │   │   │   │   │   ├── community/
+    │   │   │   │   │   │   │   ├── events/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Community events
+    │   │   │   │   │   │   │   │       # BE: communications-be/announcements (optional)
+    │   │   │   │   │   │   │   ├── forum/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Community forum
+    │   │   │   │   │   │   │   │       # BE: communications-be (forum—future)
+    │   │   │   │   │   │   │   └── page.tsx  # Community hub
+    │   │   │   │   │   │   │       # BE: none (static hub)
+    │   │   │   │   │   │   ├── compliance/
+    │   │   │   │   │   │   │   ├── aml/
+    │   │   │   │   │   │   │   │   └── page.tsx  # AML policy
+    │   │   │   │   │   │   │   │       # BE: none (policy page)
+    │   │   │   │   │   │   │   ├── kyc/
+    │   │   │   │   │   │   │   │   └── page.tsx  # KYC policy
+    │   │   │   │   │   │   │   │       # BE: none (policy page)
+    │   │   │   │   │   │   │   └── page.tsx  # Compliance overview
+    │   │   │   │   │   │   │       # BE: none (policy page)
     │   │   │   │   │   │   ├── contact/
     │   │   │   │   │   │   │   └── page.tsx  # Contact form
     │   │   │   │   │   │   │       # - Support inquiries
@@ -7677,6 +8768,7 @@ fe/
     │   │   │   │   │   │   │       # BE: communications-be/messages
     │   │   │   │   │   │   │       # POST /v1/contact
     │   │   │   │   │   │   │       # Body: { name, email, subject, message, type }
+    │   │   │   │   │   │   │       # BE: communications-be/contact (form submit)
     │   │   │   │   │   │   ├── developers/
     │   │   │   │   │   │   │   ├── api/
     │   │   │   │   │   │   │   │   ├── authentication/
@@ -7702,6 +8794,9 @@ fe/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Developer forum
     │   │   │   │   │   │   │   │   └── github/
     │   │   │   │   │   │   │   │       └── page.tsx  # GitHub repos
+    │   │   │   │   │   │   │   ├── getting-started/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Developer onboarding
+    │   │   │   │   │   │   │   │       # BE: none (static docs)
     │   │   │   │   │   │   │   ├── plugins/
     │   │   │   │   │   │   │   │   ├── shopify/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Shopify app
@@ -7717,20 +8812,31 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # All SDKs
     │   │   │   │   │   │   │   └── page.tsx  # Developer portal
     │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │       # BE: none (static docs)
     │   │   │   │   │   │   ├── enterprise/
     │   │   │   │   │   │   │   ├── contact/
     │   │   │   │   │   │   │   │   └── page.tsx  # Enterprise contact
     │   │   │   │   │   │   │   │       # BE: communications-be/messages
     │   │   │   │   │   │   │   │       # POST /v1/contact/enterprise
+    │   │   │   │   │   │   │   │       # BE: communications-be/contact (lead submit)
     │   │   │   │   │   │   │   ├── demo/
     │   │   │   │   │   │   │   │   └── page.tsx  # Request demo
     │   │   │   │   │   │   │   │       # BE: communications-be/messages
     │   │   │   │   │   │   │   │       # POST /v1/contact/demo
+    │   │   │   │   │   │   │   │       # BE: communications-be/contact (lead submit)
     │   │   │   │   │   │   │   └── page.tsx  # Enterprise solutions
     │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │       # BE: none (static)
+    │   │   │   │   │   │   ├── features/
+    │   │   │   │   │   │   │   ├── [feature]/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Feature detail
+    │   │   │   │   │   │   │   │       # BE: none (static)
+    │   │   │   │   │   │   │   └── page.tsx  # Features overview
+    │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   ├── help/
     │   │   │   │   │   │   │   ├── [category]/
     │   │   │   │   │   │   │   │   └── page.tsx  # Help category
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
     │   │   │   │   │   │   │   ├── article/
     │   │   │   │   │   │   │   │   └── [slug]/
     │   │   │   │   │   │   │   │       └── page.tsx  # Help article
@@ -7738,6 +8844,8 @@ fe/
     │   │   │   │   │   │   │   │           # GET /v1/kb/articles
     │   │   │   │   │   │   │   │           # GET /v1/kb/articles/{slug}
     │   │   │   │   │   │   │   └── page.tsx  # Help center home
+    │   │   │   │   │   │   │       # Help center
+    │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
     │   │   │   │   │   │   ├── how-it-works/
     │   │   │   │   │   │   │   ├── clients/
     │   │   │   │   │   │   │   │   └── page.tsx  # For clients
@@ -7745,16 +8853,21 @@ fe/
     │   │   │   │   │   │   │   │       # - Hiring process
     │   │   │   │   │   │   │   │       # - Payment & escrow
     │   │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   │   ├── freelancers/
     │   │   │   │   │   │   │   │   └── page.tsx  # For freelancers
     │   │   │   │   │   │   │   │       # - Getting started
     │   │   │   │   │   │   │   │       # - Finding jobs
     │   │   │   │   │   │   │   │       # - Earning money
     │   │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   │   └── page.tsx  # How it works overview
+    │   │   │   │   │   │   │       # How it works
+    │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   ├── legal/
     │   │   │   │   │   │   │   ├── accessibility/
     │   │   │   │   │   │   │   │   └── page.tsx  # Accessibility statement
+    │   │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   │   ├── compliance/
     │   │   │   │   │   │   │   │   ├── aml/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # AML policy
@@ -7767,9 +8880,11 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # Cookie Policy
     │   │   │   │   │   │   │   │       # Cookie policy
     │   │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   │   ├── dmca/
     │   │   │   │   │   │   │   │   └── page.tsx  # DMCA policy
     │   │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   │   ├── licenses/
     │   │   │   │   │   │   │   │   └── page.tsx  # Open source licenses
     │   │   │   │   │   │   │   ├── privacy/
@@ -7784,18 +8899,25 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # Privacy Policy
     │   │   │   │   │   │   │   │       # Privacy policy
     │   │   │   │   │   │   │   │       # BE: None (static)
-    │   │   │   │   │   │   │   └── terms/
-    │   │   │   │   │   │   │       ├── client/
-    │   │   │   │   │   │   │       │   └── page.tsx  # Client Agreement
-    │   │   │   │   │   │   │       ├── freelancer/
-    │   │   │   │   │   │   │       │   └── page.tsx  # Freelancer Agreement
-    │   │   │   │   │   │   │       ├── service/
-    │   │   │   │   │   │   │       │   └── page.tsx  # Terms of Service
-    │   │   │   │   │   │   │       └── page.tsx  # Terms of Service
-    │   │   │   │   │   │   │           # Legal terms overview
-    │   │   │   │   │   │   │           # Terms of service
-    │   │   │   │   │   │   │           # BE: None (static)
+    │   │   │   │   │   │   │   │       # BE: none (static)
+    │   │   │   │   │   │   │   ├── terms/
+    │   │   │   │   │   │   │   │   ├── client/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Client Agreement
+    │   │   │   │   │   │   │   │   ├── freelancer/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Freelancer Agreement
+    │   │   │   │   │   │   │   │   ├── service/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Terms of Service
+    │   │   │   │   │   │   │   │   └── page.tsx  # Terms of Service
+    │   │   │   │   │   │   │   │       # Legal terms overview
+    │   │   │   │   │   │   │   │       # Terms of service
+    │   │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │   │       # BE: none (static)
+    │   │   │   │   │   │   │   └── page.tsx  # Legal overview
+    │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   ├── partners/
+    │   │   │   │   │   │   │   ├── affiliates/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Affiliate program
+    │   │   │   │   │   │   │   │       # BE: none (static/signup form optional)
     │   │   │   │   │   │   │   ├── become-partner/
     │   │   │   │   │   │   │   │   └── page.tsx  # Partner application
     │   │   │   │   │   │   │   │       # BE: communications-be/messages
@@ -7803,8 +8925,13 @@ fe/
     │   │   │   │   │   │   │   ├── directory/
     │   │   │   │   │   │   │   │   └── page.tsx  # Partners directory
     │   │   │   │   │   │   │   │       # BE: None (static or CMS)
+    │   │   │   │   │   │   │   ├── integrations/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Integrations
+    │   │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   │   └── page.tsx  # Partners program
     │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │       # Partner program
+    │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   ├── pricing/
     │   │   │   │   │   │   │   ├── compare/
     │   │   │   │   │   │   │   │   └── page.tsx  # Plan comparison
@@ -7823,6 +8950,7 @@ fe/
     │   │   │   │   │   │   │       # Pricing overview
     │   │   │   │   │   │   │       # BE: financial-be/subscription
     │   │   │   │   │   │   │       # GET /v1/subscriptions/plans
+    │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   ├── resources/
     │   │   │   │   │   │   │   ├── api/
     │   │   │   │   │   │   │   │   ├── changelog/
@@ -7835,6 +8963,9 @@ fe/
     │   │   │   │   │   │   │   │   ├── [slug]/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Case study detail
     │   │   │   │   │   │   │   │   └── page.tsx  # All case studies
+    │   │   │   │   │   │   │   ├── downloads/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Downloads
+    │   │   │   │   │   │   │   │       # BE: storage-be/asset (optional)
     │   │   │   │   │   │   │   ├── guides/
     │   │   │   │   │   │   │   │   ├── [slug]/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Guide detail
@@ -7845,6 +8976,8 @@ fe/
     │   │   │   │   │   │   │   │       # - How-tos
     │   │   │   │   │   │   │   │       # Guides list
     │   │   │   │   │   │   │   │       # BE: None (static or CMS)
+    │   │   │   │   │   │   │   │       # Guides
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
     │   │   │   │   │   │   │   ├── tools/
     │   │   │   │   │   │   │   │   ├── budget-estimator/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Project budget estimator
@@ -7878,6 +9011,8 @@ fe/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Upcoming webinars
     │   │   │   │   │   │   │   │   └── page.tsx  # Webinars list
     │   │   │   │   │   │   │   │       # BE: None (static or CMS)
+    │   │   │   │   │   │   │   │       # Webinars
+    │   │   │   │   │   │   │   │       # BE: communications-be/events (optional)
     │   │   │   │   │   │   │   └── page.tsx  # Resources hub
     │   │   │   │   │   │   │       # BE: None (static)
     │   │   │   │   │   │   ├── security/
@@ -7886,6 +9021,11 @@ fe/
     │   │   │   │   │   │   │       # - Compliance certifications
     │   │   │   │   │   │   │       # - Vulnerability disclosure
     │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │       # Security page
+    │   │   │   │   │   │   │       # BE: none (static)
+    │   │   │   │   │   │   ├── sitemap/
+    │   │   │   │   │   │   │   └── page.tsx  # Sitemap
+    │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   ├── solutions/
     │   │   │   │   │   │   │   ├── agencies/
     │   │   │   │   │   │   │   │   └── page.tsx  # Agency solutions
@@ -7923,12 +9063,22 @@ fe/
     │   │   │   │   │   │   │       # - Incident history
     │   │   │   │   │   │   │       # BE: admin-be/system (or utility-be/status)
     │   │   │   │   │   │   │       # GET /v1/status
+    │   │   │   │   │   │   │       # System status
+    │   │   │   │   │   │   │       # BE: utility/status (optional)
+    │   │   │   │   │   │   ├── success-stories/
+    │   │   │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   │   │   └── page.tsx  # Success story
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
+    │   │   │   │   │   │   │   └── page.tsx  # Success stories
+    │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
     │   │   │   │   │   │   ├── trust-safety/
     │   │   │   │   │   │   │   └── page.tsx  # Trust & Safety
     │   │   │   │   │   │   │       # - Security measures
     │   │   │   │   │   │   │       # - Payment protection
     │   │   │   │   │   │   │       # - Dispute resolution
     │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   │       # Trust & safety
+    │   │   │   │   │   │   │       # BE: none (static)
     │   │   │   │   │   │   ├── layout.tsx  # Public pages layout
     │   │   │   │   │   │   │   # - Public header (no auth UI)
     │   │   │   │   │   │   │   # - Footer
@@ -8834,17 +9984,35 @@ fe/
     │   │   │   │   │   │   │       # BE: admin-be/feature-flags
     │   │   │   │   │   │   │       # GET /v1/settings/labs
     │   │   │   │   │   │   │       # PUT /v1/settings/labs
+    │   │   │   │   │   │   ├── notifications/
+    │   │   │   │   │   │   │   └── digests-quiet-hours/
+    │   │   │   │   │   │   │       └── page.tsx  # Email digests & quiet hours
+    │   │   │   │   │   │   │           # BE: users-be/preferences — GET/PUT (digest cadence, DND window)
     │   │   │   │   │   │   └── security/
+    │   │   │   │   │   │       ├── data-delete/
+    │   │   │   │   │   │       │   └── page.tsx  # Request delete
+    │   │   │   │   │   │       │       # BE: users-be/account — POST /v1/user/delete
+    │   │   │   │   │   │       ├── data-export/
+    │   │   │   │   │   │       │   └── page.tsx  # Export my data
+    │   │   │   │   │   │       │       # BE: users-be/account — POST /v1/user/export
+    │   │   │   │   │   │       ├── deactivate/
+    │   │   │   │   │   │       │   └── page.tsx  # Deactivate account
+    │   │   │   │   │   │       │       # BE: users-be/account — POST /v1/user/deactivate
     │   │   │   │   │   │       ├── devices/
     │   │   │   │   │   │       │   └── page.tsx  # Devices & sessions
     │   │   │   │   │   │       │       # - Active sessions, revoke device
     │   │   │   │   │   │       │       # BE: users-be/session
     │   │   │   │   │   │       │       # GET/DELETE /v1/sessions
+    │   │   │   │   │   │       ├── devices-sessions/
+    │   │   │   │   │   │       │   └── page.tsx  # Active devices & sessions
+    │   │   │   │   │   │       │       # BE: users-be/account — GET /v1/user/sessions
     │   │   │   │   │   │       ├── mfa/
     │   │   │   │   │   │       │   └── page.tsx  # MFA settings
     │   │   │   │   │   │       │       # - Enroll/disable TOTP/SMS
     │   │   │   │   │   │       │       # BE: users-be/mfa
     │   │   │   │   │   │       │       # GET/POST/DELETE /v1/mfa
+    │   │   │   │   │   │       │       # MFA enable/disable
+    │   │   │   │   │   │       │       # BE: users-be/auth — PUT /v1/user/mfa
     │   │   │   │   │   │       └── password/
     │   │   │   │   │   │           └── page.tsx  # Change password
     │   │   │   │   │   │               # - Update password
@@ -9184,96 +10352,120 @@ fe/
     │   │   │   │   │   │               # GET /v1/admin/watchlists/monitoring
     │   │   │   │   │   └── │  # conflict: file also existed
     │   │   │   │   └── │
-    │   │   │   └── features/
-    │   │   │       ├── budget/
-    │   │   │       │   └── api/
-    │   │   │       │       └── mutations.ts  # Budget mutations
-    │   │   │       │           # - Create/update budgets
-    │   │   │       │           # - Invalidate ['budget','list']
-    │   │   │       │           # BE: financial-be/budget
-    │   │   │       │           # POST /v1/budgets
-    │   │   │       ├── interviews/
-    │   │   │       │   └── api/
-    │   │   │       │       └── mutations.ts  # Interview scheduling
-    │   │   │       │           # - Create/reschedule/cancel
-    │   │   │       │           # BE: proposals-be/interview
-    │   │   │       │           # POST /v1/proposals/{id}/interviews
-    │   │   │       ├── moderation/
-    │   │   │       │   └── api/
-    │   │   │       │       └── mutations.ts  # Moderation actions
-    │   │   │       │           # - Warn / Suspend / Ban users
-    │   │   │       │           # BE: users-be/moderation
-    │   │   │       │           # POST /v1/admin/warning
-    │   │   │       │           # POST /v1/admin/suspension
-    │   │   │       │           # POST /v1/admin/ban
-    │   │   │       ├── notifications/
-    │   │   │       │   └── api/
-    │   │   │       │       ├── mutations.ts  # Notifications mutations
-    │   │   │       │       │   # - Mark read / mark all
-    │   │   │       │       │   # BE: communications-be/notification
-    │   │   │       │       │   # POST /v1/notifications/{id}/read
-    │   │   │       │       └── queries.ts  # Notifications queries
-    │   │   │       │           # - List notifications
-    │   │   │       │           # BE: communications-be/notification
-    │   │   │       │           # GET /v1/notifications?mine=1
-    │   │   │       ├── offers/
-    │   │   │       │   └── api/
-    │   │   │       │       └── mutations.ts  # Offer create/respond
-    │   │   │       │           # - Create, accept, decline
-    │   │   │       │           # BE: contracts-be/offer (proposed if missing)
-    │   │   │       │           # POST /v1/offers; POST /v1/offers/{id}/accept|decline
-    │   │   │       ├── reviews/
-    │   │   │       │   ├── api/
-    │   │   │       │   │   ├── mutations.ts  # Review mutations
-    │   │   │       │   │   │   # - Submit / edit review
-    │   │   │       │   │   │   # - Invalidate ['reviews','list',subjectId]
-    │   │   │       │   │   │   # BE: reviews-be/review
-    │   │   │       │   │   │   # POST /v1/reviews
-    │   │   │       │   │   └── queries.ts  # Review queries
-    │   │   │       │   │       # - List reviews for subject
-    │   │   │       │   │       # BE: reviews-be/review
-    │   │   │       │   │       # GET /v1/reviews?subject_id=…
-    │   │   │       │   └── components/
-    │   │   │       │       └── ReviewForm.tsx  # Review form (presentational)
-    │   │   │       │           # - Consumes typed props only
-    │   │   │       │           # BE: none (presentational)
-    │   │   │       ├── search/
-    │   │   │       │   └── api/
-    │   │   │       │       ├── alerts.ts  # Search alerts API
-    │   │   │       │       │   # BE: search-be/alert (proposed if missing)
-    │   │   │       │       │   # GET/POST/DELETE /v1/search/alerts
-    │   │   │       │       └── saved.ts  # Saved queries API
-    │   │   │       │           # BE: search-be/saved_query (proposed if missing)
-    │   │   │       │           # GET/POST/DELETE /v1/search/saved
-    │   │   │       ├── subscriptions/
-    │   │   │       │   └── api/
-    │   │   │       │       ├── mutations.ts  # Subscription mutations
-    │   │   │       │       │   # - Change plan / Cancel
-    │   │   │       │       │   # - Invalidate ['subscriptions','me']
-    │   │   │       │       │   # BE: financial-be/subscription
-    │   │   │       │       │   # POST /v1/subscriptions/change
-    │   │   │       │       │   # POST /v1/subscriptions/cancel
-    │   │   │       │       └── queries.ts  # Subscription queries
-    │   │   │       │           # - Current subscription
-    │   │   │       │           # - Invoices history
-    │   │   │       │           # BE: financial-be/subscription
-    │   │   │       │           # GET /v1/subscriptions/me
-    │   │   │       │           # GET /v1/subscriptions/{id}/invoices
-    │   │   │       └── support/
-    │   │   │           └── api/
-    │   │   │               ├── mutations.ts  # Support ticket mutations
-    │   │   │               │   # - Create ticket, add message, attach files
-    │   │   │               │   # - Invalidate ['support','tickets']
-    │   │   │               │   # BE: admin-be/support_ticket
-    │   │   │               │   # POST /v1/support/tickets
-    │   │   │               │   # POST /v1/support/tickets/{id}/messages
-    │   │   │               │   # BE: storage-be/asset (uploads)
-    │   │   │               │   # POST /v1/storage/uploads (signed URL) → PUT file → POST /v1/storage/commit
-    │   │   │               └── queries.ts  # Support ticket queries
-    │   │   │                   # - List & detail
-    │   │   │                   # BE: admin-be/support_ticket
-    │   │   │                   # GET /v1/support/tickets
-    │   │   │                   # GET /v1/support/tickets/{id}
+    │   │   │   ├── features/
+    │   │   │   │   ├── budget/
+    │   │   │   │   │   └── api/
+    │   │   │   │   │       └── mutations.ts  # Budget mutations
+    │   │   │   │   │           # - Create/update budgets
+    │   │   │   │   │           # - Invalidate ['budget','list']
+    │   │   │   │   │           # BE: financial-be/budget
+    │   │   │   │   │           # POST /v1/budgets
+    │   │   │   │   ├── interviews/
+    │   │   │   │   │   └── api/
+    │   │   │   │   │       └── mutations.ts  # Interview scheduling
+    │   │   │   │   │           # - Create/reschedule/cancel
+    │   │   │   │   │           # BE: proposals-be/interview
+    │   │   │   │   │           # POST /v1/proposals/{id}/interviews
+    │   │   │   │   ├── moderation/
+    │   │   │   │   │   └── api/
+    │   │   │   │   │       └── mutations.ts  # Moderation actions
+    │   │   │   │   │           # - Warn / Suspend / Ban users
+    │   │   │   │   │           # BE: users-be/moderation
+    │   │   │   │   │           # POST /v1/admin/warning
+    │   │   │   │   │           # POST /v1/admin/suspension
+    │   │   │   │   │           # POST /v1/admin/ban
+    │   │   │   │   ├── notifications/
+    │   │   │   │   │   └── api/
+    │   │   │   │   │       ├── mutations.ts  # Notifications mutations
+    │   │   │   │   │       │   # - Mark read / mark all
+    │   │   │   │   │       │   # BE: communications-be/notification
+    │   │   │   │   │       │   # POST /v1/notifications/{id}/read
+    │   │   │   │   │       └── queries.ts  # Notifications queries
+    │   │   │   │   │           # - List notifications
+    │   │   │   │   │           # BE: communications-be/notification
+    │   │   │   │   │           # GET /v1/notifications?mine=1
+    │   │   │   │   ├── offers/
+    │   │   │   │   │   └── api/
+    │   │   │   │   │       └── mutations.ts  # Offer create/respond
+    │   │   │   │   │           # - Create, accept, decline
+    │   │   │   │   │           # BE: contracts-be/offer (proposed if missing)
+    │   │   │   │   │           # POST /v1/offers; POST /v1/offers/{id}/accept|decline
+    │   │   │   │   ├── reviews/
+    │   │   │   │   │   ├── api/
+    │   │   │   │   │   │   ├── mutations.ts  # Review mutations
+    │   │   │   │   │   │   │   # - Submit / edit review
+    │   │   │   │   │   │   │   # - Invalidate ['reviews','list',subjectId]
+    │   │   │   │   │   │   │   # BE: reviews-be/review
+    │   │   │   │   │   │   │   # POST /v1/reviews
+    │   │   │   │   │   │   └── queries.ts  # Review queries
+    │   │   │   │   │   │       # - List reviews for subject
+    │   │   │   │   │   │       # BE: reviews-be/review
+    │   │   │   │   │   │       # GET /v1/reviews?subject_id=…
+    │   │   │   │   │   └── components/
+    │   │   │   │   │       └── ReviewForm.tsx  # Review form (presentational)
+    │   │   │   │   │           # - Consumes typed props only
+    │   │   │   │   │           # BE: none (presentational)
+    │   │   │   │   ├── search/
+    │   │   │   │   │   └── api/
+    │   │   │   │   │       ├── alerts.ts  # Search alerts API
+    │   │   │   │   │       │   # BE: search-be/alert (proposed if missing)
+    │   │   │   │   │       │   # GET/POST/DELETE /v1/search/alerts
+    │   │   │   │   │       └── saved.ts  # Saved queries API
+    │   │   │   │   │           # BE: search-be/saved_query (proposed if missing)
+    │   │   │   │   │           # GET/POST/DELETE /v1/search/saved
+    │   │   │   │   ├── subscriptions/
+    │   │   │   │   │   └── api/
+    │   │   │   │   │       ├── mutations.ts  # Subscription mutations
+    │   │   │   │   │       │   # - Change plan / Cancel
+    │   │   │   │   │       │   # - Invalidate ['subscriptions','me']
+    │   │   │   │   │       │   # BE: financial-be/subscription
+    │   │   │   │   │       │   # POST /v1/subscriptions/change
+    │   │   │   │   │       │   # POST /v1/subscriptions/cancel
+    │   │   │   │   │       └── queries.ts  # Subscription queries
+    │   │   │   │   │           # - Current subscription
+    │   │   │   │   │           # - Invoices history
+    │   │   │   │   │           # BE: financial-be/subscription
+    │   │   │   │   │           # GET /v1/subscriptions/me
+    │   │   │   │   │           # GET /v1/subscriptions/{id}/invoices
+    │   │   │   │   └── support/
+    │   │   │   │       └── api/
+    │   │   │   │           ├── mutations.ts  # Support ticket mutations
+    │   │   │   │           │   # - Create ticket, add message, attach files
+    │   │   │   │           │   # - Invalidate ['support','tickets']
+    │   │   │   │           │   # BE: admin-be/support_ticket
+    │   │   │   │           │   # POST /v1/support/tickets
+    │   │   │   │           │   # POST /v1/support/tickets/{id}/messages
+    │   │   │   │           │   # BE: storage-be/asset (uploads)
+    │   │   │   │           │   # POST /v1/storage/uploads (signed URL) → PUT file → POST /v1/storage/commit
+    │   │   │   │           └── queries.ts  # Support ticket queries
+    │   │   │   │               # - List & detail
+    │   │   │   │               # BE: admin-be/support_ticket
+    │   │   │   │               # GET /v1/support/tickets
+    │   │   │   │               # GET /v1/support/tickets/{id}
+    │   │   │   └── lib/
+    │   │   │       └── api/
+    │   │   │           ├── audit/
+    │   │   │           │   ├── audit.ts  # Audit logs client
+    │   │   │           │   └── exports.ts  # BI export jobs client
+    │   │   │           ├── budgets/
+    │   │   │           │   └── budgets.ts  # Budgets APIs
+    │   │   │           ├── moderation/
+    │   │   │           │   └── moderation.ts  # Moderation actions & reports
+    │   │   │           ├── refunds/
+    │   │   │           │   └── refunds.ts  # Refund cases & financial refunds
+    │   │   │           ├── search/
+    │   │   │           │   ├── personalization.ts  # Personalization API client
+    │   │   │           │   └── saved-search.ts  # Saved-search CRUD & alerts
+    │   │   │           ├── search-admin/
+    │   │   │           │   ├── hygiene.ts  # Run hygiene jobs
+    │   │   │           │   ├── query-logs.ts  # Query logs fetcher
+    │   │   │           │   └── search-admin.ts  # Synonyms/boosts/facets/rewrites/perf
+    │   │   │           ├── settings/
+    │   │   │           │   └── notifications.ts  # Channels, email prefs, quiet hours
+    │   │   │           ├── status/
+    │   │   │           │   └── status.ts  # Status & incidents APIs
+    │   │   │           └── support/
+    │   │   │               └── tickets.ts  # Tickets CRUD & messages
     │   │   └── middleware.ts  # Next.js middleware
     │   │       # - CSP headers
     │   │       # - CORS configuration
@@ -10257,6 +11449,7 @@ fe/
     │   │   │   │   │   ├── store.ts  # Notifications store (Zustand)
     │   │   │   │   │   │   # - Unread counts, last fetched
     │   │   │   │   │   │   # BE: none (consumes API in features/notifications)
+    │   │   │   │   │   │   # UI-only toggles; server state via queries
     │   │   │   │   │   └── types.ts
     │   │   │   │   ├── offline/
     │   │   │   │   │   ├── hooks/
@@ -10459,6 +11652,8 @@ fe/
     │   │   │   │   │   │   ├── subscriptions-mutations.ts  # Subscription mutations
     │   │   │   │   │   │   └── subscriptions-queries.ts  # BE: subscriptions-be
     │   │   │   │   │   │       # Subscription queries
+    │   │   │   │   │   ├── query-keys.ts  # ['subscription','plans'|'me']
+    │   │   │   │   │   ├── store.ts  # Local UI state for plans/checkout
     │   │   │   │   │   └── types.ts  # Subscription types
     │   │   │   │   ├── tax/
     │   │   │   │   │   ├── api/
@@ -11200,7 +12395,12 @@ fe/
     │   │   │   │           # - Coordinates
     │   │   │   │           # - Location
     │   │   │   │           # - Distance
-    │   │   │   └── index.ts  # Export all types
+    │   │   │   ├── audit.ts  # Audit Log/Export DTOs
+    │   │   │   ├── index.ts  # Export all types
+    │   │   │   ├── moderation.ts  # ModerationCase/Appeal types
+    │   │   │   ├── search-admin.ts  # Taxonomy/Facet/Rewrite/Speller DTOs
+    │   │   │   ├── subscription.ts  # Plan/Entitlement types
+    │   │   │   └── support.ts  # Ticket/Message types
     │   │   ├── package.json
     │   │   ├── README.md
     │   │   └── tsconfig.json
