@@ -136,6 +136,8 @@ fe/
     ├── apps/  # Application workspaces
     │   ├── mobile/  # React Native/Expo application
     │   │   ├── app/  # Expo Router file-based routing
+    │   │   │   ├── (admin)/  # Optional mobile admin area (if enabled later)
+    │   │   │   │   └── README.md  # Placeholder for future admin screens on mobile
     │   │   │   ├── (auth)/  # Auth screens
     │   │   │   │   ├── onboarding/
     │   │   │   │   │   └── kyc/
@@ -334,6 +336,54 @@ fe/
     │   │   │   ├── (tabs)/  # Bottom tabs navigation
     │   │   │   │   ├── (authenticated)/
     │   │   │   │   │   ├── analytics/
+    │   │   │   │   │   │   ├── clients/
+    │   │   │   │   │   │   │   ├── retention/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Client retention
+    │   │   │   │   │   │   │   │       # BE: users-be/analytics
+    │   │   │   │   │   │   │   │       # GET /v1/analytics/clients/retention
+    │   │   │   │   │   │   │   └── satisfaction/
+    │   │   │   │   │   │   │       └── index.tsx  # Client satisfaction
+    │   │   │   │   │   │   │           # BE: reviews-be/analytics
+    │   │   │   │   │   │   │           # GET /v1/analytics/clients/satisfaction
+    │   │   │   │   │   │   ├── earnings/
+    │   │   │   │   │   │   │   ├── breakdown/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Earnings breakdown
+    │   │   │   │   │   │   │   │       # - By project, client, time period
+    │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │       # GET /v1/analytics/earnings/breakdown
+    │   │   │   │   │   │   │   ├── forecast/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Earnings forecast
+    │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │       # GET /v1/analytics/earnings/forecast
+    │   │   │   │   │   │   │   └── trends/
+    │   │   │   │   │   │   │       └── index.tsx  # Earnings trends
+    │   │   │   │   │   │   │           # BE: financial-be/reports
+    │   │   │   │   │   │   │           # GET /v1/analytics/earnings/trends
+    │   │   │   │   │   │   ├── exports/
+    │   │   │   │   │   │   │   └── index.tsx  # Export analytics
+    │   │   │   │   │   │   │       # - CSV export, PDF, Custom reports
+    │   │   │   │   │   │   │       # BE: users-be/analytics
+    │   │   │   │   │   │   │       # POST /v1/analytics/exports
+    │   │   │   │   │   │   ├── overview/
+    │   │   │   │   │   │   │   └── index.tsx  # Analytics overview
+    │   │   │   │   │   │   │       # - Comprehensive dashboards
+    │   │   │   │   │   │   │       # - Custom date ranges
+    │   │   │   │   │   │   │       # - Export capabilities
+    │   │   │   │   │   │   │       # BE: users-be/analytics + financial-be/reports
+    │   │   │   │   │   │   │       # GET /v1/analytics/overview
+    │   │   │   │   │   │   ├── performance/
+    │   │   │   │   │   │   │   ├── completion-rate/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Project completion rates
+    │   │   │   │   │   │   │   │       # BE: users-be/analytics
+    │   │   │   │   │   │   │   │       # GET /v1/analytics/performance/completion-rate
+    │   │   │   │   │   │   │   ├── response-time/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Response time metrics
+    │   │   │   │   │   │   │   │       # BE: users-be/analytics
+    │   │   │   │   │   │   │   │       # GET /v1/analytics/performance/response-time
+    │   │   │   │   │   │   │   └── success-rate/
+    │   │   │   │   │   │   │       └── index.tsx  # Success rate analysis
+    │   │   │   │   │   │   │           # BE: users-be/analytics
+    │   │   │   │   │   │   │           # GET /v1/analytics/performance/success-rate
     │   │   │   │   │   │   └── simple-dashboard/
     │   │   │   │   │   │       └── index.tsx  # Basic analytics view
     │   │   │   │   │   │           # BE: users-be/analytics
@@ -349,6 +399,27 @@ fe/
     │   │   │   │   │   │       └── index.tsx  # QR code scanner
     │   │   │   │   │   │           # BE: users-be/profile
     │   │   │   │   │   ├── contracts/
+    │   │   │   │   │   │   ├── [contractId]/
+    │   │   │   │   │   │   │   ├── amendments/
+    │   │   │   │   │   │   │   │   ├── [amendmentId]/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Amendment detail
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/amendments
+    │   │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/amendments/{amendment_id}
+    │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create amendment
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/amendments
+    │   │   │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/amendments
+    │   │   │   │   │   │   │   │   └── index.tsx  # Amendments list
+    │   │   │   │   │   │   │   │       # BE: contracts-be/amendments
+    │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/amendments
+    │   │   │   │   │   │   │   ├── change-orders/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Change orders
+    │   │   │   │   │   │   │   │       # BE: contracts-be/change_orders
+    │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/change-orders
+    │   │   │   │   │   │   │   └── compliance/
+    │   │   │   │   │   │   │       └── index.tsx  # Compliance documents
+    │   │   │   │   │   │   │           # BE: contracts-be/compliance
+    │   │   │   │   │   │   │           # GET /v1/contracts/{contract_id}/compliance
     │   │   │   │   │   │   ├── [id]/
     │   │   │   │   │   │   │   ├── deliverables/
     │   │   │   │   │   │   │   │   └── index.tsx  # View/upload deliverables
@@ -360,34 +431,160 @@ fe/
     │   │   │   │   │   │   │   │   # BE: contracts-be/milestone
     │   │   │   │   │   │   │   └── timesheet.tsx  # Log time
     │   │   │   │   │   │   │       # BE: contracts-be/timesheet
+    │   │   │   │   │   │   ├── bulk-actions/
+    │   │   │   │   │   │   │   └── index.tsx  # Bulk contract actions
+    │   │   │   │   │   │   │       # BE: contracts-be/contract
+    │   │   │   │   │   │   │       # POST /v1/contracts/bulk-actions
+    │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   ├── [templateId]/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Contract template
+    │   │   │   │   │   │   │   │       # BE: contracts-be/templates
+    │   │   │   │   │   │   │   │       # GET /v1/contracts/templates/{template_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Contract templates
+    │   │   │   │   │   │   │       # BE: contracts-be/templates
+    │   │   │   │   │   │   │       # GET /v1/contracts/templates
     │   │   │   │   │   │   ├── active.tsx  # Active contracts
     │   │   │   │   │   │   ├── completed.tsx  # Completed contracts
     │   │   │   │   │   │   └── index.tsx  # All contracts
     │   │   │   │   │   ├── financial/
+    │   │   │   │   │   │   ├── budgets/
+    │   │   │   │   │   │   │   ├── [budgetId]/
+    │   │   │   │   │   │   │   │   ├── alerts/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Budget alerts
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │   │       # GET /v1/budgets/{budget_id}/alerts
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit budget
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │   │       # PUT /v1/budgets/{budget_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # Budget detail
+    │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │       # GET /v1/budgets/{budget_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create budget
+    │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │       # POST /v1/budgets
+    │   │   │   │   │   │   │   └── index.tsx  # Budgets overview
+    │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │       # GET /v1/budgets
     │   │   │   │   │   │   ├── disputes/
     │   │   │   │   │   │   │   └── index.tsx  # Dispute list
     │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   ├── escrow/
+    │   │   │   │   │   │   │   ├── [escrowId]/
+    │   │   │   │   │   │   │   │   ├── release/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Release escrow
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/escrow
+    │   │   │   │   │   │   │   │   │       # POST /v1/escrow/{escrow_id}/release
+    │   │   │   │   │   │   │   │   └── index.tsx  # Escrow detail
+    │   │   │   │   │   │   │   │       # BE: financial-be/escrow
+    │   │   │   │   │   │   │   │       # GET /v1/escrow/{escrow_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Escrow accounts
+    │   │   │   │   │   │   │       # BE: financial-be/escrow
+    │   │   │   │   │   │   │       # GET /v1/escrow
     │   │   │   │   │   │   ├── invoices/  # View invoices
+    │   │   │   │   │   │   │   ├── bulk-actions/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Bulk invoice actions
+    │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │       # POST /v1/invoices/bulk-actions
+    │   │   │   │   │   │   │   ├── recurring/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Recurring invoices
+    │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │       # GET /v1/invoices/recurring
+    │   │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Invoice templates
+    │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │       # GET /v1/invoices/templates
     │   │   │   │   │   │   │   └── index.tsx  # List
     │   │   │   │   │   │   │       # BE: financial-be/invoice
     │   │   │   │   │   │   ├── payouts/
     │   │   │   │   │   │   │   └── index.tsx  # Request payout
     │   │   │   │   │   │   │       # BE: financial-be/payout
     │   │   │   │   │   │   ├── reports/
-    │   │   │   │   │   │   │   └── simple/
-    │   │   │   │   │   │   │       └── index.tsx  # Basic financial reports
-    │   │   │   │   │   │   │           # BE: financial-be/reports
+    │   │   │   │   │   │   │   ├── cash-flow/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Cash flow reports
+    │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │       # GET /v1/reports/cash-flow
+    │   │   │   │   │   │   │   ├── profit-loss/
+    │   │   │   │   │   │   │   │   └── index.tsx  # P&L statements
+    │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   │       # GET /v1/reports/profit-loss
+    │   │   │   │   │   │   │   ├── simple/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Basic financial reports
+    │   │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │   └── tax/
+    │   │   │   │   │   │   │       └── index.tsx  # Tax reports
+    │   │   │   │   │   │   │           # BE: financial-be/tax
+    │   │   │   │   │   │   │           # GET /v1/reports/tax
+    │   │   │   │   │   │   ├── tax-documents/
+    │   │   │   │   │   │   │   ├── [documentId]/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Tax document detail
+    │   │   │   │   │   │   │   │       # BE: financial-be/tax
+    │   │   │   │   │   │   │   │       # GET /v1/tax-documents/{document_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Tax documents
+    │   │   │   │   │   │   │       # BE: financial-be/tax
+    │   │   │   │   │   │   │       # GET /v1/tax-documents
     │   │   │   │   │   │   └── transactions.tsx  # Transaction history
     │   │   │   │   │   │       # BE: financial-be/wallet
     │   │   │   │   │   ├── jobs/
     │   │   │   │   │   │   ├── [jobId]/
+    │   │   │   │   │   │   │   ├── analytics/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Job analytics
+    │   │   │   │   │   │   │   │       # - Metrics, funnel, performance
+    │   │   │   │   │   │   │   │       # BE: jobs-be/analytics
+    │   │   │   │   │   │   │   │       # GET /v1/jobs/{job_id}/analytics
     │   │   │   │   │   │   │   ├── applicants/
     │   │   │   │   │   │   │   │   └── index.tsx  # View applicants (client)
+    │   │   │   │   │   │   │   ├── clone/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Clone job
+    │   │   │   │   │   │   │   │       # BE: jobs-be/job
+    │   │   │   │   │   │   │   │       # POST /v1/jobs/{job_id}/clone
+    │   │   │   │   │   │   │   ├── invite/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Invite candidates
+    │   │   │   │   │   │   │   │       # BE: jobs-be/invites
+    │   │   │   │   │   │   │   │       # POST /v1/jobs/{job_id}/invite
+    │   │   │   │   │   │   │   ├── shortlist/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Shortlist candidates
+    │   │   │   │   │   │   │   │       # BE: proposals-be/shortlist
+    │   │   │   │   │   │   │   │       # GET /v1/jobs/{job_id}/shortlist
     │   │   │   │   │   │   │   ├── apply.tsx  # Quick apply
     │   │   │   │   │   │   │   └── details.tsx  # Job details
+    │   │   │   │   │   │   ├── bulk-actions/
+    │   │   │   │   │   │   │   └── index.tsx  # Bulk job actions
+    │   │   │   │   │   │   │       # BE: jobs-be/job
+    │   │   │   │   │   │   │       # POST /v1/jobs/bulk-actions
+    │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   ├── [templateId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit job template
+    │   │   │   │   │   │   │   │   │       # BE: jobs-be/templates
+    │   │   │   │   │   │   │   │   │       # PUT /v1/jobs/templates/{template_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # Template detail
+    │   │   │   │   │   │   │   │       # BE: jobs-be/templates
+    │   │   │   │   │   │   │   │       # GET /v1/jobs/templates/{template_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create job template
+    │   │   │   │   │   │   │   │       # BE: jobs-be/templates
+    │   │   │   │   │   │   │   │       # POST /v1/jobs/templates
+    │   │   │   │   │   │   │   └── index.tsx  # Job templates
+    │   │   │   │   │   │   │       # BE: jobs-be/templates
+    │   │   │   │   │   │   │       # GET /v1/jobs/templates
     │   │   │   │   │   │   ├── create.tsx  # Simple job creation
     │   │   │   │   │   │   ├── drafts.tsx  # Drafts
     │   │   │   │   │   │   └── index.tsx  # Browse jobs (simplified)
+    │   │   │   │   │   ├── messages/
+    │   │   │   │   │   │   └── [conversationId]/
+    │   │   │   │   │   │       ├── files/
+    │   │   │   │   │   │       │   └── index.tsx  # Conversation files
+    │   │   │   │   │   │       │       # - All shared files, search
+    │   │   │   │   │   │       │       # BE: communications-be/conversation
+    │   │   │   │   │   │       │       # GET /v1/conversations/{conversation_id}/files
+    │   │   │   │   │   │       ├── participants/
+    │   │   │   │   │   │       │   └── index.tsx  # Manage participants
+    │   │   │   │   │   │       │       # BE: communications-be/conversation
+    │   │   │   │   │   │       │       # GET /v1/conversations/{conversation_id}/participants
+    │   │   │   │   │   │       └── settings/
+    │   │   │   │   │   │           └── index.tsx  # Conversation settings
     │   │   │   │   │   ├── notifications/
     │   │   │   │   │   │   └── index.tsx  # Native notifications center
     │   │   │   │   │   │       # BE: communications-be/notification
@@ -397,45 +594,237 @@ fe/
     │   │   │   │   │   │   └── sync/
     │   │   │   │   │   │       └── index.tsx  # Sync management
     │   │   │   │   │   ├── organization/
+    │   │   │   │   │   │   ├── billing/
+    │   │   │   │   │   │   │   ├── history/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Billing history
+    │   │   │   │   │   │   │   │       # BE: financial-be/billing
+    │   │   │   │   │   │   │   │       # GET /v1/orgs/{org_id}/billing/history
+    │   │   │   │   │   │   │   ├── payment-methods/
+    │   │   │   │   │   │   │   │   ├── add/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Add payment method
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
+    │   │   │   │   │   │   │   │   │       # POST /v1/orgs/{org_id}/payment-methods
+    │   │   │   │   │   │   │   │   └── index.tsx  # Payment methods
+    │   │   │   │   │   │   │   │       # BE: financial-be/payment_method
+    │   │   │   │   │   │   │   │       # GET /v1/orgs/{org_id}/payment-methods
+    │   │   │   │   │   │   │   └── subscription/
+    │   │   │   │   │   │   │       ├── change/
+    │   │   │   │   │   │   │       │   └── index.tsx  # Change subscription
+    │   │   │   │   │   │   │       │       # BE: financial-be/subscription
+    │   │   │   │   │   │   │       │       # POST /v1/orgs/{org_id}/subscription/change
+    │   │   │   │   │   │   │       └── index.tsx  # Organization subscription
+    │   │   │   │   │   │   │           # BE: financial-be/subscription
+    │   │   │   │   │   │   │           # GET /v1/orgs/{org_id}/subscription
+    │   │   │   │   │   │   ├── roles/
+    │   │   │   │   │   │   │   └── index.tsx  # Roles management
+    │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │       # GET /v1/orgs/{org_id}/roles
     │   │   │   │   │   │   └── team/
+    │   │   │   │   │   │       ├── [memberId]/
+    │   │   │   │   │   │       │   ├── permissions/
+    │   │   │   │   │   │       │   │   └── index.tsx  # Member permissions
+    │   │   │   │   │   │       │   │       # BE: users-be/org
+    │   │   │   │   │   │       │   │       # GET /v1/orgs/{org_id}/team/{member_id}/permissions
+    │   │   │   │   │   │       │   └── projects/
+    │   │   │   │   │   │       │       └── index.tsx  # Member projects
+    │   │   │   │   │   │       │           # BE: users-be/org
+    │   │   │   │   │   │       │           # GET /v1/orgs/{org_id}/team/{member_id}/projects
+    │   │   │   │   │   │       ├── bulk-actions/
+    │   │   │   │   │   │       │   └── index.tsx  # Bulk team actions
+    │   │   │   │   │   │       │       # BE: users-be/org
+    │   │   │   │   │   │       │       # POST /v1/orgs/{org_id}/team/bulk-actions
+    │   │   │   │   │   │       ├── invite/
+    │   │   │   │   │   │       │   ├── bulk/
+    │   │   │   │   │   │       │   │   └── index.tsx  # Bulk invite
+    │   │   │   │   │   │       │   │       # BE: users-be/org
+    │   │   │   │   │   │       │   │       # POST /v1/orgs/{org_id}/invites/bulk
+    │   │   │   │   │   │       │   └── index.tsx  # Invite team member
+    │   │   │   │   │   │       │       # BE: users-be/org
+    │   │   │   │   │   │       │       # POST /v1/orgs/{org_id}/invites
     │   │   │   │   │   │       └── members/
     │   │   │   │   │   │           └── index.tsx  # View team members
     │   │   │   │   │   ├── profile/
+    │   │   │   │   │   │   ├── certifications/
+    │   │   │   │   │   │   │   ├── [certId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit certification
+    │   │   │   │   │   │   │   │   │       # BE: users-be/profile
+    │   │   │   │   │   │   │   │   │       # PUT /v1/users/me/certifications/{cert_id}
+    │   │   │   │   │   │   │   │   └── verify/
+    │   │   │   │   │   │   │   │       └── index.tsx  # Verify certification
+    │   │   │   │   │   │   │   │           # BE: users-be/profile
+    │   │   │   │   │   │   │   │           # POST /v1/users/me/certifications/{cert_id}/verify
+    │   │   │   │   │   │   │   ├── add/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Add certification
+    │   │   │   │   │   │   │   │       # BE: users-be/profile
+    │   │   │   │   │   │   │   │       # POST /v1/users/me/certifications
+    │   │   │   │   │   │   │   └── index.tsx  # Certifications
+    │   │   │   │   │   │   │       # BE: users-be/profile
+    │   │   │   │   │   │   │       # GET /v1/users/me/certifications
     │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   ├── bio.tsx  # Quick bio edit
     │   │   │   │   │   │   │   ├── experience.tsx  # Experience
     │   │   │   │   │   │   │   ├── portfolio.tsx  # Portfolio (simple)
     │   │   │   │   │   │   │   └── skills.tsx  # Skills
+    │   │   │   │   │   │   ├── publications/
+    │   │   │   │   │   │   │   ├── add/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Add publication
+    │   │   │   │   │   │   │   │       # BE: users-be/profile
+    │   │   │   │   │   │   │   │       # POST /v1/users/me/publications
+    │   │   │   │   │   │   │   └── index.tsx  # Publications
+    │   │   │   │   │   │   │       # BE: users-be/profile
+    │   │   │   │   │   │   │       # GET /v1/users/me/publications
+    │   │   │   │   │   │   ├── visibility/
+    │   │   │   │   │   │   │   └── index.tsx  # Profile visibility settings
+    │   │   │   │   │   │   │       # BE: users-be/privacy
+    │   │   │   │   │   │   │       # PUT /v1/users/me/visibility
     │   │   │   │   │   │   ├── index.tsx  # Profile view
     │   │   │   │   │   │   ├── reviews.tsx  # Reviews
     │   │   │   │   │   │   └── settings.tsx  # Basic settings
     │   │   │   │   │   ├── proposals/
     │   │   │   │   │   │   ├── [proposalId]/
+    │   │   │   │   │   │   │   ├── compare/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Compare versions
+    │   │   │   │   │   │   │   │       # BE: proposals-be/revisions
+    │   │   │   │   │   │   │   │       # GET /v1/proposals/{proposal_id}/compare
     │   │   │   │   │   │   │   ├── details.tsx  # Proposal details
     │   │   │   │   │   │   │   ├── edit.tsx  # Quick edit
     │   │   │   │   │   │   │   └── withdraw.tsx  # Withdraw
+    │   │   │   │   │   │   ├── bulk-actions/
+    │   │   │   │   │   │   │   └── index.tsx  # Bulk proposal actions
+    │   │   │   │   │   │   │       # BE: proposals-be/proposal
+    │   │   │   │   │   │   │       # POST /v1/proposals/bulk-actions
     │   │   │   │   │   │   ├── templates/
-    │   │   │   │   │   │   │   └── quick/
-    │   │   │   │   │   │   │       └── index.tsx  # Quick proposal templates
+    │   │   │   │   │   │   │   ├── [templateId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit proposal template
+    │   │   │   │   │   │   │   │   │       # BE: proposals-be/templates
+    │   │   │   │   │   │   │   │   │       # PUT /v1/proposals/templates/{template_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # Template detail
+    │   │   │   │   │   │   │   │       # BE: proposals-be/templates
+    │   │   │   │   │   │   │   │       # GET /v1/proposals/templates/{template_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create proposal template
+    │   │   │   │   │   │   │   │       # BE: proposals-be/templates
+    │   │   │   │   │   │   │   │       # POST /v1/proposals/templates
+    │   │   │   │   │   │   │   ├── quick/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Quick proposal templates
+    │   │   │   │   │   │   │   └── index.tsx  # Proposal templates
+    │   │   │   │   │   │   │       # BE: proposals-be/templates
+    │   │   │   │   │   │   │       # GET /v1/proposals/templates
     │   │   │   │   │   │   ├── active.tsx  # Active proposals
     │   │   │   │   │   │   ├── archived.tsx  # Archived proposals
     │   │   │   │   │   │   └── drafts.tsx  # Drafts
     │   │   │   │   │   ├── search/
+    │   │   │   │   │   │   ├── advanced/
+    │   │   │   │   │   │   │   └── index.tsx  # Advanced search interface
+    │   │   │   │   │   │   │       # - Multiple filters, Boolean ops, Saved queries
+    │   │   │   │   │   │   │       # BE: search-be/query
+    │   │   │   │   │   │   │       # POST /v1/search/advanced
+    │   │   │   │   │   │   ├── alerts/
+    │   │   │   │   │   │   │   ├── [alertId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit search alert
+    │   │   │   │   │   │   │   │   │       # BE: search-be/alerts
+    │   │   │   │   │   │   │   │   │       # PUT /v1/search/alerts/{alert_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # Alert detail
+    │   │   │   │   │   │   │   │       # BE: search-be/alerts
+    │   │   │   │   │   │   │   │       # GET /v1/search/alerts/{alert_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create search alert
+    │   │   │   │   │   │   │   │       # BE: search-be/alerts
+    │   │   │   │   │   │   │   │       # POST /v1/search/alerts
+    │   │   │   │   │   │   │   └── index.tsx  # Search alerts
+    │   │   │   │   │   │   │       # BE: search-be/alerts
+    │   │   │   │   │   │   │       # GET /v1/search/alerts
+    │   │   │   │   │   │   ├── saved/
+    │   │   │   │   │   │   │   ├── [queryId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit saved query
+    │   │   │   │   │   │   │   │   │       # BE: search-be/saved_queries
+    │   │   │   │   │   │   │   │   │       # PUT /v1/search/saved/{query_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # Run saved query
+    │   │   │   │   │   │   │   │       # BE: search-be/saved_queries
+    │   │   │   │   │   │   │   │       # GET /v1/search/saved/{query_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Saved searches (full mgmt) ❌ PARTIAL (was)
+    │   │   │   │   │   │   │       # BE: search-be/saved_queries
+    │   │   │   │   │   │   │       # GET /v1/search/saved
     │   │   │   │   │   │   ├── filters.tsx  # Basic filters
     │   │   │   │   │   │   ├── freelancers.tsx  # Search freelancers
     │   │   │   │   │   │   ├── jobs.tsx  # Search jobs
     │   │   │   │   │   │   └── saved.tsx  # Saved searches
     │   │   │   │   │   ├── settings/
-    │   │   │   │   │   │   └── app-preferences/
-    │   │   │   │   │   │       ├── data-usage/
-    │   │   │   │   │   │       │   └── index.tsx  # Data usage controls
-    │   │   │   │   │   │       ├── notifications/
-    │   │   │   │   │   │       │   ├── channels/
-    │   │   │   │   │   │       │   │   └── index.tsx  # Notification channels (Android)
-    │   │   │   │   │   │       │   └── do-not-disturb/
-    │   │   │   │   │   │       │       └── index.tsx  # DND schedule
-    │   │   │   │   │   │       └── theme/
-    │   │   │   │   │   │           └── index.tsx  # Theme settings
+    │   │   │   │   │   │   ├── advanced/
+    │   │   │   │   │   │   │   ├── api-access/
+    │   │   │   │   │   │   │   │   ├── create-token/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create API token
+    │   │   │   │   │   │   │   │   │       # BE: users-be/api_keys
+    │   │   │   │   │   │   │   │   │       # POST /v1/users/me/api-keys
+    │   │   │   │   │   │   │   │   └── index.tsx  # API access management
+    │   │   │   │   │   │   │   │       # BE: users-be/api_keys
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/api-keys
+    │   │   │   │   │   │   │   ├── developer/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Developer tools
+    │   │   │   │   │   │   │   └── webhooks/
+    │   │   │   │   │   │   │       ├── [webhookId]/
+    │   │   │   │   │   │   │       │   ├── edit/
+    │   │   │   │   │   │   │       │   │   └── index.tsx  # Edit webhook
+    │   │   │   │   │   │   │       │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       │   │       # PUT /v1/users/me/webhooks/{webhook_id}
+    │   │   │   │   │   │   │       │   ├── logs/
+    │   │   │   │   │   │   │       │   │   └── index.tsx  # Webhook logs
+    │   │   │   │   │   │   │       │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       │   │       # GET /v1/users/me/webhooks/{webhook_id}/logs
+    │   │   │   │   │   │   │       │   └── index.tsx  # Webhook detail
+    │   │   │   │   │   │   │       │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       │       # GET /v1/users/me/webhooks/{webhook_id}
+    │   │   │   │   │   │   │       ├── create/
+    │   │   │   │   │   │   │       │   └── index.tsx  # Create webhook
+    │   │   │   │   │   │   │       │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       │       # POST /v1/users/me/webhooks
+    │   │   │   │   │   │   │       └── index.tsx  # Webhooks list
+    │   │   │   │   │   │   │           # BE: users-be/integrations
+    │   │   │   │   │   │   │           # GET /v1/users/me/webhooks
+    │   │   │   │   │   │   ├── app-preferences/
+    │   │   │   │   │   │   │   ├── data-usage/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Data usage controls
+    │   │   │   │   │   │   │   ├── notifications/
+    │   │   │   │   │   │   │   │   ├── channels/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Notification channels (Android)
+    │   │   │   │   │   │   │   │   └── do-not-disturb/
+    │   │   │   │   │   │   │   │       └── index.tsx  # DND schedule
+    │   │   │   │   │   │   │   └── theme/
+    │   │   │   │   │   │   │       └── index.tsx  # Theme settings
+    │   │   │   │   │   │   ├── data-export/
+    │   │   │   │   │   │   │   └── index.tsx  # Data export (comprehensive)
+    │   │   │   │   │   │   │       # - All data types, date ranges, formats
+    │   │   │   │   │   │   │       # BE: users-be/privacy
+    │   │   │   │   │   │   │       # POST /v1/privacy/export
+    │   │   │   │   │   │   └── security-questions/
+    │   │   │   │   │   │       └── index.tsx  # Security questions
+    │   │   │   │   │   │           # BE: users-be/security
+    │   │   │   │   │   │           # GET /v1/users/me/security-questions
+    │   │   │   │   │   ├── support/
+    │   │   │   │   │   │   ├── knowledge-base/
+    │   │   │   │   │   │   │   └── category/
+    │   │   │   │   │   │   │       └── [categoryId]/
+    │   │   │   │   │   │   │           └── index.tsx  # KB category
+    │   │   │   │   │   │   │               # BE: admin-be/knowledge_base
+    │   │   │   │   │   │   │               # GET /v1/kb/categories/{category_id}
+    │   │   │   │   │   │   ├── live-chat/
+    │   │   │   │   │   │   │   └── index.tsx  # Live chat support
+    │   │   │   │   │   │   │       # BE: communications-be/live_chat
+    │   │   │   │   │   │   │       # WebSocket connection
+    │   │   │   │   │   │   └── tickets/
+    │   │   │   │   │   │       └── [ticketId]/
+    │   │   │   │   │   │           ├── escalate/
+    │   │   │   │   │   │           │   └── index.tsx  # Escalate ticket
+    │   │   │   │   │   │           │       # BE: admin-be/support_ticket
+    │   │   │   │   │   │           │       # POST /v1/support/tickets/{ticket_id}/escalate
+    │   │   │   │   │   │           └── history/
+    │   │   │   │   │   │               └── index.tsx  # Ticket history
+    │   │   │   │   │   │                   # BE: admin-be/support_ticket
+    │   │   │   │   │   │                   # GET /v1/support/tickets/{ticket_id}/history
     │   │   │   │   │   ├── work/
     │   │   │   │   │   │   └── quick-actions/
     │   │   │   │   │   │       └── index.tsx  # Home screen quick actions
