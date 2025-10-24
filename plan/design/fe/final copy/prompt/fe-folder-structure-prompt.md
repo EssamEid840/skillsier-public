@@ -1,51 +1,62 @@
-Please scan the uploaded files which are:
-utility-microserices-folder-structure.md
-core-microserices-folder-structure.md
+# I need the fe Folder Structure, no code yet, according to the Belows
 
-financial-be-folder-structure.md
-financial-be-database-design.md
-financial-be.user-stories.md
+Strict Output Policy — **Folder Structure Only (No Code)**
+----------------------------------------------------------
 
-jobs-be-folder-structure.md
-jobs-be.user-stories.md
-jobs-be.database-design.md
-
-user-be-folder-structure.md
-user-be.user-stories.md
-users-be.database-design.md
-
-proposals-be.database-design.md
-proposals-be.user-stories.md
-proposals-be-folder-structure.md
-
-search-be.database-design.md
-search-be.user-stories.md
-search-be-folder-structure.md
-
-storage-be.user-stories.md
-utility-microserices-folder-structure.md
-storage-be.database-design.md
-admin-be.user-stories.md
-admin-be.database-design.md
-admin-be-folder-structure.md
-communications-be.user-stories.md
-communications-be.database-design.md
-communications-be-folder-structure.md
-mvp-critical-missed-microservices.md
-mvp-comments.md
-subscriptions-be.user-stories.md
-subscriptions-be.database-design.md
-subscriptions-be.-folder-structure.md
-lines.md
-reviews-be.database-design.md
-reviews-be-folder-structure.md
-reviews-be.user-stories.md
-contracts-be.user-stories.md
-contracts-be.database-design.md
-contracts-be-folder-structure.md
+- The **Hard requirement**: Deliver **only** the frontend **folder tree**, filenames, and **inline backend mappings/comments**.**No implementation code** of any kind (zero lines of JSX/TS/JS/JSON/YAML).
 
 
-Here’s what’s inside fe.zip and how it’s structured. I also pulled out the notable tech choices and conventions so you can map them to your platform.
+# Please scan the uploaded files which are:
+- fe.zip
+- utility-microserices-folder-structure.md
+- core-microserices-folder-structure.md
+
+- financial-be-folder-structure.md
+- financial-be-database-design.md
+- financial-be.user-stories.md
+
+- jobs-be-folder-structure.md
+- jobs-be.user-stories.md
+- jobs-be.database-design.md
+
+- user-be-folder-structure.md
+- user-be.user-stories.md
+- users-be.database-design.md
+
+- proposals-be.database-design.md
+- proposals-be.user-stories.md
+- proposals-be-folder-structure.md
+
+- search-be.database-design.md
+- search-be.user-stories.md
+- search-be-folder-structure.md
+
+- storage-be.user-stories.md
+- storage-be-folder-structure.md
+- storage-be.database-design.md
+
+- admin-be.user-stories.md
+- admin-be.database-design.md
+- admin-be-folder-structure.md
+
+- communications-be.user-stories.md
+- communications-be.database-design.md
+- communications-be-folder-structure.md
+
+- subscriptions-be.user-stories.md
+- subscriptions-be.database-design.md
+- subscriptions-be.-folder-structure.md
+
+- reviews-be.database-design.md
+- reviews-be-folder-structure.md
+- reviews-be.user-stories.md
+
+- contracts-be.user-stories.md
+- contracts-be.database-design.md
+- contracts-be-folder-structure.md
+
+
+> Here’s what’s inside fe.zip and how it’s structured. I also pulled out the notable tech choices and conventions so you can map them to your platform.
 
 Quick analysis (what you’ve got)
 --------------------------------
@@ -629,6 +640,59 @@ Tone & Delivery
     
 *   If input is ambiguous, make **reasonable assumptions**, state them briefly, and proceed.
     
+
+
+Non-Functional Requirements — Scale, Responsiveness, Styling, State Management (Hard)
+-------------------------------------------------------------------------------------
+
+*   **Scale assumptions:** Internet-scale, high-concurrency (global traffic), multi-tenant. Design for bursty load and cold starts.**Web Vitals budgets:** LCP ≤ 2.5s, TTI ≤ 3.5s, CLS < 0.1, TBT ≤ 200ms on mid-tier devices.
+    
+*   **Rendering strategy:** SSR/ISR where it helps SEO & TTFB; client components for interactive UIs; route-level code splitting and streaming.
+    
+*   **Responsiveness:** Mobile-first; fluid layout, **grid-based design**; breakpoints (xs/sm/md/lg/xl/2xl). RTL/LTR support (Arabic) with mirrored layouts. Touch + keyboard parity.
+    
+*   **Styling & Design System:** Tailwind + @skillsier/ui with **design tokens** (colors/spacing/typography), **dark mode**, theming via CSS vars. WCAG 2.2 AA minimum (focus states, labels, landmarks, motion-reduction).
+    
+*   **Performance & DX:** Image optimization, font subsetting, edge caching/prefetching, strict bundle guards, avoid hydration bloat, memoization where needed.
+    
+*   **State management (strict separation):**
+    
+    *   **Server state** → **TanStack Query** (fetch/cache/invalidate, pagination, optimistic updates, retries with jitter, staleTime defaults per domain).
+        
+    *   **Client/UI state** → **Zustand** (feature slices, selectors, persist only where needed, no duplication of server data).
+        
+    *   **Query Keys**: namespaced per service/domain: \['jobs','list',filters\], \['contracts','detail',id\]. Invalidation rules documented next to mutations.
+        
+    *   **Error & Loading**: standardized **error boundaries**, skeletons, and toasts.
+        
+*   **Internationalization:** \[locale\] routing (web) + providers (web/mobile), ICU messages in packages/shared/features/i18n, pluralization & RTL ready.
+    
+*   **Security & Privacy:** Role-scoped routes (Keycloak), PII redaction at the edge of UI, signed upload flows, CSRF-safe mutations, trace headers propagation.
+    
+*   **Testing & Quality:** Unit + integration per feature; accessibility checks; CI budgets on bundle size & vitals.
+    
+
+### Enforcement in the Tree Annotations
+
+*   Put BE mapping on any file that **touches** the backend, e.g.:
+    
+    *   queries.ts # BE: jobs-be/job — GET /v1/jobs?filters=... — paginated list
+        
+    *   mutations.ts # BE: proposals-be/proposal — POST /v1/proposals — creates; invalidates \['proposals','list'\]
+        
+    *   Presentational components: # BE: none (but mention typed props).
+        
+
+### State & Caching Defaults
+
+*   **Lists:** staleTime=30s, gcTime=10m, cursor pagination, keepPreviousData=true.
+    
+*   **Details:** staleTime=60s, background refetch on focus.
+    
+*   **Mutations:** optimistic updates with rollback; invalidate narrowly (\['contracts','detail',id\]) and, if needed, broader keys.
+    
+*   **Persistence:** only small UI prefs (theme/locale) in Zustand persist; never persist server data.
+
 
 Begin Now
 ---------
