@@ -159,6 +159,9 @@ fe/
     │   │   │       # - Preserves navigation state when possible
     │   │   │       # - User-friendly error messages (no stack traces)
     │   │   │       # import * as Sentry from '@sentry/react-native';
+    │   │   │       # ❌ ADD ErrorBoundary
+    │   │   │       # Wrap with react-error-boundary; Sentry logging; retry/go-home
+    │   │   │       # onReset clears cache & resets nav; friendly messages
     │   │   ├── (jobs)/
     │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
     │   │   │       # ❌ ADD ErrorBoundary wrapper
@@ -171,6 +174,7 @@ fe/
     │   │   │       # - Clears job filters/state on reset
     │   │   │       # - Offers "search again" action
     │   │   │       # - Tracks error frequency per user
+    │   │   │       # Same as contracts; also clears job filters/state
     │   │   ├── (proposals)/
     │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
     │   │   │       # ❌ ADD ErrorBoundary wrapper
@@ -183,6 +187,7 @@ fe/
     │   │   │       # - Draft-safe recovery (preserves unsaved proposals)
     │   │   │       # - Offers "save draft" before retry
     │   │   │       # - Warns about data loss if present
+    │   │   │       # Same pattern; preserve unsaved drafts; warn on data loss
     │   │   ├── app/  # Expo Router file-based routing
     │   │   │   ├── (admin)/  # Optional mobile admin area (if enabled later)
     │   │   │   │   # Admin portal (now available on mobile)
@@ -16001,6 +16006,8 @@ fe/
     │   │   │   # - Limited mobile admin (rejected: feature confusion)
     │   │   │   # - Full mobile admin (rejected: poor UX, security concerns)
     │   │   │   # Implementation: Document decision, show friendly message on mobile
+    │   │   │   # Rationale: security/UX; Consequence: no mobile admin
+    │   │   │   # Alternatives: read-only/limited/full mobile (rejected)
     │   │   ├── 006-public-pages-mobile-strategy.md  # ❌ CREATE
     │   │   │   # Title: Public/Marketing Pages Mobile Strategy
     │   │   │   # Status: Accepted
@@ -16021,6 +16028,7 @@ fe/
     │   │   │   # - Share same API endpoints as web
     │   │   │   # - Deep links for all public routes
     │   │   │   # - Cache static content for offline viewing
+    │   │   │   # Native public pages in mobile; deep links; shared APIs; offline cache
     │   │   ├── 007-component-platform-variants.md  # ❌ CREATE
     │   │   │   # Title: Component Platform Variants Architecture
     │   │   │   # Status: Accepted
@@ -16044,6 +16052,7 @@ fe/
     │   │   │   # - Base component: shared logic + interface
     │   │   │   # - Native variant: React Native primitives
     │   │   │   # - Web variant: HTML/DOM elements
+    │   │   │   # Use .tsx base + .native.tsx + .web.tsx architecture across UI
     │   │   ├── 008-hooks-domain-organization.md  # ❌ CREATE
     │   │   │   # Title: Hooks Domain Organization
     │   │   │   # Status: Accepted
@@ -16070,6 +16079,7 @@ fe/
     │   │   │   # - packages/hooks/{domain}/ structure
     │   │   │   # - React Query for data fetching
     │   │   │   # - Zustand for client state
+    │   │   │   # Organize hooks by domain packages/hooks/{domain}/; barrels; naming
     │   │   └── │
     │   ├── api/
     │   │   ├── endpoints/
@@ -16241,6 +16251,7 @@ fe/
     │   │   │   # - Navigation state management
     │   │   │   # - SEO considerations for web
     │   │   │   # - Mobile-specific navigation patterns
+    │   │   │   # Next.js App Router vs Expo Router; parity; deep links; SEO; nav state
     │   │   ├── deployment.md
     │   │   ├── development-workflow.md
     │   │   ├── development.md
@@ -16255,6 +16266,7 @@ fe/
     │   │   │   # - Testing error boundaries
     │   │   │   # - React Native specific considerations
     │   │   │   # - Example implementations
+    │   │   │   # Placement; fallback design; Sentry; recovery; testing; RN specifics
     │   │   ├── getting-started.md
     │   │   ├── mobile-native-components.md  # ❌ CREATE
     │   │   │   # Mobile Native Component Implementation Guide
@@ -16267,6 +16279,7 @@ fe/
     │   │   │   # - Testing native components
     │   │   │   # - Common pitfalls and solutions
     │   │   │   # - Example component patterns
+    │   │   │   # When to use .native; gestures; performance; testing; pitfalls; examples
     │   │   ├── testing-guide.md
     │   │   ├── testing.md
     │   │   ├── troubleshooting.md
@@ -16362,11 +16375,22 @@ fe/
     │   ├── hooks/  # ✅ ALL shared hooks belong HERE
     │   │   # React hooks library
     │   │   ├── admin/  # ⚠️ CREATE IF MISSING - Admin hooks
+    │   │   │   # ❌ CREATE ENTIRE DOMAIN - Admin hooks
     │   │   │   ├── index.ts  # ❌ CREATE
     │   │   │   │   # export * from './use-audit-logs';
     │   │   │   │   # export * from './use-moderation';
     │   │   │   │   # export * from './use-reports';
     │   │   │   │   # export * from './use-system-health';
+    │   │   │   │   # export * from './use-system-config';
+    │   │   │   │   # export * from './use-user-management';
+    │   │   │   │   # export * from './use-analytics';
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
+    │   │   │   ├── use-analytics.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useAnalytics(scope, dateRange)
+    │   │   │   │   # Returns: { data, isLoading, error }
+    │   │   │   │   # API: GET /v1/analytics?scope=&from=&to=
+    │   │   │   │   # BE: admin-be/analytics; dashboard metrics & trends
     │   │   │   ├── use-audit-logs.ts  # ❌ CREATE
     │   │   │   │   # Hook: useAuditLogs(filters)
     │   │   │   │   # Returns: { logs, export, isLoading }
@@ -16375,6 +16399,9 @@ fe/
     │   │   │   │   # - POST /v1/admin/audits/export
     │   │   │   │   # BE: admin-be/audit
     │   │   │   │   # Features: Audit trail viewing and export
+    │   │   │   │   # Returns: { logs, isLoading, hasMore, loadMore }
+    │   │   │   │   # API: GET /v1/admin/audit-logs; BE: admin-be/audit
+    │   │   │   │   # Compliance reporting, export-ready logs
     │   │   │   ├── use-moderation.ts  # ❌ CREATE
     │   │   │   │   # Hook: useModeration(contentType, contentId)
     │   │   │   │   # Returns: { moderate, history, isLoading }
@@ -16383,6 +16410,10 @@ fe/
     │   │   │   │   # - GET /v1/admin/moderation/{type}/{id}/history
     │   │   │   │   # BE: admin-be/moderation
     │   │   │   │   # Features: Content moderation actions
+    │   │   │   │   # Hook: useModeration()
+    │   │   │   │   # Returns: { items, approve, reject, escalate }
+    │   │   │   │   # API: queue + approve/reject endpoints; BE: admin-be/moderation
+    │   │   │   │   # Content flagging & workflows
     │   │   │   ├── use-reports.ts  # ❌ CREATE
     │   │   │   │   # Hook: useReports(reportType, params)
     │   │   │   │   # Returns: { report, generate, download, isLoading }
@@ -16392,20 +16423,31 @@ fe/
     │   │   │   │   # - GET /v1/admin/reports/{id}/download
     │   │   │   │   # BE: admin-be/report
     │   │   │   │   # Features: Admin report generation
-    │   │   │   └── use-system-health.ts  # ❌ CREATE
-    │   │   │       # Hook: useSystemHealth()
-    │   │   │       # Returns: { health, metrics, incidents, isLoading }
-    │   │   │       # API:
-    │   │   │       # - GET /v1/admin/health
-    │   │   │       # - GET /v1/admin/metrics
-    │   │   │       # - GET /v1/admin/incidents
-    │   │   │       # BE: admin-be/health, admin-be/incident
-    │   │   │       # Features: System health monitoring
+    │   │   │   ├── use-system-config.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSystemConfig()
+    │   │   │   │   # Returns: { config, updateConfig, isLoading }
+    │   │   │   │   # API: GET/PUT /v1/admin/config; BE: admin-be/config
+    │   │   │   │   # Feature flags & global settings
+    │   │   │   ├── use-system-health.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSystemHealth()
+    │   │   │   │   # Returns: { health, metrics, incidents, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/admin/health
+    │   │   │   │   # - GET /v1/admin/metrics
+    │   │   │   │   # - GET /v1/admin/incidents
+    │   │   │   │   # BE: admin-be/health, admin-be/incident
+    │   │   │   │   # Features: System health monitoring
+    │   │   │   └── use-user-management.ts  # ❌ CREATE
+    │   │   │       # Hook: useUserManagement()
+    │   │   │       # Returns: { users, suspend, ban, verify }
+    │   │   │       # API: list + POST suspend/ban/verify; BE: admin-be/user-management
+    │   │   │       # User admin workflows
     │   │   ├── analytics/  # ⚠️ VERIFY OR CREATE ENTIRE DOMAIN - Analytics hooks
     │   │   │   # Analytics, earnings, and insights tracking
     │   │   │   # BE: analytics-be microservice
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
     │   │   │   # BE: admin-be/analytics, financial-be/analytics
+    │   │   │   # ❌ CREATE ENTIRE DOMAIN - Analytics hooks
     │   │   │   ├── index.ts  # ❌ CREATE - Analytics hooks barrel
     │   │   │   │   # Exports: analytics, earnings, performance, insights
     │   │   │   │   # ⚠️ VERIFY - Barrel export
@@ -16414,6 +16456,8 @@ fe/
     │   │   │   │   # export * from './use-earnings';
     │   │   │   │   # export * from './use-insights';
     │   │   │   │   # export * from './use-performance';
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
     │   │   │   ├── use-analytics.ts  # ❌ CREATE - Analytics overview
     │   │   │   │   # Hook: useAnalytics(scope, dateRange)
     │   │   │   │   # Returns: { data, isLoading, error }
@@ -16423,6 +16467,8 @@ fe/
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # BE: admin-be/analytics
     │   │   │   │   # Features: Dashboard metrics, trend data
+    │   │   │   │   # API: GET /v1/analytics?scope=&from=&to= ; BE: admin-be/analytics
+    │   │   │   │   # Dashboard metrics & trends
     │   │   │   ├── use-earnings.ts  # ❌ CREATE - Earnings
     │   │   │   │   # Hook: useEarnings(dateRange)
     │   │   │   │   # Returns: { totals, series, breakdown }
@@ -16435,6 +16481,8 @@ fe/
     │   │   │   │   # API: GET /v1/analytics/earnings?user_id=&period=
     │   │   │   │   # BE: financial-be/analytics
     │   │   │   │   # Features: Earnings breakdown, period comparisons
+    │   │   │   │   # API: GET /v1/analytics/earnings?user_id=&period= ; BE: financial-be/analytics
+    │   │   │   │   # Period comparisons & charts
     │   │   │   ├── use-insights.ts  # ❌ CREATE - Insights
     │   │   │   │   # Hook: useInsights(query)
     │   │   │   │   # Returns: { insights, isLoading }
@@ -16447,6 +16495,8 @@ fe/
     │   │   │   │   # API: GET /v1/analytics/insights?context=
     │   │   │   │   # BE: admin-be/insights
     │   │   │   │   # Features: AI-powered insights, recommendations
+    │   │   │   │   # API: GET /v1/analytics/insights?context= ; BE: admin-be/insights
+    │   │   │   │   # AI-powered guidance
     │   │   │   └── use-performance.ts  # ❌ CREATE - Performance KPIs
     │   │   │       # Hook: usePerformance(dateRange)
     │   │   │       # Returns: { successRate, responseTime, satisfaction, completion }
@@ -16459,6 +16509,8 @@ fe/
     │   │   │       # API: GET /v1/analytics/performance?entity=&type=
     │   │   │       # BE: proposals-be/analytics
     │   │   │       # Features: KPIs, performance metrics
+    │   │   │       # API: GET /v1/analytics/performance?entity=&type= ; BE: proposals-be/analytics
+    │   │   │       # KPIs & benchmarks
     │   │   ├── api/  # ✅ EXISTS
     │   │   │   # ✅ EXISTS - Generic API hooks
     │   │   │   ├── use-api.ts  # ✅ KEEP (shared)
@@ -16477,6 +16529,7 @@ fe/
     │   │   │   # BE: contracts-be microservice
     │   │   │   # ❌ CREATE ENTIRE FOLDER - CRITICAL
     │   │   │   # ❌ CREATE ENTIRE DOMAIN - Contract domain hooks
+    │   │   │   # ❌ CREATE ENTIRE DOMAIN - CRITICAL
     │   │   │   ├── index.ts  # ❌ CREATE - Export all contract hooks
     │   │   │   │   # export * from './use-contract';
     │   │   │   │   # export * from './use-contracts';
@@ -16500,6 +16553,9 @@ fe/
     │   │   │   │   # - export * from './use-disputes';
     │   │   │   │   # ❌ CREATE - Barrel export
     │   │   │   │   # ❌ CREATE - Barrel export for all contract hooks
+    │   │   │   │   # ❌ CREATE
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
     │   │   │   ├── use-amendments.ts  # ❌ CREATE - Contract amendment operations
     │   │   │   │   # POST /v1/contracts/{id}/amendments
     │   │   │   │   # POST /v1/contracts/{id}/amendments/{amendment_id}/approve
@@ -16521,6 +16577,8 @@ fe/
     │   │   │   │   # ❌ CREATE - Amendments
     │   │   │   │   # GET/POST amendments; approve/reject/apply
     │   │   │   │   # Versioning; audit trail
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # propose/approve/reject/apply; BE: contracts-be/amendment
     │   │   │   ├── use-contract-actions.ts  # ❌ CREATE - Contract actions
     │   │   │   │   # pause/resume/complete/terminate with optimistic updates
     │   │   │   │   # BE: contracts-be/contracts
@@ -16547,6 +16605,8 @@ fe/
     │   │   │   │   # Optimistic UI; cache invalidation; notifications
     │   │   │   │   # API: POST /v1/contracts/{id}/{action}
     │   │   │   │   # Features: Validation / confirmation dialogs / event emission
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # start/pause/resume/complete/terminate; BE: contracts-be/contract
     │   │   │   ├── use-contract.ts  # Single contract operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch contract by ID
@@ -16585,6 +16645,7 @@ fe/
     │   │   │   │   # - POST /v1/contracts/{id}/resume
     │   │   │   │   # - POST /v1/contracts/{id}/complete
     │   │   │   │   # Features: Real-time updates via WebSocket / optimistic updates / status management
+    │   │   │   │   # GET /v1/contracts/{id}; details & refetch
     │   │   │   ├── use-contracts.ts  # List contracts
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # List/filter contracts
@@ -16620,6 +16681,7 @@ fe/
     │   │   │   │   # Returns: { contracts, hasMore, loadMore, refetch, isLoading }
     │   │   │   │   # API: GET /v1/contracts?status={status}&page={page}&limit={limit}
     │   │   │   │   # Features: Infinite scroll / filtering / sorting / search
+    │   │   │   │   # List, filters, pagination; BE: contracts-be/contract
     │   │   │   ├── use-deliverables.ts  # ❌ CREATE - Deliverable management
     │   │   │   │   # List + submit deliverables, uploads
     │   │   │   │   # BE: contracts-be/deliverable, storage-be/asset
@@ -16654,6 +16716,8 @@ fe/
     │   │   │   │   # Hook: useDeliverables(milestoneId)
     │   │   │   │   # Returns: { deliverables, submit, review, accept, reject, requestRevision }
     │   │   │   │   # Features: File upload with progress / version history / approval workflow
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Submit/review/approve/reject; uploads; BE: contracts-be/deliverable
     │   │   │   ├── use-disputes.ts  # ❌ CREATE - Dispute management
     │   │   │   │   # POST open/evidence/escalate/resolve; GET list
     │   │   │   │   # ❌ CREATE - Dispute operations
@@ -16683,6 +16747,8 @@ fe/
     │   │   │   │   # GET/POST disputes; escalate/resolve/close; upload evidence
     │   │   │   │   # Mediation workflow; SLA tracking
     │   │   │   │   # Features: Evidence upload / timeline / resolution flow / mediation workflow / SLA tracking
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Open/escalate/resolve; BE: contracts-be/dispute
     │   │   │   ├── use-milestones.ts  # Milestone operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch milestones for contract
@@ -16724,6 +16790,7 @@ fe/
     │   │   │   │   # ❌ CREATE - Milestone management
     │   │   │   │   # Returns: { milestones, create, submit, approve, reject, release, dispute }
     │   │   │   │   # Features: Auto-release after approval / payment integration / progress tracking
+    │   │   │   │   # Complete/approve/fund/release; BE: contracts-be/milestone
     │   │   │   ├── use-timesheet.ts  # Timesheet operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch timesheet entries
@@ -16766,6 +16833,7 @@ fe/
     │   │   │   │   # GET/POST/PUT + submit/approve/reject/dispute; GET summary
     │   │   │   │   # Auto totals; weekly aggregation
     │   │   │   │   # Features: Weekly aggregation / auto totals / validation (max 24h/day)
+    │   │   │   │   # Submit/approve/reject; summaries; BE: contracts-be/timesheet
     │   │   │   ├── use-work-diary.ts  # Work diary operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch work diary entries
@@ -16796,6 +16864,7 @@ fe/
     │   │   │   │   # - PUT /v1/contracts/{id}/work-diary/{entry_id}
     │   │   │   │   # - DELETE /v1/contracts/{id}/work-diary/{entry_id}
     │   │   │   │   # Features: Activity logging / screenshot management / privacy controls / retention policy
+    │   │   │   │   # CRUD entries; screenshots; BE: contracts-be/work_diary
     │   │   │   └── │
     │   │   ├── financial/  # ❌ CREATE THIS
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
@@ -16813,6 +16882,9 @@ fe/
     │   │   │   │   # export * from './use-escrow';
     │   │   │   │   # export * from './use-invoices';
     │   │   │   │   # ⚠️ VERIFY - Barrel export
+    │   │   │   │   # ❌ CREATE
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
     │   │   │   ├── use-balance.ts  # Balance queries
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Get current balance
@@ -16825,12 +16897,17 @@ fe/
     │   │   │   │   # ❌ CREATE - Balance operations
     │   │   │   │   # GET /v1/wallet/balance | /v1/wallet/balance/history
     │   │   │   │   # ⚠️ VERIFY - Balance queries
+    │   │   │   │   # Balance + history; BE: financial-be/wallet
     │   │   │   ├── use-escrow.ts  # ❌ CREATE - Escrow operations
     │   │   │   │   # POST fund/release/refund; GET status
     │   │   │   │   # ⚠️ VERIFY - Escrow operations
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Fund/release/refund; BE: financial-be/escrow
     │   │   │   ├── use-invoices.ts  # ❌ CREATE - Invoice operations
     │   │   │   │   # POST create/send/pay; GET list/detail
     │   │   │   │   # ⚠️ VERIFY - Invoice operations
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # CRUD/send/pay; BE: financial-be/invoice
     │   │   │   ├── use-payment-methods.ts  # Payment methods
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # Payment methods management
@@ -16846,6 +16923,7 @@ fe/
     │   │   │   │   # ❌ CREATE - Payment method management
     │   │   │   │   # GET/POST/DELETE/PUT/POST verify
     │   │   │   │   # ⚠️ VERIFY - Payment methods CRUD
+    │   │   │   │   # Add/remove/default/verify; BE: financial-be/payment_method
     │   │   │   ├── use-transactions.ts  # Transaction history
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - List transactions (paginated)
@@ -16858,6 +16936,7 @@ fe/
     │   │   │   │   # ❌ CREATE - Transaction operations
     │   │   │   │   # GET list/detail/export (real-time updates)
     │   │   │   │   # ⚠️ VERIFY - Transaction history
+    │   │   │   │   # List/filter/paginate; BE: financial-be/transaction
     │   │   │   ├── use-wallet.ts  # Wallet operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Get wallet info
@@ -16879,6 +16958,7 @@ fe/
     │   │   │   │   # - POST /v1/wallet/transfer
     │   │   │   │   # - PUT /v1/wallet/settings
     │   │   │   │   # Features: Wallet management
+    │   │   │   │   # Balance, txns, addFunds, withdraw; BE: financial-be/wallet
     │   │   │   └── use-withdraw.ts  # Withdrawal operations
     │   │   │       # ❌ CREATE
     │   │   │       # - Request withdrawal
@@ -16901,6 +16981,7 @@ fe/
     │   │   │       # - GET /v1/withdrawals/{id}
     │   │   │       # - DELETE /v1/withdrawals/{id}
     │   │   │       # Features: Withdrawal operations
+    │   │   │       # Requests/list/cancel; BE: financial-be/withdrawal
     │   │   ├── forms/  # ✅ EXISTS
     │   │   │   # ✅ EXISTS - Form validation hooks
     │   │   │   ├── use-form-state.ts  # ✅ KEEP (shared)
@@ -16933,6 +17014,9 @@ fe/
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # export * from './use-job-analytics';
     │   │   │   │   # export * from './use-job-applicants';
+    │   │   │   │   # export * from './use-job-invitations';
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
     │   │   │   ├── use-job-actions.ts  # ❌ CREATE - Job actions
     │   │   │   │   # publish/close/archive/delete
     │   │   │   │   # POST /v1/jobs/{id}/publish|close|archive, DELETE /v1/jobs/{id}
@@ -16955,6 +17039,7 @@ fe/
     │   │   │   │   # Returns: { publish, close, reopen, archive, delete }
     │   │   │   │   # - DELETE /v1/jobs/{id}
     │   │   │   │   # Features: Job lifecycle management
+    │   │   │   │   # publish/close/reopen/archive/delete; BE: jobs-be/job
     │   │   │   ├── use-job-analytics.ts  # ❌ CREATE - Job analytics
     │   │   │   │   # Hook: useJobAnalytics(jobId)
     │   │   │   │   # Returns: { views, applies, hires, trend }
@@ -16965,6 +17050,7 @@ fe/
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # Returns: { views, applies, hires, trend, isLoading }
     │   │   │   │   # Features: Job performance metrics
+    │   │   │   │   # Views/apps/conversion/trends; BE: jobs-be/analytics
     │   │   │   ├── use-job-applicants.ts  # ❌ CREATE - Applicants
     │   │   │   │   # Hook: useJobApplicants(jobId)
     │   │   │   │   # Returns: { applicants, isLoading, hasMore, loadMore }
@@ -16976,6 +17062,7 @@ fe/
     │   │   │   │   # Hook: useJobApplicants(jobId, filters)
     │   │   │   │   # API: GET /v1/jobs/{id}/applicants?filters=&page=
     │   │   │   │   # Features: Applicant list, shortlist, reject, interview
+    │   │   │   │   # shortlist/reject/invite; BE: jobs-be/application
     │   │   │   ├── use-job-application.ts  # ❌ CREATE
     │   │   │   │   # Job application operations
     │   │   │   │   # - Apply to job
@@ -16997,6 +17084,8 @@ fe/
     │   │   │   │   # - DELETE /v1/applications/{id}
     │   │   │   │   # - PUT /v1/applications/{id}
     │   │   │   │   # Features: Application management
+    │   │   │   ├── use-job-invitations.ts  # ❌ CREATE
+    │   │   │   │   # send/accept/reject; BE: jobs-be/invitation
     │   │   │   ├── use-job-recommendations.ts  # ❌ CREATE
     │   │   │   │   # Job recommendations
     │   │   │   │   # - Get recommended jobs
@@ -17014,6 +17103,7 @@ fe/
     │   │   │   │   # - POST /v1/recommendations/jobs/{id}/dismiss
     │   │   │   │   # - POST /v1/recommendations/jobs/{id}/feedback
     │   │   │   │   # Features: Personalized job recommendations
+    │   │   │   │   # AI matches; BE: search-be/recommendation
     │   │   │   ├── use-job-search.ts  # ❌ CREATE
     │   │   │   │   # Job search functionality
     │   │   │   │   # - Search jobs by keywords
@@ -17030,6 +17120,7 @@ fe/
     │   │   │   │   # API: GET /v1/search/jobs?q=&filters=&facets=
     │   │   │   │   # BE: search-be/search
     │   │   │   │   # Features: Advanced search, filters, facets
+    │   │   │   │   # Full-text + facets; BE: search-be/job
     │   │   │   ├── use-job-templates.ts  # ❌ CREATE - Job template operations
     │   │   │   │   # GET list; POST from-template/save-as; DELETE template
     │   │   │   │   # ❌ CREATE
@@ -17042,6 +17133,7 @@ fe/
     │   │   │   │   # - DELETE /v1/jobs/templates/{id}
     │   │   │   │   # BE: jobs-be/template
     │   │   │   │   # Features: Job template management
+    │   │   │   │   # CRUD reusable postings; BE: jobs-be/template
     │   │   │   ├── use-job.ts  # ❌ CREATE
     │   │   │   │   # Single job operations
     │   │   │   │   # - Fetch job by ID
@@ -17069,6 +17161,7 @@ fe/
     │   │   │   │   # ⚠️ VERIFY - Single job operations
     │   │   │   │   # Returns: { job, isLoading, error }
     │   │   │   │   # Features: Single job details
+    │   │   │   │   # GET /v1/jobs/{id}; details & refetch
     │   │   │   ├── use-jobs.ts  # ❌ CREATE
     │   │   │   │   # List/filter jobs
     │   │   │   │   # - Get all jobs (paginated)
@@ -17098,6 +17191,7 @@ fe/
     │   │   │   │   # Returns: { jobs, hasMore, loadMore, isLoading }
     │   │   │   │   # API: GET /v1/jobs?filters=&page=&limit=
     │   │   │   │   # Features: Job list with filters
+    │   │   │   │   # List, filters, pagination; BE: jobs-be/job
     │   │   │   └── │
     │   │   ├── messages/  # ❌ CREATE ENTIRE DOMAIN
     │   │   │   ├── index.ts  # ❌ CREATE - Export all message hooks
@@ -17185,32 +17279,56 @@ fe/
     │   │   │   │   # export * from './use-real-time';
     │   │   │   │   # export * from './use-typing-indicator';
     │   │   │   │   # export * from './use-message-send';
+    │   │   │   │   # ❌ CREATE
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
     │   │   │   ├── use-conversation.ts  # ❌ CREATE - Single conversation ops
     │   │   │   │   # GET detail; POST archive/read/mute/participants; DELETE leave
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Archive/mute/participants/leave; BE: communications-be/conversation
     │   │   │   ├── use-conversations.ts  # ❌ CREATE - Conversations list
     │   │   │   │   # GET /v1/conversations, /unread-count
     │   │   │   │   # ❌ CREATE - List conversations
     │   │   │   │   # GET list/unread-count/search (real-time updates)
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # List + unread count; BE: communications-be/conversation
     │   │   │   ├── use-message-send.ts  # ❌ CREATE - Send message operations
     │   │   │   │   # POST/PUT/DELETE message; optimistic + retry
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # send/edit/delete with retry; BE: communications-be/message
     │   │   │   ├── use-messages.ts  # ❌ CREATE - Messages for conversation
     │   │   │   │   # GET /v1/conversations/{id}/messages, mark-read
     │   │   │   │   # ❌ CREATE - Messages in conversation
     │   │   │   │   # GET paginated; DELETE; POST react; mark read
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Paginate + markRead; BE: communications-be/message
     │   │   │   ├── use-real-time.ts  # ❌ CREATE - Real-time messaging (WS)
     │   │   │   │   # Connect, handle messages, presence, reconnection
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # WS subscribe/unsubscribe; presence/reconnect; /ws/conversations/{id}
     │   │   │   ├── use-send-message.ts  # ❌ CREATE - Send message with optimistic UI
     │   │   │   │   # POST /v1/messages, storage-be/asset for attachments
     │   │   │   └── use-typing-indicator.ts  # ❌ CREATE - Typing indicators
     │   │   │       # Emit/listen typing.start|stop (debounced)
+    │   │   │       # ❌ CREATE
+    │   │   │       # start/stop typing; BE: communications-be/presence
     │   │   ├── notifications/  # ❌ CREATE THIS
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
+    │   │   │   # ❌ CREATE ENTIRE DOMAIN - Notification hooks
     │   │   │   ├── index.ts  # ❌ CREATE - Export all notification hooks
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # export * from './use-notification-preferences';
+    │   │   │   │   # export * from './use-notifications';
+    │   │   │   │   # export * from './use-mark-read';
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
     │   │   │   ├── use-mark-read.ts  # ❌ CREATE - Mark notification as read
     │   │   │   │   # Hook: useMarkNotificationRead()
     │   │   │   │   # Returns: { markRead, markAllRead }
     │   │   │   │   # API: POST /v1/notifications/{id}/read
     │   │   │   │   # BE: communications-be/notification
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # markRead/markAllRead; BE: communications-be/notification
     │   │   │   ├── use-notification-preferences.ts  # ❌ CREATE - Notification preferences
     │   │   │   │   # Hook: useNotificationPreferences()
     │   │   │   │   # Returns: { preferences, updatePreferences }
@@ -17218,6 +17336,8 @@ fe/
     │   │   │   │   # - GET /v1/settings/notifications
     │   │   │   │   # - PUT /v1/settings/notifications
     │   │   │   │   # BE: communications-be/notification_preference
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # GET/PUT preferences; BE: communications-be/notification_preference
     │   │   │   └── use-notifications.ts  # ❌ CREATE - Notifications list
     │   │   │       # Hook: useNotifications(filters)
     │   │   │       # Returns: { notifications, markRead, markAllRead, deleteNotification }
@@ -17227,6 +17347,8 @@ fe/
     │   │   │       # - POST /v1/notifications/read-all
     │   │   │       # - DELETE /v1/notifications/{id}
     │   │   │       # BE: communications-be/notification
+    │   │   │       # ❌ CREATE
+    │   │   │       # List/filter/delete/read; BE: communications-be/notification
     │   │   ├── payments/  # ❌ CREATE ENTIRE FOLDER - Payments domain hooks
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
     │   │   │   # ⚠️ VERIFY EXISTENCE OR CREATE
@@ -17307,6 +17429,12 @@ fe/
     │   │   │   │   # ❌ CREATE - Proposals hooks barrel
     │   │   │   │   # Exports: proposal, proposals, proposal-actions, proposal-templates, rate-cards, milestones
     │   │   │   │   # ⚠️ VERIFY - Barrel export
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # export * from './use-rate-cards';
+    │   │   │   │   # export * from './use-milestones';
+    │   │   │   │   # export * from './use-submission';
+    │   │   │   ├── package.json  # ❌ CREATE
+    │   │   │   ├── tsconfig.json  # ❌ CREATE
     │   │   │   ├── use-bid-recommendations.ts  # ❌ CREATE - Bid recommendations
     │   │   │   │   # Hook: useBidRecommendations(jobId)
     │   │   │   │   # Returns: { recommendations, isLoading }
@@ -17317,6 +17445,8 @@ fe/
     │   │   │   │   # - Market rate analysis
     │   │   │   │   # - Win probability estimates
     │   │   │   │   # ⚠️ VERIFY - AI-powered pricing
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # AI pricing/win-prob; BE: proposals-be/bid
     │   │   │   ├── use-bid.ts  # ❌ CREATE - Bid/pricing operations
     │   │   │   │   # GET recommendations; POST calculate
     │   │   │   │   # Hook: useBid(jobId)
@@ -17330,12 +17460,16 @@ fe/
     │   │   │   │   # - Fee estimation
     │   │   │   │   # - Competitive analysis
     │   │   │   │   # ⚠️ VERIFY - Bid calculation
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # GET /v1/bids/{id}; details
     │   │   │   ├── use-milestones.ts  # ❌ CREATE - Proposal milestones
     │   │   │   │   # Hook: useProposalMilestones(proposalId)
     │   │   │   │   # Returns: { milestones, create, update, delete }
     │   │   │   │   # API: GET/POST /v1/proposals/{id}/milestones
     │   │   │   │   # BE: proposals-be/milestone
     │   │   │   │   # GET/POST /v1/proposals/{id}/milestones; BE: proposals-be/milestone
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # CRUD proposal milestones; BE: proposals-be/milestone
     │   │   │   ├── use-proposal-actions.ts  # ❌ CREATE - Proposal actions
     │   │   │   │   # submit/withdraw/accept/reject
     │   │   │   │   # POST /v1/proposals/{id}/submit|withdraw|accept|reject
@@ -17354,6 +17488,8 @@ fe/
     │   │   │   │   # Returns: { submit, accept, reject, archive, withdraw, isMutating }
     │   │   │   │   # submit/withdraw/update; BE: proposals-be/proposal
     │   │   │   │   # ⚠️ VERIFY - Submit/withdraw/accept/reject
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # submit/withdraw/accept/reject; BE: proposals-be/proposal
     │   │   │   ├── use-proposal-submission.ts  # ❌ CREATE - Proposal submission flow
     │   │   │   │   # POST draft/validate/submit; auto-save progress
     │   │   │   │   # Hook: useProposalSubmission()
@@ -17390,6 +17526,7 @@ fe/
     │   │   │   │   # - POST /v1/proposal-templates
     │   │   │   │   # GET/POST /v1/proposal-templates; BE: proposals-be/template
     │   │   │   │   # ⚠️ VERIFY - Template CRUD
+    │   │   │   │   # CRUD templates; BE: proposals-be/template
     │   │   │   ├── use-proposal.ts  # ❌ CREATE
     │   │   │   │   # Single proposal operations
     │   │   │   │   # - Fetch proposal by ID
@@ -17414,6 +17551,7 @@ fe/
     │   │   │   │   # ❌ CREATE - Single proposal
     │   │   │   │   # GET/PATCH/DELETE /v1/proposals/{id}; BE: proposals-be/proposal
     │   │   │   │   # ⚠️ VERIFY - Single proposal operations
+    │   │   │   │   # GET /v1/proposals/{id}; details
     │   │   │   ├── use-proposals.ts  # ❌ CREATE
     │   │   │   │   # List proposals
     │   │   │   │   # - Get all proposals (paginated)
@@ -17437,12 +17575,17 @@ fe/
     │   │   │   │   # - Status filtering
     │   │   │   │   # GET /v1/proposals?status&job_id&date_range
     │   │   │   │   # ⚠️ VERIFY - Proposal list
+    │   │   │   │   # List/filter/paginate; BE: proposals-be/proposal
     │   │   │   ├── use-rate-cards.ts  # ❌ CREATE - Rate cards
     │   │   │   │   # Hook: useRateCards()
     │   │   │   │   # Returns: { cards, update, create }
     │   │   │   │   # API: GET/PUT /v1/rate-cards
     │   │   │   │   # BE: proposals-be/rate_card
     │   │   │   │   # GET/POST /v1/rate-cards; BE: proposals-be/rate_card
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # CRUD pricing packages; BE: proposals-be/rate_card
+    │   │   │   ├── use-submission.ts  # ❌ CREATE
+    │   │   │   │   # submit/validate/draft; BE: proposals-be/proposal
     │   │   │   └── │
     │   │   ├── search/  # ⚠️ VERIFY - Search hooks
     │   │   │   ├── use-saved-searches.ts  # ❌ CREATE
@@ -19703,6 +19846,8 @@ fe/
     │   │   │   │   │   │   │   │   # BE: None (UI only)
     │   │   │   │   │   │   │   │   # Implementation:
     │   │   │   │   │   │   │   │   # - Accessibility: role, aria-expanded
+    │   │   │   │   │   │   │   │   # RN accordion: reanimated expand/collapse
+    │   │   │   │   │   │   │   │   # Nested sections; a11y; haptics; icon rotate
     │   │   │   │   │   │   │   ├── Accordion.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Accordion.types.ts  # ✅ EXISTS - Shared types
@@ -19751,6 +19896,7 @@ fe/
     │   │   │   │   │   │   │   │   # - Accessibility support (role, label)
     │   │   │   │   │   │   │   │   # - Back button integration
     │   │   │   │   │   │   │   │   # Props: items[], maxVisible, separator, onNavigate
+    │   │   │   │   │   │   │   │   # Horizontal scroll; auto-collapse; tap targets; a11y
     │   │   │   │   │   │   │   ├── Breadcrumb.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Breadcrumb.types.ts  # ✅ EXISTS - Shared types
@@ -19807,6 +19953,7 @@ fe/
     │   │   │   │   │   │   │   │   # - Keyboard-aware behavior (adjusts on keyboard open)
     │   │   │   │   │   │   │   │   # - Accessibility support (role, aria-modal)
     │   │   │   │   │   │   │   │   # Props: snapPoints[], onDismiss, backdrop, children
+    │   │   │   │   │   │   │   │   # BottomSheet drawer; gestures; snap points; keyboard aware
     │   │   │   │   │   │   │   ├── Drawer.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Drawer.types.ts  # ✅ EXISTS - Shared types
@@ -20051,6 +20198,7 @@ fe/
     │   │   │   │   │   │   │   │   # - Pull-to-refresh support
     │   │   │   │   │   │   │   │   # Props: columns[], data[], onSort, onFilter
     │   │   │   │   │   │   │   │   # BE: Varies by usage
+    │   │   │   │   │   │   │   │   # FlashList rows; column scroll; swipe actions; filters
     │   │   │   │   │   │   │   ├── DataGrid.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── DataGrid.types.ts  # ✅ EXISTS - Shared types
@@ -20103,12 +20251,16 @@ fe/
     │   │   │   │   │   │   │   │   # - Card preview modal
     │   │   │   │   │   │   │   │   # Props: columns[], cards[], onCardMove, onCardClick
     │   │   │   │   │   │   │   │   # BE: Varies by usage
+    │   │   │   │   │   │   │   │   # DnD cards; haptics; optimistic moves
     │   │   │   │   │   │   │   ├── KanbanBoard.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── KanbanBoard.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── KanbanBoard.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   │       # ✅ EXISTS
+    │   │   │   │   │   │   ├── Popover/
+    │   │   │   │   │   │   │   └── Popover.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │       # Positioned overlay; arrow; fade+scale; portal
     │   │   │   │   │   │   ├── Table/
     │   │   │   │   │   │   │   ├── Table.native.tsx  # ❌ CREATE
     │   │   │   │   │   │   │   │   # Mobile responsive table component
@@ -20159,12 +20311,16 @@ fe/
     │   │   │   │   │   │   │   │   # - Infinite scroll pagination
     │   │   │   │   │   │   │   │   # Props: columns[], data[], onSort, expandable
     │   │   │   │   │   │   │   │   # BE: Varies by usage
+    │   │   │   │   │   │   │   │   # Sticky header; sort; multi-select; expand rows
     │   │   │   │   │   │   │   ├── Table.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Table.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── Table.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   │       # ✅ EXISTS
+    │   │   │   │   │   │   ├── Tooltip/
+    │   │   │   │   │   │   │   └── Tooltip.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │       # Long press; auto-dismiss; a11y; simple text
     │   │   │   │   │   │   └── │
     │   │   │   │   │   └── │
     │   │   │   │   ├── Overlay/
