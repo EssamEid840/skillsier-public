@@ -144,10 +144,23 @@ fe/
     │   ├── mobile/  # React Native/Expo application
     │   │   ├── (contracts)/
     │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary (react-error-boundary / Sentry)
+    │   │   │       # ❌ ADD ErrorBoundary wrapper
+    │   │   │       # CURRENT: Missing error boundary
+    │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │       # import { ErrorBoundary } from 'react-error-boundary';
+    │   │   │       # Prevents crashes, shows fallback UI
     │   │   ├── (jobs)/
     │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   │       # ❌ ADD ErrorBoundary wrapper
+    │   │   │       # CURRENT: Missing error boundary
+    │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │       # Prevents crashes in jobs section
     │   │   ├── (proposals)/
     │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   │       # ❌ ADD ErrorBoundary wrapper
+    │   │   │       # CURRENT: Missing error boundary
+    │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │       # Prevents crashes in proposals section
     │   │   ├── app/  # Expo Router file-based routing
     │   │   │   ├── (admin)/  # Optional mobile admin area (if enabled later)
     │   │   │   │   # Admin portal (now available on mobile)
@@ -4702,6 +4715,7 @@ fe/
     │   │   │   │       ├── Input.tsx  # Input component
     │   │   │   │       └── SearchBar.tsx  # Search bar
     │   │   │   ├── hooks/  # Mobile-specific hooks
+    │   │   │   │   # ✅ KEEP - Mobile-specific hooks only
     │   │   │   │   ├── use-biometric.ts  # ✅ KEEP (mobile-specific)
     │   │   │   │   │   # ✅ KEEP (Mobile-specific)
     │   │   │   │   │   # Mobile-specific biometric authentication
@@ -4709,15 +4723,25 @@ fe/
     │   │   │   │   │   # - Touch ID
     │   │   │   │   │   # - Biometric availability check
     │   │   │   │   │   # - No web equivalent
+    │   │   │   │   │   # - Face ID / Touch ID
     │   │   │   │   ├── useAppState.ts  # App state (foreground/background)
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   ├── useBiometricAuth.ts  # Biometric authentication
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   ├── useCamera.ts  # Camera access
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   ├── useHighFPSAnimation.ts  # High FPS animations
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   ├── useKeyboard.ts  # Keyboard handling
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   ├── useLocation.ts  # Geolocation
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   ├── useNetworkStatus.ts  # Network connectivity
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   ├── useOrientation.ts  # Device orientation
+    │   │   │   │   │   # ✅ KEEP (mobile-specific)
     │   │   │   │   └── usePushNotifications.ts  # Push notifications
+    │   │   │   │       # ✅ KEEP (mobile-specific)
     │   │   │   ├── lib/
     │   │   │   │   ├── i18n/
     │   │   │   │   │   └── index.ts  # i18n configuration (mobile)
@@ -4786,182 +4810,7 @@ fe/
     │   │   │   # - Zustand
     │   │   ├── tailwind.config.js  # Tailwind config (NativeWind)
     │   │   ├── tsconfig.json  # TypeScript config
-    │   │   └── │
-    │   ├── packages/
-    │   │   ├── hooks/
-    │   │   │   ├── contracts/  # ❌ CREATE - Domain-specific hooks
-    │   │   │   │   ├── use-contract.ts  # Single contract operations
-    │   │   │   │   │   # - Fetch contract by ID
-    │   │   │   │   │   # - Update contract status
-    │   │   │   │   │   # - Contract actions (pause, complete, etc.)
-    │   │   │   │   │   # BE: contracts-be/contract
-    │   │   │   │   │   # GET /v1/contracts/{contract_id}
-    │   │   │   │   ├── use-contracts.ts  # List/search contracts
-    │   │   │   │   │   # - Fetch contracts list
-    │   │   │   │   │   # - Filter by status
-    │   │   │   │   │   # - Pagination
-    │   │   │   │   │   # BE: contracts-be/contract
-    │   │   │   │   │   # GET /v1/contracts
-    │   │   │   │   ├── use-milestones.ts  # Milestone operations
-    │   │   │   │   │   # - Fetch milestones for contract
-    │   │   │   │   │   # - Create milestone
-    │   │   │   │   │   # - Update milestone status
-    │   │   │   │   │   # BE: contracts-be/milestone
-    │   │   │   │   │   # GET /v1/contracts/{contract_id}/milestones
-    │   │   │   │   ├── use-timesheet.ts  # Timesheet operations
-    │   │   │   │   │   # - Fetch timesheets
-    │   │   │   │   │   # - Submit timesheet
-    │   │   │   │   │   # - Approve/reject timesheet
-    │   │   │   │   │   # BE: contracts-be/timesheet
-    │   │   │   │   │   # GET /v1/contracts/{contract_id}/timesheets
-    │   │   │   │   └── use-work-diary.ts  # Work diary operations
-    │   │   │   │       # - Fetch work diary entries
-    │   │   │   │       # - Create work diary entry
-    │   │   │   │       # - Track time/screenshots
-    │   │   │   │       # BE: contracts-be/workdiary
-    │   │   │   │       # GET /v1/contracts/{contract_id}/work-diary
-    │   │   │   ├── financial/  # ❌ CREATE - Financial domain hooks
-    │   │   │   │   ├── use-balance.ts  # Balance queries
-    │   │   │   │   │   # - Fetch wallet balance
-    │   │   │   │   │   # - Available balance
-    │   │   │   │   │   # - Pending balance
-    │   │   │   │   │   # BE: financial-be/wallet
-    │   │   │   │   │   # GET /v1/wallet/balance
-    │   │   │   │   ├── use-payment-methods.ts  # Payment method management
-    │   │   │   │   │   # - Fetch payment methods
-    │   │   │   │   │   # - Add payment method
-    │   │   │   │   │   # - Remove payment method
-    │   │   │   │   │   # - Set default payment method
-    │   │   │   │   │   # BE: financial-be/payment-method
-    │   │   │   │   │   # GET /v1/payment-methods
-    │   │   │   │   ├── use-transactions.ts  # Transaction history
-    │   │   │   │   │   # - Fetch transaction history
-    │   │   │   │   │   # - Filter transactions
-    │   │   │   │   │   # - Export transactions
-    │   │   │   │   │   # BE: financial-be/transaction
-    │   │   │   │   │   # GET /v1/transactions
-    │   │   │   │   ├── use-wallet.ts  # Wallet operations
-    │   │   │   │   │   # - Fetch wallet details
-    │   │   │   │   │   # - Add funds
-    │   │   │   │   │   # - Wallet settings
-    │   │   │   │   │   # BE: financial-be/wallet
-    │   │   │   │   │   # GET /v1/wallet
-    │   │   │   │   └── use-withdraw.ts  # Withdrawal operations
-    │   │   │   │       # - Request withdrawal
-    │   │   │   │       # - Withdrawal history
-    │   │   │   │       # - Withdrawal methods
-    │   │   │   │       # BE: financial-be/payout
-    │   │   │   │       # POST /v1/payouts
-    │   │   │   ├── jobs/  # ❌ CREATE - Jobs domain hooks
-    │   │   │   │   ├── use-job-application.ts  # Job application operations
-    │   │   │   │   │   # - Apply to job (submit proposal)
-    │   │   │   │   │   # - Withdraw application
-    │   │   │   │   │   # - Application status
-    │   │   │   │   │   # BE: proposals-be/proposal
-    │   │   │   │   │   # POST /v1/proposals
-    │   │   │   │   ├── use-job-recommendations.ts  # Job recommendations
-    │   │   │   │   │   # - Fetch recommended jobs
-    │   │   │   │   │   # - Personalized suggestions
-    │   │   │   │   │   # BE: search-be/recommendation
-    │   │   │   │   │   # GET /v1/recommendations/jobs
-    │   │   │   │   ├── use-job-search.ts  # Job search operations
-    │   │   │   │   │   # - Search jobs
-    │   │   │   │   │   # - Filter/sort results
-    │   │   │   │   │   # - Save search
-    │   │   │   │   │   # BE: search-be/search
-    │   │   │   │   │   # POST /v1/search/jobs
-    │   │   │   │   ├── use-job.ts  # Single job operations
-    │   │   │   │   │   # - Fetch job by ID
-    │   │   │   │   │   # - Update job
-    │   │   │   │   │   # - Delete job
-    │   │   │   │   │   # BE: jobs-be/job
-    │   │   │   │   │   # GET /v1/jobs/{job_id}
-    │   │   │   │   └── use-jobs.ts  # List jobs
-    │   │   │   │       # - Fetch jobs list
-    │   │   │   │       # - My posted jobs
-    │   │   │   │       # - Browse jobs
-    │   │   │   │       # BE: jobs-be/job
-    │   │   │   │       # GET /v1/jobs
-    │   │   │   ├── messaging/  # ❌ CREATE - Messaging domain hooks
-    │   │   │   │   ├── use-conversation.ts  # Single conversation operations
-    │   │   │   │   │   # - Fetch conversation by ID
-    │   │   │   │   │   # - Archive conversation
-    │   │   │   │   │   # - Mark as read
-    │   │   │   │   │   # BE: communications-be/conversation
-    │   │   │   │   │   # GET /v1/conversations/{conversation_id}
-    │   │   │   │   ├── use-conversations.ts  # List conversations
-    │   │   │   │   │   # - Fetch conversations list
-    │   │   │   │   │   # - Filter conversations
-    │   │   │   │   │   # - Unread count
-    │   │   │   │   │   # BE: communications-be/conversation
-    │   │   │   │   │   # GET /v1/conversations
-    │   │   │   │   ├── use-messages.ts  # Messages in conversation
-    │   │   │   │   │   # - Fetch messages
-    │   │   │   │   │   # - Load more messages
-    │   │   │   │   │   # - Delete message
-    │   │   │   │   │   # BE: communications-be/message
-    │   │   │   │   │   # GET /v1/conversations/{conversation_id}/messages
-    │   │   │   │   ├── use-real-time.ts  # Real-time messaging
-    │   │   │   │   │   # - WebSocket connection
-    │   │   │   │   │   # - Typing indicators
-    │   │   │   │   │   # - Online status
-    │   │   │   │   │   # BE: communications-be/websocket
-    │   │   │   │   │   # WS /ws
-    │   │   │   │   └── use-send-message.ts  # Send message operations
-    │   │   │   │       # - Send message
-    │   │   │   │       # - Send attachment
-    │   │   │   │       # - Optimistic updates
-    │   │   │   │       # BE: communications-be/message
-    │   │   │   │       # POST /v1/conversations/{conversation_id}/messages
-    │   │   │   ├── notifications/  # ❌ CREATE - Notifications domain hooks
-    │   │   │   │   ├── use-mark-read.ts  # Mark notifications as read
-    │   │   │   │   │   # - Mark single notification as read
-    │   │   │   │   │   # - Mark all as read
-    │   │   │   │   │   # BE: communications-be/notification
-    │   │   │   │   │   # POST /v1/notifications/{notification_id}/read
-    │   │   │   │   ├── use-notification-preferences.ts  # Notification preferences
-    │   │   │   │   │   # - Fetch preferences
-    │   │   │   │   │   # - Update preferences
-    │   │   │   │   │   # - Channel settings
-    │   │   │   │   │   # BE: communications-be/preferences
-    │   │   │   │   │   # GET /v1/notifications/preferences
-    │   │   │   │   └── use-notifications.ts  # Notifications list
-    │   │   │   │       # - Fetch notifications
-    │   │   │   │       # - Unread count
-    │   │   │   │       # - Pagination
-    │   │   │   │       # BE: communications-be/notification
-    │   │   │   │       # GET /v1/notifications
-    │   │   │   ├── proposals/  # ❌ CREATE - Proposals domain hooks
-    │   │   │   │   ├── use-bid-recommendations.ts  # Bid recommendations
-    │   │   │   │   │   # - Get suggested bid amount
-    │   │   │   │   │   # - Competitive analysis
-    │   │   │   │   │   # BE: proposals-be/bid-strategy
-    │   │   │   │   │   # GET /v1/proposals/bid-recommendations
-    │   │   │   │   ├── use-bid.ts  # Bid operations
-    │   │   │   │   │   # - Place bid
-    │   │   │   │   │   # - Update bid
-    │   │   │   │   │   # - Withdraw bid
-    │   │   │   │   │   # BE: proposals-be/bid
-    │   │   │   │   │   # POST /v1/proposals/{proposal_id}/bid
-    │   │   │   │   ├── use-proposal-submission.ts  # Submit proposal
-    │   │   │   │   │   # - Submit new proposal
-    │   │   │   │   │   # - Validation
-    │   │   │   │   │   # - Draft management
-    │   │   │   │   │   # BE: proposals-be/proposal
-    │   │   │   │   │   # POST /v1/proposals
-    │   │   │   │   ├── use-proposal.ts  # Single proposal operations
-    │   │   │   │   │   # - Fetch proposal by ID
-    │   │   │   │   │   # - Update proposal
-    │   │   │   │   │   # - Withdraw proposal
-    │   │   │   │   │   # BE: proposals-be/proposal
-    │   │   │   │   │   # GET /v1/proposals/{proposal_id}
-    │   │   │   │   └── use-proposals.ts  # List proposals
-    │   │   │   │       # - Fetch proposals list
-    │   │   │   │       # - Filter by status
-    │   │   │   │       # - My proposals
-    │   │   │   │       # BE: proposals-be/proposal
-    │   │   │   │       # GET /v1/proposals
-    │   │   │   └── │
+    │   │   │
     │   │   ├── ui/
     │   │   │   └── src/
     │   │   │       └── components/
@@ -15147,7 +14996,7 @@ fe/
     │   │   │   │               # BE: admin-be/support_ticket
     │   │   │   │               # GET /v1/support/tickets
     │   │   │   │               # GET /v1/support/tickets/{id}
-    │   │   │   ├── hooks/
+    │   │   │   ├── hooks/  # ✅ KEEP FOLDER - Web-specific hooks only
     │   │   │   │   ├── use-form-validation.ts  # ❌ DELETE (duplicate)
     │   │   │   │   │   # DUPLICATE of packages/hooks/forms/use-validation.ts
     │   │   │   │   │   # ACTION: Delete this file
@@ -15160,8 +15009,19 @@ fe/
     │   │   │   │   │   # TO:   '@packages/hooks/forms/use-validation'
     │   │   │   │   │   # 3. Search usages: grep -r "use-form-validation" apps/web/src
     │   │   │   │   │   # 4. Update imports; 5. Test; 6. Remove file
+    │   │   │   │   │   # 1. Delete this file: rm apps/web/src/hooks/use-form-validation.ts
+    │   │   │   │   │   # 2. Update all imports:
+    │   │   │   │   │   # 4. Test build after changes
+    │   │   │   │   │   # 5. Verify no references remain
     │   │   │   │   ├── use-keycloak.ts  # ✅ KEEP (web-specific)
+    │   │   │   │   │   # Web-specific Keycloak integration
+    │   │   │   │   │   # - Browser-based OAuth flow
+    │   │   │   │   │   # - Session management
     │   │   │   │   └── use-ssr-query.ts  # ✅ KEEP (web-specific SSR)
+    │   │   │   │       # ✅ KEEP (web-specific)
+    │   │   │   │       # Next.js SSR query hook
+    │   │   │   │       # - Server-side data fetching
+    │   │   │   │       # - Hydration support
     │   │   │   └── lib/
     │   │   │       └── api/
     │   │   │           ├── audit/
@@ -15198,11 +15058,6 @@ fe/
     │   │       # Next.js middleware for security headers
     │   │       # Next.js middleware for security
     │   └── │
-    ├── apps (web)/
-    │   └── src/
-    │       └── hooks/
-    │           └── use-form-validation.ts  # ❌ DELETE - Duplicate of packages/hooks/forms/use-validation.ts
-    │               # ACTION: Delete after updating imports to '@packages/hooks/forms/use-validation'
     ├── config/
     │   ├── constants/
     │   │   ├── api-endpoints.ts  # API endpoint constants
@@ -15418,6 +15273,7 @@ fe/
     │   ├── STATE_MANAGEMENT.md  # TanStack Query + Zustand patterns
     │   └── TESTING.md  # Testing strategy
     ├── packages/  # Shared libraries
+    │   # ✅ CORRECT LOCATION for all shared code
     │   ├── config/  # Shared configurations
     │   │   ├── eslint-config/
     │   │   │   ├── index.js  # Base ESLint config
@@ -15441,12 +15297,14 @@ fe/
     │   │       ├── nextjs.json  # Next.js TS config
     │   │       ├── package.json
     │   │       └── react-native.json  # React Native TS config
-    │   ├── hooks/
+    │   ├── hooks/  # ✅ ALL shared hooks belong HERE
     │   │   ├── api/  # ✅ EXISTS
+    │   │   │   # ✅ EXISTS - Generic API hooks
     │   │   │   ├── use-api.ts  # ✅ KEEP (shared)
     │   │   │   ├── use-mutation.ts  # ✅ KEEP (shared)
     │   │   │   └── use-query.ts  # ✅ KEEP (shared)
     │   │   ├── auth/  # ✅ EXISTS
+    │   │   │   # ✅ EXISTS - Authentication hooks
     │   │   │   ├── use-auth.ts  # ✅ KEEP (shared)
     │   │   │   ├── use-permissions.ts  # ✅ KEEP (shared)
     │   │   │   └── use-session.ts  # ✅ KEEP (shared)
@@ -15454,6 +15312,8 @@ fe/
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
     │   │   │   # ❌ CREATE ENTIRE FOLDER - Contract domain hooks
     │   │   │   # ❌ CREATE ENTIRE DOMAIN - Contract hooks
+    │   │   │   # All contract-related hooks for both web and mobile
+    │   │   │   # BE: contracts-be microservice
     │   │   │   ├── index.ts  # ❌ CREATE - Export all contract hooks
     │   │   │   │   # export * from './use-contract';
     │   │   │   │   # export * from './use-contracts';
@@ -15463,6 +15323,7 @@ fe/
     │   │   │   │   # export * from './use-timesheet';
     │   │   │   │   # export * from './use-amendments';
     │   │   │   │   # export * from './use-disputes';
+    │   │   │   │   # export * from './use-work-diary';
     │   │   │   ├── use-amendments.ts  # ❌ CREATE - Contract amendment operations
     │   │   │   │   # POST /v1/contracts/{id}/amendments
     │   │   │   │   # POST /v1/contracts/{id}/amendments/{amendment_id}/approve
@@ -15521,6 +15382,8 @@ fe/
     │   │   │   │   # API: GET /v1/contracts/{id}
     │   │   │   │   # Features:
     │   │   │   │   # - Fetch by ID / auto-refetch on focus / optimistic updates
+    │   │   │   │   # - Fetch by ID
+    │   │   │   │   # - Auto-refetch on focus
     │   │   │   ├── use-contracts.ts  # List contracts
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # List/filter contracts
@@ -15543,6 +15406,9 @@ fe/
     │   │   │   │   # API: GET /v1/contracts
     │   │   │   │   # Features:
     │   │   │   │   # - Pagination / filters / infinite scroll
+    │   │   │   │   # API: GET /v1/contracts?status={status}&role={role}
+    │   │   │   │   # - Sort options (date, status, amount)
+    │   │   │   │   # - Search by client/freelancer
     │   │   │   ├── use-deliverables.ts  # ❌ CREATE - Deliverable management
     │   │   │   │   # List + submit deliverables, uploads
     │   │   │   │   # BE: contracts-be/deliverable, storage-be/asset
@@ -15581,6 +15447,11 @@ fe/
     │   │   │   │   # - POST /v1/disputes/{dispute_id}/resolve
     │   │   │   │   # BE: contracts-be/dispute
     │   │   │   │   # Features: Evidence upload / admin escalation / resolution workflow
+    │   │   │   │   # Returns: { disputes, open, escalate, resolve, addEvidence }
+    │   │   │   │   # - POST /v1/contracts/{id}/disputes/{dispute_id}/escalate
+    │   │   │   │   # - POST /v1/contracts/{id}/disputes/{dispute_id}/resolve
+    │   │   │   │   # - POST /v1/contracts/{id}/disputes/{dispute_id}/evidence
+    │   │   │   │   # Features: Evidence upload / timeline / resolution flow
     │   │   │   ├── use-milestones.ts  # Milestone operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch milestones for contract
@@ -15611,6 +15482,8 @@ fe/
     │   │   │   │   # - POST /v1/contracts/{id}/milestones/{milestone_id}/release
     │   │   │   │   # - POST /v1/contracts/{id}/milestones/{milestone_id}/dispute
     │   │   │   │   # Features: Progress tracking / payment integration / auto-release
+    │   │   │   │   # Returns: { milestones, create, submit, approve, release }
+    │   │   │   │   # Features: Payment release / approval flow / progress tracking
     │   │   │   ├── use-timesheet.ts  # Timesheet operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch timesheet entries
@@ -15641,6 +15514,9 @@ fe/
     │   │   │   │   # - POST /v1/contracts/{id}/timesheets/{timesheet_id}/approve
     │   │   │   │   # - POST /v1/contracts/{id}/timesheets/{timesheet_id}/dispute
     │   │   │   │   # Features: Time tracking / week validation / totals
+    │   │   │   │   # Returns: { timesheets, entries, submit, approve, reject }
+    │   │   │   │   # - POST /v1/contracts/{id}/timesheets/{timesheet_id}/submit
+    │   │   │   │   # Features: Time tracking / approval workflow / invoicing
     │   │   │   ├── use-work-diary.ts  # Work diary operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch work diary entries
@@ -15650,6 +15526,15 @@ fe/
     │   │   │   │   # BE: contracts-be/work_diary
     │   │   │   │   # GET /v1/contracts/{contract_id}/work-diary
     │   │   │   │   # POST /v1/contracts/{contract_id}/work-diary
+    │   │   │   │   # ❌ CREATE - Work diary tracking
+    │   │   │   │   # Hook: useWorkDiary(contractId)
+    │   │   │   │   # Returns: { entries, add, update, delete }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/contracts/{id}/work-diary
+    │   │   │   │   # - POST /v1/contracts/{id}/work-diary/entries
+    │   │   │   │   # - PUT /v1/contracts/{id}/work-diary/entries/{entry_id}
+    │   │   │   │   # - DELETE /v1/contracts/{id}/work-diary/entries/{entry_id}
+    │   │   │   │   # Features: Activity logging / screenshots / time tracking
     │   │   │   └── │
     │   │   ├── financial/  # ❌ CREATE THIS
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
@@ -15728,13 +15613,20 @@ fe/
     │   │   │       # ❌ CREATE - Withdrawal operations
     │   │   │       # POST create / GET list|detail / DELETE cancel
     │   │   ├── forms/  # ✅ EXISTS
+    │   │   │   # ✅ EXISTS - Form validation hooks
     │   │   │   ├── use-form-state.ts  # ✅ KEEP (shared)
     │   │   │   ├── use-form.ts  # ✅ KEEP (shared)
     │   │   │   └── use-validation.ts  # ✅ KEEP (shared)
+    │   │   │       # ✅ KEEP - This is the CORRECT location
+    │   │   │       # Shared form validation logic
+    │   │   │       # Used by both web and mobile
+    │   │   │       # DO NOT create duplicates in apps/
     │   │   ├── jobs/  # ❌ CREATE THIS
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
     │   │   │   # ❌ CREATE ENTIRE FOLDER - Jobs domain hooks
     │   │   │   # ❌ CREATE ENTIRE DOMAIN - Job hooks
+    │   │   │   # All job-related hooks for both web and mobile
+    │   │   │   # BE: jobs-be microservice
     │   │   │   ├── index.ts  # ❌ CREATE - Export all job hooks
     │   │   │   │   # export * from './use-job';
     │   │   │   │   # export * from './use-jobs';
@@ -15748,6 +15640,15 @@ fe/
     │   │   │   │   # POST /v1/jobs/{id}/publish|close|archive, DELETE /v1/jobs/{id}
     │   │   │   │   # ❌ CREATE - Job lifecycle actions
     │   │   │   │   # POST publish/close/archive/reopen/clone; DELETE draft
+    │   │   │   │   # Hook: useJobActions(jobId)
+    │   │   │   │   # Returns: { publish, close, reopen, archive }
+    │   │   │   │   # API:
+    │   │   │   │   # - POST /v1/jobs/{id}/publish
+    │   │   │   │   # - POST /v1/jobs/{id}/close
+    │   │   │   │   # - POST /v1/jobs/{id}/reopen
+    │   │   │   │   # - POST /v1/jobs/{id}/archive
+    │   │   │   │   # BE: jobs-be/job
+    │   │   │   │   # Features: Status management / notifications
     │   │   │   ├── use-job-application.ts  # ❌ CREATE
     │   │   │   │   # Job application operations
     │   │   │   │   # - Apply to job
@@ -15798,19 +15699,34 @@ fe/
     │   │   │   │   # ❌ CREATE - Single job operations
     │   │   │   │   # GET /v1/jobs/{id}, PUT /v1/jobs/{id}
     │   │   │   │   # GET/PUT/DELETE job; POST save draft
-    │   │   │   └── use-jobs.ts  # ❌ CREATE
-    │   │   │       # List/filter jobs
-    │   │   │       # - Get all jobs (paginated)
-    │   │   │       # - Filter by status/category/budget
-    │   │   │       # - My posted jobs
-    │   │   │       # - Sort options
-    │   │   │       # BE: jobs-be/job
-    │   │   │       # GET /v1/jobs
-    │   │   │       # GET /v1/jobs/my-jobs
-    │   │   │       # ❌ CREATE - List/search jobs
-    │   │   │       # filters: status/category/budget, search, sort
-    │   │   │       # ❌ CREATE - List/browse jobs
-    │   │   │       # GET list / me/posted / browse (filters & sort)
+    │   │   │   │   # Hook: useJob(jobId)
+    │   │   │   │   # Returns: { job, isLoading, error, refetch }
+    │   │   │   │   # API: GET /v1/jobs/{id}
+    │   │   │   │   # Features:
+    │   │   │   │   # - Fetch by ID
+    │   │   │   │   # - Auto-refetch
+    │   │   │   │   # - Optimistic updates
+    │   │   │   ├── use-jobs.ts  # ❌ CREATE
+    │   │   │   │   # List/filter jobs
+    │   │   │   │   # - Get all jobs (paginated)
+    │   │   │   │   # - Filter by status/category/budget
+    │   │   │   │   # - My posted jobs
+    │   │   │   │   # - Sort options
+    │   │   │   │   # BE: jobs-be/job
+    │   │   │   │   # GET /v1/jobs
+    │   │   │   │   # GET /v1/jobs/my-jobs
+    │   │   │   │   # ❌ CREATE - List/search jobs
+    │   │   │   │   # filters: status/category/budget, search, sort
+    │   │   │   │   # ❌ CREATE - List/browse jobs
+    │   │   │   │   # GET list / me/posted / browse (filters & sort)
+    │   │   │   │   # Hook: useJobs(filters)
+    │   │   │   │   # Returns: { jobs, isLoading, hasMore, loadMore }
+    │   │   │   │   # API: GET /v1/jobs?category={category}&status={status}
+    │   │   │   │   # Features:
+    │   │   │   │   # - Pagination / filters / search
+    │   │   │   │   # - Sort by date, budget, proposals
+    │   │   │   │   # - Category filtering
+    │   │   │   └── │
     │   │   ├── messages/  # ❌ CREATE ENTIRE DOMAIN
     │   │   │   ├── index.ts  # ❌ CREATE - Export all message hooks
     │   │   │   ├── use-conversation.ts  # ❌ CREATE
@@ -15972,6 +15888,8 @@ fe/
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
     │   │   │   # ❌ CREATE ENTIRE FOLDER - Proposals domain hooks
     │   │   │   # ❌ CREATE ENTIRE DOMAIN - Proposal hooks
+    │   │   │   # All proposal-related hooks for both web and mobile
+    │   │   │   # BE: proposals-be microservice
     │   │   │   ├── index.ts  # ❌ CREATE - Export all proposal hooks
     │   │   │   │   # export * from './use-proposal';
     │   │   │   │   # export * from './use-proposals';
@@ -15979,11 +15897,16 @@ fe/
     │   │   │   │   # export * from './use-proposal-templates';
     │   │   │   │   # export * from './use-bid';
     │   │   │   │   # export * from './use-proposal-submission';
+    │   │   │   │   # export * from './use-bid-recommendations';
     │   │   │   ├── use-bid-recommendations.ts  # ❌ CREATE - Bid recommendations
     │   │   │   │   # Hook: useBidRecommendations(jobId)
     │   │   │   │   # Returns: { recommendations, isLoading }
     │   │   │   │   # API: GET /v1/bids/recommendations/{job_id}
     │   │   │   │   # BE: proposals-be/bid
+    │   │   │   │   # Features:
+    │   │   │   │   # - AI-powered pricing suggestions
+    │   │   │   │   # - Market rate analysis
+    │   │   │   │   # - Win probability estimates
     │   │   │   ├── use-bid.ts  # ❌ CREATE - Bid/pricing operations
     │   │   │   │   # GET recommendations; POST calculate
     │   │   │   │   # Hook: useBid(jobId)
@@ -15992,6 +15915,10 @@ fe/
     │   │   │   │   # - POST /v1/bids/calculate
     │   │   │   │   # - GET /v1/bids/recommendations
     │   │   │   │   # BE: proposals-be/bid
+    │   │   │   │   # Features:
+    │   │   │   │   # - Price calculation
+    │   │   │   │   # - Fee estimation
+    │   │   │   │   # - Competitive analysis
     │   │   │   ├── use-proposal-actions.ts  # ❌ CREATE - Proposal actions
     │   │   │   │   # submit/withdraw/accept/reject
     │   │   │   │   # POST /v1/proposals/{id}/submit|withdraw|accept|reject
@@ -16006,6 +15933,7 @@ fe/
     │   │   │   │   # - POST /v1/proposals/{id}/archive
     │   │   │   │   # - DELETE /v1/proposals/{id}/withdraw
     │   │   │   │   # BE: proposals-be/proposal
+    │   │   │   │   # Features: Status transitions / notifications
     │   │   │   ├── use-proposal-submission.ts  # ❌ CREATE - Proposal submission flow
     │   │   │   │   # POST draft/validate/submit; auto-save progress
     │   │   │   │   # Hook: useProposalSubmission()
@@ -16034,6 +15962,8 @@ fe/
     │   │   │   │   # - GET /v1/proposals/templates
     │   │   │   │   # - POST /v1/proposals/templates
     │   │   │   │   # BE: proposals-be/proposal_template
+    │   │   │   │   # - DELETE /v1/proposals/templates/{id}
+    │   │   │   │   # Features: Template CRUD / reusable content
     │   │   │   ├── use-proposal.ts  # ❌ CREATE
     │   │   │   │   # Single proposal operations
     │   │   │   │   # - Fetch proposal by ID
@@ -16051,23 +15981,34 @@ fe/
     │   │   │   │   # Hook: useProposal(proposalId)
     │   │   │   │   # Returns: { proposal, isLoading, error, refetch }
     │   │   │   │   # API: GET /v1/proposals/{id}
-    │   │   │   └── use-proposals.ts  # ❌ CREATE
-    │   │   │       # List proposals
-    │   │   │       # - Get all proposals (paginated)
-    │   │   │       # - Filter by status
-    │   │   │       # - My proposals
-    │   │   │       # - Received proposals
-    │   │   │       # BE: proposals-be/proposal
-    │   │   │       # GET /v1/proposals
-    │   │   │       # GET /v1/proposals/received
-    │   │   │       # ❌ CREATE - List/search proposals
-    │   │   │       # GET /v1/proposals?status=...&job_id=...
-    │   │   │       # GET paginated; my submitted/received; filter by status/job
-    │   │   │       # ❌ CREATE - Proposals list
-    │   │   │       # Hook: useProposals(filters)
-    │   │   │       # Returns: { proposals, isLoading, hasMore, loadMore }
-    │   │   │       # API: GET /v1/proposals
-    │   │   └── ui/  # ✅ EXISTS
+    │   │   │   │   # Features:
+    │   │   │   │   # - Fetch by ID
+    │   │   │   │   # - Auto-refetch
+    │   │   │   │   # - Status tracking
+    │   │   │   ├── use-proposals.ts  # ❌ CREATE
+    │   │   │   │   # List proposals
+    │   │   │   │   # - Get all proposals (paginated)
+    │   │   │   │   # - Filter by status
+    │   │   │   │   # - My proposals
+    │   │   │   │   # - Received proposals
+    │   │   │   │   # BE: proposals-be/proposal
+    │   │   │   │   # GET /v1/proposals
+    │   │   │   │   # GET /v1/proposals/received
+    │   │   │   │   # ❌ CREATE - List/search proposals
+    │   │   │   │   # GET /v1/proposals?status=...&job_id=...
+    │   │   │   │   # GET paginated; my submitted/received; filter by status/job
+    │   │   │   │   # ❌ CREATE - Proposals list
+    │   │   │   │   # Hook: useProposals(filters)
+    │   │   │   │   # Returns: { proposals, isLoading, hasMore, loadMore }
+    │   │   │   │   # API: GET /v1/proposals
+    │   │   │   │   # API: GET /v1/proposals?status={status}&job_id={job_id}
+    │   │   │   │   # Features:
+    │   │   │   │   # - Pagination / filters
+    │   │   │   │   # - My submitted/received proposals
+    │   │   │   │   # - Status filtering
+    │   │   │   └── │
+    │   │   ├── ui/  # ✅ EXISTS
+    │   │   └── │
     │   ├── shared/  # Business logic, hooks, utilities
     │   │   # Shared business logic, hooks, utilities
     │   │   ├── src/
@@ -17756,817 +17697,853 @@ fe/
     │   │   ├── package.json
     │   │   ├── README.md
     │   │   └── tsconfig.json
-    │   └── ui/  # Cross-platform component library
-    │       # Cross-platform UI component library
-    │       ├── src/
-    │       │   ├── a11y/
-    │       │   │   ├── Announcer/
-    │       │   │   │   ├── LiveAnnouncer.native.tsx
-    │       │   │   │   ├── LiveAnnouncer.tsx  # Live region announcements
-    │       │   │   │   ├── LiveAnnouncer.types.ts
-    │       │   │   │   └── LiveAnnouncer.web.tsx
-    │       │   │   ├── FocusTrap/
-    │       │   │   │   ├── FocusTrap.tsx
-    │       │   │   │   ├── FocusTrap.types.ts
-    │       │   │   │   └── FocusTrap.web.tsx
-    │       │   │   ├── SkipLink/
-    │       │   │   │   ├── SkipLink.tsx
-    │       │   │   │   ├── SkipLink.types.ts
-    │       │   │   │   └── SkipLink.web.tsx
-    │       │   │   └── VisuallyHidden/
-    │       │   │       ├── VisuallyHidden.native.tsx
-    │       │   │       ├── VisuallyHidden.tsx
-    │       │   │       ├── VisuallyHidden.types.ts
-    │       │   │       └── VisuallyHidden.web.tsx
-    │       │   ├── accessibility/
-    │       │   │   ├── FocusTrap/
-    │       │   │   │   ├── FocusTrap.native.tsx
-    │       │   │   │   ├── FocusTrap.tsx
-    │       │   │   │   └── FocusTrap.web.tsx
-    │       │   │   ├── ScreenReaderAnnouncer/
-    │       │   │   │   ├── ScreenReaderAnnouncer.native.tsx
-    │       │   │   │   ├── ScreenReaderAnnouncer.tsx
-    │       │   │   │   └── ScreenReaderAnnouncer.web.tsx
-    │       │   │   └── SkipLinks/
-    │       │   │       ├── SkipLinks.tsx
-    │       │   │       └── SkipLinks.web.tsx
-    │       │   ├── ai/
-    │       │   │   ├── AIAssistant/
-    │       │   │   │   ├── AIAssistant.native.tsx
-    │       │   │   │   ├── AIAssistant.tsx
-    │       │   │   │   └── AIAssistant.web.tsx
-    │       │   │   ├── AutoComplete/
-    │       │   │   │   ├── AIAutoComplete.native.tsx
-    │       │   │   │   ├── AIAutoComplete.tsx
-    │       │   │   │   └── AIAutoComplete.web.tsx
-    │       │   │   └── SmartSuggestions/
-    │       │   │       ├── SmartSuggestions.native.tsx
-    │       │   │       ├── SmartSuggestions.tsx
-    │       │   │       └── SmartSuggestions.web.tsx
-    │       │   ├── auction/
-    │       │   │   ├── AuctionTimer.native.tsx
-    │       │   │   ├── AuctionTimer.tsx  # Countdown timer
-    │       │   │   ├── AuctionTimer.web.tsx
-    │       │   │   ├── BidHistoryChart.native.tsx
-    │       │   │   ├── BidHistoryChart.tsx  # Bid history visualization
-    │       │   │   ├── BidHistoryChart.web.tsx
-    │       │   │   ├── LiveBidFeed.native.tsx
-    │       │   │   ├── LiveBidFeed.tsx  # Real-time bid feed
-    │       │   │   └── LiveBidFeed.web.tsx
-    │       │   ├── charts/
-    │       │   │   ├── EarningsChart.native.tsx
-    │       │   │   ├── EarningsChart.tsx  # Earnings visualization
-    │       │   │   ├── EarningsChart.web.tsx
-    │       │   │   ├── PerformanceChart.native.tsx
-    │       │   │   ├── PerformanceChart.tsx  # Performance metrics
-    │       │   │   ├── PerformanceChart.web.tsx
-    │       │   │   ├── TrendChart.native.tsx
-    │       │   │   ├── TrendChart.tsx  # Trend visualization
-    │       │   │   └── TrendChart.web.tsx
-    │       │   ├── collaboration/
-    │       │   │   ├── CollaborationPanel.native.tsx
-    │       │   │   ├── CollaborationPanel.tsx  # Team collaboration
-    │       │   │   ├── CollaborationPanel.web.tsx
-    │       │   │   ├── GroupCard.native.tsx
-    │       │   │   ├── GroupCard.tsx  # User group card
-    │       │   │   ├── GroupCard.web.tsx
-    │       │   │   ├── MentorCard.native.tsx
-    │       │   │   ├── MentorCard.tsx  # Mentor profile card
-    │       │   │   └── MentorCard.web.tsx
-    │       │   ├── compliance/
-    │       │   │   ├── DocumentUploader.native.tsx
-    │       │   │   ├── DocumentUploader.tsx  # Compliance doc uploader
-    │       │   │   ├── DocumentUploader.web.tsx
-    │       │   │   ├── VerificationStatus.native.tsx
-    │       │   │   ├── VerificationStatus.tsx  # Verification status badge
-    │       │   │   └── VerificationStatus.web.tsx
-    │       │   ├── components/
-    │       │   │   ├── Accessibility/
-    │       │   │   │   ├── FocusTrap/
-    │       │   │   │   │   ├── FocusTrap.tsx
-    │       │   │   │   │   ├── FocusTrap.types.ts
-    │       │   │   │   │   └── FocusTrap.web.tsx
-    │       │   │   │   ├── KeyboardShortcuts/
-    │       │   │   │   │   ├── ShortcutDialog/
-    │       │   │   │   │   │   └── ShortcutDialog.tsx
-    │       │   │   │   │   ├── KeyboardShortcuts.tsx
-    │       │   │   │   │   └── KeyboardShortcuts.types.ts
-    │       │   │   │   ├── LiveRegion/
-    │       │   │   │   │   ├── LiveRegion.native.tsx
-    │       │   │   │   │   ├── LiveRegion.tsx
-    │       │   │   │   │   ├── LiveRegion.types.ts
-    │       │   │   │   │   └── LiveRegion.web.tsx
-    │       │   │   │   └── ScreenReaderOnly/
-    │       │   │   │       ├── ScreenReaderOnly.tsx
-    │       │   │   │       └── ScreenReaderOnly.types.ts
-    │       │   │   ├── Accordion/
-    │       │   │   ├── AI/
-    │       │   │   │   ├── AIAssistant/
-    │       │   │   │   │   ├── chat/
-    │       │   │   │   │   │   ├── ChatBubble.tsx
-    │       │   │   │   │   │   └── ChatInput.tsx
-    │       │   │   │   │   ├── ChatInterface/
-    │       │   │   │   │   │   └── ChatInterface.tsx
-    │       │   │   │   │   ├── AIAssistant.native.tsx
-    │       │   │   │   │   ├── AIAssistant.tsx  # AI chat assistant
-    │       │   │   │   │   ├── AIAssistant.types.ts
-    │       │   │   │   │   └── AIAssistant.web.tsx
-    │       │   │   │   ├── AutoComplete/
-    │       │   │   │   │   ├── AIAutoComplete.native.tsx
-    │       │   │   │   │   ├── AIAutoComplete.tsx  # AI-powered autocomplete
-    │       │   │   │   │   ├── AIAutoComplete.types.ts
-    │       │   │   │   │   ├── AIAutoComplete.web.tsx
-    │       │   │   │   │   ├── SmartAutoComplete.native.tsx
-    │       │   │   │   │   ├── SmartAutoComplete.tsx
-    │       │   │   │   │   ├── SmartAutoComplete.types.ts
-    │       │   │   │   │   └── SmartAutoComplete.web.tsx
-    │       │   │   │   ├── ContentGeneration/
-    │       │   │   │   │   ├── templates/
-    │       │   │   │   │   │   └── GenerationTemplates.tsx
-    │       │   │   │   │   ├── ContentGeneration.types.ts
-    │       │   │   │   │   └── ContentGenerator.tsx  # AI content generation
-    │       │   │   │   └── SmartSuggestions/
-    │       │   │   │       ├── SuggestionCard/
-    │       │   │   │       │   └── SuggestionCard.tsx
-    │       │   │   │       ├── SmartSuggestions.native.tsx
-    │       │   │   │       ├── SmartSuggestions.tsx  # AI suggestions
-    │       │   │   │       ├── SmartSuggestions.types.ts
-    │       │   │   │       └── SmartSuggestions.web.tsx
-    │       │   │   ├── Alert/
-    │       │   │   ├── auction/
-    │       │   │   │   ├── AuctionTimer.native.tsx
-    │       │   │   │   ├── AuctionTimer.tsx  # Countdown timer
-    │       │   │   │   ├── AuctionTimer.web.tsx
-    │       │   │   │   ├── BidHistoryChart.native.tsx
-    │       │   │   │   ├── BidHistoryChart.tsx  # Bid history visualization
-    │       │   │   │   ├── BidHistoryChart.web.tsx
-    │       │   │   │   ├── LiveBidFeed.native.tsx
-    │       │   │   │   ├── LiveBidFeed.tsx  # Real-time bid feed
-    │       │   │   │   └── LiveBidFeed.web.tsx
-    │       │   │   ├── Avatar/
-    │       │   │   ├── Badge/
-    │       │   │   ├── Breadcrumb/
-    │       │   │   ├── Button/
-    │       │   │   │   ├── Button.native.tsx  # Native-specific overrides
-    │       │   │   │   ├── Button.stories.tsx  # Storybook stories
-    │       │   │   │   ├── Button.test.tsx  # Component tests
-    │       │   │   │   ├── Button.tsx  # Base button component
-    │       │   │   │   └── Button.web.tsx  # Web-specific overrides
-    │       │   │   ├── Calendar/
-    │       │   │   │   ├── DatePicker/
-    │       │   │   │   │   ├── DatePicker.native.tsx
-    │       │   │   │   │   ├── DatePicker.tsx
-    │       │   │   │   │   └── DatePicker.web.tsx
-    │       │   │   │   ├── DateRangePicker/
-    │       │   │   │   │   ├── DateRangePicker.native.tsx
-    │       │   │   │   │   ├── DateRangePicker.tsx
-    │       │   │   │   │   └── DateRangePicker.web.tsx
-    │       │   │   │   ├── TimePicker/
-    │       │   │   │   │   ├── TimePicker.native.tsx
-    │       │   │   │   │   ├── TimePicker.tsx
-    │       │   │   │   │   └── TimePicker.web.tsx
-    │       │   │   │   ├── Calendar.native.tsx
-    │       │   │   │   ├── Calendar.tsx  # Full calendar
-    │       │   │   │   ├── Calendar.types.ts
-    │       │   │   │   └── Calendar.web.tsx
-    │       │   │   ├── Card/
-    │       │   │   ├── charts/
-    │       │   │   │   ├── EarningsChart.native.tsx
-    │       │   │   │   ├── EarningsChart.tsx  # Earnings visualization
-    │       │   │   │   ├── EarningsChart.web.tsx
-    │       │   │   │   ├── PerformanceChart.native.tsx
-    │       │   │   │   ├── PerformanceChart.tsx  # Performance metrics
-    │       │   │   │   ├── PerformanceChart.web.tsx
-    │       │   │   │   ├── TrendChart.native.tsx
-    │       │   │   │   ├── TrendChart.tsx  # Trend visualization
-    │       │   │   │   └── TrendChart.web.tsx
-    │       │   │   ├── Charts/
-    │       │   │   │   ├── FunnelChart/
-    │       │   │   │   │   ├── FunnelChart.tsx
-    │       │   │   │   │   └── FunnelChart.types.ts
-    │       │   │   │   ├── GanttChart/
-    │       │   │   │   │   ├── Task/
-    │       │   │   │   │   │   └── Task.tsx
-    │       │   │   │   │   ├── GanttChart.tsx
-    │       │   │   │   │   └── GanttChart.types.ts
-    │       │   │   │   ├── HeatMap/
-    │       │   │   │   │   ├── HeatMap.tsx
-    │       │   │   │   │   ├── HeatMap.types.ts
-    │       │   │   │   │   └── HeatMap.web.tsx  # D3/Recharts
-    │       │   │   │   └── OrgChart/
-    │       │   │   │       ├── Node/
-    │       │   │   │       │   └── OrgNode.tsx
-    │       │   │   │       ├── OrgChart.tsx
-    │       │   │   │       ├── OrgChart.types.ts
-    │       │   │   │       └── OrgChart.web.tsx
-    │       │   │   ├── Checkbox/
-    │       │   │   ├── CodeEditor/
-    │       │   │   │   ├── CodeEditor.native.tsx
-    │       │   │   │   ├── CodeEditor.tsx
-    │       │   │   │   ├── CodeEditor.types.ts
-    │       │   │   │   └── CodeEditor.web.tsx  # Web (e.g., Monaco/CodeMirror)
-    │       │   │   ├── collaboration/
-    │       │   │   │   ├── CollaborationPanel.native.tsx
-    │       │   │   │   ├── CollaborationPanel.tsx  # Team collaboration
-    │       │   │   │   ├── CollaborationPanel.web.tsx
-    │       │   │   │   ├── GroupCard.native.tsx
-    │       │   │   │   ├── GroupCard.tsx  # User group card
-    │       │   │   │   ├── GroupCard.web.tsx
-    │       │   │   │   ├── MentorCard.native.tsx
-    │       │   │   │   ├── MentorCard.tsx  # Mentor profile card
-    │       │   │   │   └── MentorCard.web.tsx
-    │       │   │   ├── compliance/
-    │       │   │   │   ├── DocumentUploader.native.tsx
-    │       │   │   │   ├── DocumentUploader.tsx  # Compliance doc uploader
-    │       │   │   │   ├── DocumentUploader.web.tsx
-    │       │   │   │   ├── VerificationStatus.native.tsx
-    │       │   │   │   ├── VerificationStatus.tsx  # Verification status badge
-    │       │   │   │   └── VerificationStatus.web.tsx
-    │       │   │   ├── DataDisplay/
-    │       │   │   │   ├── Kanban/
-    │       │   │   │   │   ├── KanbanBoard.native.tsx  # Touch gestures
-    │       │   │   │   │   ├── KanbanBoard.tsx
-    │       │   │   │   │   ├── KanbanBoard.types.ts
-    │       │   │   │   │   └── KanbanBoard.web.tsx  # Drag & drop
-    │       │   │   │   ├── List/
-    │       │   │   │   │   ├── VirtualList/
-    │       │   │   │   │   │   ├── VirtualList.native.tsx  # FlashList
-    │       │   │   │   │   │   ├── VirtualList.tsx
-    │       │   │   │   │   │   └── VirtualList.web.tsx
-    │       │   │   │   │   ├── List.native.tsx
-    │       │   │   │   │   ├── List.tsx
-    │       │   │   │   │   ├── List.types.ts
-    │       │   │   │   │   └── List.web.tsx
-    │       │   │   │   ├── Table/
-    │       │   │   │   │   ├── DataTable/
-    │       │   │   │   │   │   ├── DataTable.tsx  # With sorting/filtering
-    │       │   │   │   │   │   └── DataTable.types.ts
-    │       │   │   │   │   ├── VirtualTable/
-    │       │   │   │   │   │   ├── VirtualTable.tsx  # Virtualized table
-    │       │   │   │   │   │   └── VirtualTable.types.ts
-    │       │   │   │   │   ├── Table.tsx  # Base table
-    │       │   │   │   │   ├── Table.types.ts
-    │       │   │   │   │   └── Table.web.tsx  # Full featured table
-    │       │   │   │   └── Timeline/
-    │       │   │   │       ├── Timeline.native.tsx
-    │       │   │   │       ├── Timeline.tsx
-    │       │   │   │       ├── Timeline.types.ts
-    │       │   │   │       └── Timeline.web.tsx
-    │       │   │   ├── DataTable/
-    │       │   │   ├── DatePicker/
-    │       │   │   ├── Dropdown/
-    │       │   │   ├── Editor/
-    │       │   │   │   ├── CodeEditor/
-    │       │   │   │   │   ├── CodeEditor.native.tsx
-    │       │   │   │   │   ├── CodeEditor.tsx
-    │       │   │   │   │   └── CodeEditor.web.tsx  # Web (e.g., Monaco/CodeMirror)
-    │       │   │   │   ├── MarkdownEditor/
-    │       │   │   │   │   ├── MarkdownEditor.native.tsx
-    │       │   │   │   │   ├── MarkdownEditor.tsx
-    │       │   │   │   │   └── MarkdownEditor.web.tsx
-    │       │   │   │   └── RichTextEditor/
-    │       │   │   │       ├── RichTextEditor.native.tsx  # Native implementation
-    │       │   │   │       ├── RichTextEditor.tsx
-    │       │   │   │       └── RichTextEditor.web.tsx  # Web (e.g., TipTap/Slate)
-    │       │   │   ├── Feedback/
-    │       │   │   │   ├── Alert/
-    │       │   │   │   │   ├── Alert.native.tsx
-    │       │   │   │   │   ├── Alert.tsx
-    │       │   │   │   │   ├── Alert.types.ts
-    │       │   │   │   │   └── Alert.web.tsx
-    │       │   │   │   ├── EmptyState/
-    │       │   │   │   │   ├── EmptyState.native.tsx
-    │       │   │   │   │   ├── EmptyState.tsx
-    │       │   │   │   │   ├── EmptyState.types.ts
-    │       │   │   │   │   └── EmptyState.web.tsx
-    │       │   │   │   ├── Notification/
-    │       │   │   │   │   ├── Notification.native.tsx
-    │       │   │   │   │   ├── Notification.tsx
-    │       │   │   │   │   ├── Notification.types.ts
-    │       │   │   │   │   └── Notification.web.tsx  # Toast notifications
-    │       │   │   │   ├── Progress/
-    │       │   │   │   │   ├── ProgressBar/
-    │       │   │   │   │   │   ├── ProgressBar.native.tsx
-    │       │   │   │   │   │   ├── ProgressBar.tsx
-    │       │   │   │   │   │   └── ProgressBar.web.tsx
-    │       │   │   │   │   ├── ProgressCircle/
-    │       │   │   │   │   │   ├── ProgressCircle.native.tsx
-    │       │   │   │   │   │   ├── ProgressCircle.tsx
-    │       │   │   │   │   │   └── ProgressCircle.web.tsx
-    │       │   │   │   │   └── Progress.types.ts
-    │       │   │   │   └── Skeleton/
-    │       │   │   │       ├── Skeleton.native.tsx
-    │       │   │   │       ├── Skeleton.tsx
-    │       │   │   │       ├── Skeleton.types.ts
-    │       │   │   │       └── Skeleton.web.tsx
-    │       │   │   ├── FileUpload/
-    │       │   │   │   ├── ImageUpload/
-    │       │   │   │   │   ├── ImageCropper.tsx  # Image cropping
-    │       │   │   │   │   ├── ImageUpload.native.tsx  # Camera/gallery
-    │       │   │   │   │   ├── ImageUpload.tsx
-    │       │   │   │   │   └── ImageUpload.web.tsx
-    │       │   │   │   ├── MultiFileUpload/
-    │       │   │   │   │   ├── MultiFileUpload.native.tsx
-    │       │   │   │   │   ├── MultiFileUpload.tsx
-    │       │   │   │   │   └── MultiFileUpload.web.tsx
-    │       │   │   │   ├── FileUpload.native.tsx  # Document picker
-    │       │   │   │   ├── FileUpload.tsx  # Base file upload
-    │       │   │   │   ├── FileUpload.types.ts
-    │       │   │   │   └── FileUpload.web.tsx  # Drag & drop support
-    │       │   │   ├── FileUploader/
-    │       │   │   │   ├── FileUploader.native.tsx  # Uploader (native)
-    │       │   │   │   │   # - Signed URL upload flow
-    │       │   │   │   │   # BE: storage-be/asset
-    │       │   │   │   │   # POST /v1/storage/uploads (signed) → PUT file → POST /v1/storage/commit
-    │       │   │   │   ├── FileUploader.tsx  # Uploader (shared)
-    │       │   │   │   │   # - Abstraction wrapper
-    │       │   │   │   │   # BE: storage-be/asset (same flow)
-    │       │   │   │   └── FileUploader.web.tsx  # Uploader (web)
-    │       │   │   │       # - Drag & drop, previews
-    │       │   │   │       # BE: storage-be/asset (same flow)
-    │       │   │   ├── Form/
-    │       │   │   │   ├── CodeEditor/
-    │       │   │   │   │   ├── LanguageSelector/
-    │       │   │   │   │   │   └── LanguageSelector.tsx
-    │       │   │   │   │   ├── syntax-highlighting/
-    │       │   │   │   │   │   ├── languages.ts
-    │       │   │   │   │   │   └── themes.ts
-    │       │   │   │   │   ├── CodeEditor.native.tsx  # Native code editor
-    │       │   │   │   │   ├── CodeEditor.tsx  # Base code editor
-    │       │   │   │   │   ├── CodeEditor.types.ts
-    │       │   │   │   │   └── CodeEditor.web.tsx  # Monaco/CodeMirror
-    │       │   │   │   ├── DateRangePicker/
-    │       │   │   │   │   ├── presets/
-    │       │   │   │   │   │   └── DatePresets.tsx
-    │       │   │   │   │   ├── DateRangePicker.native.tsx
-    │       │   │   │   │   ├── DateRangePicker.tsx
-    │       │   │   │   │   ├── DateRangePicker.types.ts
-    │       │   │   │   │   └── DateRangePicker.web.tsx
-    │       │   │   │   ├── MarkdownEditor/
-    │       │   │   │   │   ├── Preview/
-    │       │   │   │   │   │   └── MarkdownPreview.tsx
-    │       │   │   │   │   ├── preview/
-    │       │   │   │   │   │   └── MarkdownPreview.tsx
-    │       │   │   │   │   ├── MarkdownEditor.native.tsx
-    │       │   │   │   │   ├── MarkdownEditor.tsx
-    │       │   │   │   │   ├── MarkdownEditor.types.ts
-    │       │   │   │   │   └── MarkdownEditor.web.tsx
-    │       │   │   │   ├── RichTextEditor/
-    │       │   │   │   │   ├── Toolbar/
-    │       │   │   │   │   │   ├── Toolbar.tsx
-    │       │   │   │   │   │   └── Toolbar.types.ts
-    │       │   │   │   │   ├── toolbar/
-    │       │   │   │   │   │   ├── FormatButtons.tsx
-    │       │   │   │   │   │   ├── InsertButtons.tsx
-    │       │   │   │   │   │   └── Toolbar.tsx
-    │       │   │   │   │   ├── RichTextEditor.native.tsx  # Limited rich text
-    │       │   │   │   │   │   # Native implementation
-    │       │   │   │   │   ├── RichTextEditor.tsx  # Base editor
-    │       │   │   │   │   ├── RichTextEditor.types.ts
-    │       │   │   │   │   └── RichTextEditor.web.tsx  # Web (TipTap/Slate)
-    │       │   │   │   └── SignaturePad/
-    │       │   │   │       ├── SignaturePad.native.tsx  # React Native Canvas
-    │       │   │   │       │   # React Native Skia
-    │       │   │   │       ├── SignaturePad.tsx
-    │       │   │   │       ├── SignaturePad.types.ts
-    │       │   │   │       └── SignaturePad.web.tsx  # Canvas-based
-    │       │   │   ├── Forms/
-    │       │   │   │   ├── Checkbox/
-    │       │   │   │   │   ├── Checkbox.native.tsx
-    │       │   │   │   │   ├── Checkbox.tsx
-    │       │   │   │   │   ├── Checkbox.types.ts
-    │       │   │   │   │   └── Checkbox.web.tsx
-    │       │   │   │   ├── FormField/
-    │       │   │   │   │   ├── FormError.tsx
-    │       │   │   │   │   ├── FormField.native.tsx
-    │       │   │   │   │   ├── FormField.tsx  # Form field wrapper
-    │       │   │   │   │   ├── FormField.types.ts
-    │       │   │   │   │   ├── FormField.web.tsx
-    │       │   │   │   │   ├── FormHelperText.tsx
-    │       │   │   │   │   └── FormLabel.tsx
-    │       │   │   │   ├── Radio/
-    │       │   │   │   │   ├── Radio.types.ts
-    │       │   │   │   │   ├── RadioGroup.native.tsx
-    │       │   │   │   │   ├── RadioGroup.tsx
-    │       │   │   │   │   └── RadioGroup.web.tsx
-    │       │   │   │   ├── Select/
-    │       │   │   │   │   ├── MultiSelect/
-    │       │   │   │   │   │   ├── MultiSelect.native.tsx
-    │       │   │   │   │   │   ├── MultiSelect.tsx
-    │       │   │   │   │   │   └── MultiSelect.web.tsx
-    │       │   │   │   │   ├── Select.native.tsx
-    │       │   │   │   │   ├── Select.tsx
-    │       │   │   │   │   ├── Select.types.ts
-    │       │   │   │   │   └── Select.web.tsx
-    │       │   │   │   ├── Slider/
-    │       │   │   │   │   ├── RangeSlider/
-    │       │   │   │   │   │   ├── RangeSlider.native.tsx
-    │       │   │   │   │   │   ├── RangeSlider.tsx
-    │       │   │   │   │   │   └── RangeSlider.web.tsx
-    │       │   │   │   │   ├── Slider.native.tsx
-    │       │   │   │   │   ├── Slider.tsx
-    │       │   │   │   │   ├── Slider.types.ts
-    │       │   │   │   │   └── Slider.web.tsx
-    │       │   │   │   └── Switch/
-    │       │   │   │       ├── Switch.native.tsx
-    │       │   │   │       ├── Switch.tsx
-    │       │   │   │       ├── Switch.types.ts
-    │       │   │   │       └── Switch.web.tsx
-    │       │   │   ├── Input/
-    │       │   │   │   ├── Input.native.tsx
-    │       │   │   │   ├── Input.test.tsx
-    │       │   │   │   ├── Input.tsx
-    │       │   │   │   └── Input.web.tsx
-    │       │   │   ├── learning/
-    │       │   │   │   ├── AchievementBadge.native.tsx
-    │       │   │   │   ├── AchievementBadge.tsx  # Achievement badge
-    │       │   │   │   ├── AchievementBadge.web.tsx
-    │       │   │   │   ├── LearningPathCard.native.tsx
-    │       │   │   │   ├── LearningPathCard.tsx  # Learning path card
-    │       │   │   │   ├── LearningPathCard.web.tsx
-    │       │   │   │   ├── ProgressTracker.native.tsx
-    │       │   │   │   ├── ProgressTracker.tsx  # Progress visualization
-    │       │   │   │   └── ProgressTracker.web.tsx
-    │       │   │   ├── LoadingSpinner/
-    │       │   │   │   ├── LoadingSpinner.native.tsx  # Spinner (native)
-    │       │   │   │   ├── LoadingSpinner.tsx  # Spinner (shared)
-    │       │   │   │   └── LoadingSpinner.web.tsx  # Spinner (web)
-    │       │   │   │       # BE: none (presentational)
-    │       │   │   ├── Modal/
-    │       │   │   │   ├── Modal.native.tsx  # Modal (native)
-    │       │   │   │   ├── Modal.tsx  # Modal (shared)
-    │       │   │   │   └── Modal.web.tsx  # Modal (web)
-    │       │   │   │       # BE: none (presentational)
-    │       │   │   ├── molecules/
-    │       │   │   │   ├── Navigation/
-    │       │   │   │   │   ├── Accordion/
-    │       │   │   │   │   │   └── Accordion.native.tsx  # ❌ CREATE
-    │       │   │   │   │   │       # React Native collapsible accordion component
-    │       │   │   │   │   │       # FEATURES:
-    │       │   │   │   │   │       # - Multiple/single expand mode
-    │       │   │   │   │   │       # - Smooth animations with react-native-reanimated
-    │       │   │   │   │   │       # - Customizable header/content
-    │       │   │   │   │   │       # - Keyboard accessible
-    │       │   │   │   │   │       # - Performance optimized
-    │       │   │   │   │   │       # DEPENDENCIES:
-    │       │   │   │   │   │       # - react-native-reanimated
-    │       │   │   │   │   │       # - react-native-gesture-handler
-    │       │   │   │   │   │       # ❌ CREATE - Mobile accordion component
-    │       │   │   │   │   │       # reanimated animations; gesture handler
-    │       │   │   │   │   ├── Breadcrumb/
-    │       │   │   │   │   │   └── Breadcrumb.native.tsx  # ❌ CREATE
-    │       │   │   │   │   │       # Mobile breadcrumb navigation component
-    │       │   │   │   │   │       # FEATURES:
-    │       │   │   │   │   │       # - Horizontal scroll for overflow
-    │       │   │   │   │   │       # - Touch-optimized tap targets
-    │       │   │   │   │   │       # - Separator customization
-    │       │   │   │   │   │       # - Auto-collapse on small screens
-    │       │   │   │   │   │       # - Current page highlighting
-    │       │   │   │   │   │       # IMPLEMENTATION:
-    │       │   │   │   │   │       # - Use ScrollView for horizontal scroll
-    │       │   │   │   │   │       # - Minimum touch target: 44x44
-    │       │   │   │   │   │       # - Responsive font sizes
-    │       │   │   │   │   │       # ❌ CREATE - Mobile breadcrumb navigation
-    │       │   │   │   │   ├── Drawer/
-    │       │   │   │   │   │   └── Drawer.native.tsx  # ❌ CREATE
-    │       │   │   │   │   │       # React Native bottom sheet drawer component
-    │       │   │   │   │   │       # FEATURES:
-    │       │   │   │   │   │       # - Swipe gestures (up/down)
-    │       │   │   │   │   │       # - Snap points support
-    │       │   │   │   │   │       # - Backdrop with dismiss
-    │       │   │   │   │   │       # - Keyboard handling
-    │       │   │   │   │   │       # - Portal support for full-screen overlay
-    │       │   │   │   │   │       # DEPENDENCIES:
-    │       │   │   │   │   │       # - @gorhom/bottom-sheet
-    │       │   │   │   │   │       # IMPLEMENTATION:
-    │       │   │   │   │   │       # - Use BottomSheet from @gorhom/bottom-sheet
-    │       │   │   │   │   │       # - Handle keyboard avoiding
-    │       │   │   │   │   │       # - Provide backdrop press to dismiss
-    │       │   │   │   │   │       # - Support multiple snap points
-    │       │   │   │   │   │       # ❌ CREATE - Mobile drawer (bottom sheet)
-    │       │   │   │   │   └── │
-    │       │   │   │   ├── Overlay/
-    │       │   │   │   │   ├── Popover/
-    │       │   │   │   │   │   └── Popover.native.tsx  # ❌ CREATE
-    │       │   │   │   │   │       # Mobile popover component
-    │       │   │   │   │   │       # FEATURES:
-    │       │   │   │   │   │       # - Modal-based implementation
-    │       │   │   │   │   │       # - Positioned relative to trigger
-    │       │   │   │   │   │       # - Touch outside to dismiss
-    │       │   │   │   │   │       # - Arrow indicator
-    │       │   │   │   │   │       # - Portal support
-    │       │   │   │   │   │       # IMPLEMENTATION:
-    │       │   │   │   │   │       # - Use Modal from react-native
-    │       │   │   │   │   │       # - Calculate position based on trigger ref
-    │       │   │   │   │   │       # - Handle screen edges
-    │       │   │   │   │   │       # - Animate entrance/exit
-    │       │   │   │   │   │       # DEPENDENCIES:
-    │       │   │   │   │   │       # - react-native Modal
-    │       │   │   │   │   │       # - react-native-reanimated (animations)
-    │       │   │   │   │   │       # ❌ CREATE - Mobile popover component
-    │       │   │   │   │   └── Tooltip/
-    │       │   │   │   │       └── Tooltip.native.tsx  # ❌ CREATE
-    │       │   │   │   │           # Mobile tooltip component
-    │       │   │   │   │           # FEATURES:
-    │       │   │   │   │           # - Long-press to show
-    │       │   │   │   │           # - Auto-dismiss after delay
-    │       │   │   │   │           # - Positioned overlay
-    │       │   │   │   │           # - Arrow indicator
-    │       │   │   │   │           # - Portal rendering
-    │       │   │   │   │           # IMPLEMENTATION:
-    │       │   │   │   │           # - Use Pressable with onLongPress
-    │       │   │   │   │           # - Calculate position for tooltip
-    │       │   │   │   │           # - Handle screen boundaries
-    │       │   │   │   │           # - Auto-dismiss timer (configurable)
-    │       │   │   │   │           # DEPENDENCIES:
-    │       │   │   │   │           # - react-native Pressable
-    │       │   │   │   │           # - react-native-portal (optional)
-    │       │   │   │   │           # ❌ CREATE - Mobile tooltip component
-    │       │   │   │   └── │
-    │       │   │   ├── Navigation/
-    │       │   │   │   ├── Breadcrumb/
-    │       │   │   │   │   ├── Breadcrumb.tsx
-    │       │   │   │   │   ├── Breadcrumb.types.ts
-    │       │   │   │   │   └── Breadcrumb.web.tsx
-    │       │   │   │   ├── Pagination/
-    │       │   │   │   │   ├── Pagination.native.tsx
-    │       │   │   │   │   ├── Pagination.tsx
-    │       │   │   │   │   ├── Pagination.types.ts
-    │       │   │   │   │   └── Pagination.web.tsx
-    │       │   │   │   ├── Stepper/
-    │       │   │   │   │   ├── Stepper.native.tsx
-    │       │   │   │   │   ├── Stepper.tsx
-    │       │   │   │   │   ├── Stepper.types.ts
-    │       │   │   │   │   └── Stepper.web.tsx
-    │       │   │   │   └── Tabs/
-    │       │   │   │       ├── Tabs.native.tsx
-    │       │   │   │       ├── Tabs.tsx
-    │       │   │   │       ├── Tabs.types.ts
-    │       │   │   │       └── Tabs.web.tsx
-    │       │   │   ├── organisms/
-    │       │   │   │   └── DataDisplay/
-    │       │   │   │       ├── DataGrid/
-    │       │   │   │       │   └── DataGrid.native.tsx  # ❌ CREATE
-    │       │   │   │       │       # Mobile data grid component
-    │       │   │   │       │       # FEATURES:
-    │       │   │   │       │       # - Horizontal + vertical scroll
-    │       │   │   │       │       # - FlashList for performance
-    │       │   │   │       │       # - Touch gestures for sorting
-    │       │   │   │       │       # - Column pinning (left/right)
-    │       │   │   │       │       # - Responsive columns
-    │       │   │   │       │       # - Cell rendering optimization
-    │       │   │   │       │       # IMPLEMENTATION:
-    │       │   │   │       │       # - Use @shopify/flash-list
-    │       │   │   │       │       # - Virtualized rendering
-    │       │   │   │       │       # - Sticky headers
-    │       │   │   │       │       # - Handle column widths dynamically
-    │       │   │   │       │       # DEPENDENCIES:
-    │       │   │   │       │       # - @shopify/flash-list
-    │       │   │   │       │       # - react-native-gesture-handler
-    │       │   │   │       │       # ❌ CREATE - Mobile data grid component
-    │       │   │   │       ├── KanbanBoard/
-    │       │   │   │       │   └── KanbanBoard.native.tsx  # ❌ CREATE
-    │       │   │   │       │       # Mobile kanban board component
-    │       │   │   │       │       # FEATURES:
-    │       │   │   │       │       # - Horizontal scrollable columns
-    │       │   │   │       │       # - Drag and drop cards
-    │       │   │   │       │       # - Smooth animations
-    │       │   │   │       │       # - Haptic feedback
-    │       │   │   │       │       # - Optimized scrolling
-    │       │   │   │       │       # IMPLEMENTATION:
-    │       │   │   │       │       # - Horizontal ScrollView for columns
-    │       │   │   │       │       # - Use react-native-draggable-flatlist
-    │       │   │   │       │       # - Haptic feedback on drag start/end
-    │       │   │   │       │       # - Auto-scroll at edges
-    │       │   │   │       │       # DEPENDENCIES:
-    │       │   │   │       │       # - react-native-draggable-flatlist
-    │       │   │   │       │       # - react-native-haptic-feedback
-    │       │   │   │       │       # - react-native-reanimated
-    │       │   │   │       │       # ❌ CREATE - Mobile kanban board component
-    │       │   │   │       └── Table/
-    │       │   │   │           └── Table.native.tsx  # ❌ CREATE
-    │       │   │   │               # Mobile responsive table component
-    │       │   │   │               # FEATURES:
-    │       │   │   │               # - FlashList for performance
-    │       │   │   │               # - Horizontal scroll for wide tables
-    │       │   │   │               # - Column sorting
-    │       │   │   │               # - Row selection
-    │       │   │   │               # - Pagination support
-    │       │   │   │               # - Touch-optimized cells
-    │       │   │   │               # IMPLEMENTATION:
-    │       │   │   │               # - Use @shopify/flash-list
-    │       │   │   │               # - Sticky first column (optional)
-    │       │   │   │               # - Minimum cell width: 80px
-    │       │   │   │               # - Touch targets: 44x44 minimum
-    │       │   │   │               # DEPENDENCIES:
-    │       │   │   │               # - @shopify/flash-list
-    │       │   │   │               # - react-native-gesture-handler
-    │       │   │   │               # ❌ CREATE - Mobile responsive table component
-    │       │   │   ├── Pagination/
-    │       │   │   ├── Popover/
-    │       │   │   ├── Progress/
-    │       │   │   ├── Radio/
-    │       │   │   ├── Rating/
-    │       │   │   ├── Select/
-    │       │   │   ├── Skeleton/
-    │       │   │   ├── Slider/
-    │       │   │   ├── Stepper/
-    │       │   │   ├── Switch/
-    │       │   │   ├── Tabs/
-    │       │   │   ├── Textarea/
-    │       │   │   ├── Timeline/
-    │       │   │   ├── TimePicker/
-    │       │   │   ├── Toast/
-    │       │   │   │   ├── Toast.native.tsx  # Toasts (native)
-    │       │   │   │   ├── Toast.tsx  # Toasts (shared)
-    │       │   │   │   └── Toast.web.tsx  # Toasts (web)
-    │       │   │   │       # BE: none (presentational)
-    │       │   │   ├── Tooltip/
-    │       │   │   ├── tracking/
-    │       │   │   │   ├── TimesheetTable.native.tsx
-    │       │   │   │   ├── TimesheetTable.tsx  # Timesheet grid
-    │       │   │   │   ├── TimesheetTable.web.tsx
-    │       │   │   │   ├── TimeTracker.native.tsx
-    │       │   │   │   ├── TimeTracker.tsx  # Time tracking widget
-    │       │   │   │   ├── TimeTracker.web.tsx
-    │       │   │   │   ├── WorkDiaryEntry.native.tsx
-    │       │   │   │   ├── WorkDiaryEntry.tsx  # Work diary card
-    │       │   │   │   └── WorkDiaryEntry.web.tsx
-    │       │   │   ├── video/
-    │       │   │   │   ├── VideoPlayer.native.tsx
-    │       │   │   │   ├── VideoPlayer.tsx  # Video player
-    │       │   │   │   ├── VideoPlayer.web.tsx
-    │       │   │   │   ├── VideoUploader.native.tsx
-    │       │   │   │   ├── VideoUploader.tsx  # Video upload
-    │       │   │   │   └── VideoUploader.web.tsx
-    │       │   │   └── Visualization/
-    │       │   │       ├── GanttChart/
-    │       │   │       │   ├── timeline/
-    │       │   │       │   │   ├── Timeline.tsx
-    │       │   │       │   │   └── TimelineItem.tsx
-    │       │   │       │   ├── GanttChart.native.tsx
-    │       │   │       │   ├── GanttChart.tsx
-    │       │   │       │   ├── GanttChart.types.ts
-    │       │   │       │   └── GanttChart.web.tsx
-    │       │   │       ├── HeatMap/
-    │       │   │       │   ├── HeatMap.native.tsx
-    │       │   │       │   ├── HeatMap.tsx
-    │       │   │       │   ├── HeatMap.types.ts
-    │       │   │       │   └── HeatMap.web.tsx
-    │       │   │       ├── KanbanBoard/
-    │       │   │       │   ├── card/
-    │       │   │       │   │   └── KanbanCard.tsx
-    │       │   │       │   ├── column/
-    │       │   │       │   │   └── KanbanColumn.tsx
-    │       │   │       │   ├── KanbanBoard.native.tsx
-    │       │   │       │   ├── KanbanBoard.tsx
-    │       │   │       │   ├── KanbanBoard.types.ts
-    │       │   │       │   └── KanbanBoard.web.tsx
-    │       │   │       ├── OrgChart/
-    │       │   │       │   ├── node/
-    │       │   │       │   │   └── OrgNode.tsx
-    │       │   │       │   ├── OrgChart.native.tsx
-    │       │   │       │   ├── OrgChart.tsx
-    │       │   │       │   ├── OrgChart.types.ts
-    │       │   │       │   └── OrgChart.web.tsx
-    │       │   │       └── TreeView/
-    │       │   │           ├── node/
-    │       │   │           │   └── TreeNode.tsx
-    │       │   │           ├── TreeView.native.tsx
-    │       │   │           ├── TreeView.tsx
-    │       │   │           ├── TreeView.types.ts
-    │       │   │           └── TreeView.web.tsx
-    │       │   ├── forms/  # Form components
-    │       │   │   ├── CodeEditor/
-    │       │   │   │   ├── CodeEditor.native.tsx
-    │       │   │   │   ├── CodeEditor.tsx
-    │       │   │   │   └── CodeEditor.web.tsx
-    │       │   │   ├── DateRangePicker/
-    │       │   │   │   ├── DateRangePicker.native.tsx
-    │       │   │   │   ├── DateRangePicker.tsx
-    │       │   │   │   └── DateRangePicker.web.tsx
-    │       │   │   ├── FormError/
-    │       │   │   ├── FormField/
-    │       │   │   ├── FormGroup/
-    │       │   │   ├── FormHelper/
-    │       │   │   ├── FormLabel/
-    │       │   │   ├── MarkdownEditor/
-    │       │   │   │   ├── MarkdownEditor.native.tsx
-    │       │   │   │   ├── MarkdownEditor.tsx
-    │       │   │   │   └── MarkdownEditor.web.tsx
-    │       │   │   ├── RichTextEditor/
-    │       │   │   │   ├── RichTextEditor.native.tsx
-    │       │   │   │   ├── RichTextEditor.tsx
-    │       │   │   │   └── RichTextEditor.web.tsx
-    │       │   │   └── SignatureInput/
-    │       │   │       ├── SignatureInput.native.tsx
-    │       │   │       ├── SignatureInput.tsx
-    │       │   │       └── SignatureInput.web.tsx
-    │       │   ├── icons/  # Icon components
-    │       │   │   └── index.ts  # Export all icons
-    │       │   ├── layout/  # Layout components
-    │       │   │   ├── Container/
-    │       │   │   ├── Divider/
-    │       │   │   ├── Grid/
-    │       │   │   ├── Spacer/
-    │       │   │   └── Stack/
-    │       │   ├── learning/
-    │       │   │   ├── AchievementBadge.native.tsx
-    │       │   │   ├── AchievementBadge.tsx  # Achievement badge
-    │       │   │   ├── AchievementBadge.web.tsx
-    │       │   │   ├── LearningPathCard.native.tsx
-    │       │   │   ├── LearningPathCard.tsx  # Learning path card
-    │       │   │   ├── LearningPathCard.web.tsx
-    │       │   │   ├── ProgressTracker.native.tsx
-    │       │   │   ├── ProgressTracker.tsx  # Progress visualization
-    │       │   │   └── ProgressTracker.web.tsx
-    │       │   ├── molecules/
-    │       │   │   ├── Navigation/
-    │       │   │   │   ├── Accordion/
-    │       │   │   │   │   ├── Accordion.native.tsx  # ❌ ADD - Mobile needs accordion
-    │       │   │   │   │   ├── Accordion.tsx  # ✅ Base component
-    │       │   │   │   │   ├── Accordion.types.ts  # ✅ Shared types
-    │       │   │   │   │   └── Accordion.web.tsx  # ✅ Web implementation
-    │       │   │   │   ├── Breadcrumb/
-    │       │   │   │   │   ├── Breadcrumb.native.tsx# ❌ ADD - Mobile needs breadcrumb
-    │       │   │   │   │   ├── Breadcrumb.tsx  # ✅ Base component
-    │       │   │   │   │   ├── Breadcrumb.types.ts  # ✅ Shared types
-    │       │   │   │   │   └── Breadcrumb.web.tsx  # ✅ Web implementation
-    │       │   │   │   ├── Drawer/
-    │       │   │   │   │   ├── Drawer.native.tsx  # ❌ ADD - Mobile needs drawer (BottomSheet)
-    │       │   │   │   │   ├── Drawer.tsx  # ✅ Base component
-    │       │   │   │   │   ├── Drawer.types.ts  # ✅ Shared types
-    │       │   │   │   │   └── Drawer.web.tsx  # ✅ Web implementation
-    │       │   │   │   └── Tabs/
-    │       │   │   │       ├── Tabs.native.tsx  # ⚠️ EXISTS but may need enhancement
-    │       │   │   │       ├── Tabs.tsx  # ✅ Base component
-    │       │   │   │       ├── Tabs.types.ts  # ✅ Shared types
-    │       │   │   │       └── Tabs.web.tsx  # ✅ Web implementation
-    │       │   │   └── Overlay/
-    │       │   │       ├── Popover/
-    │       │   │       │   ├── Popover.native.tsx  # ❌ ADD - Mobile needs popover
-    │       │   │       │   ├── Popover.tsx  # ✅ Base component
-    │       │   │       │   ├── Popover.types.ts  # ✅ Shared types
-    │       │   │       │   └── Popover.web.tsx  # ✅ Web implementation
-    │       │   │       └── Tooltip/
-    │       │   │           ├── Tooltip.native.tsx  # ❌ ADD - Mobile needs tooltip (long press)
-    │       │   │           ├── Tooltip.tsx  # ✅ Base component
-    │       │   │           ├── Tooltip.types.ts  # ✅ Shared types
-    │       │   │           └── Tooltip.web.tsx  # ✅ Web implementation
-    │       │   ├── organisms/
-    │       │   │   └── DataDisplay/
-    │       │   │       ├── DataGrid/
-    │       │   │       │   ├── DataGrid.native.tsx  # ❌ ADD - Mobile needs data grid
-    │       │   │       │   ├── DataGrid.tsx  # ✅ Base component
-    │       │   │       │   ├── DataGrid.types.ts  # ✅ Shared types
-    │       │   │       │   └── DataGrid.web.tsx  # ✅ Web implementation
-    │       │   │       ├── KanbanBoard/
-    │       │   │       │   ├── KanbanBoard.native.tsx  # ❌ ADD - Mobile needs kanban
-    │       │   │       │   ├── KanbanBoard.tsx  # ✅ Base component
-    │       │   │       │   ├── KanbanBoard.types.ts  # ✅ Shared types
-    │       │   │       │   └── KanbanBoard.web.tsx  # ✅ Web implementation
-    │       │   │       └── Table/
-    │       │   │           ├── Table.native.tsx  # ❌ ADD - Mobile needs table (FlashList)
-    │       │   │           ├── Table.tsx  # ✅ Base component
-    │       │   │           ├── Table.types.ts  # ✅ Shared types
-    │       │   │           └── Table.web.tsx  # ✅ Web implementation
-    │       │   ├── tracking/
-    │       │   │   ├── TimesheetTable.native.tsx
-    │       │   │   ├── TimesheetTable.tsx  # Timesheet grid
-    │       │   │   ├── TimesheetTable.web.tsx
-    │       │   │   ├── TimeTracker.native.tsx
-    │       │   │   ├── TimeTracker.tsx  # Time tracking widget
-    │       │   │   ├── TimeTracker.web.tsx
-    │       │   │   ├── WorkDiaryEntry.native.tsx
-    │       │   │   ├── WorkDiaryEntry.tsx  # Work diary card
-    │       │   │   └── WorkDiaryEntry.web.tsx
-    │       │   ├── video/
-    │       │   │   ├── VideoPlayer.native.tsx
-    │       │   │   ├── VideoPlayer.tsx  # Video player
-    │       │   │   ├── VideoPlayer.web.tsx
-    │       │   │   ├── VideoUploader.native.tsx  # Video upload
-    │       │   │   ├── VideoUploader.tsx  # Video upload
-    │       │   │   └── VideoUploader.web.tsx
-    │       │   └── visualization/
-    │       │       ├── Gantt/
-    │       │       │   ├── GanttChart.native.tsx
-    │       │       │   ├── GanttChart.tsx
-    │       │       │   └── GanttChart.web.tsx
-    │       │       ├── Heatmap/
-    │       │       │   ├── Heatmap.native.tsx
-    │       │       │   ├── Heatmap.tsx
-    │       │       │   └── Heatmap.web.tsx
-    │       │       ├── Kanban/
-    │       │       │   ├── KanbanBoard.native.tsx
-    │       │       │   ├── KanbanBoard.tsx
-    │       │       │   └── KanbanBoard.web.tsx
-    │       │       └── OrgChart/
-    │       │           ├── OrganizationChart.native.tsx
-    │       │           ├── OrganizationChart.tsx
-    │       │           └── OrganizationChart.web.tsx
-    │       ├── package.json
-    │       ├── README.md
-    │       └── tsconfig.json
+    │   ├── ui/  # Cross-platform component library
+    │   │   # Cross-platform UI component library
+    │   │   # ✅ Shared UI components
+    │   │   ├── src/
+    │   │   │   ├── a11y/
+    │   │   │   │   ├── Announcer/
+    │   │   │   │   │   ├── LiveAnnouncer.native.tsx
+    │   │   │   │   │   ├── LiveAnnouncer.tsx  # Live region announcements
+    │   │   │   │   │   ├── LiveAnnouncer.types.ts
+    │   │   │   │   │   └── LiveAnnouncer.web.tsx
+    │   │   │   │   ├── FocusTrap/
+    │   │   │   │   │   ├── FocusTrap.tsx
+    │   │   │   │   │   ├── FocusTrap.types.ts
+    │   │   │   │   │   └── FocusTrap.web.tsx
+    │   │   │   │   ├── SkipLink/
+    │   │   │   │   │   ├── SkipLink.tsx
+    │   │   │   │   │   ├── SkipLink.types.ts
+    │   │   │   │   │   └── SkipLink.web.tsx
+    │   │   │   │   └── VisuallyHidden/
+    │   │   │   │       ├── VisuallyHidden.native.tsx
+    │   │   │   │       ├── VisuallyHidden.tsx
+    │   │   │   │       ├── VisuallyHidden.types.ts
+    │   │   │   │       └── VisuallyHidden.web.tsx
+    │   │   │   ├── accessibility/
+    │   │   │   │   ├── FocusTrap/
+    │   │   │   │   │   ├── FocusTrap.native.tsx
+    │   │   │   │   │   ├── FocusTrap.tsx
+    │   │   │   │   │   └── FocusTrap.web.tsx
+    │   │   │   │   ├── ScreenReaderAnnouncer/
+    │   │   │   │   │   ├── ScreenReaderAnnouncer.native.tsx
+    │   │   │   │   │   ├── ScreenReaderAnnouncer.tsx
+    │   │   │   │   │   └── ScreenReaderAnnouncer.web.tsx
+    │   │   │   │   └── SkipLinks/
+    │   │   │   │       ├── SkipLinks.tsx
+    │   │   │   │       └── SkipLinks.web.tsx
+    │   │   │   ├── ai/
+    │   │   │   │   ├── AIAssistant/
+    │   │   │   │   │   ├── AIAssistant.native.tsx
+    │   │   │   │   │   ├── AIAssistant.tsx
+    │   │   │   │   │   └── AIAssistant.web.tsx
+    │   │   │   │   ├── AutoComplete/
+    │   │   │   │   │   ├── AIAutoComplete.native.tsx
+    │   │   │   │   │   ├── AIAutoComplete.tsx
+    │   │   │   │   │   └── AIAutoComplete.web.tsx
+    │   │   │   │   └── SmartSuggestions/
+    │   │   │   │       ├── SmartSuggestions.native.tsx
+    │   │   │   │       ├── SmartSuggestions.tsx
+    │   │   │   │       └── SmartSuggestions.web.tsx
+    │   │   │   ├── auction/
+    │   │   │   │   ├── AuctionTimer.native.tsx
+    │   │   │   │   ├── AuctionTimer.tsx  # Countdown timer
+    │   │   │   │   ├── AuctionTimer.web.tsx
+    │   │   │   │   ├── BidHistoryChart.native.tsx
+    │   │   │   │   ├── BidHistoryChart.tsx  # Bid history visualization
+    │   │   │   │   ├── BidHistoryChart.web.tsx
+    │   │   │   │   ├── LiveBidFeed.native.tsx
+    │   │   │   │   ├── LiveBidFeed.tsx  # Real-time bid feed
+    │   │   │   │   └── LiveBidFeed.web.tsx
+    │   │   │   ├── charts/
+    │   │   │   │   ├── EarningsChart.native.tsx
+    │   │   │   │   ├── EarningsChart.tsx  # Earnings visualization
+    │   │   │   │   ├── EarningsChart.web.tsx
+    │   │   │   │   ├── PerformanceChart.native.tsx
+    │   │   │   │   ├── PerformanceChart.tsx  # Performance metrics
+    │   │   │   │   ├── PerformanceChart.web.tsx
+    │   │   │   │   ├── TrendChart.native.tsx
+    │   │   │   │   ├── TrendChart.tsx  # Trend visualization
+    │   │   │   │   └── TrendChart.web.tsx
+    │   │   │   ├── collaboration/
+    │   │   │   │   ├── CollaborationPanel.native.tsx
+    │   │   │   │   ├── CollaborationPanel.tsx  # Team collaboration
+    │   │   │   │   ├── CollaborationPanel.web.tsx
+    │   │   │   │   ├── GroupCard.native.tsx
+    │   │   │   │   ├── GroupCard.tsx  # User group card
+    │   │   │   │   ├── GroupCard.web.tsx
+    │   │   │   │   ├── MentorCard.native.tsx
+    │   │   │   │   ├── MentorCard.tsx  # Mentor profile card
+    │   │   │   │   └── MentorCard.web.tsx
+    │   │   │   ├── compliance/
+    │   │   │   │   ├── DocumentUploader.native.tsx
+    │   │   │   │   ├── DocumentUploader.tsx  # Compliance doc uploader
+    │   │   │   │   ├── DocumentUploader.web.tsx
+    │   │   │   │   ├── VerificationStatus.native.tsx
+    │   │   │   │   ├── VerificationStatus.tsx  # Verification status badge
+    │   │   │   │   └── VerificationStatus.web.tsx
+    │   │   │   ├── components/
+    │   │   │   │   ├── Accessibility/
+    │   │   │   │   │   ├── FocusTrap/
+    │   │   │   │   │   │   ├── FocusTrap.tsx
+    │   │   │   │   │   │   ├── FocusTrap.types.ts
+    │   │   │   │   │   │   └── FocusTrap.web.tsx
+    │   │   │   │   │   ├── KeyboardShortcuts/
+    │   │   │   │   │   │   ├── ShortcutDialog/
+    │   │   │   │   │   │   │   └── ShortcutDialog.tsx
+    │   │   │   │   │   │   ├── KeyboardShortcuts.tsx
+    │   │   │   │   │   │   └── KeyboardShortcuts.types.ts
+    │   │   │   │   │   ├── LiveRegion/
+    │   │   │   │   │   │   ├── LiveRegion.native.tsx
+    │   │   │   │   │   │   ├── LiveRegion.tsx
+    │   │   │   │   │   │   ├── LiveRegion.types.ts
+    │   │   │   │   │   │   └── LiveRegion.web.tsx
+    │   │   │   │   │   └── ScreenReaderOnly/
+    │   │   │   │   │       ├── ScreenReaderOnly.tsx
+    │   │   │   │   │       └── ScreenReaderOnly.types.ts
+    │   │   │   │   ├── Accordion/
+    │   │   │   │   ├── AI/
+    │   │   │   │   │   ├── AIAssistant/
+    │   │   │   │   │   │   ├── chat/
+    │   │   │   │   │   │   │   ├── ChatBubble.tsx
+    │   │   │   │   │   │   │   └── ChatInput.tsx
+    │   │   │   │   │   │   ├── ChatInterface/
+    │   │   │   │   │   │   │   └── ChatInterface.tsx
+    │   │   │   │   │   │   ├── AIAssistant.native.tsx
+    │   │   │   │   │   │   ├── AIAssistant.tsx  # AI chat assistant
+    │   │   │   │   │   │   ├── AIAssistant.types.ts
+    │   │   │   │   │   │   └── AIAssistant.web.tsx
+    │   │   │   │   │   ├── AutoComplete/
+    │   │   │   │   │   │   ├── AIAutoComplete.native.tsx
+    │   │   │   │   │   │   ├── AIAutoComplete.tsx  # AI-powered autocomplete
+    │   │   │   │   │   │   ├── AIAutoComplete.types.ts
+    │   │   │   │   │   │   ├── AIAutoComplete.web.tsx
+    │   │   │   │   │   │   ├── SmartAutoComplete.native.tsx
+    │   │   │   │   │   │   ├── SmartAutoComplete.tsx
+    │   │   │   │   │   │   ├── SmartAutoComplete.types.ts
+    │   │   │   │   │   │   └── SmartAutoComplete.web.tsx
+    │   │   │   │   │   ├── ContentGeneration/
+    │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   └── GenerationTemplates.tsx
+    │   │   │   │   │   │   ├── ContentGeneration.types.ts
+    │   │   │   │   │   │   └── ContentGenerator.tsx  # AI content generation
+    │   │   │   │   │   └── SmartSuggestions/
+    │   │   │   │   │       ├── SuggestionCard/
+    │   │   │   │   │       │   └── SuggestionCard.tsx
+    │   │   │   │   │       ├── SmartSuggestions.native.tsx
+    │   │   │   │   │       ├── SmartSuggestions.tsx  # AI suggestions
+    │   │   │   │   │       ├── SmartSuggestions.types.ts
+    │   │   │   │   │       └── SmartSuggestions.web.tsx
+    │   │   │   │   ├── Alert/
+    │   │   │   │   ├── auction/
+    │   │   │   │   │   ├── AuctionTimer.native.tsx
+    │   │   │   │   │   ├── AuctionTimer.tsx  # Countdown timer
+    │   │   │   │   │   ├── AuctionTimer.web.tsx
+    │   │   │   │   │   ├── BidHistoryChart.native.tsx
+    │   │   │   │   │   ├── BidHistoryChart.tsx  # Bid history visualization
+    │   │   │   │   │   ├── BidHistoryChart.web.tsx
+    │   │   │   │   │   ├── LiveBidFeed.native.tsx
+    │   │   │   │   │   ├── LiveBidFeed.tsx  # Real-time bid feed
+    │   │   │   │   │   └── LiveBidFeed.web.tsx
+    │   │   │   │   ├── Avatar/
+    │   │   │   │   ├── Badge/
+    │   │   │   │   ├── Breadcrumb/
+    │   │   │   │   ├── Button/
+    │   │   │   │   │   ├── Button.native.tsx  # Native-specific overrides
+    │   │   │   │   │   ├── Button.stories.tsx  # Storybook stories
+    │   │   │   │   │   ├── Button.test.tsx  # Component tests
+    │   │   │   │   │   ├── Button.tsx  # Base button component
+    │   │   │   │   │   └── Button.web.tsx  # Web-specific overrides
+    │   │   │   │   ├── Calendar/
+    │   │   │   │   │   ├── DatePicker/
+    │   │   │   │   │   │   ├── DatePicker.native.tsx
+    │   │   │   │   │   │   ├── DatePicker.tsx
+    │   │   │   │   │   │   └── DatePicker.web.tsx
+    │   │   │   │   │   ├── DateRangePicker/
+    │   │   │   │   │   │   ├── DateRangePicker.native.tsx
+    │   │   │   │   │   │   ├── DateRangePicker.tsx
+    │   │   │   │   │   │   └── DateRangePicker.web.tsx
+    │   │   │   │   │   ├── TimePicker/
+    │   │   │   │   │   │   ├── TimePicker.native.tsx
+    │   │   │   │   │   │   ├── TimePicker.tsx
+    │   │   │   │   │   │   └── TimePicker.web.tsx
+    │   │   │   │   │   ├── Calendar.native.tsx
+    │   │   │   │   │   ├── Calendar.tsx  # Full calendar
+    │   │   │   │   │   ├── Calendar.types.ts
+    │   │   │   │   │   └── Calendar.web.tsx
+    │   │   │   │   ├── Card/
+    │   │   │   │   ├── charts/
+    │   │   │   │   │   ├── EarningsChart.native.tsx
+    │   │   │   │   │   ├── EarningsChart.tsx  # Earnings visualization
+    │   │   │   │   │   ├── EarningsChart.web.tsx
+    │   │   │   │   │   ├── PerformanceChart.native.tsx
+    │   │   │   │   │   ├── PerformanceChart.tsx  # Performance metrics
+    │   │   │   │   │   ├── PerformanceChart.web.tsx
+    │   │   │   │   │   ├── TrendChart.native.tsx
+    │   │   │   │   │   ├── TrendChart.tsx  # Trend visualization
+    │   │   │   │   │   └── TrendChart.web.tsx
+    │   │   │   │   ├── Charts/
+    │   │   │   │   │   ├── FunnelChart/
+    │   │   │   │   │   │   ├── FunnelChart.tsx
+    │   │   │   │   │   │   └── FunnelChart.types.ts
+    │   │   │   │   │   ├── GanttChart/
+    │   │   │   │   │   │   ├── Task/
+    │   │   │   │   │   │   │   └── Task.tsx
+    │   │   │   │   │   │   ├── GanttChart.tsx
+    │   │   │   │   │   │   └── GanttChart.types.ts
+    │   │   │   │   │   ├── HeatMap/
+    │   │   │   │   │   │   ├── HeatMap.tsx
+    │   │   │   │   │   │   ├── HeatMap.types.ts
+    │   │   │   │   │   │   └── HeatMap.web.tsx  # D3/Recharts
+    │   │   │   │   │   └── OrgChart/
+    │   │   │   │   │       ├── Node/
+    │   │   │   │   │       │   └── OrgNode.tsx
+    │   │   │   │   │       ├── OrgChart.tsx
+    │   │   │   │   │       ├── OrgChart.types.ts
+    │   │   │   │   │       └── OrgChart.web.tsx
+    │   │   │   │   ├── Checkbox/
+    │   │   │   │   ├── CodeEditor/
+    │   │   │   │   │   ├── CodeEditor.native.tsx
+    │   │   │   │   │   ├── CodeEditor.tsx
+    │   │   │   │   │   ├── CodeEditor.types.ts
+    │   │   │   │   │   └── CodeEditor.web.tsx  # Web (e.g., Monaco/CodeMirror)
+    │   │   │   │   ├── collaboration/
+    │   │   │   │   │   ├── CollaborationPanel.native.tsx
+    │   │   │   │   │   ├── CollaborationPanel.tsx  # Team collaboration
+    │   │   │   │   │   ├── CollaborationPanel.web.tsx
+    │   │   │   │   │   ├── GroupCard.native.tsx
+    │   │   │   │   │   ├── GroupCard.tsx  # User group card
+    │   │   │   │   │   ├── GroupCard.web.tsx
+    │   │   │   │   │   ├── MentorCard.native.tsx
+    │   │   │   │   │   ├── MentorCard.tsx  # Mentor profile card
+    │   │   │   │   │   └── MentorCard.web.tsx
+    │   │   │   │   ├── compliance/
+    │   │   │   │   │   ├── DocumentUploader.native.tsx
+    │   │   │   │   │   ├── DocumentUploader.tsx  # Compliance doc uploader
+    │   │   │   │   │   ├── DocumentUploader.web.tsx
+    │   │   │   │   │   ├── VerificationStatus.native.tsx
+    │   │   │   │   │   ├── VerificationStatus.tsx  # Verification status badge
+    │   │   │   │   │   └── VerificationStatus.web.tsx
+    │   │   │   │   ├── DataDisplay/
+    │   │   │   │   │   ├── Kanban/
+    │   │   │   │   │   │   ├── KanbanBoard.native.tsx  # Touch gestures
+    │   │   │   │   │   │   ├── KanbanBoard.tsx
+    │   │   │   │   │   │   ├── KanbanBoard.types.ts
+    │   │   │   │   │   │   └── KanbanBoard.web.tsx  # Drag & drop
+    │   │   │   │   │   ├── List/
+    │   │   │   │   │   │   ├── VirtualList/
+    │   │   │   │   │   │   │   ├── VirtualList.native.tsx  # FlashList
+    │   │   │   │   │   │   │   ├── VirtualList.tsx
+    │   │   │   │   │   │   │   └── VirtualList.web.tsx
+    │   │   │   │   │   │   ├── List.native.tsx
+    │   │   │   │   │   │   ├── List.tsx
+    │   │   │   │   │   │   ├── List.types.ts
+    │   │   │   │   │   │   └── List.web.tsx
+    │   │   │   │   │   ├── Table/
+    │   │   │   │   │   │   ├── DataTable/
+    │   │   │   │   │   │   │   ├── DataTable.tsx  # With sorting/filtering
+    │   │   │   │   │   │   │   └── DataTable.types.ts
+    │   │   │   │   │   │   ├── VirtualTable/
+    │   │   │   │   │   │   │   ├── VirtualTable.tsx  # Virtualized table
+    │   │   │   │   │   │   │   └── VirtualTable.types.ts
+    │   │   │   │   │   │   ├── Table.tsx  # Base table
+    │   │   │   │   │   │   ├── Table.types.ts
+    │   │   │   │   │   │   └── Table.web.tsx  # Full featured table
+    │   │   │   │   │   └── Timeline/
+    │   │   │   │   │       ├── Timeline.native.tsx
+    │   │   │   │   │       ├── Timeline.tsx
+    │   │   │   │   │       ├── Timeline.types.ts
+    │   │   │   │   │       └── Timeline.web.tsx
+    │   │   │   │   ├── DataTable/
+    │   │   │   │   ├── DatePicker/
+    │   │   │   │   ├── Dropdown/
+    │   │   │   │   ├── Editor/
+    │   │   │   │   │   ├── CodeEditor/
+    │   │   │   │   │   │   ├── CodeEditor.native.tsx
+    │   │   │   │   │   │   ├── CodeEditor.tsx
+    │   │   │   │   │   │   └── CodeEditor.web.tsx  # Web (e.g., Monaco/CodeMirror)
+    │   │   │   │   │   ├── MarkdownEditor/
+    │   │   │   │   │   │   ├── MarkdownEditor.native.tsx
+    │   │   │   │   │   │   ├── MarkdownEditor.tsx
+    │   │   │   │   │   │   └── MarkdownEditor.web.tsx
+    │   │   │   │   │   └── RichTextEditor/
+    │   │   │   │   │       ├── RichTextEditor.native.tsx  # Native implementation
+    │   │   │   │   │       ├── RichTextEditor.tsx
+    │   │   │   │   │       └── RichTextEditor.web.tsx  # Web (e.g., TipTap/Slate)
+    │   │   │   │   ├── Feedback/
+    │   │   │   │   │   ├── Alert/
+    │   │   │   │   │   │   ├── Alert.native.tsx
+    │   │   │   │   │   │   ├── Alert.tsx
+    │   │   │   │   │   │   ├── Alert.types.ts
+    │   │   │   │   │   │   └── Alert.web.tsx
+    │   │   │   │   │   ├── EmptyState/
+    │   │   │   │   │   │   ├── EmptyState.native.tsx
+    │   │   │   │   │   │   ├── EmptyState.tsx
+    │   │   │   │   │   │   ├── EmptyState.types.ts
+    │   │   │   │   │   │   └── EmptyState.web.tsx
+    │   │   │   │   │   ├── Notification/
+    │   │   │   │   │   │   ├── Notification.native.tsx
+    │   │   │   │   │   │   ├── Notification.tsx
+    │   │   │   │   │   │   ├── Notification.types.ts
+    │   │   │   │   │   │   └── Notification.web.tsx  # Toast notifications
+    │   │   │   │   │   ├── Progress/
+    │   │   │   │   │   │   ├── ProgressBar/
+    │   │   │   │   │   │   │   ├── ProgressBar.native.tsx
+    │   │   │   │   │   │   │   ├── ProgressBar.tsx
+    │   │   │   │   │   │   │   └── ProgressBar.web.tsx
+    │   │   │   │   │   │   ├── ProgressCircle/
+    │   │   │   │   │   │   │   ├── ProgressCircle.native.tsx
+    │   │   │   │   │   │   │   ├── ProgressCircle.tsx
+    │   │   │   │   │   │   │   └── ProgressCircle.web.tsx
+    │   │   │   │   │   │   └── Progress.types.ts
+    │   │   │   │   │   └── Skeleton/
+    │   │   │   │   │       ├── Skeleton.native.tsx
+    │   │   │   │   │       ├── Skeleton.tsx
+    │   │   │   │   │       ├── Skeleton.types.ts
+    │   │   │   │   │       └── Skeleton.web.tsx
+    │   │   │   │   ├── FileUpload/
+    │   │   │   │   │   ├── ImageUpload/
+    │   │   │   │   │   │   ├── ImageCropper.tsx  # Image cropping
+    │   │   │   │   │   │   ├── ImageUpload.native.tsx  # Camera/gallery
+    │   │   │   │   │   │   ├── ImageUpload.tsx
+    │   │   │   │   │   │   └── ImageUpload.web.tsx
+    │   │   │   │   │   ├── MultiFileUpload/
+    │   │   │   │   │   │   ├── MultiFileUpload.native.tsx
+    │   │   │   │   │   │   ├── MultiFileUpload.tsx
+    │   │   │   │   │   │   └── MultiFileUpload.web.tsx
+    │   │   │   │   │   ├── FileUpload.native.tsx  # Document picker
+    │   │   │   │   │   ├── FileUpload.tsx  # Base file upload
+    │   │   │   │   │   ├── FileUpload.types.ts
+    │   │   │   │   │   └── FileUpload.web.tsx  # Drag & drop support
+    │   │   │   │   ├── FileUploader/
+    │   │   │   │   │   ├── FileUploader.native.tsx  # Uploader (native)
+    │   │   │   │   │   │   # - Signed URL upload flow
+    │   │   │   │   │   │   # BE: storage-be/asset
+    │   │   │   │   │   │   # POST /v1/storage/uploads (signed) → PUT file → POST /v1/storage/commit
+    │   │   │   │   │   ├── FileUploader.tsx  # Uploader (shared)
+    │   │   │   │   │   │   # - Abstraction wrapper
+    │   │   │   │   │   │   # BE: storage-be/asset (same flow)
+    │   │   │   │   │   └── FileUploader.web.tsx  # Uploader (web)
+    │   │   │   │   │       # - Drag & drop, previews
+    │   │   │   │   │       # BE: storage-be/asset (same flow)
+    │   │   │   │   ├── Form/
+    │   │   │   │   │   ├── CodeEditor/
+    │   │   │   │   │   │   ├── LanguageSelector/
+    │   │   │   │   │   │   │   └── LanguageSelector.tsx
+    │   │   │   │   │   │   ├── syntax-highlighting/
+    │   │   │   │   │   │   │   ├── languages.ts
+    │   │   │   │   │   │   │   └── themes.ts
+    │   │   │   │   │   │   ├── CodeEditor.native.tsx  # Native code editor
+    │   │   │   │   │   │   ├── CodeEditor.tsx  # Base code editor
+    │   │   │   │   │   │   ├── CodeEditor.types.ts
+    │   │   │   │   │   │   └── CodeEditor.web.tsx  # Monaco/CodeMirror
+    │   │   │   │   │   ├── DateRangePicker/
+    │   │   │   │   │   │   ├── presets/
+    │   │   │   │   │   │   │   └── DatePresets.tsx
+    │   │   │   │   │   │   ├── DateRangePicker.native.tsx
+    │   │   │   │   │   │   ├── DateRangePicker.tsx
+    │   │   │   │   │   │   ├── DateRangePicker.types.ts
+    │   │   │   │   │   │   └── DateRangePicker.web.tsx
+    │   │   │   │   │   ├── MarkdownEditor/
+    │   │   │   │   │   │   ├── Preview/
+    │   │   │   │   │   │   │   └── MarkdownPreview.tsx
+    │   │   │   │   │   │   ├── preview/
+    │   │   │   │   │   │   │   └── MarkdownPreview.tsx
+    │   │   │   │   │   │   ├── MarkdownEditor.native.tsx
+    │   │   │   │   │   │   ├── MarkdownEditor.tsx
+    │   │   │   │   │   │   ├── MarkdownEditor.types.ts
+    │   │   │   │   │   │   └── MarkdownEditor.web.tsx
+    │   │   │   │   │   ├── RichTextEditor/
+    │   │   │   │   │   │   ├── Toolbar/
+    │   │   │   │   │   │   │   ├── Toolbar.tsx
+    │   │   │   │   │   │   │   └── Toolbar.types.ts
+    │   │   │   │   │   │   ├── toolbar/
+    │   │   │   │   │   │   │   ├── FormatButtons.tsx
+    │   │   │   │   │   │   │   ├── InsertButtons.tsx
+    │   │   │   │   │   │   │   └── Toolbar.tsx
+    │   │   │   │   │   │   ├── RichTextEditor.native.tsx  # Limited rich text
+    │   │   │   │   │   │   │   # Native implementation
+    │   │   │   │   │   │   ├── RichTextEditor.tsx  # Base editor
+    │   │   │   │   │   │   ├── RichTextEditor.types.ts
+    │   │   │   │   │   │   └── RichTextEditor.web.tsx  # Web (TipTap/Slate)
+    │   │   │   │   │   └── SignaturePad/
+    │   │   │   │   │       ├── SignaturePad.native.tsx  # React Native Canvas
+    │   │   │   │   │       │   # React Native Skia
+    │   │   │   │   │       ├── SignaturePad.tsx
+    │   │   │   │   │       ├── SignaturePad.types.ts
+    │   │   │   │   │       └── SignaturePad.web.tsx  # Canvas-based
+    │   │   │   │   ├── Forms/
+    │   │   │   │   │   ├── Checkbox/
+    │   │   │   │   │   │   ├── Checkbox.native.tsx
+    │   │   │   │   │   │   ├── Checkbox.tsx
+    │   │   │   │   │   │   ├── Checkbox.types.ts
+    │   │   │   │   │   │   └── Checkbox.web.tsx
+    │   │   │   │   │   ├── FormField/
+    │   │   │   │   │   │   ├── FormError.tsx
+    │   │   │   │   │   │   ├── FormField.native.tsx
+    │   │   │   │   │   │   ├── FormField.tsx  # Form field wrapper
+    │   │   │   │   │   │   ├── FormField.types.ts
+    │   │   │   │   │   │   ├── FormField.web.tsx
+    │   │   │   │   │   │   ├── FormHelperText.tsx
+    │   │   │   │   │   │   └── FormLabel.tsx
+    │   │   │   │   │   ├── Radio/
+    │   │   │   │   │   │   ├── Radio.types.ts
+    │   │   │   │   │   │   ├── RadioGroup.native.tsx
+    │   │   │   │   │   │   ├── RadioGroup.tsx
+    │   │   │   │   │   │   └── RadioGroup.web.tsx
+    │   │   │   │   │   ├── Select/
+    │   │   │   │   │   │   ├── MultiSelect/
+    │   │   │   │   │   │   │   ├── MultiSelect.native.tsx
+    │   │   │   │   │   │   │   ├── MultiSelect.tsx
+    │   │   │   │   │   │   │   └── MultiSelect.web.tsx
+    │   │   │   │   │   │   ├── Select.native.tsx
+    │   │   │   │   │   │   ├── Select.tsx
+    │   │   │   │   │   │   ├── Select.types.ts
+    │   │   │   │   │   │   └── Select.web.tsx
+    │   │   │   │   │   ├── Slider/
+    │   │   │   │   │   │   ├── RangeSlider/
+    │   │   │   │   │   │   │   ├── RangeSlider.native.tsx
+    │   │   │   │   │   │   │   ├── RangeSlider.tsx
+    │   │   │   │   │   │   │   └── RangeSlider.web.tsx
+    │   │   │   │   │   │   ├── Slider.native.tsx
+    │   │   │   │   │   │   ├── Slider.tsx
+    │   │   │   │   │   │   ├── Slider.types.ts
+    │   │   │   │   │   │   └── Slider.web.tsx
+    │   │   │   │   │   └── Switch/
+    │   │   │   │   │       ├── Switch.native.tsx
+    │   │   │   │   │       ├── Switch.tsx
+    │   │   │   │   │       ├── Switch.types.ts
+    │   │   │   │   │       └── Switch.web.tsx
+    │   │   │   │   ├── Input/
+    │   │   │   │   │   ├── Input.native.tsx
+    │   │   │   │   │   ├── Input.test.tsx
+    │   │   │   │   │   ├── Input.tsx
+    │   │   │   │   │   └── Input.web.tsx
+    │   │   │   │   ├── learning/
+    │   │   │   │   │   ├── AchievementBadge.native.tsx
+    │   │   │   │   │   ├── AchievementBadge.tsx  # Achievement badge
+    │   │   │   │   │   ├── AchievementBadge.web.tsx
+    │   │   │   │   │   ├── LearningPathCard.native.tsx
+    │   │   │   │   │   ├── LearningPathCard.tsx  # Learning path card
+    │   │   │   │   │   ├── LearningPathCard.web.tsx
+    │   │   │   │   │   ├── ProgressTracker.native.tsx
+    │   │   │   │   │   ├── ProgressTracker.tsx  # Progress visualization
+    │   │   │   │   │   └── ProgressTracker.web.tsx
+    │   │   │   │   ├── LoadingSpinner/
+    │   │   │   │   │   ├── LoadingSpinner.native.tsx  # Spinner (native)
+    │   │   │   │   │   ├── LoadingSpinner.tsx  # Spinner (shared)
+    │   │   │   │   │   └── LoadingSpinner.web.tsx  # Spinner (web)
+    │   │   │   │   │       # BE: none (presentational)
+    │   │   │   │   ├── Modal/
+    │   │   │   │   │   ├── Modal.native.tsx  # Modal (native)
+    │   │   │   │   │   ├── Modal.tsx  # Modal (shared)
+    │   │   │   │   │   └── Modal.web.tsx  # Modal (web)
+    │   │   │   │   │       # BE: none (presentational)
+    │   │   │   │   ├── molecules/
+    │   │   │   │   │   ├── Navigation/
+    │   │   │   │   │   │   ├── Accordion/
+    │   │   │   │   │   │   │   ├── Accordion.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   # React Native collapsible accordion component
+    │   │   │   │   │   │   │   │   # FEATURES:
+    │   │   │   │   │   │   │   │   # - Multiple/single expand mode
+    │   │   │   │   │   │   │   │   # - Smooth animations with react-native-reanimated
+    │   │   │   │   │   │   │   │   # - Customizable header/content
+    │   │   │   │   │   │   │   │   # - Keyboard accessible
+    │   │   │   │   │   │   │   │   # - Performance optimized
+    │   │   │   │   │   │   │   │   # DEPENDENCIES:
+    │   │   │   │   │   │   │   │   # - react-native-reanimated
+    │   │   │   │   │   │   │   │   # - react-native-gesture-handler
+    │   │   │   │   │   │   │   │   # ❌ CREATE - Mobile accordion component
+    │   │   │   │   │   │   │   │   # reanimated animations; gesture handler
+    │   │   │   │   │   │   │   │   # React Native collapsible accordion
+    │   │   │   │   │   │   │   ├── Accordion.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   ├── Accordion.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   └── Accordion.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   ├── Breadcrumb/
+    │   │   │   │   │   │   │   ├── Breadcrumb.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   # Mobile breadcrumb navigation component
+    │   │   │   │   │   │   │   │   # FEATURES:
+    │   │   │   │   │   │   │   │   # - Horizontal scroll for overflow
+    │   │   │   │   │   │   │   │   # - Touch-optimized tap targets
+    │   │   │   │   │   │   │   │   # - Separator customization
+    │   │   │   │   │   │   │   │   # - Auto-collapse on small screens
+    │   │   │   │   │   │   │   │   # - Current page highlighting
+    │   │   │   │   │   │   │   │   # IMPLEMENTATION:
+    │   │   │   │   │   │   │   │   # - Use ScrollView for horizontal scroll
+    │   │   │   │   │   │   │   │   # - Minimum touch target: 44x44
+    │   │   │   │   │   │   │   │   # - Responsive font sizes
+    │   │   │   │   │   │   │   │   # ❌ CREATE - Mobile breadcrumb navigation
+    │   │   │   │   │   │   │   │   # Mobile breadcrumb component
+    │   │   │   │   │   │   │   │   # - Touch-optimized tap targets (44x44)
+    │   │   │   │   │   │   │   ├── Breadcrumb.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   ├── Breadcrumb.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   └── Breadcrumb.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   ├── Drawer/
+    │   │   │   │   │   │   │   ├── Drawer.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   # React Native bottom sheet drawer component
+    │   │   │   │   │   │   │   │   # FEATURES:
+    │   │   │   │   │   │   │   │   # - Swipe gestures (up/down)
+    │   │   │   │   │   │   │   │   # - Snap points support
+    │   │   │   │   │   │   │   │   # - Backdrop with dismiss
+    │   │   │   │   │   │   │   │   # - Keyboard handling
+    │   │   │   │   │   │   │   │   # - Portal support for full-screen overlay
+    │   │   │   │   │   │   │   │   # DEPENDENCIES:
+    │   │   │   │   │   │   │   │   # - @gorhom/bottom-sheet
+    │   │   │   │   │   │   │   │   # IMPLEMENTATION:
+    │   │   │   │   │   │   │   │   # - Use BottomSheet from @gorhom/bottom-sheet
+    │   │   │   │   │   │   │   │   # - Handle keyboard avoiding
+    │   │   │   │   │   │   │   │   # - Provide backdrop press to dismiss
+    │   │   │   │   │   │   │   │   # - Support multiple snap points
+    │   │   │   │   │   │   │   │   # ❌ CREATE - Mobile drawer (bottom sheet)
+    │   │   │   │   │   │   │   │   # ❌ CREATE - Mobile bottom sheet drawer
+    │   │   │   │   │   │   │   │   # React Native bottom sheet drawer
+    │   │   │   │   │   │   │   │   # - Backdrop press to dismiss
+    │   │   │   │   │   │   │   ├── Drawer.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   ├── Drawer.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   └── Drawer.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   └── │
+    │   │   │   │   │   ├── Overlay/
+    │   │   │   │   │   │   ├── Popover/
+    │   │   │   │   │   │   │   ├── Popover.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   # Mobile popover component
+    │   │   │   │   │   │   │   │   # FEATURES:
+    │   │   │   │   │   │   │   │   # - Modal-based implementation
+    │   │   │   │   │   │   │   │   # - Positioned relative to trigger
+    │   │   │   │   │   │   │   │   # - Touch outside to dismiss
+    │   │   │   │   │   │   │   │   # - Arrow indicator
+    │   │   │   │   │   │   │   │   # - Portal support
+    │   │   │   │   │   │   │   │   # IMPLEMENTATION:
+    │   │   │   │   │   │   │   │   # - Use Modal from react-native
+    │   │   │   │   │   │   │   │   # - Calculate position based on trigger ref
+    │   │   │   │   │   │   │   │   # - Handle screen edges
+    │   │   │   │   │   │   │   │   # - Animate entrance/exit
+    │   │   │   │   │   │   │   │   # DEPENDENCIES:
+    │   │   │   │   │   │   │   │   # - react-native Modal
+    │   │   │   │   │   │   │   │   # - react-native-reanimated (animations)
+    │   │   │   │   │   │   │   │   # ❌ CREATE - Mobile popover component
+    │   │   │   │   │   │   │   ├── Popover.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   ├── Popover.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   └── Popover.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   ├── Tooltip/
+    │   │   │   │   │   │   │   ├── Tooltip.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   # Mobile tooltip component
+    │   │   │   │   │   │   │   │   # FEATURES:
+    │   │   │   │   │   │   │   │   # - Long-press to show
+    │   │   │   │   │   │   │   │   # - Auto-dismiss after delay
+    │   │   │   │   │   │   │   │   # - Positioned overlay
+    │   │   │   │   │   │   │   │   # - Arrow indicator
+    │   │   │   │   │   │   │   │   # - Portal rendering
+    │   │   │   │   │   │   │   │   # IMPLEMENTATION:
+    │   │   │   │   │   │   │   │   # - Use Pressable with onLongPress
+    │   │   │   │   │   │   │   │   # - Calculate position for tooltip
+    │   │   │   │   │   │   │   │   # - Handle screen boundaries
+    │   │   │   │   │   │   │   │   # - Auto-dismiss timer (configurable)
+    │   │   │   │   │   │   │   │   # DEPENDENCIES:
+    │   │   │   │   │   │   │   │   # - react-native Pressable
+    │   │   │   │   │   │   │   │   # - react-native-portal (optional)
+    │   │   │   │   │   │   │   │   # ❌ CREATE - Mobile tooltip component
+    │   │   │   │   │   │   │   ├── Tooltip.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   ├── Tooltip.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   └── Tooltip.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   └── │
+    │   │   │   │   │   └── │
+    │   │   │   │   ├── Navigation/
+    │   │   │   │   │   ├── Breadcrumb/
+    │   │   │   │   │   │   ├── Breadcrumb.tsx
+    │   │   │   │   │   │   ├── Breadcrumb.types.ts
+    │   │   │   │   │   │   └── Breadcrumb.web.tsx
+    │   │   │   │   │   ├── Pagination/
+    │   │   │   │   │   │   ├── Pagination.native.tsx
+    │   │   │   │   │   │   ├── Pagination.tsx
+    │   │   │   │   │   │   ├── Pagination.types.ts
+    │   │   │   │   │   │   └── Pagination.web.tsx
+    │   │   │   │   │   ├── Stepper/
+    │   │   │   │   │   │   ├── Stepper.native.tsx
+    │   │   │   │   │   │   ├── Stepper.tsx
+    │   │   │   │   │   │   ├── Stepper.types.ts
+    │   │   │   │   │   │   └── Stepper.web.tsx
+    │   │   │   │   │   └── Tabs/
+    │   │   │   │   │       ├── Tabs.native.tsx
+    │   │   │   │   │       ├── Tabs.tsx
+    │   │   │   │   │       ├── Tabs.types.ts
+    │   │   │   │   │       └── Tabs.web.tsx
+    │   │   │   │   ├── organisms/
+    │   │   │   │   │   └── DataDisplay/
+    │   │   │   │   │       ├── DataGrid/
+    │   │   │   │   │       │   ├── DataGrid.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │   │   # Mobile data grid component
+    │   │   │   │   │       │   │   # FEATURES:
+    │   │   │   │   │       │   │   # - Horizontal + vertical scroll
+    │   │   │   │   │       │   │   # - FlashList for performance
+    │   │   │   │   │       │   │   # - Touch gestures for sorting
+    │   │   │   │   │       │   │   # - Column pinning (left/right)
+    │   │   │   │   │       │   │   # - Responsive columns
+    │   │   │   │   │       │   │   # - Cell rendering optimization
+    │   │   │   │   │       │   │   # IMPLEMENTATION:
+    │   │   │   │   │       │   │   # - Use @shopify/flash-list
+    │   │   │   │   │       │   │   # - Virtualized rendering
+    │   │   │   │   │       │   │   # - Sticky headers
+    │   │   │   │   │       │   │   # - Handle column widths dynamically
+    │   │   │   │   │       │   │   # DEPENDENCIES:
+    │   │   │   │   │       │   │   # - @shopify/flash-list
+    │   │   │   │   │       │   │   # - react-native-gesture-handler
+    │   │   │   │   │       │   │   # ❌ CREATE - Mobile data grid component
+    │   │   │   │   │       │   ├── DataGrid.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │       │   ├── DataGrid.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │       │   └── DataGrid.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │       ├── KanbanBoard/
+    │   │   │   │   │       │   ├── KanbanBoard.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │   │   # Mobile kanban board component
+    │   │   │   │   │       │   │   # FEATURES:
+    │   │   │   │   │       │   │   # - Horizontal scrollable columns
+    │   │   │   │   │       │   │   # - Drag and drop cards
+    │   │   │   │   │       │   │   # - Smooth animations
+    │   │   │   │   │       │   │   # - Haptic feedback
+    │   │   │   │   │       │   │   # - Optimized scrolling
+    │   │   │   │   │       │   │   # IMPLEMENTATION:
+    │   │   │   │   │       │   │   # - Horizontal ScrollView for columns
+    │   │   │   │   │       │   │   # - Use react-native-draggable-flatlist
+    │   │   │   │   │       │   │   # - Haptic feedback on drag start/end
+    │   │   │   │   │       │   │   # - Auto-scroll at edges
+    │   │   │   │   │       │   │   # DEPENDENCIES:
+    │   │   │   │   │       │   │   # - react-native-draggable-flatlist
+    │   │   │   │   │       │   │   # - react-native-haptic-feedback
+    │   │   │   │   │       │   │   # - react-native-reanimated
+    │   │   │   │   │       │   │   # ❌ CREATE - Mobile kanban board component
+    │   │   │   │   │       │   ├── KanbanBoard.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │       │   ├── KanbanBoard.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │       │   └── KanbanBoard.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │       ├── Table/
+    │   │   │   │   │       │   ├── Table.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │   │   # Mobile responsive table component
+    │   │   │   │   │       │   │   # FEATURES:
+    │   │   │   │   │       │   │   # - FlashList for performance
+    │   │   │   │   │       │   │   # - Horizontal scroll for wide tables
+    │   │   │   │   │       │   │   # - Column sorting
+    │   │   │   │   │       │   │   # - Row selection
+    │   │   │   │   │       │   │   # - Pagination support
+    │   │   │   │   │       │   │   # - Touch-optimized cells
+    │   │   │   │   │       │   │   # IMPLEMENTATION:
+    │   │   │   │   │       │   │   # - Use @shopify/flash-list
+    │   │   │   │   │       │   │   # - Sticky first column (optional)
+    │   │   │   │   │       │   │   # - Minimum cell width: 80px
+    │   │   │   │   │       │   │   # - Touch targets: 44x44 minimum
+    │   │   │   │   │       │   │   # DEPENDENCIES:
+    │   │   │   │   │       │   │   # - @shopify/flash-list
+    │   │   │   │   │       │   │   # - react-native-gesture-handler
+    │   │   │   │   │       │   │   # ❌ CREATE - Mobile responsive table component
+    │   │   │   │   │       │   │   # - Touch-optimized cells (44x44 minimum)
+    │   │   │   │   │       │   ├── Table.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │       │   ├── Table.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │       │   └── Table.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │       └── │
+    │   │   │   │   ├── Pagination/
+    │   │   │   │   ├── Popover/
+    │   │   │   │   ├── Progress/
+    │   │   │   │   ├── Radio/
+    │   │   │   │   ├── Rating/
+    │   │   │   │   ├── Select/
+    │   │   │   │   ├── Skeleton/
+    │   │   │   │   ├── Slider/
+    │   │   │   │   ├── Stepper/
+    │   │   │   │   ├── Switch/
+    │   │   │   │   ├── Tabs/
+    │   │   │   │   ├── Textarea/
+    │   │   │   │   ├── Timeline/
+    │   │   │   │   ├── TimePicker/
+    │   │   │   │   ├── Toast/
+    │   │   │   │   │   ├── Toast.native.tsx  # Toasts (native)
+    │   │   │   │   │   ├── Toast.tsx  # Toasts (shared)
+    │   │   │   │   │   └── Toast.web.tsx  # Toasts (web)
+    │   │   │   │   │       # BE: none (presentational)
+    │   │   │   │   ├── Tooltip/
+    │   │   │   │   ├── tracking/
+    │   │   │   │   │   ├── TimesheetTable.native.tsx
+    │   │   │   │   │   ├── TimesheetTable.tsx  # Timesheet grid
+    │   │   │   │   │   ├── TimesheetTable.web.tsx
+    │   │   │   │   │   ├── TimeTracker.native.tsx
+    │   │   │   │   │   ├── TimeTracker.tsx  # Time tracking widget
+    │   │   │   │   │   ├── TimeTracker.web.tsx
+    │   │   │   │   │   ├── WorkDiaryEntry.native.tsx
+    │   │   │   │   │   ├── WorkDiaryEntry.tsx  # Work diary card
+    │   │   │   │   │   └── WorkDiaryEntry.web.tsx
+    │   │   │   │   ├── video/
+    │   │   │   │   │   ├── VideoPlayer.native.tsx
+    │   │   │   │   │   ├── VideoPlayer.tsx  # Video player
+    │   │   │   │   │   ├── VideoPlayer.web.tsx
+    │   │   │   │   │   ├── VideoUploader.native.tsx
+    │   │   │   │   │   ├── VideoUploader.tsx  # Video upload
+    │   │   │   │   │   └── VideoUploader.web.tsx
+    │   │   │   │   ├── Visualization/
+    │   │   │   │   │   ├── GanttChart/
+    │   │   │   │   │   │   ├── timeline/
+    │   │   │   │   │   │   │   ├── Timeline.tsx
+    │   │   │   │   │   │   │   └── TimelineItem.tsx
+    │   │   │   │   │   │   ├── GanttChart.native.tsx
+    │   │   │   │   │   │   ├── GanttChart.tsx
+    │   │   │   │   │   │   ├── GanttChart.types.ts
+    │   │   │   │   │   │   └── GanttChart.web.tsx
+    │   │   │   │   │   ├── HeatMap/
+    │   │   │   │   │   │   ├── HeatMap.native.tsx
+    │   │   │   │   │   │   ├── HeatMap.tsx
+    │   │   │   │   │   │   ├── HeatMap.types.ts
+    │   │   │   │   │   │   └── HeatMap.web.tsx
+    │   │   │   │   │   ├── KanbanBoard/
+    │   │   │   │   │   │   ├── card/
+    │   │   │   │   │   │   │   └── KanbanCard.tsx
+    │   │   │   │   │   │   ├── column/
+    │   │   │   │   │   │   │   └── KanbanColumn.tsx
+    │   │   │   │   │   │   ├── KanbanBoard.native.tsx
+    │   │   │   │   │   │   ├── KanbanBoard.tsx
+    │   │   │   │   │   │   ├── KanbanBoard.types.ts
+    │   │   │   │   │   │   └── KanbanBoard.web.tsx
+    │   │   │   │   │   ├── OrgChart/
+    │   │   │   │   │   │   ├── node/
+    │   │   │   │   │   │   │   └── OrgNode.tsx
+    │   │   │   │   │   │   ├── OrgChart.native.tsx
+    │   │   │   │   │   │   ├── OrgChart.tsx
+    │   │   │   │   │   │   ├── OrgChart.types.ts
+    │   │   │   │   │   │   └── OrgChart.web.tsx
+    │   │   │   │   │   └── TreeView/
+    │   │   │   │   │       ├── node/
+    │   │   │   │   │       │   └── TreeNode.tsx
+    │   │   │   │   │       ├── TreeView.native.tsx
+    │   │   │   │   │       ├── TreeView.tsx
+    │   │   │   │   │       ├── TreeView.types.ts
+    │   │   │   │   │       └── TreeView.web.tsx
+    │   │   │   │   └── │
+    │   │   │   ├── forms/  # Form components
+    │   │   │   │   ├── CodeEditor/
+    │   │   │   │   │   ├── CodeEditor.native.tsx
+    │   │   │   │   │   ├── CodeEditor.tsx
+    │   │   │   │   │   └── CodeEditor.web.tsx
+    │   │   │   │   ├── DateRangePicker/
+    │   │   │   │   │   ├── DateRangePicker.native.tsx
+    │   │   │   │   │   ├── DateRangePicker.tsx
+    │   │   │   │   │   └── DateRangePicker.web.tsx
+    │   │   │   │   ├── FormError/
+    │   │   │   │   ├── FormField/
+    │   │   │   │   ├── FormGroup/
+    │   │   │   │   ├── FormHelper/
+    │   │   │   │   ├── FormLabel/
+    │   │   │   │   ├── MarkdownEditor/
+    │   │   │   │   │   ├── MarkdownEditor.native.tsx
+    │   │   │   │   │   ├── MarkdownEditor.tsx
+    │   │   │   │   │   └── MarkdownEditor.web.tsx
+    │   │   │   │   ├── RichTextEditor/
+    │   │   │   │   │   ├── RichTextEditor.native.tsx
+    │   │   │   │   │   ├── RichTextEditor.tsx
+    │   │   │   │   │   └── RichTextEditor.web.tsx
+    │   │   │   │   └── SignatureInput/
+    │   │   │   │       ├── SignatureInput.native.tsx
+    │   │   │   │       ├── SignatureInput.tsx
+    │   │   │   │       └── SignatureInput.web.tsx
+    │   │   │   ├── icons/  # Icon components
+    │   │   │   │   └── index.ts  # Export all icons
+    │   │   │   ├── layout/  # Layout components
+    │   │   │   │   ├── Container/
+    │   │   │   │   ├── Divider/
+    │   │   │   │   ├── Grid/
+    │   │   │   │   ├── Spacer/
+    │   │   │   │   └── Stack/
+    │   │   │   ├── learning/
+    │   │   │   │   ├── AchievementBadge.native.tsx
+    │   │   │   │   ├── AchievementBadge.tsx  # Achievement badge
+    │   │   │   │   ├── AchievementBadge.web.tsx
+    │   │   │   │   ├── LearningPathCard.native.tsx
+    │   │   │   │   ├── LearningPathCard.tsx  # Learning path card
+    │   │   │   │   ├── LearningPathCard.web.tsx
+    │   │   │   │   ├── ProgressTracker.native.tsx
+    │   │   │   │   ├── ProgressTracker.tsx  # Progress visualization
+    │   │   │   │   └── ProgressTracker.web.tsx
+    │   │   │   ├── molecules/
+    │   │   │   │   ├── Navigation/
+    │   │   │   │   │   ├── Accordion/
+    │   │   │   │   │   │   ├── Accordion.native.tsx  # ❌ ADD - Mobile needs accordion
+    │   │   │   │   │   │   ├── Accordion.tsx  # ✅ Base component
+    │   │   │   │   │   │   ├── Accordion.types.ts  # ✅ Shared types
+    │   │   │   │   │   │   └── Accordion.web.tsx  # ✅ Web implementation
+    │   │   │   │   │   ├── Breadcrumb/
+    │   │   │   │   │   │   ├── Breadcrumb.native.tsx# ❌ ADD - Mobile needs breadcrumb
+    │   │   │   │   │   │   ├── Breadcrumb.tsx  # ✅ Base component
+    │   │   │   │   │   │   ├── Breadcrumb.types.ts  # ✅ Shared types
+    │   │   │   │   │   │   └── Breadcrumb.web.tsx  # ✅ Web implementation
+    │   │   │   │   │   ├── Drawer/
+    │   │   │   │   │   │   ├── Drawer.native.tsx  # ❌ ADD - Mobile needs drawer (BottomSheet)
+    │   │   │   │   │   │   ├── Drawer.tsx  # ✅ Base component
+    │   │   │   │   │   │   ├── Drawer.types.ts  # ✅ Shared types
+    │   │   │   │   │   │   └── Drawer.web.tsx  # ✅ Web implementation
+    │   │   │   │   │   └── Tabs/
+    │   │   │   │   │       ├── Tabs.native.tsx  # ⚠️ EXISTS but may need enhancement
+    │   │   │   │   │       ├── Tabs.tsx  # ✅ Base component
+    │   │   │   │   │       ├── Tabs.types.ts  # ✅ Shared types
+    │   │   │   │   │       └── Tabs.web.tsx  # ✅ Web implementation
+    │   │   │   │   └── Overlay/
+    │   │   │   │       ├── Popover/
+    │   │   │   │       │   ├── Popover.native.tsx  # ❌ ADD - Mobile needs popover
+    │   │   │   │       │   ├── Popover.tsx  # ✅ Base component
+    │   │   │   │       │   ├── Popover.types.ts  # ✅ Shared types
+    │   │   │   │       │   └── Popover.web.tsx  # ✅ Web implementation
+    │   │   │   │       └── Tooltip/
+    │   │   │   │           ├── Tooltip.native.tsx  # ❌ ADD - Mobile needs tooltip (long press)
+    │   │   │   │           ├── Tooltip.tsx  # ✅ Base component
+    │   │   │   │           ├── Tooltip.types.ts  # ✅ Shared types
+    │   │   │   │           └── Tooltip.web.tsx  # ✅ Web implementation
+    │   │   │   ├── organisms/
+    │   │   │   │   └── DataDisplay/
+    │   │   │   │       ├── DataGrid/
+    │   │   │   │       │   ├── DataGrid.native.tsx  # ❌ ADD - Mobile needs data grid
+    │   │   │   │       │   ├── DataGrid.tsx  # ✅ Base component
+    │   │   │   │       │   ├── DataGrid.types.ts  # ✅ Shared types
+    │   │   │   │       │   └── DataGrid.web.tsx  # ✅ Web implementation
+    │   │   │   │       ├── KanbanBoard/
+    │   │   │   │       │   ├── KanbanBoard.native.tsx  # ❌ ADD - Mobile needs kanban
+    │   │   │   │       │   ├── KanbanBoard.tsx  # ✅ Base component
+    │   │   │   │       │   ├── KanbanBoard.types.ts  # ✅ Shared types
+    │   │   │   │       │   └── KanbanBoard.web.tsx  # ✅ Web implementation
+    │   │   │   │       └── Table/
+    │   │   │   │           ├── Table.native.tsx  # ❌ ADD - Mobile needs table (FlashList)
+    │   │   │   │           ├── Table.tsx  # ✅ Base component
+    │   │   │   │           ├── Table.types.ts  # ✅ Shared types
+    │   │   │   │           └── Table.web.tsx  # ✅ Web implementation
+    │   │   │   ├── tracking/
+    │   │   │   │   ├── TimesheetTable.native.tsx
+    │   │   │   │   ├── TimesheetTable.tsx  # Timesheet grid
+    │   │   │   │   ├── TimesheetTable.web.tsx
+    │   │   │   │   ├── TimeTracker.native.tsx
+    │   │   │   │   ├── TimeTracker.tsx  # Time tracking widget
+    │   │   │   │   ├── TimeTracker.web.tsx
+    │   │   │   │   ├── WorkDiaryEntry.native.tsx
+    │   │   │   │   ├── WorkDiaryEntry.tsx  # Work diary card
+    │   │   │   │   └── WorkDiaryEntry.web.tsx
+    │   │   │   ├── video/
+    │   │   │   │   ├── VideoPlayer.native.tsx
+    │   │   │   │   ├── VideoPlayer.tsx  # Video player
+    │   │   │   │   ├── VideoPlayer.web.tsx
+    │   │   │   │   ├── VideoUploader.native.tsx  # Video upload
+    │   │   │   │   ├── VideoUploader.tsx  # Video upload
+    │   │   │   │   └── VideoUploader.web.tsx
+    │   │   │   └── visualization/
+    │   │   │       ├── Gantt/
+    │   │   │       │   ├── GanttChart.native.tsx
+    │   │   │       │   ├── GanttChart.tsx
+    │   │   │       │   └── GanttChart.web.tsx
+    │   │   │       ├── Heatmap/
+    │   │   │       │   ├── Heatmap.native.tsx
+    │   │   │       │   ├── Heatmap.tsx
+    │   │   │       │   └── Heatmap.web.tsx
+    │   │   │       ├── Kanban/
+    │   │   │       │   ├── KanbanBoard.native.tsx
+    │   │   │       │   ├── KanbanBoard.tsx
+    │   │   │       │   └── KanbanBoard.web.tsx
+    │   │   │       └── OrgChart/
+    │   │   │           ├── OrganizationChart.native.tsx
+    │   │   │           ├── OrganizationChart.tsx
+    │   │   │           └── OrganizationChart.web.tsx
+    │   │   ├── package.json
+    │   │   ├── README.md
+    │   │   └── tsconfig.json
+    │   └── │
     ├── public/  # Static assets
     │   ├── animations/  # Lottie/animation files
     │   │   ├── empty-state.json
