@@ -765,6 +765,26 @@ fe/
     │   │   │   │   │       # BE: users-be/analytics
     │   │   │   │   │       # GET /v1/analytics
     │   │   │   │   │       # ❌ CREATE - Analytics overview
+    │   │   │   │   ├── authorized-apps/  # ❌ CREATE ENTIRE SECTION
+    │   │   │   │   │   ├── [appId]/
+    │   │   │   │   │   │   ├── permissions/
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │       # - Granted scopes list
+    │   │   │   │   │   │   │       # - Last used timestamp
+    │   │   │   │   │   │   │       # - Data access description
+    │   │   │   │   │   │   │       # - Revoke access button
+    │   │   │   │   │   │   │       # BE: users-be/oauth_token GET /permissions
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       # - App info (name, icon, description)
+    │   │   │   │   │   │       # - Granted permissions
+    │   │   │   │   │   │       # - Last used date
+    │   │   │   │   │   │       # - Revoke button with confirmation
+    │   │   │   │   │   │       # BE: users-be/oauth_token GET
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │       # - Connected apps list
+    │   │   │   │   │       # - App permissions summary
+    │   │   │   │   │       # - Revoke access actions
+    │   │   │   │   │       # BE: users-be/oauth_token GET
     │   │   │   │   ├── billing/
     │   │   │   │   │   └── subscription/
     │   │   │   │   │       ├── manage.tsx  # Manage subscription (mobile)
@@ -900,6 +920,14 @@ fe/
     │   │   │   │   │       # BE: jobs-be — GET /v1/jobs/my-jobs
     │   │   │   │   │       # BE: proposals-be — GET /v1/proposals/my-proposals
     │   │   │   │   │       # Dashboard home
+    │   │   │   │   ├── data-export/
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │       # - All data types selection
+    │   │   │   │   │       # - Date ranges
+    │   │   │   │   │       # - Export formats (JSON, CSV, PDF)
+    │   │   │   │   │       # - Initiate export
+    │   │   │   │   │       # - Download history
+    │   │   │   │   │       # BE: users-be/privacy POST /export
     │   │   │   │   ├── deliverables/
     │   │   │   │   │   ├── submit/
     │   │   │   │   │   │   └── page.tsx  # Submit deliverable (upload files, notes)
@@ -1324,6 +1352,7 @@ fe/
     │   │   │   │   │       # import { Stack } from 'expo-router'
     │   │   │   │   │       # function ContractErrorFallback({ error, resetErrorBoundary }) { ... }
     │   │   │   │   │       # export default function ContractErrorLayout() { ... }
+    │   │   │   │   │       # ❌ ADD ErrorBoundary
     │   │   │   │   ├── jobs/
     │   │   │   │   │   └── _layout.tsx  # ❌ ADD - Jobs ErrorBoundary wrapper
     │   │   │   │   │       # Wraps job routes with error recovery
@@ -1332,6 +1361,7 @@ fe/
     │   │   │   │   │       # ❌ CREATE - Jobs error boundary wrapper
     │   │   │   │   │       # Similar to contracts error boundary but for jobs domain
     │   │   │   │   │       # Custom messages: "Failed to load job posting", etc.
+    │   │   │   │   │       # ❌ ADD ErrorBoundary
     │   │   │   │   └── proposals/
     │   │   │   │       └── _layout.tsx  # ❌ ADD - Proposals ErrorBoundary wrapper
     │   │   │   │           # Wraps proposal routes with error recovery
@@ -1339,6 +1369,7 @@ fe/
     │   │   │   │           # Provides fallback UI and retry mechanisms
     │   │   │   │           # ❌ CREATE - Proposals error boundary wrapper
     │   │   │   │           # Similar to contracts error boundary but for proposals domain
+    │   │   │   │           # ❌ ADD ErrorBoundary
     │   │   │   ├── (inbox)/
     │   │   │   │   ├── messages/
     │   │   │   │   │   ├── [conversationId]/
@@ -3274,6 +3305,7 @@ fe/
     │   │   │   │   │       # BE: admin-be/analytics
     │   │   │   │   │       # GET /v1/admin/dashboard
     │   │   │   │   ├── analytics/  # ❌ ADD - Analytics section (mobile)
+    │   │   │   │   │   # ❌ CREATE ENTIRE SECTION
     │   │   │   │   │   ├── contracts/
     │   │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   │   └── index.tsx  # Contract analytics detail
@@ -3289,6 +3321,11 @@ fe/
     │   │   │   │   │   │       # BE: contracts-be/analytics
     │   │   │   │   │   │       # GET /v1/contracts/analytics
     │   │   │   │   │   ├── earnings/
+    │   │   │   │   │   │   ├── [periodId]/
+    │   │   │   │   │   │   │   └── index.tsx  # Period earnings breakdown
+    │   │   │   │   │   │   │       # - Detailed earnings by project
+    │   │   │   │   │   │   │       # - Tax withholdings
+    │   │   │   │   │   │   │       # BE: finance-be/earnings
     │   │   │   │   │   │   ├── breakdown/
     │   │   │   │   │   │   │   └── index.tsx  # Earnings breakdown by category
     │   │   │   │   │   │   │       # - By project type
@@ -3309,6 +3346,9 @@ fe/
     │   │   │   │   │   │       # - Top earning projects
     │   │   │   │   │   │       # BE: financial-be/reports
     │   │   │   │   │   │       # GET /v1/reports/earnings
+    │   │   │   │   │   │       # - Total earnings over time
+    │   │   │   │   │   │       # - Monthly/quarterly breakdown
+    │   │   │   │   │   │       # BE: finance-be/earnings
     │   │   │   │   │   ├── jobs/
     │   │   │   │   │   │   ├── [jobId]/
     │   │   │   │   │   │   │   └── index.tsx  # Job analytics detail
@@ -3318,12 +3358,16 @@ fe/
     │   │   │   │   │   │   │       # - Applicant quality metrics
     │   │   │   │   │   │   │       # BE: jobs-be/analytics
     │   │   │   │   │   │   │       # GET /v1/jobs/{job_id}/analytics
+    │   │   │   │   │   │   │       # Job performance analytics
+    │   │   │   │   │   │   │       # - Views, applications, conversion
     │   │   │   │   │   │   └── index.tsx  # Jobs analytics overview
     │   │   │   │   │   │       # - Job performance summary
     │   │   │   │   │   │       # - Average time to fill
     │   │   │   │   │   │       # - Cost per hire
     │   │   │   │   │   │       # BE: jobs-be/analytics
     │   │   │   │   │   │       # GET /v1/jobs/analytics
+    │   │   │   │   │   │       # - Posted jobs performance
+    │   │   │   │   │   │       # - Application quality metrics
     │   │   │   │   │   ├── performance/
     │   │   │   │   │   │   ├── quality-score/
     │   │   │   │   │   │   │   └── index.tsx  # Quality score breakdown
@@ -3345,7 +3389,18 @@ fe/
     │   │   │   │   │   │       # - Rating trends
     │   │   │   │   │   │       # BE: users-be/metrics
     │   │   │   │   │   │       # GET /v1/users/me/performance
+    │   │   │   │   │   ├── profile/
+    │   │   │   │   │   │   └── index.tsx  # Profile analytics
+    │   │   │   │   │   │       # - Profile views over time
+    │   │   │   │   │   │       # - Search appearances
+    │   │   │   │   │   │       # - Engagement metrics
+    │   │   │   │   │   │       # BE: users-be/profile_analytics
     │   │   │   │   │   ├── proposals/
+    │   │   │   │   │   │   ├── [proposalId]/
+    │   │   │   │   │   │   │   └── index.tsx  # Proposal analytics detail
+    │   │   │   │   │   │   │       # - View timestamps
+    │   │   │   │   │   │   │       # - Client engagement
+    │   │   │   │   │   │   │       # BE: proposals-be/analytics
     │   │   │   │   │   │   ├── conversion/
     │   │   │   │   │   │   │   └── index.tsx  # Proposal conversion analytics
     │   │   │   │   │   │   │       # - Acceptance rate
@@ -3366,13 +3421,19 @@ fe/
     │   │   │   │   │   │       # - Average bid amount
     │   │   │   │   │   │       # BE: proposals-be/analytics
     │   │   │   │   │   │       # GET /v1/proposals/analytics
+    │   │   │   │   │   │       # - Win rate
+    │   │   │   │   │   │       # - Average response time
     │   │   │   │   │   ├── _layout.tsx  # Analytics stack navigator
+    │   │   │   │   │   │   # Analytics section layout
     │   │   │   │   │   └── index.tsx  # Analytics dashboard home
     │   │   │   │   │       # - Overview of all analytics
     │   │   │   │   │       # - Key performance indicators
     │   │   │   │   │       # - Quick insights
     │   │   │   │   │       # BE: Multiple services
     │   │   │   │   │       # GET /v1/analytics/dashboard
+    │   │   │   │   │       # Analytics dashboard
+    │   │   │   │   │       # - Quick stats cards
+    │   │   │   │   │       # - Chart visualizations
     │   │   │   │   ├── browse/
     │   │   │   │   │   ├── freelancers/
     │   │   │   │   │   │   ├── [userId].tsx  # Freelancer profile (mobile)
@@ -3963,6 +4024,163 @@ fe/
     │   │   │   │   │   │   └── phone.tsx  # Change phone (mobile)
     │   │   │   │   │   │       # BE: users-be/account
     │   │   │   │   │   │       # PUT /v1/users/me/phone
+    │   │   │   │   │   ├── advanced/
+    │   │   │   │   │   │   ├── api-access/
+    │   │   │   │   │   │   │   ├── create-token/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │       # - Token name input
+    │   │   │   │   │   │   │   │       # - Permissions selection
+    │   │   │   │   │   │   │   │       # - Expiration date
+    │   │   │   │   │   │   │   │       # BE: users-be/api_keys POST
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │       # - Active API keys list
+    │   │   │   │   │   │   │       # - Create new token button
+    │   │   │   │   │   │   │       # BE: users-be/api_keys GET
+    │   │   │   │   │   │   ├── developer/
+    │   │   │   │   │   │   │   ├── api-keys/
+    │   │   │   │   │   │   │   │   ├── [keyId]/
+    │   │   │   │   │   │   │   │   │   ├── logs/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │       # - Request logs (last 100)
+    │   │   │   │   │   │   │   │   │   │       # - Endpoint breakdown
+    │   │   │   │   │   │   │   │   │   │       # - Error rates
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/api_key GET /logs
+    │   │   │   │   │   │   │   │   │   ├── permissions/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │       # - Granted scopes list
+    │   │   │   │   │   │   │   │   │   │       # - Edit permissions
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/api_key GET/PUT /permissions
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │       # - Key info (name, created)
+    │   │   │   │   │   │   │   │   │       # - Key value (show/hide, copy)
+    │   │   │   │   │   │   │   │   │       # - Usage statistics
+    │   │   │   │   │   │   │   │   │       # - Revoke/regenerate buttons
+    │   │   │   │   │   │   │   │   │       # BE: users-be/api_key GET
+    │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │       # - Key name input
+    │   │   │   │   │   │   │   │   │       # - Permissions/scopes
+    │   │   │   │   │   │   │   │   │       # - Expiration date
+    │   │   │   │   │   │   │   │   │       # BE: users-be/api_key POST
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │       # - All API keys list
+    │   │   │   │   │   │   │   │       # - Key status indicators
+    │   │   │   │   │   │   │   │       # - Last used timestamps
+    │   │   │   │   │   │   │   │       # - Create new button (FAB)
+    │   │   │   │   │   │   │   │       # BE: users-be/api_key GET
+    │   │   │   │   │   │   │   ├── oauth-apps/
+    │   │   │   │   │   │   │   │   ├── [appId]/
+    │   │   │   │   │   │   │   │   │   ├── authorizations/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │       # - Users who authorized
+    │   │   │   │   │   │   │   │   │   │       # - Authorization scopes
+    │   │   │   │   │   │   │   │   │   │       # - Last used dates
+    │   │   │   │   │   │   │   │   │   │       # - Revoke buttons
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app GET /authorizations
+    │   │   │   │   │   │   │   │   │   ├── credentials/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │       # - Client ID (copy button)
+    │   │   │   │   │   │   │   │   │   │       # - Client secret (show/copy)
+    │   │   │   │   │   │   │   │   │   │       # - Regenerate secret button
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app GET/POST /credentials
+    │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │       # - Edit app details
+    │   │   │   │   │   │   │   │   │   │       # - Update redirect URIs
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app PUT
+    │   │   │   │   │   │   │   │   │   ├── logs/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │       # - Auth events
+    │   │   │   │   │   │   │   │   │   │       # - Token refresh
+    │   │   │   │   │   │   │   │   │   │       # - API calls
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app GET /logs
+    │   │   │   │   │   │   │   │   │   ├── scopes/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │       # - Available scopes list
+    │   │   │   │   │   │   │   │   │   │       # - Selected scopes (checkboxes)
+    │   │   │   │   │   │   │   │   │   │       # - Scope descriptions
+    │   │   │   │   │   │   │   │   │   │       # - Save button
+    │   │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app GET/PUT /scopes
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │       # - App info
+    │   │   │   │   │   │   │   │   │       # - Redirect URIs
+    │   │   │   │   │   │   │   │   │       # - Usage stats
+    │   │   │   │   │   │   │   │   │       # - Edit/delete buttons
+    │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app GET
+    │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │       # - App name input
+    │   │   │   │   │   │   │   │   │       # - Description
+    │   │   │   │   │   │   │   │   │       # - Redirect URIs (add multiple)
+    │   │   │   │   │   │   │   │   │       # - Scopes selection
+    │   │   │   │   │   │   │   │   │       # - Create button
+    │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app POST
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │       # - All OAuth apps
+    │   │   │   │   │   │   │   │       # - App status
+    │   │   │   │   │   │   │   │       # - Usage metrics
+    │   │   │   │   │   │   │   │       # - Create new button
+    │   │   │   │   │   │   │   │       # BE: users-be/oauth_app GET
+    │   │   │   │   │   │   │   ├── sandbox/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │       # - Endpoint selector
+    │   │   │   │   │   │   │   │       # - Method selector (GET/POST/PUT/DELETE)
+    │   │   │   │   │   │   │   │       # - Headers editor
+    │   │   │   │   │   │   │   │       # - Body editor (JSON)
+    │   │   │   │   │   │   │   │       # - Send request button
+    │   │   │   │   │   │   │   │       # - Response viewer
+    │   │   │   │   │   │   │   │       # - Save as collection
+    │   │   │   │   │   │   │   │       # BE: Multiple endpoints (testing)
+    │   │   │   │   │   │   │   ├── usage/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │       # - Total requests today/week/month
+    │   │   │   │   │   │   │   │       # - Request breakdown by endpoint
+    │   │   │   │   │   │   │   │       # - Error rate charts
+    │   │   │   │   │   │   │   │       # - Rate limit status
+    │   │   │   │   │   │   │   │       # - Export usage data
+    │   │   │   │   │   │   │   │       # BE: users-be/api_usage GET
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │       # - Developer tools home
+    │   │   │   │   │   │   │       # - Quick links to API/OAuth
+    │   │   │   │   │   │   │       # BE: None (navigation)
+    │   │   │   │   │   │   └── webhooks/
+    │   │   │   │   │   │       ├── [webhookId]/
+    │   │   │   │   │   │       │   ├── deliveries/
+    │   │   │   │   │   │       │   │   ├── [deliveryId]/
+    │   │   │   │   │   │       │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │   │   │       # - Request/response details
+    │   │   │   │   │   │       │   │   │       # - Status and timing
+    │   │   │   │   │   │       │   │   │       # - Retry button
+    │   │   │   │   │   │       │   │   │       # BE: users-be/webhook GET /delivery
+    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │   │       # - Delivery history
+    │   │   │   │   │   │       │   │       # - Success/failure stats
+    │   │   │   │   │   │       │   │       # BE: users-be/webhook GET /deliveries
+    │   │   │   │   │   │       │   ├── edit/
+    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │   │       # - Edit webhook URL
+    │   │   │   │   │   │       │   │       # - Edit events
+    │   │   │   │   │   │       │   │       # BE: users-be/webhook PUT
+    │   │   │   │   │   │       │   ├── logs/
+    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │   │       # - Recent deliveries
+    │   │   │   │   │   │       │   │       # - Filter by status
+    │   │   │   │   │   │       │   │       # BE: users-be/webhook GET /logs
+    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │       # - Webhook details
+    │   │   │   │   │   │       │       # - Status (active/inactive)
+    │   │   │   │   │   │       │       # BE: users-be/webhook GET
+    │   │   │   │   │   │       ├── create/
+    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │       # - URL input
+    │   │   │   │   │   │       │       # - Event selection
+    │   │   │   │   │   │       │       # - Secret key generation
+    │   │   │   │   │   │       │       # BE: users-be/webhook POST
+    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │           # - All webhooks list
+    │   │   │   │   │   │           # - Status indicators
+    │   │   │   │   │   │           # - Create new button
+    │   │   │   │   │   │           # BE: users-be/webhook GET
     │   │   │   │   │   ├── api/  # ❌ ADD - API settings
     │   │   │   │   │   │   ├── documentation/
     │   │   │   │   │   │   │   └── index.tsx  # API documentation
@@ -5962,6 +6180,49 @@ fe/
     │   │   │   │   │                   # PUT /v1/admin/settlement/rules
     │   │   │   │   ├── (auth)/
     │   │   │   │   ├── (dashboard)/
+    │   │   │   │   │   ├── (routes)/
+    │   │   │   │   │   │   ├── analytics/  # ❌ VERIFY - Ensure complete section
+    │   │   │   │   │   │   │   ├── contracts/
+    │   │   │   │   │   │   │   │   ├── [contractId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   ├── earnings/
+    │   │   │   │   │   │   │   │   ├── [periodId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   ├── jobs/
+    │   │   │   │   │   │   │   │   ├── [jobId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   ├── profile/
+    │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   ├── proposals/
+    │   │   │   │   │   │   │   │   ├── [proposalId]/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
+    │   │   │   │   │   │   │   └── page.tsx  # Analytics dashboard
+    │   │   │   │   │   │   └── settings/
+    │   │   │   │   │   │       └── (routes)/
+    │   │   │   │   │   │           └── advanced/
+    │   │   │   │   │   │               └── developer/
+    │   │   │   │   │   │                   ├── oauth-apps/
+    │   │   │   │   │   │                   │   └── [appId]/
+    │   │   │   │   │   │                   │       ├── authorizations/
+    │   │   │   │   │   │                   │       │   └── page.tsx  # ⚠️ VERIFY
+    │   │   │   │   │   │                   │       ├── credentials/
+    │   │   │   │   │   │                   │       │   └── page.tsx  # ⚠️ VERIFY
+    │   │   │   │   │   │                   │       ├── edit/
+    │   │   │   │   │   │                   │       │   └── page.tsx  # ⚠️ VERIFY
+    │   │   │   │   │   │                   │       ├── logs/
+    │   │   │   │   │   │                   │       │   └── page.tsx  # ⚠️ VERIFY
+    │   │   │   │   │   │                   │       └── scopes/
+    │   │   │   │   │   │                   │           └── page.tsx  # ⚠️ VERIFY
+    │   │   │   │   │   │                   └── webhooks/
+    │   │   │   │   │   │                       └── [webhookId]/
+    │   │   │   │   │   │                           └── deliveries/
+    │   │   │   │   │   │                               ├── [deliveryId]/
+    │   │   │   │   │   │                               │   └── page.tsx  # ⚠️ VERIFY
+    │   │   │   │   │   │                               └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   ├── [userId]/
     │   │   │   │   │   │   └── settings/
     │   │   │   │   │   │       └── developer/
@@ -16008,6 +16269,10 @@ fe/
     │   │   │   # Implementation: Document decision, show friendly message on mobile
     │   │   │   # Rationale: security/UX; Consequence: no mobile admin
     │   │   │   # Alternatives: read-only/limited/full mobile (rejected)
+    │   │   │   # Context: Admin features complex, data-heavy, require large screens
+    │   │   │   # Decision: Admin portal web-only (desktop/tablet)
+    │   │   │   # Consequences: +Security/UX/smaller app; −No mobile admin
+    │   │   │   # Alternatives: Read-only/limited/full mobile (rejected)
     │   │   ├── 006-public-pages-mobile-strategy.md  # ❌ CREATE
     │   │   │   # Title: Public/Marketing Pages Mobile Strategy
     │   │   │   # Status: Accepted
@@ -16029,6 +16294,9 @@ fe/
     │   │   │   # - Deep links for all public routes
     │   │   │   # - Cache static content for offline viewing
     │   │   │   # Native public pages in mobile; deep links; shared APIs; offline cache
+    │   │   │   # Decision: Implement public pages natively
+    │   │   │   # Consequences: +UX/engagement/branding; −Bundle size
+    │   │   │   # Implementation: Native screens with deep links
     │   │   ├── 007-component-platform-variants.md  # ❌ CREATE
     │   │   │   # Title: Component Platform Variants Architecture
     │   │   │   # Status: Accepted
@@ -16053,6 +16321,9 @@ fe/
     │   │   │   # - Native variant: React Native primitives
     │   │   │   # - Web variant: HTML/DOM elements
     │   │   │   # Use .tsx base + .native.tsx + .web.tsx architecture across UI
+    │   │   │   # Pattern: .tsx + .native.tsx + .web.tsx
+    │   │   │   # Pros: Code reuse, platform optimizations, type safety
+    │   │   │   # Guidelines: When to variant, naming conventions
     │   │   ├── 008-hooks-domain-organization.md  # ❌ CREATE
     │   │   │   # Title: Hooks Domain Organization
     │   │   │   # Status: Accepted
@@ -16252,6 +16523,11 @@ fe/
     │   │   │   # - SEO considerations for web
     │   │   │   # - Mobile-specific navigation patterns
     │   │   │   # Next.js App Router vs Expo Router; parity; deep links; SEO; nav state
+    │   │   │   # - Next.js App Router conventions
+    │   │   │   # - Expo Router conventions
+    │   │   │   # - Maintaining route parity
+    │   │   │   # - Deep linking setup
+    │   │   │   # - SEO considerations
     │   │   ├── deployment.md
     │   │   ├── development-workflow.md
     │   │   ├── development.md
@@ -19848,6 +20124,10 @@ fe/
     │   │   │   │   │   │   │   │   # - Accessibility: role, aria-expanded
     │   │   │   │   │   │   │   │   # RN accordion: reanimated expand/collapse
     │   │   │   │   │   │   │   │   # Nested sections; a11y; haptics; icon rotate
+    │   │   │   │   │   │   │   │   # ❌ ADD
+    │   │   │   │   │   │   │   │   # - React Native collapsible accordion
+    │   │   │   │   │   │   │   │   # - Uses react-native-reanimated
+    │   │   │   │   │   │   │   │   # - Smooth animations
     │   │   │   │   │   │   │   ├── Accordion.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Accordion.types.ts  # ✅ EXISTS - Shared types
@@ -19897,6 +20177,9 @@ fe/
     │   │   │   │   │   │   │   │   # - Back button integration
     │   │   │   │   │   │   │   │   # Props: items[], maxVisible, separator, onNavigate
     │   │   │   │   │   │   │   │   # Horizontal scroll; auto-collapse; tap targets; a11y
+    │   │   │   │   │   │   │   │   # ❌ ADD
+    │   │   │   │   │   │   │   │   # - Mobile breadcrumb navigation
+    │   │   │   │   │   │   │   │   # - Touch-optimized
     │   │   │   │   │   │   │   ├── Breadcrumb.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Breadcrumb.types.ts  # ✅ EXISTS - Shared types
@@ -19954,6 +20237,9 @@ fe/
     │   │   │   │   │   │   │   │   # - Accessibility support (role, aria-modal)
     │   │   │   │   │   │   │   │   # Props: snapPoints[], onDismiss, backdrop, children
     │   │   │   │   │   │   │   │   # BottomSheet drawer; gestures; snap points; keyboard aware
+    │   │   │   │   │   │   │   │   # ❌ ADD
+    │   │   │   │   │   │   │   │   # - Mobile drawer (BottomSheet)
+    │   │   │   │   │   │   │   │   # - Gesture controls
     │   │   │   │   │   │   │   ├── Drawer.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Drawer.types.ts  # ✅ EXISTS - Shared types
