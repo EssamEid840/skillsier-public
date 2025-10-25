@@ -149,6 +149,7 @@ fe/
     │   │   │   │   # NOTE: Decision required - should admin features be available on mobile?
     │   │   │   │   # RECOMMENDATION: Keep admin portal web-only for security and UX reasons
     │   │   │   │   # Document this decision in ADR (Architecture Decision Record)
+    │   │   │   │   # ❌ CREATE ENTIRE SECTION - Read-only admin views for mobile
     │   │   │   │   ├── analytics/
     │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   └── page.tsx  # Billing analytics  # BE: admin-be/analytics
@@ -162,9 +163,28 @@ fe/
     │   │   │   │   │   ├── reports/
     │   │   │   │   │   │   └── page.tsx  # Custom reports  # BE: admin-be/reports
     │   │   │   │   │   │       # Custom reports
-    │   │   │   │   │   └── users/
-    │   │   │   │   │       └── page.tsx  # User analytics  # BE: admin-be/reports/users
-    │   │   │   │   │           # User analytics
+    │   │   │   │   │   ├── users/
+    │   │   │   │   │   │   └── page.tsx  # User analytics  # BE: admin-be/reports/users
+    │   │   │   │   │   │       # User analytics
+    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Analytics overview (mobile)
+    │   │   │   │   │   │   # - Key metrics cards
+    │   │   │   │   │   │   # - Mini charts
+    │   │   │   │   │   │   # - Quick filters (date range)
+    │   │   │   │   │   │   # - Link to detailed views
+    │   │   │   │   │   │   # BE: admin-be/analytics
+    │   │   │   │   │   │   # GET /v1/admin/analytics/overview
+    │   │   │   │   │   ├── performance.tsx  # ❌ CREATE - Performance metrics (mobile)
+    │   │   │   │   │   │   # - API response times chart
+    │   │   │   │   │   │   # - Error rates
+    │   │   │   │   │   │   # - Real-time status indicators
+    │   │   │   │   │   │   # BE: admin-be/analytics
+    │   │   │   │   │   │   # GET /v1/admin/analytics/performance
+    │   │   │   │   │   └── revenue.tsx  # ❌ CREATE - Revenue dashboard (mobile)
+    │   │   │   │   │       # - Revenue trends chart
+    │   │   │   │   │       # - Category breakdown (pie chart)
+    │   │   │   │   │       # - Top revenue sources
+    │   │   │   │   │       # BE: admin-be/analytics
+    │   │   │   │   │       # GET /v1/admin/analytics/revenue
     │   │   │   │   ├── audit-logs/
     │   │   │   │   │   ├── [logId]/
     │   │   │   │   │   │   └── page.tsx  # Detailed audit log  # BE: admin-be/audit
@@ -238,8 +258,21 @@ fe/
     │   │   │   │   │   │   └── page.tsx  # Content moderation
     │   │   │   │   │   ├── profiles/
     │   │   │   │   │   │   └── page.tsx  # Profile reviews
-    │   │   │   │   │   └── reports/
-    │   │   │   │   │       └── page.tsx  # User reports
+    │   │   │   │   │   ├── queue/
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Moderation queue (mobile)
+    │   │   │   │   │   │       # - Pending items list
+    │   │   │   │   │   │       # - Quick review actions
+    │   │   │   │   │   │       # - Filter by type/priority
+    │   │   │   │   │   │       # BE: admin-be/moderation
+    │   │   │   │   │   │       # GET /v1/admin/moderation/queue
+    │   │   │   │   │   ├── reports/
+    │   │   │   │   │   │   └── page.tsx  # User reports
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Moderation overview (mobile)
+    │   │   │   │   │       # - Queue counts
+    │   │   │   │   │       # - Recent actions
+    │   │   │   │   │       # - Quick access to queues
+    │   │   │   │   │       # BE: admin-be/moderation
+    │   │   │   │   │       # GET /v1/admin/moderation
     │   │   │   │   ├── organizations/
     │   │   │   │   │   ├── [orgId]/
     │   │   │   │   │   │   └── page.tsx  # Org detail management
@@ -258,8 +291,28 @@ fe/
     │   │   │   │   │   │   └── page.tsx  # Support analytics
     │   │   │   │   │   ├── escalations/
     │   │   │   │   │   │   └── page.tsx  # Escalated tickets
-    │   │   │   │   │   └── knowledge-base/
-    │   │   │   │   │       └── page.tsx  # Admin KB
+    │   │   │   │   │   ├── knowledge-base/
+    │   │   │   │   │   │   └── page.tsx  # Admin KB
+    │   │   │   │   │   ├── tickets/
+    │   │   │   │   │   │   ├── [ticketId]/
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Admin ticket detail (mobile)
+    │   │   │   │   │   │   │       # - Ticket details (read-only or quick reply)
+    │   │   │   │   │   │   │       # - Conversation history
+    │   │   │   │   │   │   │       # - Assign/escalate actions
+    │   │   │   │   │   │   │       # BE: admin-be/support_ticket
+    │   │   │   │   │   │   │       # GET /v1/admin/support/tickets/{ticket_id}
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Admin tickets list (mobile)
+    │   │   │   │   │   │       # - All tickets (not just mine)
+    │   │   │   │   │   │       # - Filter by status/priority/agent
+    │   │   │   │   │   │       # - Quick actions
+    │   │   │   │   │   │       # BE: admin-be/support_ticket
+    │   │   │   │   │   │       # GET /v1/admin/support/tickets
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Support admin overview (mobile)
+    │   │   │   │   │       # - Ticket queue summary
+    │   │   │   │   │       # - Agent status
+    │   │   │   │   │       # - Performance metrics
+    │   │   │   │   │       # BE: admin-be/support_ticket
+    │   │   │   │   │       # GET /v1/admin/support
     │   │   │   │   ├── system/
     │   │   │   │   │   ├── announcements/
     │   │   │   │   │   │   └── page.tsx  # System announcements  # BE: communications-be/announcements
@@ -280,6 +333,12 @@ fe/
     │   │   │   │   │   ├── [userId]/
     │   │   │   │   │   │   ├── actions/
     │   │   │   │   │   │   │   └── page.tsx  # Admin user actions      # BE: admin-be/users
+    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Admin user detail (mobile)
+    │   │   │   │   │   │   │   # - User profile (read-only)
+    │   │   │   │   │   │   │   # - Verification status
+    │   │   │   │   │   │   │   # - Quick actions (suspend, verify)
+    │   │   │   │   │   │   │   # BE: users-be/user
+    │   │   │   │   │   │   │   # GET /v1/admin/users/{user_id}
     │   │   │   │   │   │   └── page.tsx  # Admin user detail       # BE: users-be/profile
     │   │   │   │   │   │       # User detail (admin)
     │   │   │   │   │   ├── banned/
@@ -294,8 +353,25 @@ fe/
     │   │   │   │   │   │   └── page.tsx  # User data exports
     │   │   │   │   │   ├── roles/
     │   │   │   │   │   │   └── page.tsx  # Role management
-    │   │   │   │   │   └── search/
-    │   │   │   │   │       └── page.tsx  # Advanced user search
+    │   │   │   │   │   ├── search/
+    │   │   │   │   │   │   └── page.tsx  # Advanced user search
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Admin users list (mobile)
+    │   │   │   │   │       # - Search users
+    │   │   │   │   │       # - Filter by status/type
+    │   │   │   │   │       # - Quick actions
+    │   │   │   │   │       # BE: users-be/user
+    │   │   │   │   │       # GET /v1/admin/users
+    │   │   │   │   ├── _layout.tsx  # ❌ CREATE - Admin layout (mobile)
+    │   │   │   │   │   # - Admin tab navigation
+    │   │   │   │   │   # - Auth guard (admin role required)
+    │   │   │   │   │   # - Header with admin indicator
+    │   │   │   │   ├── index.tsx  # ❌ CREATE - Admin home (mobile)
+    │   │   │   │   │   # - Admin dashboard overview
+    │   │   │   │   │   # - Key metrics cards
+    │   │   │   │   │   # - Quick action buttons
+    │   │   │   │   │   # - Recent activity feed
+    │   │   │   │   │   # BE: admin-be
+    │   │   │   │   │   # GET /v1/admin/dashboard
     │   │   │   │   └── README.md  # Placeholder for future admin screens on mobile
     │   │   │   ├── (auth)/  # Auth screens
     │   │   │   │   ├── kyc/  # ❌ ADD COMPLETE KYC FLOW
@@ -382,6 +458,27 @@ fe/
     │   │   │   │   │       # BE: communications-be/notification, utility/activity
     │   │   │   │   │       # GET /v1/activity/feed
     │   │   │   │   │       # BE: communications-be/notification
+    │   │   │   │   ├── analytics/  # ❌ CREATE ENTIRE SECTION - User analytics on mobile
+    │   │   │   │   │   ├── earnings/
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Earnings analytics (mobile)
+    │   │   │   │   │   │       # - Earnings chart (weekly/monthly)
+    │   │   │   │   │   │       # - Income sources breakdown
+    │   │   │   │   │   │       # - Pending payments
+    │   │   │   │   │   │       # BE: financial-be/wallet
+    │   │   │   │   │   │       # GET /v1/analytics/earnings
+    │   │   │   │   │   ├── performance/
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Performance metrics (mobile)
+    │   │   │   │   │   │       # - Job success rate
+    │   │   │   │   │   │       # - Response time average
+    │   │   │   │   │   │       # - Client satisfaction
+    │   │   │   │   │   │       # BE: users-be/analytics
+    │   │   │   │   │   │       # GET /v1/analytics/performance
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Analytics overview (mobile)
+    │   │   │   │   │       # - Key metrics cards
+    │   │   │   │   │       # - Quick insights
+    │   │   │   │   │       # - Links to detailed analytics
+    │   │   │   │   │       # BE: users-be/analytics
+    │   │   │   │   │       # GET /v1/analytics
     │   │   │   │   ├── billing/
     │   │   │   │   │   └── subscription/
     │   │   │   │   │       ├── manage.tsx  # Manage subscription (mobile)
@@ -390,6 +487,34 @@ fe/
     │   │   │   │   │       └── plans.tsx  # Subscription plans (mobile)
     │   │   │   │   │           # BE: financial-be/subscription — GET /v1/subscriptions/plans
     │   │   │   │   │           # Subscription plans
+    │   │   │   │   ├── budgets/  # ❌ CREATE ENTIRE SECTION - Budget tracking on mobile
+    │   │   │   │   │   ├── [budgetId]/
+    │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit budget (mobile)
+    │   │   │   │   │   │   │       # - Budget amount input
+    │   │   │   │   │   │   │       # - Time period picker
+    │   │   │   │   │   │   │       # - Alert threshold slider
+    │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │       # PUT /v1/budgets/{budget_id}
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Budget detail (mobile)
+    │   │   │   │   │   │       # - Budget progress (circular chart)
+    │   │   │   │   │   │       # - Spending breakdown
+    │   │   │   │   │   │       # - Recent transactions
+    │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │       # GET /v1/budgets/{budget_id}
+    │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create budget (mobile)
+    │   │   │   │   │   │       # - Budget name input
+    │   │   │   │   │   │       # - Amount and period
+    │   │   │   │   │   │       # - Category selection
+    │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │       # POST /v1/budgets
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Budgets list (mobile)
+    │   │   │   │   │       # - Active budgets cards
+    │   │   │   │   │       # - Quick status indicators
+    │   │   │   │   │       # - Create budget button
+    │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │       # GET /v1/budgets
     │   │   │   │   ├── contracts/
     │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   └── work-diary/
@@ -397,6 +522,86 @@ fe/
     │   │   │   │   │   │           └── [entryId].tsx  # Screenshot detail (mobile)
     │   │   │   │   │   │               # BE: contracts-be/work_diary — GET /v1/work-diary/entries/{id}
     │   │   │   │   │   │               # Screenshot detail
+    │   │   │   │   │   ├── [id]/
+    │   │   │   │   │   │   ├── amendments/
+    │   │   │   │   │   │   │   ├── [amendmentId]/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Amendment detail (mobile)
+    │   │   │   │   │   │   │   │       # - Amendment details
+    │   │   │   │   │   │   │   │       # - Original vs new terms comparison
+    │   │   │   │   │   │   │   │       # - Approve/reject actions
+    │   │   │   │   │   │   │   │       # BE: contracts-be/contract_amendment
+    │   │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/amendments/{amendment_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create amendment (mobile)
+    │   │   │   │   │   │   │   │       # - Amendment type selection
+    │   │   │   │   │   │   │   │       # - Terms modification
+    │   │   │   │   │   │   │   │       # - Reason input
+    │   │   │   │   │   │   │   │       # BE: contracts-be/contract_amendment
+    │   │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/amendments
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Amendments list (mobile)
+    │   │   │   │   │   │   │       # - Contract amendments history
+    │   │   │   │   │   │   │       # - Status indicators
+    │   │   │   │   │   │   │       # - Create amendment button
+    │   │   │   │   │   │   │       # BE: contracts-be/contract_amendment
+    │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/amendments
+    │   │   │   │   │   │   ├── disputes/
+    │   │   │   │   │   │   │   ├── [disputeId]/
+    │   │   │   │   │   │   │   │   ├── evidence/
+    │   │   │   │   │   │   │   │   │   ├── upload/
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Upload evidence (mobile)
+    │   │   │   │   │   │   │   │   │   │       # - File picker (camera/gallery/files)
+    │   │   │   │   │   │   │   │   │   │       # - Evidence description input
+    │   │   │   │   │   │   │   │   │   │       # - Upload progress
+    │   │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute_evidence
+    │   │   │   │   │   │   │   │   │   │       # POST /v1/disputes/{dispute_id}/evidence
+    │   │   │   │   │   │   │   │   │   │       # BE: storage-be/asset (upload)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Evidence list (mobile)
+    │   │   │   │   │   │   │   │   │       # - All evidence items
+    │   │   │   │   │   │   │   │   │       # - View attachments
+    │   │   │   │   │   │   │   │   │       # - Upload new evidence button
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute_evidence
+    │   │   │   │   │   │   │   │   │       # GET /v1/disputes/{dispute_id}/evidence
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Dispute detail (mobile)
+    │   │   │   │   │   │   │   │       # - Dispute details
+    │   │   │   │   │   │   │   │       # - Timeline of events
+    │   │   │   │   │   │   │   │       # - Evidence access
+    │   │   │   │   │   │   │   │       # - Respond/update actions
+    │   │   │   │   │   │   │   │       # BE: contracts-be/contract_dispute
+    │   │   │   │   │   │   │   │       # GET /v1/disputes/{dispute_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Open dispute (mobile)
+    │   │   │   │   │   │   │   │       # - Dispute reason selection
+    │   │   │   │   │   │   │   │       # - Description input
+    │   │   │   │   │   │   │   │       # - Initial evidence upload
+    │   │   │   │   │   │   │   │       # BE: contracts-be/contract_dispute
+    │   │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/disputes
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Disputes list (mobile)
+    │   │   │   │   │   │   │       # - Contract disputes
+    │   │   │   │   │   │   │       # - Status indicators
+    │   │   │   │   │   │   │       # - Open new dispute button
+    │   │   │   │   │   │   │       # BE: contracts-be/contract_dispute
+    │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/disputes
+    │   │   │   │   │   │   └── versions/
+    │   │   │   │   │   │       ├── [versionId]/
+    │   │   │   │   │   │       │   ├── compare/
+    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Compare contract versions (mobile)
+    │   │   │   │   │   │       │   │       # - Side-by-side comparison (scrollable)
+    │   │   │   │   │   │       │   │       # - Highlighted changes
+    │   │   │   │   │   │       │   │       # - Version metadata
+    │   │   │   │   │   │       │   │       # BE: contracts-be/contract_version
+    │   │   │   │   │   │       │   │       # GET /v1/contracts/{contract_id}/versions/{version_id}/compare
+    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Contract version detail (mobile)
+    │   │   │   │   │   │       │       # - Version content (read-only)
+    │   │   │   │   │   │       │       # - Version info (date, author)
+    │   │   │   │   │   │       │       # - Compare with current button
+    │   │   │   │   │   │       │       # BE: contracts-be/contract_version
+    │   │   │   │   │   │       │       # GET /v1/contracts/{contract_id}/versions/{version_id}
+    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - Contract versions list (mobile)
+    │   │   │   │   │   │           # - Version timeline
+    │   │   │   │   │   │           # - Changes summary
+    │   │   │   │   │   │           # - Compare versions button
+    │   │   │   │   │   │           # BE: contracts-be/contract_version
+    │   │   │   │   │   │           # GET /v1/contracts/{contract_id}/versions
     │   │   │   │   │   └── page.tsx  # Contracts list
     │   │   │   │   │       # - Active & completed, filters, sort
     │   │   │   │   │       # BE: contracts-be/contract — GET /v1/contracts?status=active
@@ -423,6 +628,106 @@ fe/
     │   │   │   │   │   └── index.tsx  # Mobile feed (same BE as web)
     │   │   │   │   │       # BE: search-be/feed — GET /v1/search/feed
     │   │   │   │   │       # Mobile feed
+    │   │   │   │   ├── jobs/
+    │   │   │   │   │   ├── archived/
+    │   │   │   │   │   │   ├── [jobId]/
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Archived job detail (mobile)
+    │   │   │   │   │   │   │       # - Job details (read-only)
+    │   │   │   │   │   │   │       # - Archived reason/date
+    │   │   │   │   │   │   │       # - Restore button
+    │   │   │   │   │   │   │       # BE: jobs-be/job
+    │   │   │   │   │   │   │       # GET /v1/jobs/{job_id}
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Archived jobs list (mobile)
+    │   │   │   │   │   │       # - All archived jobs
+    │   │   │   │   │   │       # - Filter by date archived
+    │   │   │   │   │   │       # - Restore/delete actions
+    │   │   │   │   │   │       # BE: jobs-be/job
+    │   │   │   │   │   │       # GET /v1/jobs?status=archived
+    │   │   │   │   │   └── drafts/
+    │   │   │   │   │       ├── [draftId]/
+    │   │   │   │   │       │   ├── edit/
+    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Edit draft job (mobile)
+    │   │   │   │   │       │   │       # - Job form (all fields editable)
+    │   │   │   │   │       │   │       # - Save draft button
+    │   │   │   │   │       │   │       # - Publish button
+    │   │   │   │   │       │   │       # BE: jobs-be/job
+    │   │   │   │   │       │   │       # PUT /v1/jobs/{job_id}
+    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Draft job detail (mobile)
+    │   │   │   │   │       │       # - Draft preview
+    │   │   │   │   │       │       # - Edit button
+    │   │   │   │   │       │       # - Publish button
+    │   │   │   │   │       │       # - Delete draft
+    │   │   │   │   │       │       # BE: jobs-be/job
+    │   │   │   │   │       │       # GET /v1/jobs/{job_id}
+    │   │   │   │   │       └── index.tsx  # ❌ CREATE - Draft jobs list (mobile)
+    │   │   │   │   │           # - All draft jobs
+    │   │   │   │   │           # - Last edited date
+    │   │   │   │   │           # - Quick publish action
+    │   │   │   │   │           # - Create new button
+    │   │   │   │   │           # BE: jobs-be/job
+    │   │   │   │   │           # GET /v1/jobs?status=draft
+    │   │   │   │   ├── proposals/
+    │   │   │   │   │   ├── drafts/
+    │   │   │   │   │   │   ├── [draftId]/
+    │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit draft proposal (mobile)
+    │   │   │   │   │   │   │   │       # - Proposal form (all fields)
+    │   │   │   │   │   │   │   │       # - Save draft button
+    │   │   │   │   │   │   │   │       # - Submit button
+    │   │   │   │   │   │   │   │       # BE: proposals-be/proposal
+    │   │   │   │   │   │   │   │       # PUT /v1/proposals/{proposal_id}
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Draft proposal detail (mobile)
+    │   │   │   │   │   │   │       # - Draft preview
+    │   │   │   │   │   │   │       # - Edit button
+    │   │   │   │   │   │   │       # - Submit button
+    │   │   │   │   │   │   │       # - Delete draft
+    │   │   │   │   │   │   │       # BE: proposals-be/proposal
+    │   │   │   │   │   │   │       # GET /v1/proposals/{proposal_id}
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Draft proposals list (mobile)
+    │   │   │   │   │   │       # - All draft proposals
+    │   │   │   │   │   │       # - Job associated with each
+    │   │   │   │   │   │       # - Quick submit action
+    │   │   │   │   │   │       # BE: proposals-be/proposal
+    │   │   │   │   │   │       # GET /v1/proposals?status=draft
+    │   │   │   │   │   └── templates/
+    │   │   │   │   │       ├── [templateId]/
+    │   │   │   │   │       │   ├── edit/
+    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Edit proposal template (mobile)
+    │   │   │   │   │       │   │       # - Template name
+    │   │   │   │   │       │   │       # - Template content
+    │   │   │   │   │       │   │       # - Default values
+    │   │   │   │   │       │   │       # - Save button
+    │   │   │   │   │       │   │       # BE: proposals-be/proposal_template
+    │   │   │   │   │       │   │       # PUT /v1/proposal-templates/{template_id}
+    │   │   │   │   │       │   ├── use/
+    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Use template (mobile)
+    │   │   │   │   │       │   │       # - Template preview
+    │   │   │   │   │       │   │       # - Job selection
+    │   │   │   │   │       │   │       # - Customize values
+    │   │   │   │   │       │   │       # - Create proposal button
+    │   │   │   │   │       │   │       # BE: proposals-be/proposal
+    │   │   │   │   │       │   │       # POST /v1/proposals (with template_id)
+    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Proposal template detail (mobile)
+    │   │   │   │   │       │       # - Template preview
+    │   │   │   │   │       │       # - Edit button
+    │   │   │   │   │       │       # - Use template button
+    │   │   │   │   │       │       # - Delete template
+    │   │   │   │   │       │       # BE: proposals-be/proposal_template
+    │   │   │   │   │       │       # GET /v1/proposal-templates/{template_id}
+    │   │   │   │   │       ├── create/
+    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Create proposal template (mobile)
+    │   │   │   │   │       │       # - Template name input
+    │   │   │   │   │       │       # - Template content editor
+    │   │   │   │   │       │       # - Default values form
+    │   │   │   │   │       │       # - Save button
+    │   │   │   │   │       │       # BE: proposals-be/proposal_template
+    │   │   │   │   │       │       # POST /v1/proposal-templates
+    │   │   │   │   │       └── index.tsx  # ❌ CREATE - Proposal templates list (mobile)
+    │   │   │   │   │           # - All templates
+    │   │   │   │   │           # - Use/edit/delete actions
+    │   │   │   │   │           # - Create template button
+    │   │   │   │   │           # BE: proposals-be/proposal_template
+    │   │   │   │   │           # GET /v1/proposal-templates
     │   │   │   │   ├── quick-actions/
     │   │   │   │   │   └── index.tsx  # Quick actions screen
     │   │   │   │   │       # - Quick message
@@ -430,6 +735,263 @@ fe/
     │   │   │   │   │       # - Quick time entry
     │   │   │   │   │       # - Quick invoice
     │   │   │   │   │       # BE: Multiple services
+    │   │   │   │   ├── settings/
+    │   │   │   │   │   ├── authorized-apps/
+    │   │   │   │   │   │   ├── [appId]/
+    │   │   │   │   │   │   │   ├── permissions/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - App permissions detail (mobile)
+    │   │   │   │   │   │   │   │       # - Granted scopes list
+    │   │   │   │   │   │   │   │       # - Last used timestamp
+    │   │   │   │   │   │   │   │       # - Revoke access button
+    │   │   │   │   │   │   │   │       # BE: users-be/oauth_token
+    │   │   │   │   │   │   │   │       # GET /v1/settings/authorized-apps/{app_id}/permissions
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Authorized app detail (mobile)
+    │   │   │   │   │   │   │       # - App info
+    │   │   │   │   │   │   │       # - Granted permissions
+    │   │   │   │   │   │   │       # - Last used
+    │   │   │   │   │   │   │       # - Revoke button
+    │   │   │   │   │   │   │       # BE: users-be/oauth_token
+    │   │   │   │   │   │   │       # GET /v1/settings/authorized-apps/{app_id}
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Authorized apps list (mobile)
+    │   │   │   │   │   │       # - Connected apps
+    │   │   │   │   │   │       # - App permissions summary
+    │   │   │   │   │   │       # - Revoke access actions
+    │   │   │   │   │   │       # BE: users-be/oauth_token
+    │   │   │   │   │   │       # GET /v1/settings/authorized-apps
+    │   │   │   │   │   ├── developer/
+    │   │   │   │   │   │   ├── api-keys/
+    │   │   │   │   │   │   │   └── [keyId]/
+    │   │   │   │   │   │   │       ├── logs/
+    │   │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - API key usage logs (mobile)
+    │   │   │   │   │   │   │       │       # - Request logs (last 100)
+    │   │   │   │   │   │   │       │       # - Endpoint breakdown
+    │   │   │   │   │   │   │       │       # - Error rates
+    │   │   │   │   │   │   │       │       # BE: users-be/api_key
+    │   │   │   │   │   │   │       │       # GET /v1/developer/api-keys/{key_id}/logs
+    │   │   │   │   │   │   │       ├── permissions/
+    │   │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - API key permissions (mobile)
+    │   │   │   │   │   │   │       │       # - Granted scopes list
+    │   │   │   │   │   │   │       │       # - Edit permissions button
+    │   │   │   │   │   │   │       │       # BE: users-be/api_key
+    │   │   │   │   │   │   │       │       # GET /v1/developer/api-keys/{key_id}/permissions
+    │   │   │   │   │   │   │       │       # PUT /v1/developer/api-keys/{key_id}/permissions
+    │   │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - API key detail (mobile)
+    │   │   │   │   │   │   │           # - Key info (name, created date)
+    │   │   │   │   │   │   │           # - Key value (show/hide, copy)
+    │   │   │   │   │   │   │           # - Usage statistics
+    │   │   │   │   │   │   │           # - Revoke/regenerate buttons
+    │   │   │   │   │   │   │           # BE: users-be/api_key
+    │   │   │   │   │   │   │           # GET /v1/developer/api-keys/{key_id}
+    │   │   │   │   │   │   ├── oauth-apps/
+    │   │   │   │   │   │   │   ├── [appId]/
+    │   │   │   │   │   │   │   │   ├── credentials/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth credentials (mobile)
+    │   │   │   │   │   │   │   │   │       # - Client ID (copy button)
+    │   │   │   │   │   │   │   │   │       # - Client secret (show/copy)
+    │   │   │   │   │   │   │   │   │       # - Regenerate secret button
+    │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │   │       # GET /v1/developer/oauth-apps/{app_id}/credentials
+    │   │   │   │   │   │   │   │   │       # POST /v1/developer/oauth-apps/{app_id}/regenerate-secret
+    │   │   │   │   │   │   │   │   ├── scopes/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app scopes (mobile)
+    │   │   │   │   │   │   │   │   │       # - Available scopes list
+    │   │   │   │   │   │   │   │   │       # - Selected scopes (checkboxes)
+    │   │   │   │   │   │   │   │   │       # - Scope descriptions
+    │   │   │   │   │   │   │   │   │       # - Save button
+    │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │   │       # GET /v1/developer/oauth-apps/{app_id}/scopes
+    │   │   │   │   │   │   │   │   │       # PUT /v1/developer/oauth-apps/{app_id}/scopes
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app detail (mobile)
+    │   │   │   │   │   │   │   │       # - App info
+    │   │   │   │   │   │   │   │       # - Redirect URIs
+    │   │   │   │   │   │   │   │       # - Usage stats
+    │   │   │   │   │   │   │   │       # - Edit/delete buttons
+    │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │       # GET /v1/developer/oauth-apps/{app_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create OAuth app (mobile)
+    │   │   │   │   │   │   │   │       # - App name input
+    │   │   │   │   │   │   │   │       # - Description
+    │   │   │   │   │   │   │   │       # - Redirect URIs
+    │   │   │   │   │   │   │   │       # - Scopes selection
+    │   │   │   │   │   │   │   │       # - Create button
+    │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │       # POST /v1/developer/oauth-apps
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth apps list (mobile)
+    │   │   │   │   │   │   │       # - All OAuth apps
+    │   │   │   │   │   │   │       # - App status
+    │   │   │   │   │   │   │       # - Usage metrics
+    │   │   │   │   │   │   │       # - Create new button
+    │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │       # GET /v1/developer/oauth-apps
+    │   │   │   │   │   │   └── webhooks/
+    │   │   │   │   │   │       ├── [webhookId]/
+    │   │   │   │   │   │       │   ├── deliveries/
+    │   │   │   │   │   │       │   │   ├── [deliveryId]/
+    │   │   │   │   │   │       │   │   │   └── index.tsx  # ❌ CREATE - Webhook delivery detail (mobile)
+    │   │   │   │   │   │       │   │   │       # - Request/response details
+    │   │   │   │   │   │       │   │   │       # - Status and timing
+    │   │   │   │   │   │       │   │   │       # - Retry button
+    │   │   │   │   │   │       │   │   │       # BE: users-be/webhook
+    │   │   │   │   │   │       │   │   │       # GET /v1/developer/webhooks/{webhook_id}/deliveries/{delivery_id}
+    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Webhook deliveries (mobile)
+    │   │   │   │   │   │       │   │       # - Delivery history
+    │   │   │   │   │   │       │   │       # - Success/failure indicators
+    │   │   │   │   │   │       │   │       # - Retry failed button
+    │   │   │   │   │   │       │   │       # BE: users-be/webhook
+    │   │   │   │   │   │       │   │       # GET /v1/developer/webhooks/{webhook_id}/deliveries
+    │   │   │   │   │   │       │   ├── test/
+    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Test webhook (mobile)
+    │   │   │   │   │   │       │   │       # - Event type selection
+    │   │   │   │   │   │       │   │       # - Test payload editor
+    │   │   │   │   │   │       │   │       # - Send test button
+    │   │   │   │   │   │       │   │       # - Response display
+    │   │   │   │   │   │       │   │       # BE: users-be/webhook
+    │   │   │   │   │   │       │   │       # POST /v1/developer/webhooks/{webhook_id}/test
+    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Webhook detail (mobile)
+    │   │   │   │   │   │       │       # - Webhook URL
+    │   │   │   │   │   │       │       # - Events subscribed
+    │   │   │   │   │   │       │       # - Recent deliveries
+    │   │   │   │   │   │       │       # - Edit/delete/test buttons
+    │   │   │   │   │   │       │       # BE: users-be/webhook
+    │   │   │   │   │   │       │       # GET /v1/developer/webhooks/{webhook_id}
+    │   │   │   │   │   │       ├── create/
+    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Create webhook (mobile)
+    │   │   │   │   │   │       │       # - Webhook URL input
+    │   │   │   │   │   │       │       # - Event selection (multi-select)
+    │   │   │   │   │   │       │       # - Secret (auto-generated)
+    │   │   │   │   │   │       │       # - Create button
+    │   │   │   │   │   │       │       # BE: users-be/webhook
+    │   │   │   │   │   │       │       # POST /v1/developer/webhooks
+    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - Webhooks list (mobile)
+    │   │   │   │   │   │           # - All webhooks
+    │   │   │   │   │   │           # - Status indicators
+    │   │   │   │   │   │           # - Create webhook button
+    │   │   │   │   │   │           # BE: users-be/webhook
+    │   │   │   │   │   │           # GET /v1/developer/webhooks
+    │   │   │   │   │   ├── devices/
+    │   │   │   │   │   │   ├── [deviceId]/
+    │   │   │   │   │   │   │   ├── revoke/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Revoke device (mobile)
+    │   │   │   │   │   │   │   │       # - Confirmation dialog
+    │   │   │   │   │   │   │   │       # - Device info display
+    │   │   │   │   │   │   │   │       # - Revoke button
+    │   │   │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │   │   │       # DELETE /v1/users/me/devices/{device_id}
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Device detail (mobile)
+    │   │   │   │   │   │   │       # - Device name/type
+    │   │   │   │   │   │   │       # - Last activity
+    │   │   │   │   │   │   │       # - Location (if available)
+    │   │   │   │   │   │   │       # - Trust status
+    │   │   │   │   │   │   │       # - Revoke button
+    │   │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │   │       # GET /v1/users/me/devices/{device_id}
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Connected devices list (mobile)
+    │   │   │   │   │   │       # - Active sessions/devices
+    │   │   │   │   │   │       # - Current device indicator
+    │   │   │   │   │   │       # - Last activity timestamps
+    │   │   │   │   │   │       # - Logout remote device actions
+    │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │       # GET /v1/users/me/devices
+    │   │   │   │   │   ├── integrations/
+    │   │   │   │   │   │   ├── available/
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Available integrations (mobile)
+    │   │   │   │   │   │   │       # - Browse integration catalog
+    │   │   │   │   │   │   │       # - Filter by category
+    │   │   │   │   │   │   │       # - Connect button for each
+    │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       # GET /v1/integrations/available
+    │   │   │   │   │   │   ├── calendar/
+    │   │   │   │   │   │   │   ├── connect/
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Connect calendar (mobile)
+    │   │   │   │   │   │   │   │       # - Provider selection (Google/Outlook)
+    │   │   │   │   │   │   │   │       # - OAuth flow
+    │   │   │   │   │   │   │   │       # - Permissions explanation
+    │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │       # POST /v1/users/me/integrations/calendar
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Calendar integration settings (mobile)
+    │   │   │   │   │   │   │       # - Connected calendar
+    │   │   │   │   │   │   │       # - Sync settings
+    │   │   │   │   │   │   │       # - Event preferences
+    │   │   │   │   │   │   │       # - Disconnect button
+    │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       # GET /v1/users/me/integrations/calendar
+    │   │   │   │   │   │   │       # PUT /v1/users/me/integrations/calendar
+    │   │   │   │   │   │   ├── connected/
+    │   │   │   │   │   │   │   ├── [integrationId]/
+    │   │   │   │   │   │   │   │   ├── disconnect/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Disconnect integration (mobile)
+    │   │   │   │   │   │   │   │   │       # - Confirmation dialog
+    │   │   │   │   │   │   │   │   │       # - Data retention info
+    │   │   │   │   │   │   │   │   │       # - Disconnect button
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # DELETE /v1/users/me/integrations/{integration_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integration detail (mobile)
+    │   │   │   │   │   │   │   │       # - Integration info
+    │   │   │   │   │   │   │   │       # - Settings
+    │   │   │   │   │   │   │   │       # - Sync status
+    │   │   │   │   │   │   │   │       # - Disconnect button
+    │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/integrations/{integration_id}
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Connected integrations (mobile)
+    │   │   │   │   │   │   │       # - Active integrations list
+    │   │   │   │   │   │   │       # - Sync status indicators
+    │   │   │   │   │   │   │       # - Disconnect actions
+    │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       # GET /v1/users/me/integrations
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integrations hub (mobile)
+    │   │   │   │   │   │       # - Connected integrations
+    │   │   │   │   │   │       # - Browse available
+    │   │   │   │   │   │       # - Popular integrations
+    │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │       # GET /v1/users/me/integrations/overview
+    │   │   │   │   │   └── team/
+    │   │   │   │   │       ├── categories/
+    │   │   │   │   │       │   ├── [categoryId]/
+    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - KB category detail (mobile)
+    │   │   │   │   │       │   │       # - Category info
+    │   │   │   │   │       │   │       # - Articles in category
+    │   │   │   │   │       │   │       # - Subcategories
+    │   │   │   │   │       │   │       # BE: users-be/knowledge-base
+    │   │   │   │   │       │   │       # GET /v1/teams/{team_id}/kb/categories/{category_id}
+    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - KB categories (mobile, read-only)
+    │   │   │   │   │       │       # - Category tree view
+    │   │   │   │   │       │       # - Expandable/collapsible
+    │   │   │   │   │       │       # - Navigate to articles
+    │   │   │   │   │       │       # BE: users-be/knowledge-base
+    │   │   │   │   │       │       # GET /v1/teams/{team_id}/kb/categories
+    │   │   │   │   │       ├── knowledge-base/
+    │   │   │   │   │       │   └── articles/
+    │   │   │   │   │       │       └── [articleId]/
+    │   │   │   │   │       │           └── index.tsx  # ❌ CREATE - KB article view (mobile, read-only)
+    │   │   │   │   │       │               # - Article content
+    │   │   │   │   │       │               # - Table of contents
+    │   │   │   │   │       │               # - Related articles
+    │   │   │   │   │       │               # - Helpful/not helpful feedback
+    │   │   │   │   │       │               # BE: users-be/knowledge-base
+    │   │   │   │   │       │               # GET /v1/teams/{team_id}/kb/articles/{article_id}
+    │   │   │   │   │       └── policies/
+    │   │   │   │   │           ├── [policyId]/
+    │   │   │   │   │           │   ├── attest/
+    │   │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Attest to policy (mobile)
+    │   │   │   │   │           │   │       # - Policy content display
+    │   │   │   │   │           │   │       # - Attestation checkbox
+    │   │   │   │   │           │   │       # - Submit attestation button
+    │   │   │   │   │           │   │       # BE: users-be/policy
+    │   │   │   │   │           │   │       # POST /v1/teams/{team_id}/policies/{policy_id}/attest
+    │   │   │   │   │           │   └── index.tsx  # ❌ CREATE - Policy detail (mobile, read-only)
+    │   │   │   │   │           │       # - Policy content
+    │   │   │   │   │           │       # - Effective date
+    │   │   │   │   │           │       # - Attestation status
+    │   │   │   │   │           │       # - Attest button (if required)
+    │   │   │   │   │           │       # BE: users-be/policy
+    │   │   │   │   │           │       # GET /v1/teams/{team_id}/policies/{policy_id}
+    │   │   │   │   │           └── index.tsx  # ❌ CREATE - Policies list (mobile, read-only)
+    │   │   │   │   │               # - Active policies
+    │   │   │   │   │               # - Attestation status indicators
+    │   │   │   │   │               # - Required actions
+    │   │   │   │   │               # BE: users-be/policy
+    │   │   │   │   │               # GET /v1/teams/{team_id}/policies
     │   │   │   │   ├── support/
     │   │   │   │   │   ├── help-center/
     │   │   │   │   │   │   └── index.tsx  # Help articles (mobile)
@@ -460,22 +1022,37 @@ fe/
     │   │   │   │       └── time-tracker/
     │   │   │   │           └── index.tsx  # Time tracker widget
     │   │   │   │               # BE: contracts-be/work_diary
-    │   │   │   ├── (error-boundaries)/
+    │   │   │   ├── (error-boundaries)/  # ❌ CREATE ENTIRE SECTION - Error boundary wrappers
     │   │   │   │   ├── contracts/
     │   │   │   │   │   └── _layout.tsx  # ❌ ADD - Contract ErrorBoundary wrapper
     │   │   │   │   │       # Wraps contract routes with error recovery
     │   │   │   │   │       # Catches and displays contract-specific errors
     │   │   │   │   │       # Provides fallback UI and retry mechanisms
+    │   │   │   │   │       # ❌ CREATE - Contract error boundary wrapper
+    │   │   │   │   │       # - Catches and displays contract-specific errors
+    │   │   │   │   │       # - Provides fallback UI with retry button
+    │   │   │   │   │       # - Logs errors to monitoring service
+    │   │   │   │   │       # - Offers navigation back or home
+    │   │   │   │   │       # IMPLEMENTATION:
+    │   │   │   │   │       # import { ErrorBoundary } from 'react-error-boundary'
+    │   │   │   │   │       # import { Stack } from 'expo-router'
+    │   │   │   │   │       # function ContractErrorFallback({ error, resetErrorBoundary }) { ... }
+    │   │   │   │   │       # export default function ContractErrorLayout() { ... }
     │   │   │   │   ├── jobs/
     │   │   │   │   │   └── _layout.tsx  # ❌ ADD - Jobs ErrorBoundary wrapper
     │   │   │   │   │       # Wraps job routes with error recovery
     │   │   │   │   │       # Catches and displays job-specific errors
     │   │   │   │   │       # Provides fallback UI and retry mechanisms
+    │   │   │   │   │       # ❌ CREATE - Jobs error boundary wrapper
+    │   │   │   │   │       # Similar to contracts error boundary but for jobs domain
+    │   │   │   │   │       # Custom messages: "Failed to load job posting", etc.
     │   │   │   │   └── proposals/
     │   │   │   │       └── _layout.tsx  # ❌ ADD - Proposals ErrorBoundary wrapper
     │   │   │   │           # Wraps proposal routes with error recovery
     │   │   │   │           # Catches and displays proposal-specific errors
     │   │   │   │           # Provides fallback UI and retry mechanisms
+    │   │   │   │           # ❌ CREATE - Proposals error boundary wrapper
+    │   │   │   │           # Similar to contracts error boundary but for proposals domain
     │   │   │   ├── (inbox)/
     │   │   │   │   ├── messages/
     │   │   │   │   │   ├── [conversationId]/
@@ -513,8 +1090,99 @@ fe/
     │   │   │   │   ├── skills.tsx  # Skills selection
     │   │   │   │   └── welcome.tsx  # Welcome screen
     │   │   │   ├── (public)/  # Optional: if exposing public/marketing in mobile
-    │   │   │   │   └── status/
-    │   │   │   │       └── index.tsx  # System status
+    │   │   │   │   # ❌ CREATE ENTIRE SECTION - Public marketing pages on mobile
+    │   │   │   │   ├── about/
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - About page (mobile)
+    │   │   │   │   │       # - Company story
+    │   │   │   │   │       # - Team info
+    │   │   │   │   │       # - Mission & values
+    │   │   │   │   │       # BE: None (static)
+    │   │   │   │   ├── blog/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Blog post detail (mobile)
+    │   │   │   │   │   │       # - Article content
+    │   │   │   │   │   │       # - Author info
+    │   │   │   │   │   │       # - Related posts
+    │   │   │   │   │   │       # BE: communications-be/knowledge-base or CMS
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Blog listing (mobile)
+    │   │   │   │   │       # - Recent posts
+    │   │   │   │   │       # - Categories filter
+    │   │   │   │   │       # - Search
+    │   │   │   │   │       # BE: communications-be/knowledge-base or CMS
+    │   │   │   │   ├── careers/
+    │   │   │   │   │   ├── [jobSlug]/
+    │   │   │   │   │   │   ├── apply/
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Job application form (mobile)
+    │   │   │   │   │   │   │       # - Application form
+    │   │   │   │   │   │   │       # - Resume upload
+    │   │   │   │   │   │   │       # - Cover letter
+    │   │   │   │   │   │   │       # BE: None or separate careers API
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Job posting detail (mobile)
+    │   │   │   │   │   │       # - Job description
+    │   │   │   │   │   │       # - Requirements
+    │   │   │   │   │   │       # - Apply button
+    │   │   │   │   │   │       # BE: None or separate careers API
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Careers overview (mobile)
+    │   │   │   │   │       # - Open positions list
+    │   │   │   │   │       # - Company culture
+    │   │   │   │   │       # - Benefits
+    │   │   │   │   │       # BE: None or separate careers API
+    │   │   │   │   ├── case-studies/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Case study detail (mobile)
+    │   │   │   │   │   │       # - Case study content
+    │   │   │   │   │   │       # - Results/metrics
+    │   │   │   │   │   │       # - Client testimonial
+    │   │   │   │   │   │       # BE: None (static/CMS)
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Case studies listing (mobile)
+    │   │   │   │   │       # - Featured case studies
+    │   │   │   │   │       # - Industry filter
+    │   │   │   │   │       # BE: None (static/CMS)
+    │   │   │   │   ├── features/
+    │   │   │   │   │   ├── [feature]/
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Feature detail (mobile)
+    │   │   │   │   │   │       # - Feature overview
+    │   │   │   │   │   │       # - Screenshots/demo
+    │   │   │   │   │   │       # - Benefits
+    │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Features overview (mobile)
+    │   │   │   │   │       # - All features
+    │   │   │   │   │       # - Feature categories
+    │   │   │   │   │       # BE: None (static)
+    │   │   │   │   ├── help/
+    │   │   │   │   │   ├── [category]/
+    │   │   │   │   │   │   ├── [articleSlug]/
+    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Help article (mobile)
+    │   │   │   │   │   │   │       # - Article content
+    │   │   │   │   │   │   │       # - Helpful/not helpful
+    │   │   │   │   │   │   │       # - Related articles
+    │   │   │   │   │   │   │       # BE: communications-be/knowledge-base
+    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Help category (mobile)
+    │   │   │   │   │   │       # - Articles in category
+    │   │   │   │   │   │       # - Subcategories
+    │   │   │   │   │   │       # BE: communications-be/knowledge-base
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Help center home (mobile)
+    │   │   │   │   │       # - Search help articles
+    │   │   │   │   │       # - Popular topics
+    │   │   │   │   │       # - Categories
+    │   │   │   │   │       # BE: communications-be/knowledge-base
+    │   │   │   │   ├── legal/
+    │   │   │   │   │   ├── cookies.tsx  # ❌ CREATE - Cookie policy (mobile)
+    │   │   │   │   │   ├── privacy.tsx  # ❌ CREATE - Privacy policy (mobile)
+    │   │   │   │   │   └── terms.tsx  # ❌ CREATE - Terms of service (mobile)
+    │   │   │   │   ├── pricing/
+    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Pricing page (mobile)
+    │   │   │   │   │       # - Plan comparison
+    │   │   │   │   │       # - Pricing calculator
+    │   │   │   │   │       # - FAQ
+    │   │   │   │   │       # BE: subscriptions-be/plan (public endpoint)
+    │   │   │   │   ├── status/
+    │   │   │   │   │   └── index.tsx  # System status
+    │   │   │   │   └── index.tsx  # ❌ CREATE - Public home (mobile)
+    │   │   │   │       # - Hero section
+    │   │   │   │       # - Key features
+    │   │   │   │       # - Call to action
+    │   │   │   │       # BE: None (static)
     │   │   │   ├── (shared)/
     │   │   │   │   └── deliverables/
     │   │   │   │       ├── components/
@@ -5328,6 +5996,401 @@ fe/
     │   │   │   │   │   │                   # BE: contracts-be/milestone
     │   │   │   │   │   │                   # GET/POST/PATCH /v1/contracts/{id}/milestones
     │   │   │   │   │   ├── (dashboard)/  # Main authenticated dashboard
+    │   │   │   │   │   │   ├── (admin)/
+    │   │   │   │   │   │   │   ├── analytics/
+    │   │   │   │   │   │   │   │   ├── performance/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Platform performance metrics
+    │   │   │   │   │   │   │   │   │       # - API response times
+    │   │   │   │   │   │   │   │   │       # - Page load metrics
+    │   │   │   │   │   │   │   │   │       # - Database query performance
+    │   │   │   │   │   │   │   │   │       # - Error rates by endpoint
+    │   │   │   │   │   │   │   │   │       # - Real-time monitoring dashboard
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/analytics
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/analytics/performance
+    │   │   │   │   │   │   │   │   ├── retention/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - User retention analysis
+    │   │   │   │   │   │   │   │   │       # - Cohort analysis
+    │   │   │   │   │   │   │   │   │       # - Churn rate
+    │   │   │   │   │   │   │   │   │       # - Daily/weekly/monthly active users
+    │   │   │   │   │   │   │   │   │       # - User lifecycle stages
+    │   │   │   │   │   │   │   │   │       # - Retention curves
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/analytics
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/analytics/retention
+    │   │   │   │   │   │   │   │   └── revenue/
+    │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Revenue dashboard
+    │   │   │   │   │   │   │   │           # - Total revenue (daily/weekly/monthly)
+    │   │   │   │   │   │   │   │           # - Revenue by category (jobs, subscriptions, connects)
+    │   │   │   │   │   │   │   │           # - Average transaction value
+    │   │   │   │   │   │   │   │           # - Revenue per user
+    │   │   │   │   │   │   │   │           # - Revenue trends and forecasts
+    │   │   │   │   │   │   │   │           # BE: admin-be/analytics
+    │   │   │   │   │   │   │   │           # GET /v1/admin/analytics/revenue
+    │   │   │   │   │   │   │   ├── budgets/
+    │   │   │   │   │   │   │   │   ├── [budgetId]/
+    │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit budget
+    │   │   │   │   │   │   │   │   │   │       # - Budget amount
+    │   │   │   │   │   │   │   │   │   │       # - Time period
+    │   │   │   │   │   │   │   │   │   │       # - Alert thresholds
+    │   │   │   │   │   │   │   │   │   │       # - Department/category allocation
+    │   │   │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │   │   │       # PUT /v1/admin/budgets/{budget_id}
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Budget detail
+    │   │   │   │   │   │   │   │   │       # - Budget overview
+    │   │   │   │   │   │   │   │   │       # - Spending breakdown
+    │   │   │   │   │   │   │   │   │       # - Utilization percentage
+    │   │   │   │   │   │   │   │   │       # - Historical spending
+    │   │   │   │   │   │   │   │   │       # - Budget alerts
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/budgets/{budget_id}
+    │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create new budget
+    │   │   │   │   │   │   │   │   │       # - Budget name
+    │   │   │   │   │   │   │   │   │       # - Amount and period
+    │   │   │   │   │   │   │   │   │       # - Department assignment
+    │   │   │   │   │   │   │   │   │       # - Alert settings
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │   │       # POST /v1/admin/budgets
+    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Budgets list
+    │   │   │   │   │   │   │   │       # - All budgets overview
+    │   │   │   │   │   │   │   │       # - Filter by department/status
+    │   │   │   │   │   │   │   │       # - Spending vs budget comparison
+    │   │   │   │   │   │   │   │       # - Create new budget button
+    │   │   │   │   │   │   │   │       # BE: financial-be/budgets
+    │   │   │   │   │   │   │   │       # GET /v1/admin/budgets
+    │   │   │   │   │   │   │   ├── moderation/
+    │   │   │   │   │   │   │   │   └── appeals/
+    │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Appeals queue
+    │   │   │   │   │   │   │   │           # - Pending appeals list
+    │   │   │   │   │   │   │   │           # - Appeal details (original action, user statement)
+    │   │   │   │   │   │   │   │           # - Review and decision actions
+    │   │   │   │   │   │   │   │           # - Appeal history
+    │   │   │   │   │   │   │   │           # - Filter by appeal type
+    │   │   │   │   │   │   │   │           # BE: admin-be/moderation
+    │   │   │   │   │   │   │   │           # GET /v1/admin/moderation/appeals
+    │   │   │   │   │   │   │   │           # POST /v1/admin/moderation/appeals/{appeal_id}/decision
+    │   │   │   │   │   │   │   ├── search-admin/
+    │   │   │   │   │   │   │   │   ├── boosts/
+    │   │   │   │   │   │   │   │   │   ├── [boostId]/
+    │   │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit boost rule
+    │   │   │   │   │   │   │   │   │   │   │       # - Boost query pattern
+    │   │   │   │   │   │   │   │   │   │   │       # - Boost factor
+    │   │   │   │   │   │   │   │   │   │   │       # - Conditions
+    │   │   │   │   │   │   │   │   │   │   │       # - Active/inactive toggle
+    │   │   │   │   │   │   │   │   │   │   │       # BE: search-be/boosts
+    │   │   │   │   │   │   │   │   │   │   │       # PUT /v1/admin/search/boosts/{boost_id}
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Boost rule detail
+    │   │   │   │   │   │   │   │   │   │       # - Rule configuration
+    │   │   │   │   │   │   │   │   │   │       # - Performance metrics
+    │   │   │   │   │   │   │   │   │   │       # - Test query interface
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/boosts
+    │   │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/boosts/{boost_id}
+    │   │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create boost rule
+    │   │   │   │   │   │   │   │   │   │       # - Query pattern input
+    │   │   │   │   │   │   │   │   │   │       # - Boost factor slider
+    │   │   │   │   │   │   │   │   │   │       # - Condition builder
+    │   │   │   │   │   │   │   │   │   │       # - Test interface
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/boosts
+    │   │   │   │   │   │   │   │   │   │       # POST /v1/admin/search/boosts
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Boost rules list
+    │   │   │   │   │   │   │   │   │       # - All boost rules
+    │   │   │   │   │   │   │   │   │       # - Active/inactive status
+    │   │   │   │   │   │   │   │   │       # - Performance impact
+    │   │   │   │   │   │   │   │   │       # - Create new button
+    │   │   │   │   │   │   │   │   │       # BE: search-be/boosts
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/boosts
+    │   │   │   │   │   │   │   │   ├── facets/
+    │   │   │   │   │   │   │   │   │   ├── [facetId]/
+    │   │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit facet configuration
+    │   │   │   │   │   │   │   │   │   │   │       # - Facet name and field
+    │   │   │   │   │   │   │   │   │   │   │       # - Display order
+    │   │   │   │   │   │   │   │   │   │   │       # - Value limits
+    │   │   │   │   │   │   │   │   │   │   │       # - Visibility rules
+    │   │   │   │   │   │   │   │   │   │   │       # BE: search-be/facets
+    │   │   │   │   │   │   │   │   │   │   │       # PUT /v1/admin/search/facets/{facet_id}
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Facet detail
+    │   │   │   │   │   │   │   │   │   │       # - Facet configuration
+    │   │   │   │   │   │   │   │   │   │       # - Usage statistics
+    │   │   │   │   │   │   │   │   │   │       # - Value distribution
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/facets
+    │   │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/facets/{facet_id}
+    │   │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create facet
+    │   │   │   │   │   │   │   │   │   │       # - Facet name
+    │   │   │   │   │   │   │   │   │   │       # - Field mapping
+    │   │   │   │   │   │   │   │   │   │       # - Display settings
+    │   │   │   │   │   │   │   │   │   │       # - Filter type (checkbox, range, etc.)
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/facets
+    │   │   │   │   │   │   │   │   │   │       # POST /v1/admin/search/facets
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Facets list
+    │   │   │   │   │   │   │   │   │       # - All configured facets
+    │   │   │   │   │   │   │   │   │       # - Reorder facets (drag & drop)
+    │   │   │   │   │   │   │   │   │       # - Enable/disable toggle
+    │   │   │   │   │   │   │   │   │       # - Create new button
+    │   │   │   │   │   │   │   │   │       # BE: search-be/facets
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/facets
+    │   │   │   │   │   │   │   │   ├── rewrites/
+    │   │   │   │   │   │   │   │   │   ├── [rewriteId]/
+    │   │   │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit query rewrite
+    │   │   │   │   │   │   │   │   │   │   │       # - Original query pattern
+    │   │   │   │   │   │   │   │   │   │   │       # - Rewritten query
+    │   │   │   │   │   │   │   │   │   │   │       # - Conditions/filters
+    │   │   │   │   │   │   │   │   │   │   │       # - Priority
+    │   │   │   │   │   │   │   │   │   │   │       # BE: search-be/rewrites
+    │   │   │   │   │   │   │   │   │   │   │       # PUT /v1/admin/search/rewrites/{rewrite_id}
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Rewrite rule detail
+    │   │   │   │   │   │   │   │   │   │       # - Rule configuration
+    │   │   │   │   │   │   │   │   │   │       # - Match count
+    │   │   │   │   │   │   │   │   │   │       # - Test interface
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/rewrites
+    │   │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/rewrites/{rewrite_id}
+    │   │   │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create rewrite rule
+    │   │   │   │   │   │   │   │   │   │       # - Query pattern (regex)
+    │   │   │   │   │   │   │   │   │   │       # - Rewrite template
+    │   │   │   │   │   │   │   │   │   │       # - Condition builder
+    │   │   │   │   │   │   │   │   │   │       # - Test query box
+    │   │   │   │   │   │   │   │   │   │       # BE: search-be/rewrites
+    │   │   │   │   │   │   │   │   │   │       # POST /v1/admin/search/rewrites
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Query rewrites list
+    │   │   │   │   │   │   │   │   │       # - All rewrite rules
+    │   │   │   │   │   │   │   │   │       # - Active/inactive status
+    │   │   │   │   │   │   │   │   │       # - Usage count
+    │   │   │   │   │   │   │   │   │       # - Priority order
+    │   │   │   │   │   │   │   │   │       # BE: search-be/rewrites
+    │   │   │   │   │   │   │   │   │       # GET /v1/admin/search/rewrites
+    │   │   │   │   │   │   │   │   └── synonyms/
+    │   │   │   │   │   │   │   │       ├── [synonymId]/
+    │   │   │   │   │   │   │   │       │   ├── edit/
+    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # ❌ CREATE - Edit synonym group
+    │   │   │   │   │   │   │   │       │   │       # - Primary term
+    │   │   │   │   │   │   │   │       │   │       # - Synonym list (comma-separated)
+    │   │   │   │   │   │   │   │       │   │       # - Bidirectional toggle
+    │   │   │   │   │   │   │   │       │   │       # - Language/locale
+    │   │   │   │   │   │   │   │       │   │       # BE: search-be/synonyms
+    │   │   │   │   │   │   │   │       │   │       # PUT /v1/admin/search/synonyms/{synonym_id}
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Synonym group detail
+    │   │   │   │   │   │   │   │       │       # - Synonym group info
+    │   │   │   │   │   │   │   │       │       # - Usage statistics
+    │   │   │   │   │   │   │   │       │       # - Test search with synonyms
+    │   │   │   │   │   │   │   │       │       # BE: search-be/synonyms
+    │   │   │   │   │   │   │   │       │       # GET /v1/admin/search/synonyms/{synonym_id}
+    │   │   │   │   │   │   │   │       ├── create/
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Create synonym group
+    │   │   │   │   │   │   │   │       │       # - Primary term input
+    │   │   │   │   │   │   │   │       │       # - Synonym input (multi-value)
+    │   │   │   │   │   │   │   │       │       # - Bidirectional option
+    │   │   │   │   │   │   │   │       │       # - Locale selection
+    │   │   │   │   │   │   │   │       │       # BE: search-be/synonyms
+    │   │   │   │   │   │   │   │       │       # POST /v1/admin/search/synonyms
+    │   │   │   │   │   │   │   │       ├── import/
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Import synonyms (CSV/JSON)
+    │   │   │   │   │   │   │   │       │       # - File upload
+    │   │   │   │   │   │   │   │       │       # - Preview before import
+    │   │   │   │   │   │   │   │       │       # - Conflict resolution
+    │   │   │   │   │   │   │   │       │       # - Import validation
+    │   │   │   │   │   │   │   │       │       # BE: search-be/synonyms
+    │   │   │   │   │   │   │   │       │       # POST /v1/admin/search/synonyms/import
+    │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Synonyms list
+    │   │   │   │   │   │   │   │           # - All synonym groups
+    │   │   │   │   │   │   │   │           # - Filter by locale
+    │   │   │   │   │   │   │   │           # - Search synonyms
+    │   │   │   │   │   │   │   │           # - Bulk actions (enable/disable/delete)
+    │   │   │   │   │   │   │   │           # BE: search-be/synonyms
+    │   │   │   │   │   │   │   │           # GET /v1/admin/search/synonyms
+    │   │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   │   ├── developer/
+    │   │   │   │   │   │   │   │   │   ├── oauth-apps/
+    │   │   │   │   │   │   │   │   │   │   └── [appId]/
+    │   │   │   │   │   │   │   │   │   │       ├── credentials/
+    │   │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - OAuth app credentials detail
+    │   │   │   │   │   │   │   │   │   │       │       # - Client ID (copy button)
+    │   │   │   │   │   │   │   │   │   │       │       # - Client secret (show/hide, copy)
+    │   │   │   │   │   │   │   │   │   │       │       # - Regenerate secret button
+    │   │   │   │   │   │   │   │   │   │       │       # - Secret rotation history
+    │   │   │   │   │   │   │   │   │   │       │       # - Last used timestamp
+    │   │   │   │   │   │   │   │   │   │       │       # BE: admin-be/oauth
+    │   │   │   │   │   │   │   │   │   │       │       # GET /v1/developer/oauth-apps/{app_id}/credentials
+    │   │   │   │   │   │   │   │   │   │       │       # POST /v1/developer/oauth-apps/{app_id}/rotate-secret
+    │   │   │   │   │   │   │   │   │   │       └── scopes/
+    │   │   │   │   │   │   │   │   │   │           └── page.tsx  # ❌ CREATE - OAuth app scopes management
+    │   │   │   │   │   │   │   │   │   │               # - Available scopes list
+    │   │   │   │   │   │   │   │   │   │               # - Requested scopes (checkboxes)
+    │   │   │   │   │   │   │   │   │   │               # - Scope descriptions
+    │   │   │   │   │   │   │   │   │   │               # - Save changes
+    │   │   │   │   │   │   │   │   │   │               # BE: admin-be/oauth
+    │   │   │   │   │   │   │   │   │   │               # GET /v1/developer/oauth-apps/{app_id}/scopes
+    │   │   │   │   │   │   │   │   │   │               # PUT /v1/developer/oauth-apps/{app_id}/scopes
+    │   │   │   │   │   │   │   │   │   └── sandbox/
+    │   │   │   │   │   │   │   │   │       ├── environments/
+    │   │   │   │   │   │   │   │   │       │   ├── [envId]/
+    │   │   │   │   │   │   │   │   │       │   │   ├── reset/
+    │   │   │   │   │   │   │   │   │       │   │   │   └── page.tsx  # ❌ CREATE - Reset sandbox environment
+    │   │   │   │   │   │   │   │   │       │   │   │       # - Confirmation dialog
+    │   │   │   │   │   │   │   │   │       │   │   │       # - Reset options (data/config/all)
+    │   │   │   │   │   │   │   │   │       │   │   │       # - Reset history
+    │   │   │   │   │   │   │   │   │       │   │   │       # BE: admin-be/sandbox
+    │   │   │   │   │   │   │   │   │       │   │   │       # POST /v1/developer/sandbox/environments/{env_id}/reset
+    │   │   │   │   │   │   │   │   │       │   │   └── page.tsx  # ❌ CREATE - Sandbox environment detail
+    │   │   │   │   │   │   │   │   │       │   │       # - Environment status
+    │   │   │   │   │   │   │   │   │       │   │       # - API endpoint URL
+    │   │   │   │   │   │   │   │   │       │   │       # - Test data summary
+    │   │   │   │   │   │   │   │   │       │   │       # - Reset/delete actions
+    │   │   │   │   │   │   │   │   │       │   │       # BE: admin-be/sandbox
+    │   │   │   │   │   │   │   │   │       │   │       # GET /v1/developer/sandbox/environments/{env_id}
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Sandbox environments list
+    │   │   │   │   │   │   │   │   │       │       # - Active environments
+    │   │   │   │   │   │   │   │   │       │       # - Create new environment
+    │   │   │   │   │   │   │   │   │       │       # - Environment limits (e.g., max 3 per user)
+    │   │   │   │   │   │   │   │   │       │       # BE: admin-be/sandbox
+    │   │   │   │   │   │   │   │   │       │       # GET /v1/developer/sandbox/environments
+    │   │   │   │   │   │   │   │   │       │       # POST /v1/developer/sandbox/environments
+    │   │   │   │   │   │   │   │   │       └── test-data/
+    │   │   │   │   │   │   │   │   │           ├── generate/
+    │   │   │   │   │   │   │   │   │           │   └── page.tsx  # ❌ CREATE - Generate test data
+    │   │   │   │   │   │   │   │   │           │       # - Data type selection (users, jobs, contracts)
+    │   │   │   │   │   │   │   │   │           │       # - Quantity input
+    │   │   │   │   │   │   │   │   │           │       # - Scenario templates
+    │   │   │   │   │   │   │   │   │           │       # - Generate button
+    │   │   │   │   │   │   │   │   │           │       # BE: admin-be/sandbox
+    │   │   │   │   │   │   │   │   │           │       # POST /v1/developer/sandbox/test-data/generate
+    │   │   │   │   │   │   │   │   │           └── page.tsx  # ❌ CREATE - Test data management
+    │   │   │   │   │   │   │   │   │               # - Current test data summary
+    │   │   │   │   │   │   │   │   │               # - Import test data (JSON)
+    │   │   │   │   │   │   │   │   │               # - Export test data
+    │   │   │   │   │   │   │   │   │               # - Clear all test data
+    │   │   │   │   │   │   │   │   │               # BE: admin-be/sandbox
+    │   │   │   │   │   │   │   │   │               # GET /v1/developer/sandbox/test-data
+    │   │   │   │   │   │   │   │   │               # POST /v1/developer/sandbox/test-data
+    │   │   │   │   │   │   │   │   │               # DELETE /v1/developer/sandbox/test-data
+    │   │   │   │   │   │   │   │   ├── notifications/
+    │   │   │   │   │   │   │   │   │   └── channels/
+    │   │   │   │   │   │   │   │   │       ├── email/
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Email channel settings
+    │   │   │   │   │   │   │   │   │       │       # - SMTP configuration
+    │   │   │   │   │   │   │   │   │       │       # - Email templates
+    │   │   │   │   │   │   │   │   │       │       # - Sender verification
+    │   │   │   │   │   │   │   │   │       │       # - Test email button
+    │   │   │   │   │   │   │   │   │       │       # BE: communications-be/notification_channel
+    │   │   │   │   │   │   │   │   │       │       # GET /v1/admin/notifications/channels/email
+    │   │   │   │   │   │   │   │   │       │       # PUT /v1/admin/notifications/channels/email
+    │   │   │   │   │   │   │   │   │       ├── push/
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Push notification settings
+    │   │   │   │   │   │   │   │   │       │       # - FCM configuration (Android)
+    │   │   │   │   │   │   │   │   │       │       # - APNs configuration (iOS)
+    │   │   │   │   │   │   │   │   │       │       # - Test push button
+    │   │   │   │   │   │   │   │   │       │       # BE: communications-be/notification_channel
+    │   │   │   │   │   │   │   │   │       │       # GET /v1/admin/notifications/channels/push
+    │   │   │   │   │   │   │   │   │       │       # PUT /v1/admin/notifications/channels/push
+    │   │   │   │   │   │   │   │   │       ├── sms/
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - SMS channel settings
+    │   │   │   │   │   │   │   │   │       │       # - Twilio/provider configuration
+    │   │   │   │   │   │   │   │   │       │       # - Phone number pool
+    │   │   │   │   │   │   │   │   │       │       # - Test SMS button
+    │   │   │   │   │   │   │   │   │       │       # BE: communications-be/notification_channel
+    │   │   │   │   │   │   │   │   │       │       # GET /v1/admin/notifications/channels/sms
+    │   │   │   │   │   │   │   │   │       │       # PUT /v1/admin/notifications/channels/sms
+    │   │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Notification channels overview
+    │   │   │   │   │   │   │   │   │           # - All channels status
+    │   │   │   │   │   │   │   │   │           # - Enable/disable toggles
+    │   │   │   │   │   │   │   │   │           # - Configuration links
+    │   │   │   │   │   │   │   │   │           # - Delivery statistics
+    │   │   │   │   │   │   │   │   │           # BE: communications-be/notification_channel
+    │   │   │   │   │   │   │   │   │           # GET /v1/admin/notifications/channels
+    │   │   │   │   │   │   │   │   └── team/
+    │   │   │   │   │   │   │   │       ├── categories/
+    │   │   │   │   │   │   │   │       │   ├── [categoryId]/
+    │   │   │   │   │   │   │   │       │   │   ├── edit/
+    │   │   │   │   │   │   │   │       │   │   │   └── page.tsx  # ❌ CREATE - Edit KB category
+    │   │   │   │   │   │   │   │       │   │   │       # - Category name
+    │   │   │   │   │   │   │   │       │   │   │       # - Parent category selection
+    │   │   │   │   │   │   │   │       │   │   │       # - Description
+    │   │   │   │   │   │   │   │       │   │   │       # - Display order
+    │   │   │   │   │   │   │   │       │   │   │       # - Permissions
+    │   │   │   │   │   │   │   │       │   │   │       # BE: users-be/knowledge-base
+    │   │   │   │   │   │   │   │       │   │   │       # PUT /v1/teams/{team_id}/kb/categories/{category_id}
+    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # ❌ CREATE - KB category detail
+    │   │   │   │   │   │   │   │       │   │       # - Category info
+    │   │   │   │   │   │   │   │       │   │       # - Articles in category
+    │   │   │   │   │   │   │   │       │   │       # - Subcategories
+    │   │   │   │   │   │   │   │       │   │       # - Edit/delete actions
+    │   │   │   │   │   │   │   │       │   │       # BE: users-be/knowledge-base
+    │   │   │   │   │   │   │   │       │   │       # GET /v1/teams/{team_id}/kb/categories/{category_id}
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - KB categories list
+    │   │   │   │   │   │   │   │       │       # - Category tree view
+    │   │   │   │   │   │   │   │       │       # - Drag & drop reordering
+    │   │   │   │   │   │   │   │       │       # - Create category button
+    │   │   │   │   │   │   │   │       │       # - Expand/collapse all
+    │   │   │   │   │   │   │   │       │       # BE: users-be/knowledge-base
+    │   │   │   │   │   │   │   │       │       # GET /v1/teams/{team_id}/kb/categories
+    │   │   │   │   │   │   │   │       │       # POST /v1/teams/{team_id}/kb/categories
+    │   │   │   │   │   │   │   │       └── knowledge-base/
+    │   │   │   │   │   │   │   │           └── articles/
+    │   │   │   │   │   │   │   │               └── [articleId]/
+    │   │   │   │   │   │   │   │                   ├── edit/
+    │   │   │   │   │   │   │   │                   │   └── page.tsx  # ❌ CREATE - Edit KB article
+    │   │   │   │   │   │   │   │                   │       # - Rich text editor
+    │   │   │   │   │   │   │   │                   │       # - Title input
+    │   │   │   │   │   │   │   │                   │       # - Category selection
+    │   │   │   │   │   │   │   │                   │       # - Tags input (multi-value)
+    │   │   │   │   │   │   │   │                   │       # - Preview mode toggle
+    │   │   │   │   │   │   │   │                   │       # - Publish/draft button
+    │   │   │   │   │   │   │   │                   │       # - SEO metadata
+    │   │   │   │   │   │   │   │                   │       # BE: users-be/knowledge-base
+    │   │   │   │   │   │   │   │                   │       # PUT /v1/teams/{team_id}/kb/articles/{article_id}
+    │   │   │   │   │   │   │   │                   └── versions/
+    │   │   │   │   │   │   │   │                       ├── [versionId]/
+    │   │   │   │   │   │   │   │                       │   ├── compare/
+    │   │   │   │   │   │   │   │                       │   │   └── page.tsx  # ❌ CREATE - Compare article versions
+    │   │   │   │   │   │   │   │                       │   │       # - Side-by-side diff view
+    │   │   │   │   │   │   │   │                       │   │       # - Highlighted changes
+    │   │   │   │   │   │   │   │                       │   │       # - Restore to this version button
+    │   │   │   │   │   │   │   │                       │   │       # BE: users-be/knowledge-base
+    │   │   │   │   │   │   │   │                       │   │       # GET /v1/teams/{team_id}/kb/articles/{article_id}/versions/{version_id}/compare
+    │   │   │   │   │   │   │   │                       │   └── page.tsx  # ❌ CREATE - Article version detail
+    │   │   │   │   │   │   │   │                       │       # - Version content (read-only)
+    │   │   │   │   │   │   │   │                       │       # - Version metadata
+    │   │   │   │   │   │   │   │                       │       # - Restore button
+    │   │   │   │   │   │   │   │                       │       # - Compare with current
+    │   │   │   │   │   │   │   │                       │       # BE: users-be/knowledge-base
+    │   │   │   │   │   │   │   │                       │       # GET /v1/teams/{team_id}/kb/articles/{article_id}/versions/{version_id}
+    │   │   │   │   │   │   │   │                       └── page.tsx  # ❌ CREATE - Article version history
+    │   │   │   │   │   │   │   │                           # - Version list (timeline)
+    │   │   │   │   │   │   │   │                           # - Author and timestamp
+    │   │   │   │   │   │   │   │                           # - Changes summary
+    │   │   │   │   │   │   │   │                           # - Restore/compare actions
+    │   │   │   │   │   │   │   │                           # BE: users-be/knowledge-base
+    │   │   │   │   │   │   │   │                           # GET /v1/teams/{team_id}/kb/articles/{article_id}/versions
+    │   │   │   │   │   │   │   └── support/
+    │   │   │   │   │   │   │       └── analytics/
+    │   │   │   │   │   │   │           ├── performance/
+    │   │   │   │   │   │   │           │   └── page.tsx  # ❌ CREATE - Support performance metrics
+    │   │   │   │   │   │   │           │       # - Average response time
+    │   │   │   │   │   │   │           │       # - First response time (FRT)
+    │   │   │   │   │   │   │           │       # - Resolution time
+    │   │   │   │   │   │   │           │       # - Agent performance
+    │   │   │   │   │   │   │           │       # BE: admin-be/support_ticket
+    │   │   │   │   │   │   │           │       # GET /v1/admin/support/analytics/performance
+    │   │   │   │   │   │   │           ├── satisfaction/
+    │   │   │   │   │   │   │           │   └── page.tsx  # ❌ CREATE - Customer satisfaction metrics
+    │   │   │   │   │   │   │           │       # - CSAT scores
+    │   │   │   │   │   │   │           │       # - NPS scores
+    │   │   │   │   │   │   │           │       # - Rating distribution
+    │   │   │   │   │   │   │           │       # - Feedback themes
+    │   │   │   │   │   │   │           │       # BE: admin-be/support_ticket
+    │   │   │   │   │   │   │           │       # GET /v1/admin/support/analytics/satisfaction
+    │   │   │   │   │   │   │           └── page.tsx  # ❌ CREATE - Support analytics overview
+    │   │   │   │   │   │   │               # - Total tickets (by status)
+    │   │   │   │   │   │   │               # - Resolution rate
+    │   │   │   │   │   │   │               # - Ticket volume trends
+    │   │   │   │   │   │   │               # - Category breakdown
+    │   │   │   │   │   │   │               # - Agent workload
+    │   │   │   │   │   │   │               # BE: admin-be/support_ticket
+    │   │   │   │   │   │   │               # GET /v1/admin/support/analytics
     │   │   │   │   │   │   ├── admin/  # Admin panel (SUPER_ADMIN only)
     │   │   │   │   │   │   │   ├── analytics/
     │   │   │   │   │   │   │   │   ├── platform/
@@ -12808,6 +13871,14 @@ fe/
     │   │   │   │   │   # DUPLICATE of packages/hooks/forms/use-validation.ts
     │   │   │   │   │   # ACTION: Delete this file
     │   │   │   │   │   # REPLACE WITH: import { useValidation } from '@packages/hooks/forms/use-validation'
+    │   │   │   │   │   # ❌ DELETE - Duplicate of packages/hooks/forms/use-validation.ts
+    │   │   │   │   │   # ACTION REQUIRED:
+    │   │   │   │   │   # 1. Delete this file
+    │   │   │   │   │   # 2. Update imports:
+    │   │   │   │   │   # FROM: '@/hooks/use-form-validation'
+    │   │   │   │   │   # TO:   '@packages/hooks/forms/use-validation'
+    │   │   │   │   │   # 3. Search usages: grep -r "use-form-validation" apps/web/src
+    │   │   │   │   │   # 4. Update imports; 5. Test; 6. Remove file
     │   │   │   │   ├── use-keycloak.ts  # ✅ KEEP (web-specific)
     │   │   │   │   └── use-ssr-query.ts  # ✅ KEEP (web-specific SSR)
     │   │   │   ├── lib/
@@ -13100,6 +14171,16 @@ fe/
     │   │   │   └── use-session.ts  # ✅ KEEP (shared)
     │   │   ├── contracts/  # ❌ CREATE THIS (domain hooks)
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
+    │   │   │   # ❌ CREATE ENTIRE FOLDER - Contract domain hooks
+    │   │   │   ├── index.ts  # ❌ CREATE - Export all contract hooks
+    │   │   │   │   # export * from './use-contract';
+    │   │   │   │   # export * from './use-contracts';
+    │   │   │   │   # export * from './use-contract-actions';
+    │   │   │   │   # export * from './use-deliverables';
+    │   │   │   ├── use-contract-actions.ts  # ❌ CREATE - Contract actions
+    │   │   │   │   # pause/resume/complete/terminate with optimistic updates
+    │   │   │   │   # BE: contracts-be/contracts
+    │   │   │   │   # POST /v1/contracts/{id}/pause|resume|complete|terminate
     │   │   │   ├── use-contract.ts  # Single contract operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch contract by ID
@@ -13110,6 +14191,12 @@ fe/
     │   │   │   │   # PUT /v1/contracts/{id}
     │   │   │   │   # POST /v1/contracts/{id}/pause
     │   │   │   │   # POST /v1/contracts/{id}/complete
+    │   │   │   │   # ❌ CREATE - Single contract operations
+    │   │   │   │   # FEATURES:
+    │   │   │   │   # - Real-time updates via SSE/polling
+    │   │   │   │   # - Optimistic updates
+    │   │   │   │   # BE: contracts-be/contracts
+    │   │   │   │   # PATCH /v1/contracts/{id}/status
     │   │   │   ├── use-contracts.ts  # List contracts
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # List/filter contracts
@@ -13119,6 +14206,13 @@ fe/
     │   │   │   │   # - Sort options
     │   │   │   │   # BE: contracts-be/contract
     │   │   │   │   # GET /v1/contracts
+    │   │   │   │   # ❌ CREATE - List/search contracts
+    │   │   │   │   # - Paginated list, filters, search, sort
+    │   │   │   │   # BE: contracts-be/contracts
+    │   │   │   │   # GET /v1/contracts?status=...&page=...&limit=...
+    │   │   │   ├── use-deliverables.ts  # ❌ CREATE - Deliverable management
+    │   │   │   │   # List + submit deliverables, uploads
+    │   │   │   │   # BE: contracts-be/deliverable, storage-be/asset
     │   │   │   ├── use-milestones.ts  # Milestone operations
     │   │   │   │   # ❌ CREATE
     │   │   │   │   # - Fetch milestones for contract
@@ -13211,6 +14305,11 @@ fe/
     │   │   │   └── use-validation.ts  # ✅ KEEP (shared)
     │   │   ├── jobs/  # ❌ CREATE THIS
     │   │   │   # ❌ CREATE ENTIRE DOMAIN
+    │   │   │   # ❌ CREATE ENTIRE FOLDER - Jobs domain hooks
+    │   │   │   ├── index.ts  # ❌ CREATE - Export all job hooks
+    │   │   │   ├── use-job-actions.ts  # ❌ CREATE - Job actions
+    │   │   │   │   # publish/close/archive/delete
+    │   │   │   │   # POST /v1/jobs/{id}/publish|close|archive, DELETE /v1/jobs/{id}
     │   │   │   ├── use-job-application.ts  # ❌ CREATE
     │   │   │   │   # Job application operations
     │   │   │   │   # - Apply to job
@@ -13250,6 +14349,8 @@ fe/
     │   │   │   │   # PUT /v1/jobs/{id}
     │   │   │   │   # POST /v1/jobs/{id}/close
     │   │   │   │   # DELETE /v1/jobs/{id}
+    │   │   │   │   # ❌ CREATE - Single job operations
+    │   │   │   │   # GET /v1/jobs/{id}, PUT /v1/jobs/{id}
     │   │   │   └── use-jobs.ts  # ❌ CREATE
     │   │   │       # List/filter jobs
     │   │   │       # - Get all jobs (paginated)
@@ -13259,6 +14360,8 @@ fe/
     │   │   │       # BE: jobs-be/job
     │   │   │       # GET /v1/jobs
     │   │   │       # GET /v1/jobs/my-jobs
+    │   │   │       # ❌ CREATE - List/search jobs
+    │   │   │       # filters: status/category/budget, search, sort
     │   │   ├── messages/  # ❌ CREATE ENTIRE DOMAIN
     │   │   │   ├── use-conversation.ts  # ❌ CREATE
     │   │   │   │   # Single conversation operations
@@ -13298,19 +14401,37 @@ fe/
     │   │   │       # BE: communications-be/typing (WebSocket)
     │   │   │       # WS /v1/conversations/{id}/typing
     │   │   ├── messaging/  # ❌ CREATE THIS
+    │   │   │   # ❌ CREATE ENTIRE FOLDER - Messaging domain hooks
+    │   │   │   ├── index.ts  # ❌ CREATE - Export all messaging hooks
     │   │   │   ├── use-conversation.ts
-    │   │   │   ├── use-conversations.ts
-    │   │   │   ├── use-messages.ts
+    │   │   │   ├── use-conversations.ts  # ❌ CREATE - Conversations list
+    │   │   │   │   # GET /v1/conversations, /unread-count
+    │   │   │   ├── use-messages.ts  # ❌ CREATE - Messages for conversation
+    │   │   │   │   # GET /v1/conversations/{id}/messages, mark-read
     │   │   │   ├── use-real-time.ts
-    │   │   │   └── use-send-message.ts
+    │   │   │   └── use-send-message.ts  # ❌ CREATE - Send message with optimistic UI
+    │   │   │       # POST /v1/messages, storage-be/asset for attachments
     │   │   ├── notifications/  # ❌ CREATE THIS
     │   │   │   ├── use-mark-read.ts
     │   │   │   ├── use-notification-preferences.ts
     │   │   │   └── use-notifications.ts
+    │   │   ├── payments/  # ❌ CREATE ENTIRE FOLDER - Payments domain hooks
+    │   │   │   ├── index.ts  # ❌ CREATE - Export all payment hooks
+    │   │   │   ├── use-payment-methods.ts  # ❌ CREATE - Payment methods CRUD
+    │   │   │   │   # GET/POST/DELETE /v1/payment-methods
+    │   │   │   ├── use-transactions.ts  # ❌ CREATE - Transaction history
+    │   │   │   │   # GET /v1/transactions?wallet_id=...
+    │   │   │   └── use-wallet.ts  # ❌ CREATE - Wallet operations
+    │   │   │       # GET /v1/wallets/{user_id}, /balance
     │   │   └── proposals/  # ❌ CREATE THIS
     │   │       # ❌ CREATE ENTIRE DOMAIN
+    │   │       # ❌ CREATE ENTIRE FOLDER - Proposals domain hooks
+    │   │       ├── index.ts  # ❌ CREATE - Export all proposal hooks
     │   │       ├── use-bid-recommendations.ts
     │   │       ├── use-bid.ts
+    │   │       ├── use-proposal-actions.ts  # ❌ CREATE - Proposal actions
+    │   │       │   # submit/withdraw/accept/reject
+    │   │       │   # POST /v1/proposals/{id}/submit|withdraw|accept|reject
     │   │       ├── use-proposal-submission.ts
     │   │       ├── use-proposal-templates.ts  # ❌ CREATE
     │   │       │   # Proposal templates
@@ -13333,6 +14454,8 @@ fe/
     │   │       │   # POST /v1/proposals/{id}/submit
     │   │       │   # DELETE /v1/proposals/{id}
     │   │       │   # POST /v1/proposals/{id}/accept
+    │   │       │   # ❌ CREATE - Single proposal operations
+    │   │       │   # GET /v1/proposals/{id}, PUT /v1/proposals/{id}
     │   │       └── use-proposals.ts  # ❌ CREATE
     │   │           # List proposals
     │   │           # - Get all proposals (paginated)
@@ -13342,6 +14465,8 @@ fe/
     │   │           # BE: proposals-be/proposal
     │   │           # GET /v1/proposals
     │   │           # GET /v1/proposals/received
+    │   │           # ❌ CREATE - List/search proposals
+    │   │           # GET /v1/proposals?status=...&job_id=...
     │   ├── shared/  # Business logic, hooks, utilities
     │   │   # Shared business logic, hooks, utilities
     │   │   ├── src/
@@ -15485,6 +16610,8 @@ fe/
     │       │   │   │   │   │       # DEPENDENCIES:
     │       │   │   │   │   │       # - react-native-reanimated
     │       │   │   │   │   │       # - react-native-gesture-handler
+    │       │   │   │   │   │       # ❌ CREATE - Mobile accordion component
+    │       │   │   │   │   │       # reanimated animations; gesture handler
     │       │   │   │   │   ├── Breadcrumb/
     │       │   │   │   │   │   └── Breadcrumb.native.tsx  # ❌ CREATE
     │       │   │   │   │   │       # Mobile breadcrumb navigation component
@@ -15498,6 +16625,7 @@ fe/
     │       │   │   │   │   │       # - Use ScrollView for horizontal scroll
     │       │   │   │   │   │       # - Minimum touch target: 44x44
     │       │   │   │   │   │       # - Responsive font sizes
+    │       │   │   │   │   │       # ❌ CREATE - Mobile breadcrumb navigation
     │       │   │   │   │   ├── Drawer/
     │       │   │   │   │   │   └── Drawer.native.tsx  # ❌ CREATE
     │       │   │   │   │   │       # React Native bottom sheet drawer component
@@ -15514,6 +16642,7 @@ fe/
     │       │   │   │   │   │       # - Handle keyboard avoiding
     │       │   │   │   │   │       # - Provide backdrop press to dismiss
     │       │   │   │   │   │       # - Support multiple snap points
+    │       │   │   │   │   │       # ❌ CREATE - Mobile drawer (bottom sheet)
     │       │   │   │   │   └── │
     │       │   │   │   ├── Overlay/
     │       │   │   │   │   ├── Popover/
@@ -15533,6 +16662,7 @@ fe/
     │       │   │   │   │   │       # DEPENDENCIES:
     │       │   │   │   │   │       # - react-native Modal
     │       │   │   │   │   │       # - react-native-reanimated (animations)
+    │       │   │   │   │   │       # ❌ CREATE - Mobile popover component
     │       │   │   │   │   └── Tooltip/
     │       │   │   │   │       └── Tooltip.native.tsx  # ❌ CREATE
     │       │   │   │   │           # Mobile tooltip component
@@ -15550,6 +16680,7 @@ fe/
     │       │   │   │   │           # DEPENDENCIES:
     │       │   │   │   │           # - react-native Pressable
     │       │   │   │   │           # - react-native-portal (optional)
+    │       │   │   │   │           # ❌ CREATE - Mobile tooltip component
     │       │   │   │   └── │
     │       │   │   ├── Navigation/
     │       │   │   │   ├── Breadcrumb/
@@ -15591,6 +16722,7 @@ fe/
     │       │   │   │       │       # DEPENDENCIES:
     │       │   │   │       │       # - @shopify/flash-list
     │       │   │   │       │       # - react-native-gesture-handler
+    │       │   │   │       │       # ❌ CREATE - Mobile data grid component
     │       │   │   │       ├── KanbanBoard/
     │       │   │   │       │   └── KanbanBoard.native.tsx  # ❌ CREATE
     │       │   │   │       │       # Mobile kanban board component
@@ -15609,6 +16741,7 @@ fe/
     │       │   │   │       │       # - react-native-draggable-flatlist
     │       │   │   │       │       # - react-native-haptic-feedback
     │       │   │   │       │       # - react-native-reanimated
+    │       │   │   │       │       # ❌ CREATE - Mobile kanban board component
     │       │   │   │       └── Table/
     │       │   │   │           └── Table.native.tsx  # ❌ CREATE
     │       │   │   │               # Mobile responsive table component
@@ -15627,6 +16760,7 @@ fe/
     │       │   │   │               # DEPENDENCIES:
     │       │   │   │               # - @shopify/flash-list
     │       │   │   │               # - react-native-gesture-handler
+    │       │   │   │               # ❌ CREATE - Mobile responsive table component
     │       │   │   ├── Pagination/
     │       │   │   ├── Popover/
     │       │   │   ├── Progress/
