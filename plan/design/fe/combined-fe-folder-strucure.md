@@ -386,6 +386,22 @@ fe/
     │   │   │   │       └── time-tracker/
     │   │   │   │           └── index.tsx  # Time tracker widget
     │   │   │   │               # BE: contracts-be/work_diary
+    │   │   │   ├── (error-boundaries)/
+    │   │   │   │   ├── contracts/
+    │   │   │   │   │   └── _layout.tsx  # ❌ ADD - Contract ErrorBoundary wrapper
+    │   │   │   │   │       # Wraps contract routes with error recovery
+    │   │   │   │   │       # Catches and displays contract-specific errors
+    │   │   │   │   │       # Provides fallback UI and retry mechanisms
+    │   │   │   │   ├── jobs/
+    │   │   │   │   │   └── _layout.tsx  # ❌ ADD - Jobs ErrorBoundary wrapper
+    │   │   │   │   │       # Wraps job routes with error recovery
+    │   │   │   │   │       # Catches and displays job-specific errors
+    │   │   │   │   │       # Provides fallback UI and retry mechanisms
+    │   │   │   │   └── proposals/
+    │   │   │   │       └── _layout.tsx  # ❌ ADD - Proposals ErrorBoundary wrapper
+    │   │   │   │           # Wraps proposal routes with error recovery
+    │   │   │   │           # Catches and displays proposal-specific errors
+    │   │   │   │           # Provides fallback UI and retry mechanisms
     │   │   │   ├── (inbox)/
     │   │   │   │   ├── messages/
     │   │   │   │   │   ├── [conversationId]/
@@ -1351,6 +1367,106 @@ fe/
     │   │   │   │   │   └── index.tsx  # Admin dashboard (mobile)
     │   │   │   │   │       # BE: admin-be/analytics
     │   │   │   │   │       # GET /v1/admin/dashboard
+    │   │   │   │   ├── analytics/  # ❌ ADD - Analytics section (mobile)
+    │   │   │   │   │   ├── contracts/
+    │   │   │   │   │   │   ├── [contractId]/
+    │   │   │   │   │   │   │   └── index.tsx  # Contract analytics detail
+    │   │   │   │   │   │   │       # - Performance metrics
+    │   │   │   │   │   │   │       # - Time tracking analytics
+    │   │   │   │   │   │   │       # - Payment timeline
+    │   │   │   │   │   │   │       # BE: contracts-be/analytics
+    │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/analytics
+    │   │   │   │   │   │   └── index.tsx  # Contracts analytics overview
+    │   │   │   │   │   │       # - Active contracts performance
+    │   │   │   │   │   │       # - Completion rates
+    │   │   │   │   │   │       # - Average project duration
+    │   │   │   │   │   │       # BE: contracts-be/analytics
+    │   │   │   │   │   │       # GET /v1/contracts/analytics
+    │   │   │   │   │   ├── earnings/
+    │   │   │   │   │   │   ├── breakdown/
+    │   │   │   │   │   │   │   └── index.tsx  # Earnings breakdown by category
+    │   │   │   │   │   │   │       # - By project type
+    │   │   │   │   │   │   │       # - By client
+    │   │   │   │   │   │   │       # - By skill category
+    │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │       # GET /v1/reports/earnings/breakdown
+    │   │   │   │   │   │   ├── forecast/
+    │   │   │   │   │   │   │   └── index.tsx  # Earnings forecast
+    │   │   │   │   │   │   │       # - Projected earnings
+    │   │   │   │   │   │   │       # - Pipeline value
+    │   │   │   │   │   │   │       # - Growth trends
+    │   │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │   │       # GET /v1/reports/earnings/forecast
+    │   │   │   │   │   │   └── index.tsx  # Earnings analytics overview
+    │   │   │   │   │   │       # - Total earnings (monthly/yearly)
+    │   │   │   │   │   │       # - Earnings trends
+    │   │   │   │   │   │       # - Top earning projects
+    │   │   │   │   │   │       # BE: financial-be/reports
+    │   │   │   │   │   │       # GET /v1/reports/earnings
+    │   │   │   │   │   ├── jobs/
+    │   │   │   │   │   │   ├── [jobId]/
+    │   │   │   │   │   │   │   └── index.tsx  # Job analytics detail
+    │   │   │   │   │   │   │       # - View counts
+    │   │   │   │   │   │   │       # - Proposal conversion rate
+    │   │   │   │   │   │   │       # - Time to hire
+    │   │   │   │   │   │   │       # - Applicant quality metrics
+    │   │   │   │   │   │   │       # BE: jobs-be/analytics
+    │   │   │   │   │   │   │       # GET /v1/jobs/{job_id}/analytics
+    │   │   │   │   │   │   └── index.tsx  # Jobs analytics overview
+    │   │   │   │   │   │       # - Job performance summary
+    │   │   │   │   │   │       # - Average time to fill
+    │   │   │   │   │   │       # - Cost per hire
+    │   │   │   │   │   │       # BE: jobs-be/analytics
+    │   │   │   │   │   │       # GET /v1/jobs/analytics
+    │   │   │   │   │   ├── performance/
+    │   │   │   │   │   │   ├── quality-score/
+    │   │   │   │   │   │   │   └── index.tsx  # Quality score breakdown
+    │   │   │   │   │   │   │       # - Overall quality score
+    │   │   │   │   │   │   │       # - Contributing factors
+    │   │   │   │   │   │   │       # - Improvement suggestions
+    │   │   │   │   │   │   │       # BE: users-be/metrics
+    │   │   │   │   │   │   │       # GET /v1/users/me/quality-score
+    │   │   │   │   │   │   ├── success-rate/
+    │   │   │   │   │   │   │   └── index.tsx  # Success rate analytics
+    │   │   │   │   │   │   │       # - Project completion rate
+    │   │   │   │   │   │   │       # - On-time delivery rate
+    │   │   │   │   │   │   │       # - Client satisfaction rate
+    │   │   │   │   │   │   │       # BE: contracts-be/analytics
+    │   │   │   │   │   │   │       # GET /v1/contracts/success-rate
+    │   │   │   │   │   │   └── index.tsx  # Performance overview
+    │   │   │   │   │   │       # - Overall performance metrics
+    │   │   │   │   │   │       # - Success scores
+    │   │   │   │   │   │       # - Rating trends
+    │   │   │   │   │   │       # BE: users-be/metrics
+    │   │   │   │   │   │       # GET /v1/users/me/performance
+    │   │   │   │   │   ├── proposals/
+    │   │   │   │   │   │   ├── conversion/
+    │   │   │   │   │   │   │   └── index.tsx  # Proposal conversion analytics
+    │   │   │   │   │   │   │       # - Acceptance rate
+    │   │   │   │   │   │   │       # - Average time to response
+    │   │   │   │   │   │   │       # - Conversion by job type
+    │   │   │   │   │   │   │       # BE: proposals-be/analytics
+    │   │   │   │   │   │   │       # GET /v1/proposals/conversion-rate
+    │   │   │   │   │   │   ├── success-rate/
+    │   │   │   │   │   │   │   └── index.tsx  # Proposal success rate
+    │   │   │   │   │   │   │       # - Win rate by category
+    │   │   │   │   │   │   │       # - Competitive analysis
+    │   │   │   │   │   │   │       # - Improvement opportunities
+    │   │   │   │   │   │   │       # BE: proposals-be/analytics
+    │   │   │   │   │   │   │       # GET /v1/proposals/success-rate
+    │   │   │   │   │   │   └── index.tsx  # Proposals analytics overview
+    │   │   │   │   │   │       # - Total proposals submitted
+    │   │   │   │   │   │       # - Acceptance rate
+    │   │   │   │   │   │       # - Average bid amount
+    │   │   │   │   │   │       # BE: proposals-be/analytics
+    │   │   │   │   │   │       # GET /v1/proposals/analytics
+    │   │   │   │   │   ├── _layout.tsx  # Analytics stack navigator
+    │   │   │   │   │   └── index.tsx  # Analytics dashboard home
+    │   │   │   │   │       # - Overview of all analytics
+    │   │   │   │   │       # - Key performance indicators
+    │   │   │   │   │       # - Quick insights
+    │   │   │   │   │       # BE: Multiple services
+    │   │   │   │   │       # GET /v1/analytics/dashboard
     │   │   │   │   ├── browse/
     │   │   │   │   │   ├── freelancers/
     │   │   │   │   │   │   ├── [userId].tsx  # Freelancer profile (mobile)
@@ -1374,6 +1490,35 @@ fe/
     │   │   │   │   │       # GET /v1/jobs/categories
     │   │   │   │   ├── contracts/
     │   │   │   │   │   ├── [contractId]/
+    │   │   │   │   │   │   ├── disputes/  # ❌ ADD - Contract disputes
+    │   │   │   │   │   │   │   ├── [disputeId]/
+    │   │   │   │   │   │   │   │   ├── evidence/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Dispute evidence
+    │   │   │   │   │   │   │   │   │       # - Upload evidence
+    │   │   │   │   │   │   │   │   │       # - View submitted evidence
+    │   │   │   │   │   │   │   │   │       # - Add supporting documents
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │   │   │       # POST /v1/disputes/{dispute_id}/evidence
+    │   │   │   │   │   │   │   │   ├── resolution/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Dispute resolution
+    │   │   │   │   │   │   │   │   │       # - Accept resolution
+    │   │   │   │   │   │   │   │   │       # - Counter proposal
+    │   │   │   │   │   │   │   │   │       # - View arbitration decision
+    │   │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │   │   │       # POST /v1/disputes/{dispute_id}/resolution
+    │   │   │   │   │   │   │   │   └── index.tsx  # Dispute detail
+    │   │   │   │   │   │   │   │       # - Dispute status
+    │   │   │   │   │   │   │   │       # - Messages thread
+    │   │   │   │   │   │   │   │       # - Timeline
+    │   │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │   │       # GET /v1/disputes/{dispute_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Disputes list
+    │   │   │   │   │   │   │       # - Active disputes
+    │   │   │   │   │   │   │       # - Resolved disputes
+    │   │   │   │   │   │   │       # - Open new dispute
+    │   │   │   │   │   │   │       # BE: contracts-be/dispute
+    │   │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/disputes
+    │   │   │   │   │   │   │       # POST /v1/contracts/{contract_id}/disputes
     │   │   │   │   │   │   ├── chat.tsx  # Contract chat (mobile)
     │   │   │   │   │   │   │   # BE: communications-be/conversation
     │   │   │   │   │   │   │   # GET /v1/contracts/{contract_id}/messages
@@ -1389,9 +1534,44 @@ fe/
     │   │   │   │   │   │   ├── milestones.tsx  # Milestones (mobile)
     │   │   │   │   │   │   │   # BE: contracts-be/milestone
     │   │   │   │   │   │   │   # GET /v1/contracts/{contract_id}/milestones
-    │   │   │   │   │   │   └── workdiary.tsx  # Work diary (mobile)
-    │   │   │   │   │   │       # BE: contracts-be/workdiary
-    │   │   │   │   │   │       # GET /v1/contracts/{contract_id}/workdiary
+    │   │   │   │   │   │   ├── workdiary.tsx  # Work diary (mobile)
+    │   │   │   │   │   │   │   # BE: contracts-be/workdiary
+    │   │   │   │   │   │   │   # GET /v1/contracts/{contract_id}/workdiary
+    │   │   │   │   │   │   └── │
+    │   │   │   │   │   ├── templates/  # ❌ ADD - Contract templates
+    │   │   │   │   │   │   ├── [templateId]/
+    │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Edit template
+    │   │   │   │   │   │   │   │       # - Edit template fields
+    │   │   │   │   │   │   │   │       # - Customize terms
+    │   │   │   │   │   │   │   │       # - Save as new version
+    │   │   │   │   │   │   │   │       # BE: contracts-be/template
+    │   │   │   │   │   │   │   │       # PUT /v1/contract-templates/{template_id}
+    │   │   │   │   │   │   │   ├── preview/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Template preview
+    │   │   │   │   │   │   │   │       # - Preview template
+    │   │   │   │   │   │   │   │       # - Test with sample data
+    │   │   │   │   │   │   │   │       # BE: contracts-be/template
+    │   │   │   │   │   │   │   │       # GET /v1/contract-templates/{template_id}/preview
+    │   │   │   │   │   │   │   └── index.tsx  # Template detail
+    │   │   │   │   │   │   │       # - View template
+    │   │   │   │   │   │   │       # - Use template
+    │   │   │   │   │   │   │       # - Duplicate template
+    │   │   │   │   │   │   │       # BE: contracts-be/template
+    │   │   │   │   │   │   │       # GET /v1/contract-templates/{template_id}
+    │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   └── index.tsx  # Create new template
+    │   │   │   │   │   │   │       # - Define template structure
+    │   │   │   │   │   │   │       # - Set default terms
+    │   │   │   │   │   │   │       # - Add custom fields
+    │   │   │   │   │   │   │       # BE: contracts-be/template
+    │   │   │   │   │   │   │       # POST /v1/contract-templates
+    │   │   │   │   │   │   └── index.tsx  # Templates list
+    │   │   │   │   │   │       # - My templates
+    │   │   │   │   │   │       # - Platform templates
+    │   │   │   │   │   │       # - Filter by type
+    │   │   │   │   │   │       # BE: contracts-be/template
+    │   │   │   │   │   │       # GET /v1/contract-templates
     │   │   │   │   │   ├── _layout.tsx  # Contracts tab layout
     │   │   │   │   │   ├── active.tsx  # Active contracts (mobile)
     │   │   │   │   │   │   # BE: contracts-be/contract
@@ -1399,9 +1579,10 @@ fe/
     │   │   │   │   │   ├── completed.tsx  # Completed contracts (mobile)
     │   │   │   │   │   │   # BE: contracts-be/contract
     │   │   │   │   │   │   # GET /v1/contracts?status=completed
-    │   │   │   │   │   └── index.tsx  # All contracts (mobile)
-    │   │   │   │   │       # BE: contracts-be/contract
-    │   │   │   │   │       # GET /v1/contracts
+    │   │   │   │   │   ├── index.tsx  # All contracts (mobile)
+    │   │   │   │   │   │   # BE: contracts-be/contract
+    │   │   │   │   │   │   # GET /v1/contracts
+    │   │   │   │   │   └── │
     │   │   │   │   ├── dashboard/
     │   │   │   │   │   ├── _layout.tsx  # Dashboard tab layout
     │   │   │   │   │   ├── analytics.tsx  # User analytics (mobile)
@@ -1424,13 +1605,38 @@ fe/
     │   │   │   │   │   │   └── index.tsx  # Disputes list (mobile)
     │   │   │   │   │   │       # BE: contracts-be/dispute
     │   │   │   │   │   │       # GET /v1/disputes
-    │   │   │   │   │   ├── invoices/
+    │   │   │   │   │   ├── invoices/  # ❌ ADD - Invoice management
+    │   │   │   │   │   │   ├── [invoiceId]/
+    │   │   │   │   │   │   │   ├── download/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Download invoice
+    │   │   │   │   │   │   │   │       # - Download PDF
+    │   │   │   │   │   │   │   │       # - Email invoice
+    │   │   │   │   │   │   │   │       # - Print invoice
+    │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │       # GET /v1/invoices/{invoice_id}/download
+    │   │   │   │   │   │   │   ├── pay/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Pay invoice
+    │   │   │   │   │   │   │   │       # - Payment method selection
+    │   │   │   │   │   │   │   │       # - Process payment
+    │   │   │   │   │   │   │   │       # - Payment confirmation
+    │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │       # POST /v1/invoices/{invoice_id}/pay
+    │   │   │   │   │   │   │   └── index.tsx  # Invoice detail
+    │   │   │   │   │   │   │       # - Invoice information
+    │   │   │   │   │   │   │       # - Line items
+    │   │   │   │   │   │   │       # - Payment status
+    │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │       # GET /v1/invoices/{invoice_id}
     │   │   │   │   │   │   ├── [invoiceId].tsx  # Invoice detail (mobile)
     │   │   │   │   │   │   │   # BE: financial-be/invoice
     │   │   │   │   │   │   │   # GET /v1/invoices/{invoice_id}
     │   │   │   │   │   │   └── index.tsx  # Invoices list (mobile)
     │   │   │   │   │   │       # BE: financial-be/invoice
     │   │   │   │   │   │       # GET /v1/invoices
+    │   │   │   │   │   │       # Invoices list
+    │   │   │   │   │   │       # - All invoices
+    │   │   │   │   │   │       # - Filter by status (paid/pending/overdue)
+    │   │   │   │   │   │       # - Sort by date
     │   │   │   │   │   ├── payouts/
     │   │   │   │   │   │   ├── [payoutId].tsx  # Payout detail (mobile)
     │   │   │   │   │   │   │   # BE: financial-be/payout
@@ -1441,13 +1647,40 @@ fe/
     │   │   │   │   │   │   └── request.tsx  # Request payout (mobile)
     │   │   │   │   │   │       # BE: financial-be/payout
     │   │   │   │   │   │       # POST /v1/payouts
+    │   │   │   │   │   ├── tax-documents/  # ❌ ADD - Tax document management
+    │   │   │   │   │   │   ├── [documentId]/
+    │   │   │   │   │   │   │   ├── download/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Download tax document
+    │   │   │   │   │   │   │   │       # - Download PDF
+    │   │   │   │   │   │   │   │       # - Email document
+    │   │   │   │   │   │   │   │       # BE: financial-be/tax
+    │   │   │   │   │   │   │   │       # GET /v1/tax-documents/{document_id}/download
+    │   │   │   │   │   │   │   └── index.tsx  # Tax document detail
+    │   │   │   │   │   │   │       # - Document information
+    │   │   │   │   │   │   │       # - Year summary
+    │   │   │   │   │   │   │       # BE: financial-be/tax
+    │   │   │   │   │   │   │       # GET /v1/tax-documents/{document_id}
+    │   │   │   │   │   │   ├── generate/
+    │   │   │   │   │   │   │   └── index.tsx  # Generate tax documents
+    │   │   │   │   │   │   │       # - Select year
+    │   │   │   │   │   │   │       # - Generate 1099
+    │   │   │   │   │   │   │       # - Generate W9
+    │   │   │   │   │   │   │       # BE: financial-be/tax
+    │   │   │   │   │   │   │       # POST /v1/tax-documents/generate
+    │   │   │   │   │   │   └── index.tsx  # Tax documents list
+    │   │   │   │   │   │       # - All tax documents
+    │   │   │   │   │   │       # - Filter by year
+    │   │   │   │   │   │       # - Filter by type (1099, W9, etc.)
+    │   │   │   │   │   │       # BE: financial-be/tax
+    │   │   │   │   │   │       # GET /v1/tax-documents
     │   │   │   │   │   ├── _layout.tsx  # Financial tab layout
     │   │   │   │   │   ├── transactions.tsx  # Transaction history (mobile)
     │   │   │   │   │   │   # BE: financial-be/transaction
     │   │   │   │   │   │   # GET /v1/transactions
-    │   │   │   │   │   └── wallet.tsx  # Wallet (mobile)
-    │   │   │   │   │       # BE: financial-be/wallet
-    │   │   │   │   │       # GET /v1/wallet
+    │   │   │   │   │   ├── wallet.tsx  # Wallet (mobile)
+    │   │   │   │   │   │   # BE: financial-be/wallet
+    │   │   │   │   │   │   # GET /v1/wallet
+    │   │   │   │   │   └── │
     │   │   │   │   ├── jobs/
     │   │   │   │   │   ├── [jobId]/
     │   │   │   │   │   │   ├── apply.tsx  # Apply to job (mobile)
@@ -1459,6 +1692,40 @@ fe/
     │   │   │   │   │   │   └── proposals.tsx  # Job proposals (client view, mobile)
     │   │   │   │   │   │       # BE: proposals-be/proposal
     │   │   │   │   │   │       # GET /v1/jobs/{job_id}/proposals
+    │   │   │   │   │   ├── templates/  # ❌ ADD - Job templates
+    │   │   │   │   │   │   ├── [templateId]/
+    │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Edit job template
+    │   │   │   │   │   │   │   │       # - Edit template fields
+    │   │   │   │   │   │   │   │       # - Update requirements
+    │   │   │   │   │   │   │   │       # - Save changes
+    │   │   │   │   │   │   │   │       # BE: jobs-be/template
+    │   │   │   │   │   │   │   │       # PUT /v1/job-templates/{template_id}
+    │   │   │   │   │   │   │   ├── use/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Use template
+    │   │   │   │   │   │   │   │       # - Pre-fill job form
+    │   │   │   │   │   │   │   │       # - Customize before posting
+    │   │   │   │   │   │   │   │       # BE: jobs-be/template
+    │   │   │   │   │   │   │   │       # GET /v1/job-templates/{template_id}/use
+    │   │   │   │   │   │   │   └── index.tsx  # Template detail
+    │   │   │   │   │   │   │       # - View template
+    │   │   │   │   │   │   │       # - Duplicate template
+    │   │   │   │   │   │   │       # - Delete template
+    │   │   │   │   │   │   │       # BE: jobs-be/template
+    │   │   │   │   │   │   │       # GET /v1/job-templates/{template_id}
+    │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   └── index.tsx  # Create job template
+    │   │   │   │   │   │   │       # - Define template structure
+    │   │   │   │   │   │   │       # - Set default values
+    │   │   │   │   │   │   │       # - Save template
+    │   │   │   │   │   │   │       # BE: jobs-be/template
+    │   │   │   │   │   │   │       # POST /v1/job-templates
+    │   │   │   │   │   │   └── index.tsx  # Job templates list
+    │   │   │   │   │   │       # - My templates
+    │   │   │   │   │   │       # - Recent templates
+    │   │   │   │   │   │       # - Filter by category
+    │   │   │   │   │   │       # BE: jobs-be/template
+    │   │   │   │   │   │       # GET /v1/job-templates
     │   │   │   │   │   ├── _layout.tsx  # Jobs tab layout
     │   │   │   │   │   ├── create.tsx  # Create job (mobile)
     │   │   │   │   │   │   # BE: jobs-be/job
@@ -1472,9 +1739,10 @@ fe/
     │   │   │   │   │   ├── my-jobs.tsx  # My posted jobs (mobile)
     │   │   │   │   │   │   # BE: jobs-be/job
     │   │   │   │   │   │   # GET /v1/jobs/my-jobs
-    │   │   │   │   │   └── saved.tsx  # Saved jobs (mobile)
-    │   │   │   │   │       # BE: jobs-be/saved
-    │   │   │   │   │       # GET /v1/jobs/saved
+    │   │   │   │   │   ├── saved.tsx  # Saved jobs (mobile)
+    │   │   │   │   │   │   # BE: jobs-be/saved
+    │   │   │   │   │   │   # GET /v1/jobs/saved
+    │   │   │   │   │   └── │
     │   │   │   │   ├── messages/
     │   │   │   │   │   ├── [conversationId]/
     │   │   │   │   │   │   ├── chat.tsx  # Chat interface (mobile)
@@ -1511,6 +1779,99 @@ fe/
     │   │   │   │   │   │   # BE: communications-be/notification
     │   │   │   │   │   └── settings.tsx  # Notification settings
     │   │   │   │   │       # BE: communications-be/preferences
+    │   │   │   │   ├── organizations/  # ❌ ADD - Organization management
+    │   │   │   │   │   ├── [orgId]/
+    │   │   │   │   │   │   ├── billing/
+    │   │   │   │   │   │   │   ├── invoices/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Organization invoices
+    │   │   │   │   │   │   │   │       # - View org invoices
+    │   │   │   │   │   │   │   │       # - Payment history
+    │   │   │   │   │   │   │   │       # BE: financial-be/invoice
+    │   │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/invoices
+    │   │   │   │   │   │   │   ├── payment-methods/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Org payment methods
+    │   │   │   │   │   │   │   │       # - Add/remove payment methods
+    │   │   │   │   │   │   │   │       # - Set default method
+    │   │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/payment-methods
+    │   │   │   │   │   │   │   └── index.tsx  # Organization billing
+    │   │   │   │   │   │   │       # - Billing overview
+    │   │   │   │   │   │   │       # - Subscription details
+    │   │   │   │   │   │   │       # - Usage metrics
+    │   │   │   │   │   │   │       # BE: financial-be/billing
+    │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/billing
+    │   │   │   │   │   │   ├── members/
+    │   │   │   │   │   │   │   ├── [memberId]/
+    │   │   │   │   │   │   │   │   ├── permissions/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Member permissions
+    │   │   │   │   │   │   │   │   │       # - Edit member permissions
+    │   │   │   │   │   │   │   │   │       # - Role assignment
+    │   │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │   │       # PUT /v1/organizations/{org_id}/members/{member_id}/permissions
+    │   │   │   │   │   │   │   │   └── index.tsx  # Member detail
+    │   │   │   │   │   │   │   │       # - View member profile
+    │   │   │   │   │   │   │   │       # - Activity history
+    │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/members/{member_id}
+    │   │   │   │   │   │   │   ├── invite/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Invite members
+    │   │   │   │   │   │   │   │       # - Send invitations
+    │   │   │   │   │   │   │   │       # - Set roles
+    │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │       # POST /v1/organizations/{org_id}/invitations
+    │   │   │   │   │   │   │   └── index.tsx  # Members list
+    │   │   │   │   │   │   │       # - All members
+    │   │   │   │   │   │   │       # - Pending invitations
+    │   │   │   │   │   │   │       # - Remove members
+    │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/members
+    │   │   │   │   │   │   ├── projects/
+    │   │   │   │   │   │   │   ├── [projectId]/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Project detail
+    │   │   │   │   │   │   │   │       # - Project information
+    │   │   │   │   │   │   │   │       # - Associated contracts
+    │   │   │   │   │   │   │   │       # - Team members
+    │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/projects/{project_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Projects list
+    │   │   │   │   │   │   │       # - All projects
+    │   │   │   │   │   │   │       # - Create project
+    │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/projects
+    │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   ├── branding/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Organization branding
+    │   │   │   │   │   │   │   │       # - Logo upload
+    │   │   │   │   │   │   │   │       # - Brand colors
+    │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │       # PUT /v1/organizations/{org_id}/branding
+    │   │   │   │   │   │   │   ├── general/
+    │   │   │   │   │   │   │   │   └── index.tsx  # General settings
+    │   │   │   │   │   │   │   │       # - Organization name
+    │   │   │   │   │   │   │   │       # - Contact information
+    │   │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │   │       # PUT /v1/organizations/{org_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Settings overview
+    │   │   │   │   │   │   │       # - Navigation to settings sections
+    │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │       # GET /v1/organizations/{org_id}/settings
+    │   │   │   │   │   │   └── index.tsx  # Organization detail
+    │   │   │   │   │   │       # - Organization overview
+    │   │   │   │   │   │       # - Quick stats
+    │   │   │   │   │   │       # - Recent activity
+    │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │       # GET /v1/organizations/{org_id}
+    │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   └── index.tsx  # Create organization
+    │   │   │   │   │   │       # - Organization details
+    │   │   │   │   │   │       # - Setup billing
+    │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │       # POST /v1/organizations
+    │   │   │   │   │   └── index.tsx  # Organizations list
+    │   │   │   │   │       # - My organizations
+    │   │   │   │   │       # - Create new organization
+    │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │       # GET /v1/organizations
     │   │   │   │   ├── profile/
     │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   ├── basic.tsx  # Edit basic info (mobile)
@@ -1610,6 +1971,100 @@ fe/
     │   │   │   │   │   │   └── phone.tsx  # Change phone (mobile)
     │   │   │   │   │   │       # BE: users-be/account
     │   │   │   │   │   │       # PUT /v1/users/me/phone
+    │   │   │   │   │   ├── api/  # ❌ ADD - API settings
+    │   │   │   │   │   │   ├── documentation/
+    │   │   │   │   │   │   │   └── index.tsx  # API documentation
+    │   │   │   │   │   │   │       # - API endpoints
+    │   │   │   │   │   │   │       # - Code examples
+    │   │   │   │   │   │   │       # - Authentication guide
+    │   │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   │   ├── keys/
+    │   │   │   │   │   │   │   ├── [keyId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit API key
+    │   │   │   │   │   │   │   │   │       # - Update key name
+    │   │   │   │   │   │   │   │   │       # - Update permissions
+    │   │   │   │   │   │   │   │   │       # BE: users-be/api_key
+    │   │   │   │   │   │   │   │   │       # PUT /v1/users/me/api-keys/{key_id}
+    │   │   │   │   │   │   │   │   ├── revoke/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Revoke API key
+    │   │   │   │   │   │   │   │   │       # - Confirm revocation
+    │   │   │   │   │   │   │   │   │       # BE: users-be/api_key
+    │   │   │   │   │   │   │   │   │       # DELETE /v1/users/me/api-keys/{key_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # API key detail
+    │   │   │   │   │   │   │   │       # - Key information
+    │   │   │   │   │   │   │   │       # - Usage statistics
+    │   │   │   │   │   │   │   │       # - Last used
+    │   │   │   │   │   │   │   │       # BE: users-be/api_key
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/api-keys/{key_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create API key
+    │   │   │   │   │   │   │   │       # - Key name
+    │   │   │   │   │   │   │   │       # - Permissions
+    │   │   │   │   │   │   │   │       # - Expiration
+    │   │   │   │   │   │   │   │       # BE: users-be/api_key
+    │   │   │   │   │   │   │   │       # POST /v1/users/me/api-keys
+    │   │   │   │   │   │   │   └── index.tsx  # API keys list
+    │   │   │   │   │   │   │       # - Active keys
+    │   │   │   │   │   │   │       # - Create new key
+    │   │   │   │   │   │   │       # - Revoke key
+    │   │   │   │   │   │   │       # BE: users-be/api_key
+    │   │   │   │   │   │   │       # GET /v1/users/me/api-keys
+    │   │   │   │   │   │   └── index.tsx  # API settings home
+    │   │   │   │   │   │       # - Overview
+    │   │   │   │   │   │       # - Quick links
+    │   │   │   │   │   │       # BE: None (navigation)
+    │   │   │   │   │   ├── automation/  # ❌ ADD - Automation settings
+    │   │   │   │   │   │   ├── rules/
+    │   │   │   │   │   │   │   ├── [ruleId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit automation rule
+    │   │   │   │   │   │   │   │   │       # - Edit conditions
+    │   │   │   │   │   │   │   │   │       # - Edit actions
+    │   │   │   │   │   │   │   │   │       # - Test rule
+    │   │   │   │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │   │   │   │       # PUT /v1/users/me/automation/rules/{rule_id}
+    │   │   │   │   │   │   │   │   ├── history/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Rule execution history
+    │   │   │   │   │   │   │   │   │       # - Execution logs
+    │   │   │   │   │   │   │   │   │       # - Success/failure counts
+    │   │   │   │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │   │   │   │       # GET /v1/users/me/automation/rules/{rule_id}/history
+    │   │   │   │   │   │   │   │   └── index.tsx  # Rule detail
+    │   │   │   │   │   │   │   │       # - Rule configuration
+    │   │   │   │   │   │   │   │       # - Enable/disable
+    │   │   │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/automation/rules/{rule_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create automation rule
+    │   │   │   │   │   │   │   │       # - Define trigger
+    │   │   │   │   │   │   │   │       # - Set conditions
+    │   │   │   │   │   │   │   │       # - Configure actions
+    │   │   │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │   │   │       # POST /v1/users/me/automation/rules
+    │   │   │   │   │   │   │   └── index.tsx  # Automation rules list
+    │   │   │   │   │   │   │       # - Active rules
+    │   │   │   │   │   │   │       # - Disabled rules
+    │   │   │   │   │   │   │       # - Create new rule
+    │   │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │   │       # GET /v1/users/me/automation/rules
+    │   │   │   │   │   │   ├── templates/
+    │   │   │   │   │   │   │   ├── [templateId]/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Automation template detail
+    │   │   │   │   │   │   │   │       # - Template preview
+    │   │   │   │   │   │   │   │       # - Use template
+    │   │   │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │   │   │       # GET /v1/automation/templates/{template_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Automation templates
+    │   │   │   │   │   │   │       # - Pre-built templates
+    │   │   │   │   │   │   │       # - Community templates
+    │   │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │   │       # GET /v1/automation/templates
+    │   │   │   │   │   │   └── index.tsx  # Automation settings home
+    │   │   │   │   │   │       # - Overview
+    │   │   │   │   │   │       # - Active automations
+    │   │   │   │   │   │       # BE: users-be/automation
+    │   │   │   │   │   │       # GET /v1/users/me/automation
     │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   ├── payment-methods.tsx  # Payment methods (mobile)
     │   │   │   │   │   │   │   # BE: financial-be/payment-method
@@ -1617,6 +2072,256 @@ fe/
     │   │   │   │   │   │   └── subscription.tsx  # Subscription (mobile)
     │   │   │   │   │   │       # BE: financial-be/subscription
     │   │   │   │   │   │       # GET /v1/subscriptions
+    │   │   │   │   │   ├── developer/  # ❌ ADD - Developer settings
+    │   │   │   │   │   │   ├── oauth-apps/
+    │   │   │   │   │   │   │   ├── [appId]/
+    │   │   │   │   │   │   │   │   ├── credentials/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app credentials
+    │   │   │   │   │   │   │   │   │       # - Client ID/Secret
+    │   │   │   │   │   │   │   │   │       # - Regenerate secret
+    │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │   │       # POST /v1/developer/oauth-apps/{app_id}/regenerate-secret
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit OAuth app
+    │   │   │   │   │   │   │   │   │       # - Edit app details
+    │   │   │   │   │   │   │   │   │       # - Update redirect URIs
+    │   │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │   │       # PUT /v1/developer/oauth-apps/{app_id}
+    │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app detail
+    │   │   │   │   │   │   │   │       # - App information
+    │   │   │   │   │   │   │   │       # - Usage statistics
+    │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │       # GET /v1/developer/oauth-apps/{app_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create OAuth app
+    │   │   │   │   │   │   │   │       # - App name
+    │   │   │   │   │   │   │   │       # - Redirect URIs
+    │   │   │   │   │   │   │   │       # - Scopes
+    │   │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │   │       # POST /v1/developer/oauth-apps
+    │   │   │   │   │   │   │   └── index.tsx  # OAuth apps list
+    │   │   │   │   │   │   │       # - All OAuth apps
+    │   │   │   │   │   │   │       # - Create new app
+    │   │   │   │   │   │   │       # BE: users-be/oauth_app
+    │   │   │   │   │   │   │       # GET /v1/developer/oauth-apps
+    │   │   │   │   │   │   ├── webhooks/
+    │   │   │   │   │   │   │   ├── [webhookId]/
+    │   │   │   │   │   │   │   │   ├── edit/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit webhook
+    │   │   │   │   │   │   │   │   │       # - Update URL
+    │   │   │   │   │   │   │   │   │       # - Update events
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # PUT /v1/users/me/webhooks/{webhook_id}
+    │   │   │   │   │   │   │   │   ├── logs/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook logs
+    │   │   │   │   │   │   │   │   │       # - Delivery attempts
+    │   │   │   │   │   │   │   │   │       # - Success/failure status
+    │   │   │   │   │   │   │   │   │       # - Retry failed deliveries
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # GET /v1/users/me/webhooks/{webhook_id}/logs
+    │   │   │   │   │   │   │   │   ├── test/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Test webhook
+    │   │   │   │   │   │   │   │   │       # - Send test payload
+    │   │   │   │   │   │   │   │   │       # - Verify endpoint
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # POST /v1/users/me/webhooks/{webhook_id}/test
+    │   │   │   │   │   │   │   │   └── index.tsx  # Webhook detail
+    │   │   │   │   │   │   │   │       # - Webhook configuration
+    │   │   │   │   │   │   │   │       # - Event subscriptions
+    │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/webhooks/{webhook_id}
+    │   │   │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create webhook
+    │   │   │   │   │   │   │   │       # - Webhook URL
+    │   │   │   │   │   │   │   │       # - Event selection
+    │   │   │   │   │   │   │   │       # - Secret key
+    │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │       # POST /v1/users/me/webhooks
+    │   │   │   │   │   │   │   └── index.tsx  # Webhooks list
+    │   │   │   │   │   │   │       # - All webhooks
+    │   │   │   │   │   │   │       # - Active/inactive status
+    │   │   │   │   │   │   │       # - Create new webhook
+    │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       # GET /v1/users/me/webhooks
+    │   │   │   │   │   │   └── index.tsx  # Developer settings home
+    │   │   │   │   │   │       # - API keys overview
+    │   │   │   │   │   │       # - OAuth apps overview
+    │   │   │   │   │   │       # - Webhooks overview
+    │   │   │   │   │   │       # BE: None (navigation)
+    │   │   │   │   │   ├── devices/  # ❌ ADD - Connected devices
+    │   │   │   │   │   │   ├── [deviceId]/
+    │   │   │   │   │   │   │   ├── revoke/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Revoke device access
+    │   │   │   │   │   │   │   │       # - Confirm revocation
+    │   │   │   │   │   │   │   │       # - Logout from device
+    │   │   │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │   │   │       # DELETE /v1/users/me/devices/{device_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Device detail
+    │   │   │   │   │   │   │       # - Device information
+    │   │   │   │   │   │   │       # - Last active
+    │   │   │   │   │   │   │       # - Location
+    │   │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │   │       # GET /v1/users/me/devices/{device_id}
+    │   │   │   │   │   │   └── index.tsx  # Connected devices list
+    │   │   │   │   │   │       # - Active sessions
+    │   │   │   │   │   │       # - Device trust management
+    │   │   │   │   │   │       # - Logout devices
+    │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │       # GET /v1/users/me/devices
+    │   │   │   │   │   ├── integrations/
+    │   │   │   │   │   │   ├── calendar/  # ❌ ADD - Calendar integration
+    │   │   │   │   │   │   │   ├── google/
+    │   │   │   │   │   │   │   │   ├── authorize/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Authorize Google Calendar
+    │   │   │   │   │   │   │   │   │       # - OAuth flow
+    │   │   │   │   │   │   │   │   │       # - Grant permissions
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # POST /v1/users/me/integrations/google-calendar/authorize
+    │   │   │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Google Calendar settings
+    │   │   │   │   │   │   │   │   │       # - Sync preferences
+    │   │   │   │   │   │   │   │   │       # - Calendar selection
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # PUT /v1/users/me/integrations/google-calendar/settings
+    │   │   │   │   │   │   │   │   └── index.tsx  # Google Calendar integration
+    │   │   │   │   │   │   │   │       # - Connection status
+    │   │   │   │   │   │   │   │       # - Sync status
+    │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/integrations/google-calendar
+    │   │   │   │   │   │   │   ├── outlook/
+    │   │   │   │   │   │   │   │   ├── authorize/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Authorize Outlook Calendar
+    │   │   │   │   │   │   │   │   │       # - OAuth flow
+    │   │   │   │   │   │   │   │   │       # - Grant permissions
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # POST /v1/users/me/integrations/outlook-calendar/authorize
+    │   │   │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Outlook Calendar settings
+    │   │   │   │   │   │   │   │   │       # - Sync preferences
+    │   │   │   │   │   │   │   │   │       # - Calendar selection
+    │   │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │   │       # PUT /v1/users/me/integrations/outlook-calendar/settings
+    │   │   │   │   │   │   │   │   └── index.tsx  # Outlook Calendar integration
+    │   │   │   │   │   │   │   │       # - Connection status
+    │   │   │   │   │   │   │   │       # - Sync status
+    │   │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/integrations/outlook-calendar
+    │   │   │   │   │   │   │   └── index.tsx  # Calendar integrations
+    │   │   │   │   │   │   │       # - Available calendar providers
+    │   │   │   │   │   │   │       # - Connection status
+    │   │   │   │   │   │   │       # BE: users-be/integrations
+    │   │   │   │   │   │   │       # GET /v1/users/me/integrations/calendar
+    │   │   │   │   │   │   ├── payment/  # ❌ ADD - Payment provider integration
+    │   │   │   │   │   │   │   ├── paypal/
+    │   │   │   │   │   │   │   │   ├── authorize/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Authorize PayPal
+    │   │   │   │   │   │   │   │   │       # - OAuth flow
+    │   │   │   │   │   │   │   │   │       # - Connect PayPal account
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │   │   │       # POST /v1/payment-methods/paypal/authorize
+    │   │   │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # PayPal settings
+    │   │   │   │   │   │   │   │   │       # - Default account
+    │   │   │   │   │   │   │   │   │       # - Payout preferences
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │   │   │       # PUT /v1/payment-methods/paypal/settings
+    │   │   │   │   │   │   │   │   └── index.tsx  # PayPal integration
+    │   │   │   │   │   │   │   │       # - Connection status
+    │   │   │   │   │   │   │   │       # - Account details
+    │   │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │   │       # GET /v1/payment-methods/paypal
+    │   │   │   │   │   │   │   ├── stripe/
+    │   │   │   │   │   │   │   │   ├── authorize/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Authorize Stripe
+    │   │   │   │   │   │   │   │   │       # - OAuth flow
+    │   │   │   │   │   │   │   │   │       # - Connect Stripe account
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │   │   │       # POST /v1/payment-methods/stripe/authorize
+    │   │   │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Stripe settings
+    │   │   │   │   │   │   │   │   │       # - Default account
+    │   │   │   │   │   │   │   │   │       # - Payout preferences
+    │   │   │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │   │   │       # PUT /v1/payment-methods/stripe/settings
+    │   │   │   │   │   │   │   │   └── index.tsx  # Stripe integration
+    │   │   │   │   │   │   │   │       # - Connection status
+    │   │   │   │   │   │   │   │       # - Account details
+    │   │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │   │       # GET /v1/payment-methods/stripe
+    │   │   │   │   │   │   │   └── index.tsx  # Payment provider integrations
+    │   │   │   │   │   │   │       # - Available providers
+    │   │   │   │   │   │   │       # - Connection status
+    │   │   │   │   │   │   │       # BE: financial-be/payment-method
+    │   │   │   │   │   │   │       # GET /v1/payment-methods/integrations
+    │   │   │   │   │   │   └── │
+    │   │   │   │   │   ├── organization/  # ❌ ADD - Organization settings (mobile)
+    │   │   │   │   │   │   ├── billing/
+    │   │   │   │   │   │   │   └── index.tsx  # Organization billing (mobile)
+    │   │   │   │   │   │   │       # - Billing overview
+    │   │   │   │   │   │   │       # - Payment methods
+    │   │   │   │   │   │   │       # BE: financial-be/billing
+    │   │   │   │   │   │   │       # GET /v1/organizations/me/billing
+    │   │   │   │   │   │   ├── members/
+    │   │   │   │   │   │   │   └── index.tsx  # Organization members (mobile)
+    │   │   │   │   │   │   │       # - Members list
+    │   │   │   │   │   │   │       # - Invite members
+    │   │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │   │       # GET /v1/organizations/me/members
+    │   │   │   │   │   │   └── index.tsx  # Organization settings (mobile)
+    │   │   │   │   │   │       # - Basic settings
+    │   │   │   │   │   │       # - Quick actions
+    │   │   │   │   │   │       # BE: users-be/org
+    │   │   │   │   │   │       # GET /v1/organizations/me/settings
+    │   │   │   │   │   ├── security/
+    │   │   │   │   │   │   ├── sessions/  # ❌ ADD - Active sessions
+    │   │   │   │   │   │   │   ├── [sessionId]/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Session detail
+    │   │   │   │   │   │   │   │       # - Session information
+    │   │   │   │   │   │   │   │       # - Revoke session
+    │   │   │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │   │   │       # GET /v1/users/me/sessions/{session_id}
+    │   │   │   │   │   │   │   │       # DELETE /v1/users/me/sessions/{session_id}
+    │   │   │   │   │   │   │   └── index.tsx  # Active sessions
+    │   │   │   │   │   │   │       # - All active sessions
+    │   │   │   │   │   │   │       # - Logout from sessions
+    │   │   │   │   │   │   │       # - Current session indicator
+    │   │   │   │   │   │   │       # BE: users-be/sessions
+    │   │   │   │   │   │   │       # GET /v1/users/me/sessions
+    │   │   │   │   │   │   └── │
+    │   │   │   │   │   ├── subscription/
+    │   │   │   │   │   │   └── manage-plan/  # ❌ ENHANCE - Add full plan management
+    │   │   │   │   │   │       ├── cancel/
+    │   │   │   │   │   │       │   └── index.tsx  # Cancel subscription
+    │   │   │   │   │   │       │       # - Cancellation reasons
+    │   │   │   │   │   │       │       # - Confirm cancellation
+    │   │   │   │   │   │       │       # - Offer alternatives
+    │   │   │   │   │   │       │       # BE: subscriptions-be/subscription
+    │   │   │   │   │   │       │       # POST /v1/subscriptions/me/cancel
+    │   │   │   │   │   │       ├── change/
+    │   │   │   │   │   │       │   └── index.tsx  # Change subscription plan
+    │   │   │   │   │   │       │       # - Select new plan
+    │   │   │   │   │   │       │       # - Preview changes
+    │   │   │   │   │   │       │       # - Prorated billing
+    │   │   │   │   │   │       │       # BE: subscriptions-be/subscription
+    │   │   │   │   │   │       │       # POST /v1/subscriptions/me/change-plan
+    │   │   │   │   │   │       ├── pause/
+    │   │   │   │   │   │       │   └── index.tsx  # Pause subscription
+    │   │   │   │   │   │       │       # - Set pause duration
+    │   │   │   │   │   │       │       # - Confirm pause
+    │   │   │   │   │   │       │       # BE: subscriptions-be/subscription
+    │   │   │   │   │   │       │       # POST /v1/subscriptions/me/pause
+    │   │   │   │   │   │       ├── resume/
+    │   │   │   │   │   │       │   └── index.tsx  # Resume subscription
+    │   │   │   │   │   │       │       # - Resume paused subscription
+    │   │   │   │   │   │       │       # - Update billing
+    │   │   │   │   │   │       │       # BE: subscriptions-be/subscription
+    │   │   │   │   │   │       │       # POST /v1/subscriptions/me/resume
+    │   │   │   │   │   │       └── index.tsx  # Manage subscription plan
+    │   │   │   │   │   │           # - Current plan details
+    │   │   │   │   │   │           # - Usage statistics
+    │   │   │   │   │   │           # - Change/cancel options
+    │   │   │   │   │   │           # BE: subscriptions-be/subscription
+    │   │   │   │   │   │           # GET /v1/subscriptions/me
     │   │   │   │   │   ├── _layout.tsx  # Settings tab layout
     │   │   │   │   │   ├── index.tsx  # Settings overview (mobile)
     │   │   │   │   │   ├── notifications.tsx  # Notification settings (mobile)
@@ -1625,12 +2330,13 @@ fe/
     │   │   │   │   │   ├── privacy.tsx  # Privacy settings (mobile)
     │   │   │   │   │   │   # BE: users-be/privacy
     │   │   │   │   │   │   # GET /v1/users/me/privacy
-    │   │   │   │   │   └── security.tsx  # Security settings (mobile)
-    │   │   │   │   │       # - Two-factor auth
-    │   │   │   │   │       # - Active sessions
-    │   │   │   │   │       # BE: users-be/mfa, users-be/sessions
-    │   │   │   │   │       # GET /v1/users/me/mfa
-    │   │   │   │   │       # GET /v1/users/me/sessions
+    │   │   │   │   │   ├── security.tsx  # Security settings (mobile)
+    │   │   │   │   │   │   # - Two-factor auth
+    │   │   │   │   │   │   # - Active sessions
+    │   │   │   │   │   │   # BE: users-be/mfa, users-be/sessions
+    │   │   │   │   │   │   # GET /v1/users/me/mfa
+    │   │   │   │   │   │   # GET /v1/users/me/sessions
+    │   │   │   │   │   └── │
     │   │   │   │   ├── _layout.tsx  # Tabs layout
     │   │   │   │   │   # - Bottom tab navigator
     │   │   │   │   │   # - Tab bar icons
@@ -1660,11 +2366,12 @@ fe/
     │   │   │   │   │   # - Stats
     │   │   │   │   │   # BE: users-be/profile
     │   │   │   │   │   # GET /v1/users/me
-    │   │   │   │   └── proposals.tsx  # Proposals tab
-    │   │   │   │       # - My proposals (freelancer)
-    │   │   │   │       # - Received proposals (client, redirects to job)
-    │   │   │   │       # BE: proposals-be
-    │   │   │   │       # GET /v1/proposals/my-proposals
+    │   │   │   │   ├── proposals.tsx  # Proposals tab
+    │   │   │   │   │   # - My proposals (freelancer)
+    │   │   │   │   │   # - Received proposals (client, redirects to job)
+    │   │   │   │   │   # BE: proposals-be
+    │   │   │   │   │   # GET /v1/proposals/my-proposals
+    │   │   │   │   └── │
     │   │   │   ├── (work)/
     │   │   │   │   └── contracts/
     │   │   │   │       └── [id]/
@@ -2090,6 +2797,14 @@ fe/
     │   │   │   │   ├── notifications.tsx  # Notification settings
     │   │   │   │   ├── privacy.tsx  # Privacy settings
     │   │   │   │   └── security.tsx  # Security settings
+    │   │   │   ├── src/
+    │   │   │   │   ├── hooks/
+    │   │   │   │   │   ├── use-auth.ts  # ❌ DELETE - Duplicate
+    │   │   │   │   │   ├── use-biometric.ts  # ✅ KEEP - Mobile-specific
+    │   │   │   │   │   ├── use-form-validation.ts  # ❌ DELETE - Duplicate
+    │   │   │   │   │   ├── use-form.ts  # ❌ DELETE - Duplicate
+    │   │   │   │   │   └── use-session.ts  # ❌ DELETE - Duplicate
+    │   │   │   │   └── │
     │   │   │   ├── status/
     │   │   │   │   └── index.tsx  # Status & incidents (mobile)
     │   │   │   │       # BE: utility/status — GET /v1/status, /v1/incidents
@@ -2282,6 +2997,233 @@ fe/
     │   │   │   # - Zustand
     │   │   ├── tailwind.config.js  # Tailwind config (NativeWind)
     │   │   ├── tsconfig.json  # TypeScript config
+    │   │   └── │
+    │   ├── packages/
+    │   │   ├── hooks/
+    │   │   │   ├── contracts/  # ❌ CREATE - Domain-specific hooks
+    │   │   │   │   ├── use-contract.ts  # Single contract operations
+    │   │   │   │   │   # - Fetch contract by ID
+    │   │   │   │   │   # - Update contract status
+    │   │   │   │   │   # - Contract actions (pause, complete, etc.)
+    │   │   │   │   │   # BE: contracts-be/contract
+    │   │   │   │   │   # GET /v1/contracts/{contract_id}
+    │   │   │   │   ├── use-contracts.ts  # List/search contracts
+    │   │   │   │   │   # - Fetch contracts list
+    │   │   │   │   │   # - Filter by status
+    │   │   │   │   │   # - Pagination
+    │   │   │   │   │   # BE: contracts-be/contract
+    │   │   │   │   │   # GET /v1/contracts
+    │   │   │   │   ├── use-milestones.ts  # Milestone operations
+    │   │   │   │   │   # - Fetch milestones for contract
+    │   │   │   │   │   # - Create milestone
+    │   │   │   │   │   # - Update milestone status
+    │   │   │   │   │   # BE: contracts-be/milestone
+    │   │   │   │   │   # GET /v1/contracts/{contract_id}/milestones
+    │   │   │   │   ├── use-timesheet.ts  # Timesheet operations
+    │   │   │   │   │   # - Fetch timesheets
+    │   │   │   │   │   # - Submit timesheet
+    │   │   │   │   │   # - Approve/reject timesheet
+    │   │   │   │   │   # BE: contracts-be/timesheet
+    │   │   │   │   │   # GET /v1/contracts/{contract_id}/timesheets
+    │   │   │   │   └── use-work-diary.ts  # Work diary operations
+    │   │   │   │       # - Fetch work diary entries
+    │   │   │   │       # - Create work diary entry
+    │   │   │   │       # - Track time/screenshots
+    │   │   │   │       # BE: contracts-be/workdiary
+    │   │   │   │       # GET /v1/contracts/{contract_id}/work-diary
+    │   │   │   ├── financial/  # ❌ CREATE - Financial domain hooks
+    │   │   │   │   ├── use-balance.ts  # Balance queries
+    │   │   │   │   │   # - Fetch wallet balance
+    │   │   │   │   │   # - Available balance
+    │   │   │   │   │   # - Pending balance
+    │   │   │   │   │   # BE: financial-be/wallet
+    │   │   │   │   │   # GET /v1/wallet/balance
+    │   │   │   │   ├── use-payment-methods.ts  # Payment method management
+    │   │   │   │   │   # - Fetch payment methods
+    │   │   │   │   │   # - Add payment method
+    │   │   │   │   │   # - Remove payment method
+    │   │   │   │   │   # - Set default payment method
+    │   │   │   │   │   # BE: financial-be/payment-method
+    │   │   │   │   │   # GET /v1/payment-methods
+    │   │   │   │   ├── use-transactions.ts  # Transaction history
+    │   │   │   │   │   # - Fetch transaction history
+    │   │   │   │   │   # - Filter transactions
+    │   │   │   │   │   # - Export transactions
+    │   │   │   │   │   # BE: financial-be/transaction
+    │   │   │   │   │   # GET /v1/transactions
+    │   │   │   │   ├── use-wallet.ts  # Wallet operations
+    │   │   │   │   │   # - Fetch wallet details
+    │   │   │   │   │   # - Add funds
+    │   │   │   │   │   # - Wallet settings
+    │   │   │   │   │   # BE: financial-be/wallet
+    │   │   │   │   │   # GET /v1/wallet
+    │   │   │   │   └── use-withdraw.ts  # Withdrawal operations
+    │   │   │   │       # - Request withdrawal
+    │   │   │   │       # - Withdrawal history
+    │   │   │   │       # - Withdrawal methods
+    │   │   │   │       # BE: financial-be/payout
+    │   │   │   │       # POST /v1/payouts
+    │   │   │   ├── jobs/  # ❌ CREATE - Jobs domain hooks
+    │   │   │   │   ├── use-job-application.ts  # Job application operations
+    │   │   │   │   │   # - Apply to job (submit proposal)
+    │   │   │   │   │   # - Withdraw application
+    │   │   │   │   │   # - Application status
+    │   │   │   │   │   # BE: proposals-be/proposal
+    │   │   │   │   │   # POST /v1/proposals
+    │   │   │   │   ├── use-job-recommendations.ts  # Job recommendations
+    │   │   │   │   │   # - Fetch recommended jobs
+    │   │   │   │   │   # - Personalized suggestions
+    │   │   │   │   │   # BE: search-be/recommendation
+    │   │   │   │   │   # GET /v1/recommendations/jobs
+    │   │   │   │   ├── use-job-search.ts  # Job search operations
+    │   │   │   │   │   # - Search jobs
+    │   │   │   │   │   # - Filter/sort results
+    │   │   │   │   │   # - Save search
+    │   │   │   │   │   # BE: search-be/search
+    │   │   │   │   │   # POST /v1/search/jobs
+    │   │   │   │   ├── use-job.ts  # Single job operations
+    │   │   │   │   │   # - Fetch job by ID
+    │   │   │   │   │   # - Update job
+    │   │   │   │   │   # - Delete job
+    │   │   │   │   │   # BE: jobs-be/job
+    │   │   │   │   │   # GET /v1/jobs/{job_id}
+    │   │   │   │   └── use-jobs.ts  # List jobs
+    │   │   │   │       # - Fetch jobs list
+    │   │   │   │       # - My posted jobs
+    │   │   │   │       # - Browse jobs
+    │   │   │   │       # BE: jobs-be/job
+    │   │   │   │       # GET /v1/jobs
+    │   │   │   ├── messaging/  # ❌ CREATE - Messaging domain hooks
+    │   │   │   │   ├── use-conversation.ts  # Single conversation operations
+    │   │   │   │   │   # - Fetch conversation by ID
+    │   │   │   │   │   # - Archive conversation
+    │   │   │   │   │   # - Mark as read
+    │   │   │   │   │   # BE: communications-be/conversation
+    │   │   │   │   │   # GET /v1/conversations/{conversation_id}
+    │   │   │   │   ├── use-conversations.ts  # List conversations
+    │   │   │   │   │   # - Fetch conversations list
+    │   │   │   │   │   # - Filter conversations
+    │   │   │   │   │   # - Unread count
+    │   │   │   │   │   # BE: communications-be/conversation
+    │   │   │   │   │   # GET /v1/conversations
+    │   │   │   │   ├── use-messages.ts  # Messages in conversation
+    │   │   │   │   │   # - Fetch messages
+    │   │   │   │   │   # - Load more messages
+    │   │   │   │   │   # - Delete message
+    │   │   │   │   │   # BE: communications-be/message
+    │   │   │   │   │   # GET /v1/conversations/{conversation_id}/messages
+    │   │   │   │   ├── use-real-time.ts  # Real-time messaging
+    │   │   │   │   │   # - WebSocket connection
+    │   │   │   │   │   # - Typing indicators
+    │   │   │   │   │   # - Online status
+    │   │   │   │   │   # BE: communications-be/websocket
+    │   │   │   │   │   # WS /ws
+    │   │   │   │   └── use-send-message.ts  # Send message operations
+    │   │   │   │       # - Send message
+    │   │   │   │       # - Send attachment
+    │   │   │   │       # - Optimistic updates
+    │   │   │   │       # BE: communications-be/message
+    │   │   │   │       # POST /v1/conversations/{conversation_id}/messages
+    │   │   │   ├── notifications/  # ❌ CREATE - Notifications domain hooks
+    │   │   │   │   ├── use-mark-read.ts  # Mark notifications as read
+    │   │   │   │   │   # - Mark single notification as read
+    │   │   │   │   │   # - Mark all as read
+    │   │   │   │   │   # BE: communications-be/notification
+    │   │   │   │   │   # POST /v1/notifications/{notification_id}/read
+    │   │   │   │   ├── use-notification-preferences.ts  # Notification preferences
+    │   │   │   │   │   # - Fetch preferences
+    │   │   │   │   │   # - Update preferences
+    │   │   │   │   │   # - Channel settings
+    │   │   │   │   │   # BE: communications-be/preferences
+    │   │   │   │   │   # GET /v1/notifications/preferences
+    │   │   │   │   └── use-notifications.ts  # Notifications list
+    │   │   │   │       # - Fetch notifications
+    │   │   │   │       # - Unread count
+    │   │   │   │       # - Pagination
+    │   │   │   │       # BE: communications-be/notification
+    │   │   │   │       # GET /v1/notifications
+    │   │   │   ├── proposals/  # ❌ CREATE - Proposals domain hooks
+    │   │   │   │   ├── use-bid-recommendations.ts  # Bid recommendations
+    │   │   │   │   │   # - Get suggested bid amount
+    │   │   │   │   │   # - Competitive analysis
+    │   │   │   │   │   # BE: proposals-be/bid-strategy
+    │   │   │   │   │   # GET /v1/proposals/bid-recommendations
+    │   │   │   │   ├── use-bid.ts  # Bid operations
+    │   │   │   │   │   # - Place bid
+    │   │   │   │   │   # - Update bid
+    │   │   │   │   │   # - Withdraw bid
+    │   │   │   │   │   # BE: proposals-be/bid
+    │   │   │   │   │   # POST /v1/proposals/{proposal_id}/bid
+    │   │   │   │   ├── use-proposal-submission.ts  # Submit proposal
+    │   │   │   │   │   # - Submit new proposal
+    │   │   │   │   │   # - Validation
+    │   │   │   │   │   # - Draft management
+    │   │   │   │   │   # BE: proposals-be/proposal
+    │   │   │   │   │   # POST /v1/proposals
+    │   │   │   │   ├── use-proposal.ts  # Single proposal operations
+    │   │   │   │   │   # - Fetch proposal by ID
+    │   │   │   │   │   # - Update proposal
+    │   │   │   │   │   # - Withdraw proposal
+    │   │   │   │   │   # BE: proposals-be/proposal
+    │   │   │   │   │   # GET /v1/proposals/{proposal_id}
+    │   │   │   │   └── use-proposals.ts  # List proposals
+    │   │   │   │       # - Fetch proposals list
+    │   │   │   │       # - Filter by status
+    │   │   │   │       # - My proposals
+    │   │   │   │       # BE: proposals-be/proposal
+    │   │   │   │       # GET /v1/proposals
+    │   │   │   └── │
+    │   │   ├── ui/
+    │   │   │   └── src/
+    │   │   │       └── components/
+    │   │   │           ├── molecules/
+    │   │   │           │   ├── Navigation/
+    │   │   │           │   │   ├── Accordion/
+    │   │   │           │   │   │   └── Accordion.native.tsx  # ❌ ADD
+    │   │   │           │   │   │       # - React Native collapsible accordion
+    │   │   │           │   │   │       # - Uses react-native-reanimated
+    │   │   │           │   │   │       # - Smooth animations
+    │   │   │           │   │   ├── Breadcrumb/
+    │   │   │           │   │   │   └── Breadcrumb.native.tsx  # ❌ ADD
+    │   │   │           │   │   │       # - Mobile breadcrumb navigation
+    │   │   │           │   │   │       # - Horizontal scroll for overflow
+    │   │   │           │   │   │       # - Touch-optimized
+    │   │   │           │   │   └── Drawer/
+    │   │   │           │   │       └── Drawer.native.tsx  # ❌ ADD
+    │   │   │           │   │           # - React Native bottom sheet drawer
+    │   │   │           │   │           # - Uses @gorhom/bottom-sheet
+    │   │   │           │   │           # - Swipe gestures
+    │   │   │           │   └── Overlay/
+    │   │   │           │       ├── Popover/
+    │   │   │           │       │   └── Popover.native.tsx  # ❌ ADD
+    │   │   │           │       │       # - Mobile popover component
+    │   │   │           │       │       # - Modal-based implementation
+    │   │   │           │       │       # - Touch outside to dismiss
+    │   │   │           │       └── Tooltip/
+    │   │   │           │           └── Tooltip.native.tsx  # ❌ ADD
+    │   │   │           │               # - Long-press tooltip
+    │   │   │           │               # - Positioned overlay
+    │   │   │           │               # - Auto-dismiss
+    │   │   │           └── organisms/
+    │   │   │               └── DataDisplay/
+    │   │   │                   ├── DataGrid/
+    │   │   │                   │   └── DataGrid.native.tsx  # ❌ ADD
+    │   │   │                   │       # - Mobile data grid
+    │   │   │                   │       # - Horizontal scroll
+    │   │   │                   │       # - FlashList for performance
+    │   │   │                   │       # - Touch gestures for sorting
+    │   │   │                   ├── KanbanBoard/
+    │   │   │                   │   └── KanbanBoard.native.tsx  # ❌ ADD
+    │   │   │                   │       # - Mobile kanban board
+    │   │   │                   │       # - Drag and drop (react-native-draggable-flatlist)
+    │   │   │                   │       # - Horizontal columns
+    │   │   │                   │       # - Optimized scrolling
+    │   │   │                   └── Table/
+    │   │   │                       └── Table.native.tsx  # ❌ ADD
+    │   │   │                           # - Mobile responsive table
+    │   │   │                           # - FlashList implementation
+    │   │   │                           # - Card view for narrow screens
+    │   │   │                           # - Sortable columns
     │   │   └── │
     │   ├── web/  # Next.js web application
     │   │   ├── e2e/
