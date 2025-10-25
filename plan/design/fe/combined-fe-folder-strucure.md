@@ -1,6 +1,13 @@
 ```
 fe/
 └── fe/
+    ├── (error-boundaries)/
+    │   ├── contracts/
+    │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   ├── jobs/
+    │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   └── proposals/
+    │       └── _layout.tsx  # ❌ ADD ErrorBoundary
     ├── .github/  # GitHub workflows
     │   ├── actions/
     │   │   ├── build-mobile/
@@ -217,6 +224,19 @@ fe/
     │   │   │   │   │       └── page.tsx  # Bulk user actions       # BE: admin-be/users
     │   │   │   │   └── README.md  # Placeholder for future admin screens on mobile
     │   │   │   ├── (auth)/  # Auth screens
+    │   │   │   │   ├── kyc/  # ❌ ADD COMPLETE KYC FLOW
+    │   │   │   │   │   ├── _layout.tsx
+    │   │   │   │   │   ├── address-proof.tsx  # Step 3: Address verification
+    │   │   │   │   │   │   # BE: admin-be/identity_verification — POST /v1/kyc/address
+    │   │   │   │   │   ├── business-verification.tsx  # Step 4: Business verification (if applicable)
+    │   │   │   │   │   │   # BE: admin-be/business_verification — POST /v1/kyc/business
+    │   │   │   │   │   ├── identity-verification.tsx  # Step 2: ID upload & selfie
+    │   │   │   │   │   │   # BE: admin-be/identity_verification — POST /v1/kyc/identity
+    │   │   │   │   │   ├── index.tsx  # KYC intro & requirements
+    │   │   │   │   │   ├── personal-info.tsx  # Step 1: Personal information
+    │   │   │   │   │   │   # BE: admin-be/identity_verification — POST /v1/kyc/personal
+    │   │   │   │   │   └── review.tsx  # Step 5: Review & submit
+    │   │   │   │   │       # BE: admin-be/identity_verification — POST /v1/kyc/submit
     │   │   │   │   ├── onboarding/
     │   │   │   │   │   └── kyc/
     │   │   │   │   │       └── index.tsx  # KYC onboarding (mobile)
@@ -417,7 +437,50 @@ fe/
     │   │   │   ├── (tabs)/  # Bottom tabs navigation
     │   │   │   │   # Main mobile app tabs (authenticated)
     │   │   │   │   ├── (authenticated)/
+    │   │   │   │   │   ├── admin/  # ⚠️ EXPAND THIS
+    │   │   │   │   │   │   ├── financial-ops/  # ❌ ADD THIS
+    │   │   │   │   │   │   │   ├── chargebacks/
+    │   │   │   │   │   │   │   │   └── index.tsx  # Chargeback management
+    │   │   │   │   │   │   │   │       # BE: financial-be/chargeback — GET /v1/admin/chargebacks
+    │   │   │   │   │   │   │   ├── refunds/
+    │   │   │   │   │   │   │   │   ├── [id].tsx  # Process refund
+    │   │   │   │   │   │   │   │   ├── history.tsx  # Refund history
+    │   │   │   │   │   │   │   │   │   # BE: financial-be/refund — GET /v1/admin/refunds
+    │   │   │   │   │   │   │   │   └── index.tsx  # Refund requests
+    │   │   │   │   │   │   │   ├── withdrawals/
+    │   │   │   │   │   │   │   │   ├── [id].tsx  # Review withdrawal
+    │   │   │   │   │   │   │   │   ├── approve.tsx  # Bulk approve
+    │   │   │   │   │   │   │   │   │   # BE: financial-be/withdrawal — GET /v1/admin/withdrawals
+    │   │   │   │   │   │   │   │   └── index.tsx  # Pending withdrawals
+    │   │   │   │   │   │   │   ├── _layout.tsx
+    │   │   │   │   │   │   │   └── index.tsx  # Financial operations dashboard
+    │   │   │   │   │   │   ├── kyc/  # ❌ ADD THIS
+    │   │   │   │   │   │   │   ├── review/
+    │   │   │   │   │   │   │   │   └── [id].tsx  # Review submission
+    │   │   │   │   │   │   │   │       # BE: admin-be/identity_verification — GET /v1/admin/kyc/{id}
+    │   │   │   │   │   │   │   ├── _layout.tsx
+    │   │   │   │   │   │   │   ├── approved.tsx  # Approved verifications
+    │   │   │   │   │   │   │   ├── index.tsx  # KYC dashboard
+    │   │   │   │   │   │   │   ├── pending.tsx  # Pending verifications
+    │   │   │   │   │   │   │   │   # BE: admin-be/identity_verification — GET /v1/admin/kyc/pending
+    │   │   │   │   │   │   │   └── rejected.tsx  # Rejected verifications
+    │   │   │   │   │   │   ├── moderation/  # ⚠️ EXPAND THIS
+    │   │   │   │   │   │   │   ├── bans/  # ❌ ADD
+    │   │   │   │   │   │   │   │   ├── [userId].tsx
+    │   │   │   │   │   │   │   │   ├── appeals.tsx  # BE: admin-be/ban — GET /v1/admin/bans
+    │   │   │   │   │   │   │   │   └── index.tsx
+    │   │   │   │   │   │   │   ├── disputes/  # ❌ ADD
+    │   │   │   │   │   │   │   │   ├── [id].tsx
+    │   │   │   │   │   │   │   │   ├── escalated.tsx  # BE: admin-be/dispute — GET /v1/admin/disputes
+    │   │   │   │   │   │   │   │   └── index.tsx
+    │   │   │   │   │   │   │   └── reports/  # ❌ ADD
+    │   │   │   │   │   │   │       ├── [id].tsx
+    │   │   │   │   │   │   │       ├── index.tsx
+    │   │   │   │   │   │   │       └── resolved.tsx  # BE: admin-be/flag — GET /v1/admin/reports
+    │   │   │   │   │   │   ├── _layout.tsx  # ✅ Exists
+    │   │   │   │   │   │   └── index.tsx  # ✅ Exists
     │   │   │   │   │   ├── analytics/  # Advanced analytics now on mobile
+    │   │   │   │   │   │   # ❌ ADD THIS ENTIRE SECTION
     │   │   │   │   │   │   ├── clients/
     │   │   │   │   │   │   │   ├── retention/
     │   │   │   │   │   │   │   │   └── index.tsx  # Client retention ❌ (was missing)
@@ -488,6 +551,10 @@ fe/
     │   │   │   │   │   │   │           # BE: users-be/analytics
     │   │   │   │   │   │   │           # GET /v1/analytics/performance/success-rate
     │   │   │   │   │   │   │           # Success rate analysis     # BE: users-be/analytics
+    │   │   │   │   │   │   ├── reports/
+    │   │   │   │   │   │   │   ├── [id].tsx  # View report
+    │   │   │   │   │   │   │   ├── create.tsx  # Custom report builder
+    │   │   │   │   │   │   │   └── index.tsx  # Reports list
     │   │   │   │   │   │   ├── simple-dashboard/
     │   │   │   │   │   │   │   └── index.tsx  # Basic analytics view
     │   │   │   │   │   │   │       # BE: users-be/analytics
@@ -499,8 +566,43 @@ fe/
     │   │   │   │   │   │   │   ├── forecast/
     │   │   │   │   │   │   │   │   └── index.tsx  # Spending forecast
     │   │   │   │   │   │   │   └── index.tsx  # Spending analytics (client)
-    │   │   │   │   │   │   └── user-segmentation/
-    │   │   │   │   │   │       └── index.tsx  # User segments
+    │   │   │   │   │   │   ├── user-segmentation/
+    │   │   │   │   │   │   │   └── index.tsx  # User segments
+    │   │   │   │   │   │   ├── _layout.tsx
+    │   │   │   │   │   │   ├── contracts.tsx  # Contract metrics
+    │   │   │   │   │   │   │   # BE: contracts-be/analytics — GET /v1/analytics/contracts
+    │   │   │   │   │   │   ├── earnings.tsx  # Earnings analytics
+    │   │   │   │   │   │   │   # BE: financial-be/analytics — GET /v1/analytics/earnings
+    │   │   │   │   │   │   ├── index.tsx  # Dashboard home
+    │   │   │   │   │   │   ├── jobs.tsx  # Job performance
+    │   │   │   │   │   │   │   # BE: jobs-be/analytics — GET /v1/analytics/jobs
+    │   │   │   │   │   │   └── performance.tsx  # Overall performance
+    │   │   │   │   │   │       # BE: users-be/metrics — GET /v1/users/me/performance
+    │   │   │   │   │   ├── billing/
+    │   │   │   │   │   │   ├── invoices/  # ❌ ADD THIS
+    │   │   │   │   │   │   │   ├── [id].tsx  # Invoice detail
+    │   │   │   │   │   │   │   │   # BE: financial-be/invoice — GET /v1/invoices/{id}
+    │   │   │   │   │   │   │   ├── _layout.tsx
+    │   │   │   │   │   │   │   ├── create.tsx  # Create invoice
+    │   │   │   │   │   │   │   │   # BE: financial-be/invoice — POST /v1/invoices
+    │   │   │   │   │   │   │   ├── index.tsx  # Invoice list
+    │   │   │   │   │   │   │   │   # BE: financial-be/invoice — GET /v1/invoices
+    │   │   │   │   │   │   │   └── pay.tsx  # Pay invoice
+    │   │   │   │   │   │   │       # BE: financial-be/payment — POST /v1/invoices/{id}/pay
+    │   │   │   │   │   │   ├── payment-methods/  # ❌ ADD THIS
+    │   │   │   │   │   │   │   ├── [id]/
+    │   │   │   │   │   │   │   │   ├── edit.tsx  # Edit payment method
+    │   │   │   │   │   │   │   │   └── remove.tsx  # Remove payment method
+    │   │   │   │   │   │   │   │       # BE: financial-be/payment_method — DELETE /v1/payment-methods/{id}
+    │   │   │   │   │   │   │   ├── add.tsx  # Add payment method
+    │   │   │   │   │   │   │   │   # BE: financial-be/payment_method — POST /v1/payment-methods
+    │   │   │   │   │   │   │   └── index.tsx  # Payment methods list
+    │   │   │   │   │   │   │       # BE: financial-be/payment_method — GET /v1/payment-methods
+    │   │   │   │   │   │   ├── subscriptions/
+    │   │   │   │   │   │   │   └── index.tsx  # ✅ EXISTS
+    │   │   │   │   │   │   └── tax-settings/
+    │   │   │   │   │   │       └── index.tsx  # ❌ ADD THIS — Tax information & settings
+    │   │   │   │   │   │           # BE: financial-be/tax — GET /v1/users/me/tax-info
     │   │   │   │   │   ├── camera/
     │   │   │   │   │   │   ├── document-scan/
     │   │   │   │   │   │   │   └── index.tsx  # Document scanner (OCR)
@@ -1147,6 +1249,16 @@ fe/
     │   │   │   │   │   │           # BE: users-be/security
     │   │   │   │   │   │           # GET /v1/users/me/security-questions
     │   │   │   │   │   ├── support/
+    │   │   │   │   │   │   ├── help-center/  # ⚠️ EXPAND THIS
+    │   │   │   │   │   │   │   ├── article/
+    │   │   │   │   │   │   │   │   └── [id].tsx  # Article detail
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge — GET /v1/help/articles/{id}
+    │   │   │   │   │   │   │   ├── categories/
+    │   │   │   │   │   │   │   │   └── [slug].tsx  # ❌ ADD — Category articles
+    │   │   │   │   │   │   │   │       # BE: communications-be/knowledge — GET /v1/help/categories/{slug}
+    │   │   │   │   │   │   │   ├── index.tsx  # ✅ Exists
+    │   │   │   │   │   │   │   └── search.tsx  # ❌ ADD — Help search
+    │   │   │   │   │   │   │       # BE: communications-be/knowledge — GET /v1/help/search
     │   │   │   │   │   │   ├── knowledge-base/
     │   │   │   │   │   │   │   └── category/
     │   │   │   │   │   │   │       └── [categoryId]/
@@ -1157,16 +1269,22 @@ fe/
     │   │   │   │   │   │   │   └── index.tsx  # Live chat support ❌ (was missing)
     │   │   │   │   │   │   │       # BE: communications-be/live_chat
     │   │   │   │   │   │   │       # WebSocket connection
-    │   │   │   │   │   │   └── tickets/
-    │   │   │   │   │   │       └── [ticketId]/
-    │   │   │   │   │   │           ├── escalate/
-    │   │   │   │   │   │           │   └── index.tsx  # Escalate ticket ❌ (was missing)
-    │   │   │   │   │   │           │       # BE: admin-be/support_ticket
-    │   │   │   │   │   │           │       # POST /v1/support/tickets/{ticket_id}/escalate
-    │   │   │   │   │   │           └── history/
-    │   │   │   │   │   │               └── index.tsx  # Ticket history ❌ (was missing)
-    │   │   │   │   │   │                   # BE: admin-be/support_ticket
-    │   │   │   │   │   │                   # GET /v1/support/tickets/{ticket_id}/history
+    │   │   │   │   │   │   ├── tickets/  # ✅ EXISTS (basic)
+    │   │   │   │   │   │   │   ├── [ticketId]/
+    │   │   │   │   │   │   │   │   ├── escalate/
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Escalate ticket ❌ (was missing)
+    │   │   │   │   │   │   │   │   │       # BE: admin-be/support_ticket
+    │   │   │   │   │   │   │   │   │       # POST /v1/support/tickets/{ticket_id}/escalate
+    │   │   │   │   │   │   │   │   └── history/
+    │   │   │   │   │   │   │   │       └── index.tsx  # Ticket history ❌ (was missing)
+    │   │   │   │   │   │   │   │           # BE: admin-be/support_ticket
+    │   │   │   │   │   │   │   │           # GET /v1/support/tickets/{ticket_id}/history
+    │   │   │   │   │   │   │   ├── [id].tsx
+    │   │   │   │   │   │   │   └── index.tsx
+    │   │   │   │   │   │   ├── contact.tsx  # ❌ ADD THIS — Contact support
+    │   │   │   │   │   │   │   # BE: communications-be/ticket — POST /v1/support/tickets
+    │   │   │   │   │   │   └── faq.tsx  # ❌ ADD THIS — FAQ
+    │   │   │   │   │   │       # BE: communications-be/knowledge — GET /v1/help/faq
     │   │   │   │   │   ├── talent/
     │   │   │   │   │   │   ├── discovery/
     │   │   │   │   │   │   │   ├── advanced-filters/
@@ -1192,6 +1310,12 @@ fe/
     │   │   │   │   │   │       │   └── index.tsx  # Sourcing campaigns
     │   │   │   │   │   │       └── pipelines/
     │   │   │   │   │   │           └── index.tsx  # Hiring pipelines
+    │   │   │   │   │   ├── widgets/  # ❌ ADD THIS ENTIRE SECTION
+    │   │   │   │   │   │   ├── [id]/
+    │   │   │   │   │   │   │   └── edit.tsx  # Edit widget settings
+    │   │   │   │   │   │   │       # BE: users-be/preferences — PUT /v1/users/me/widgets/{id}
+    │   │   │   │   │   │   └── index.tsx  # Widget dashboard & configuration
+    │   │   │   │   │   │       # BE: users-be/preferences — GET /v1/users/me/widgets
     │   │   │   │   │   ├── work/
     │   │   │   │   │   │   └── quick-actions/
     │   │   │   │   │   │       └── index.tsx  # Home screen quick actions
@@ -2079,6 +2203,11 @@ fe/
     │   │   │   │       ├── Input.tsx  # Input component
     │   │   │   │       └── SearchBar.tsx  # Search bar
     │   │   │   ├── hooks/  # Mobile-specific hooks
+    │   │   │   │   ├── use-auth.ts  # ❌ DELETE (duplicate of packages/hooks/auth/use-auth.ts)
+    │   │   │   │   ├── use-biometric.ts  # ✅ KEEP (mobile-specific)
+    │   │   │   │   ├── use-form-validation.ts  # ❌ DELETE (duplicate)
+    │   │   │   │   ├── use-form.ts  # ❌ DELETE (duplicate)
+    │   │   │   │   ├── use-session.ts  # ❌ DELETE (duplicate)
     │   │   │   │   ├── useAppState.ts  # App state (foreground/background)
     │   │   │   │   ├── useBiometricAuth.ts  # Biometric authentication
     │   │   │   │   ├── useCamera.ts  # Camera access
@@ -2411,6 +2540,42 @@ fe/
     │   │   │   │   │                   # BE: financial-be/settlement
     │   │   │   │   │                   # GET /v1/admin/settlement/rules
     │   │   │   │   │                   # PUT /v1/admin/settlement/rules
+    │   │   │   │   ├── (auth)/
+    │   │   │   │   ├── (dashboard)/
+    │   │   │   │   │   ├── camera/  # ❌ ADD THIS (Web equivalents)
+    │   │   │   │   │   │   ├── document-scan/
+    │   │   │   │   │   │   │   └── page.tsx  # Document scanner (web fallback)
+    │   │   │   │   │   │   │       # - Upload + preview, PDF/image viewer, OCR
+    │   │   │   │   │   │   │       # BE: storage-be/asset — POST /v1/storage/uploads
+    │   │   │   │   │   │   ├── photo-upload/
+    │   │   │   │   │   │   │   └── page.tsx  # Photo upload with cropping / bulk upload
+    │   │   │   │   │   │   │       # BE: storage-be/asset — POST /v1/storage/uploads
+    │   │   │   │   │   │   ├── layout.tsx
+    │   │   │   │   │   │   └── page.tsx  # Camera/upload hub
+    │   │   │   │   │   ├── offline/  # ❌ ADD THIS ENTIRE SECTION
+    │   │   │   │   │   │   ├── queue/
+    │   │   │   │   │   │   │   └── page.tsx  # View pending actions
+    │   │   │   │   │   │   │       # - Queued messages / uploads / drafts / unsaved changes
+    │   │   │   │   │   │   ├── sync/
+    │   │   │   │   │   │   │   └── page.tsx  # Sync status & management
+    │   │   │   │   │   │   │       # - Last sync, progress, conflict resolution, manual trigger
+    │   │   │   │   │   │   ├── layout.tsx
+    │   │   │   │   │   │   └── page.tsx  # Offline status page
+    │   │   │   │   │   ├── quick-actions/
+    │   │   │   │   │   │   └── page.tsx  # ❌ ADD THIS — Quick actions (message/proposal/time/invoice)
+    │   │   │   │   │   │       # BE: Multiple services
+    │   │   │   │   │   ├── scanner/  # ❌ ADD THIS
+    │   │   │   │   │   │   ├── document/
+    │   │   │   │   │   │   │   └── page.tsx  # Document scanner (web)
+    │   │   │   │   │   │   │       # BE: storage-be/asset — POST /v1/storage/uploads
+    │   │   │   │   │   │   ├── qr-code/
+    │   │   │   │   │   │   │   └── page.tsx  # Webcam QR scanner / upload QR / generate codes
+    │   │   │   │   │   │   └── layout.tsx
+    │   │   │   │   │   └── today/
+    │   │   │   │   │       └── page.tsx  # ❌ ADD THIS — Today's schedule/tasks/metrics/activity
+    │   │   │   │   │           # BE: Aggregated from multiple services
+    │   │   │   │   ├── (legal)/
+    │   │   │   │   ├── (marketing)/
     │   │   │   │   ├── [locale]/  # Internationalized routing (en, ar, zh, hi, de, fr, tr, es, ru)
     │   │   │   │   │   ├── (admin)/
     │   │   │   │   │   │   ├── admin/
@@ -8278,6 +8443,10 @@ fe/
     │   │   │   │   │   │   │   │       # BE: search-be/suggestions
     │   │   │   │   │   │   │   │       # GET /v1/suggestions?q={query}
     │   │   │   │   │   │   │   │       # Basic job search
+    │   │   │   │   │   │   │   │       # - Full-text search / Faceted filters / Autocomplete
+    │   │   │   │   │   │   │   │       # - Search history / Save search
+    │   │   │   │   │   │   │   │       # BE: search-be/query — POST /v1/search/jobs
+    │   │   │   │   │   │   │   │       # BE: search-be/suggestions — GET /v1/suggestions?q={query}
     │   │   │   │   │   │   │   ├── personalization/
     │   │   │   │   │   │   │   │   └── page.tsx  # Pause/reset, prefer/hide entities
     │   │   │   │   │   │   │   │       # BE: search-be/personalization — GET/PUT /v1/search/personalization
@@ -10971,6 +11140,7 @@ fe/
     │   │   │   │   │       # - Head meta tags
     │   │   │   │   │       # - Body layout
     │   │   │   │   │       # - Font loading
+    │   │   │   │   ├── api/
     │   │   │   │   ├── │/
     │   │   │   │   │   ├── operations/
     │   │   │   │   │   │   └── search-quality/
@@ -11200,30 +11370,44 @@ fe/
     │   │   │   │               # BE: admin-be/support_ticket
     │   │   │   │               # GET /v1/support/tickets
     │   │   │   │               # GET /v1/support/tickets/{id}
-    │   │   │   └── lib/
-    │   │   │       └── api/
-    │   │   │           ├── audit/
-    │   │   │           │   ├── audit.ts  # Audit logs client
-    │   │   │           │   └── exports.ts  # BI export jobs client
-    │   │   │           ├── budgets/
-    │   │   │           │   └── budgets.ts  # Budgets APIs
-    │   │   │           ├── moderation/
-    │   │   │           │   └── moderation.ts  # Moderation actions & reports
-    │   │   │           ├── refunds/
-    │   │   │           │   └── refunds.ts  # Refund cases & financial refunds
-    │   │   │           ├── search/
-    │   │   │           │   ├── personalization.ts  # Personalization API client
-    │   │   │           │   └── saved-search.ts  # Saved-search CRUD & alerts
-    │   │   │           ├── search-admin/
-    │   │   │           │   ├── hygiene.ts  # Run hygiene jobs
-    │   │   │           │   ├── query-logs.ts  # Query logs fetcher
-    │   │   │           │   └── search-admin.ts  # Synonyms/boosts/facets/rewrites/perf
-    │   │   │           ├── settings/
-    │   │   │           │   └── notifications.ts  # Channels, email prefs, quiet hours
-    │   │   │           ├── status/
-    │   │   │           │   └── status.ts  # Status & incidents APIs
-    │   │   │           └── support/
-    │   │   │               └── tickets.ts  # Tickets CRUD & messages
+    │   │   │   ├── hooks/
+    │   │   │   │   ├── use-api.ts  # ❌ DELETE (duplicate of packages/hooks/api/use-api.ts)
+    │   │   │   │   ├── use-auth.ts  # ❌ DELETE (duplicate of packages/hooks/auth/use-auth.ts)
+    │   │   │   │   ├── use-fetch.ts  # ❌ DELETE (duplicate of packages/hooks/api)
+    │   │   │   │   ├── use-form-validation.ts  # ❌ DELETE (duplicate)
+    │   │   │   │   ├── use-form.ts  # ❌ DELETE (duplicate of packages/hooks/forms/use-form.ts)
+    │   │   │   │   ├── use-keycloak.ts  # ✅ KEEP (web-specific)
+    │   │   │   │   ├── use-session.ts  # ❌ DELETE (duplicate)
+    │   │   │   │   └── use-ssr-query.ts  # ✅ KEEP (web-specific SSR)
+    │   │   │   ├── lib/
+    │   │   │   │   └── api/
+    │   │   │   │       ├── audit/
+    │   │   │   │       │   ├── audit.ts  # Audit logs client
+    │   │   │   │       │   └── exports.ts  # BI export jobs client
+    │   │   │   │       ├── budgets/
+    │   │   │   │       │   └── budgets.ts  # Budgets APIs
+    │   │   │   │       ├── moderation/
+    │   │   │   │       │   └── moderation.ts  # Moderation actions & reports
+    │   │   │   │       ├── refunds/
+    │   │   │   │       │   └── refunds.ts  # Refund cases & financial refunds
+    │   │   │   │       ├── search/
+    │   │   │   │       │   ├── personalization.ts  # Personalization API client
+    │   │   │   │       │   └── saved-search.ts  # Saved-search CRUD & alerts
+    │   │   │   │       ├── search-admin/
+    │   │   │   │       │   ├── hygiene.ts  # Run hygiene jobs
+    │   │   │   │       │   ├── query-logs.ts  # Query logs fetcher
+    │   │   │   │       │   └── search-admin.ts  # Synonyms/boosts/facets/rewrites/perf
+    │   │   │   │       ├── settings/
+    │   │   │   │       │   └── notifications.ts  # Channels, email prefs, quiet hours
+    │   │   │   │       ├── status/
+    │   │   │   │       │   └── status.ts  # Status & incidents APIs
+    │   │   │   │       └── support/
+    │   │   │   │           └── tickets.ts  # Tickets CRUD & messages
+    │   │   │   └── pages/  # ❌ Pages Router (Next.js legacy)
+    │   │   │       ├── api/
+    │   │   │       ├── jobs/
+    │   │   │       ├── [userId].tsx
+    │   │   │       └── index.tsx
     │   │   └── middleware.ts  # Next.js middleware
     │   │       # - CSP headers
     │   │       # - CORS configuration
@@ -11474,6 +11658,53 @@ fe/
     │   │       ├── nextjs.json  # Next.js TS config
     │   │       ├── package.json
     │   │       └── react-native.json  # React Native TS config
+    │   ├── hooks/
+    │   │   ├── api/
+    │   │   │   ├── use-api.ts  # ✅ KEEP (shared)
+    │   │   │   ├── use-mutation.ts  # ✅ KEEP (shared)
+    │   │   │   └── use-query.ts  # ✅ KEEP (shared)
+    │   │   ├── auth/
+    │   │   │   ├── use-auth.ts  # ✅ KEEP (shared)
+    │   │   │   ├── use-permissions.ts  # ✅ KEEP (shared)
+    │   │   │   └── use-session.ts  # ✅ KEEP (shared)
+    │   │   ├── contracts/  # ❌ CREATE THIS (domain hooks)
+    │   │   │   ├── use-contract.ts  # Single contract operations
+    │   │   │   ├── use-contracts.ts  # List contracts
+    │   │   │   ├── use-milestones.ts  # Milestone operations
+    │   │   │   ├── use-timesheet.ts  # Timesheet operations
+    │   │   │   └── use-work-diary.ts  # Work diary operations
+    │   │   ├── financial/  # ❌ CREATE THIS
+    │   │   │   ├── use-balance.ts  # Balance queries
+    │   │   │   ├── use-payment-methods.ts  # Payment methods
+    │   │   │   ├── use-transactions.ts  # Transaction history
+    │   │   │   ├── use-wallet.ts  # Wallet operations
+    │   │   │   └── use-withdraw.ts  # Withdrawal operations
+    │   │   ├── forms/
+    │   │   │   ├── use-form-state.ts  # ✅ KEEP (shared)
+    │   │   │   ├── use-form.ts  # ✅ KEEP (shared)
+    │   │   │   └── use-validation.ts  # ✅ KEEP (shared)
+    │   │   ├── jobs/  # ❌ CREATE THIS
+    │   │   │   ├── use-job-application.ts
+    │   │   │   ├── use-job-recommendations.ts
+    │   │   │   ├── use-job-search.ts
+    │   │   │   ├── use-job.ts
+    │   │   │   └── use-jobs.ts
+    │   │   ├── messaging/  # ❌ CREATE THIS
+    │   │   │   ├── use-conversation.ts
+    │   │   │   ├── use-conversations.ts
+    │   │   │   ├── use-messages.ts
+    │   │   │   ├── use-real-time.ts
+    │   │   │   └── use-send-message.ts
+    │   │   ├── notifications/  # ❌ CREATE THIS
+    │   │   │   ├── use-mark-read.ts
+    │   │   │   ├── use-notification-preferences.ts
+    │   │   │   └── use-notifications.ts
+    │   │   └── proposals/  # ❌ CREATE THIS
+    │   │       ├── use-bid-recommendations.ts
+    │   │       ├── use-bid.ts
+    │   │       ├── use-proposal-submission.ts
+    │   │       ├── use-proposal.ts
+    │   │       └── use-proposals.ts
     │   ├── shared/  # Business logic, hooks, utilities
     │   │   # Shared business logic, hooks, utilities
     │   │   ├── src/
@@ -13741,6 +13972,56 @@ fe/
     │       │   │   ├── ProgressTracker.native.tsx
     │       │   │   ├── ProgressTracker.tsx  # Progress visualization
     │       │   │   └── ProgressTracker.web.tsx
+    │       │   ├── molecules/
+    │       │   │   ├── Navigation/
+    │       │   │   │   ├── Accordion/
+    │       │   │   │   │   ├── Accordion.native.tsx  # ❌ ADD - Mobile needs accordion
+    │       │   │   │   │   ├── Accordion.tsx  # ✅ Base component
+    │       │   │   │   │   ├── Accordion.types.ts  # ✅ Shared types
+    │       │   │   │   │   └── Accordion.web.tsx  # ✅ Web implementation
+    │       │   │   │   ├── Breadcrumb/
+    │       │   │   │   │   ├── Breadcrumb.native.tsx# ❌ ADD - Mobile needs breadcrumb
+    │       │   │   │   │   ├── Breadcrumb.tsx  # ✅ Base component
+    │       │   │   │   │   ├── Breadcrumb.types.ts  # ✅ Shared types
+    │       │   │   │   │   └── Breadcrumb.web.tsx  # ✅ Web implementation
+    │       │   │   │   ├── Drawer/
+    │       │   │   │   │   ├── Drawer.native.tsx  # ❌ ADD - Mobile needs drawer (BottomSheet)
+    │       │   │   │   │   ├── Drawer.tsx  # ✅ Base component
+    │       │   │   │   │   ├── Drawer.types.ts  # ✅ Shared types
+    │       │   │   │   │   └── Drawer.web.tsx  # ✅ Web implementation
+    │       │   │   │   └── Tabs/
+    │       │   │   │       ├── Tabs.native.tsx  # ⚠️ EXISTS but may need enhancement
+    │       │   │   │       ├── Tabs.tsx  # ✅ Base component
+    │       │   │   │       ├── Tabs.types.ts  # ✅ Shared types
+    │       │   │   │       └── Tabs.web.tsx  # ✅ Web implementation
+    │       │   │   └── Overlay/
+    │       │   │       ├── Popover/
+    │       │   │       │   ├── Popover.native.tsx  # ❌ ADD - Mobile needs popover
+    │       │   │       │   ├── Popover.tsx  # ✅ Base component
+    │       │   │       │   ├── Popover.types.ts  # ✅ Shared types
+    │       │   │       │   └── Popover.web.tsx  # ✅ Web implementation
+    │       │   │       └── Tooltip/
+    │       │   │           ├── Tooltip.native.tsx  # ❌ ADD - Mobile needs tooltip (long press)
+    │       │   │           ├── Tooltip.tsx  # ✅ Base component
+    │       │   │           ├── Tooltip.types.ts  # ✅ Shared types
+    │       │   │           └── Tooltip.web.tsx  # ✅ Web implementation
+    │       │   ├── organisms/
+    │       │   │   └── DataDisplay/
+    │       │   │       ├── DataGrid/
+    │       │   │       │   ├── DataGrid.native.tsx  # ❌ ADD - Mobile needs data grid
+    │       │   │       │   ├── DataGrid.tsx  # ✅ Base component
+    │       │   │       │   ├── DataGrid.types.ts  # ✅ Shared types
+    │       │   │       │   └── DataGrid.web.tsx  # ✅ Web implementation
+    │       │   │       ├── KanbanBoard/
+    │       │   │       │   ├── KanbanBoard.native.tsx  # ❌ ADD - Mobile needs kanban
+    │       │   │       │   ├── KanbanBoard.tsx  # ✅ Base component
+    │       │   │       │   ├── KanbanBoard.types.ts  # ✅ Shared types
+    │       │   │       │   └── KanbanBoard.web.tsx  # ✅ Web implementation
+    │       │   │       └── Table/
+    │       │   │           ├── Table.native.tsx  # ❌ ADD - Mobile needs table (FlashList)
+    │       │   │           ├── Table.tsx  # ✅ Base component
+    │       │   │           ├── Table.types.ts  # ✅ Shared types
+    │       │   │           └── Table.web.tsx  # ✅ Web implementation
     │       │   ├── tracking/
     │       │   │   ├── TimesheetTable.native.tsx
     │       │   │   ├── TimesheetTable.tsx  # Timesheet grid
