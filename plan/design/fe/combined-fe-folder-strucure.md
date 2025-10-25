@@ -700,6 +700,19 @@ fe/
     │   │   │   │       # - onError: log to Sentry
     │   │   │   │       # - onReset: clear cache + navigate safe
     │   │   │   │       # BE: None (route infra)
+    │   │   │   │       # ❌ ADD - ErrorBoundary wrapper
+    │   │   │   │       # CURRENT: Missing error boundary
+    │   │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │   │       # Implementation:
+    │   │   │   │       # import { ErrorBoundary } from 'react-error-boundary';
+    │   │   │   │       # Prevents crashes, shows fallback UI
+    │   │   │   │       # Features:
+    │   │   │   │       # - Wraps entire contracts route group
+    │   │   │   │       # - Custom fallback UI with retry/home buttons
+    │   │   │   │       # - Sentry logging integration
+    │   │   │   │       # - onReset handler to preserve navigation state
+    │   │   │   │       # BE: None (UI component)
+    │   │   │   │       # Tests: Error scenarios + recovery flows
     │   │   │   ├── (dashboard)/
     │   │   │   │   ├── activity-feed/
     │   │   │   │   │   └── index.tsx  # Activity feed
@@ -1351,6 +1364,16 @@ fe/
     │   │   │   │       # - Fallback: JobsErrorFallback
     │   │   │   │       # - Recovery actions: clear filters/cache
     │   │   │   │       # BE: None (route infra)
+    │   │   │   │       # ❌ ADD - ErrorBoundary wrapper
+    │   │   │   │       # CURRENT: Missing error boundary
+    │   │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │   │       # Implementation: Same as contracts error boundary
+    │   │   │   │       # Features:
+    │   │   │   │       # - Wraps entire jobs route group
+    │   │   │   │       # - Custom fallback UI
+    │   │   │   │       # - Error logging
+    │   │   │   │       # - Recovery actions
+    │   │   │   │       # BE: None (UI component)
     │   │   │   ├── (market)/
     │   │   │   │   └── jobs/
     │   │   │   │       └── index.tsx  # Job discovery (mobile)
@@ -1373,6 +1396,16 @@ fe/
     │   │   │   │       # - Fallback: ProposalsErrorFallback
     │   │   │   │       # - Retry + clear draft
     │   │   │   │       # BE: None (route infra)
+    │   │   │   │       # ❌ ADD - ErrorBoundary wrapper
+    │   │   │   │       # CURRENT: Missing error boundary
+    │   │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │   │       # Implementation: Same as contracts error boundary
+    │   │   │   │       # Features:
+    │   │   │   │       # - Wraps entire proposals route group
+    │   │   │   │       # - Custom fallback UI
+    │   │   │   │       # - Error logging
+    │   │   │   │       # - Recovery actions
+    │   │   │   │       # BE: None (UI component)
     │   │   │   ├── (public)/  # Optional: if exposing public/marketing in mobile
     │   │   │   │   # ❌ CREATE ENTIRE SECTION - Public marketing pages on mobile
     │   │   │   │   # ❌ CREATE ENTIRE SECTION - Public/Marketing
@@ -5451,6 +5484,49 @@ fe/
     │   │   │   │   │   ├── MessageBubble.tsx  # Message bubble
     │   │   │   │   │   ├── MessageComposer.tsx  # Message input
     │   │   │   │   │   └── TypingIndicator.tsx  # Typing indicator
+    │   │   │   │   ├── molecules/
+    │   │   │   │   │   └── Navigation/
+    │   │   │   │   │       ├── Accordion/
+    │   │   │   │   │       │   └── Accordion.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │       # Mobile accordion component
+    │   │   │   │   │       │       # Implementation:
+    │   │   │   │   │       │       # - Smooth expand/collapse (react-native-reanimated)
+    │   │   │   │   │       │       # - Nested sections, controlled/uncontrolled
+    │   │   │   │   │       │       # - Touch-optimized tap targets (min 44x44 pts)
+    │   │   │   │   │       │       # - Accessibility roles/labels
+    │   │   │   │   │       │       # - Icon rotation animation
+    │   │   │   │   │       │       # - Haptic feedback on expand/collapse
+    │   │   │   │   │       │       # BE: None (UI component)
+    │   │   │   │   │       │       # Tests: interactions + a11y
+    │   │   │   │   │       │       # Uses react-native-reanimated for animated height transitions
+    │   │   │   │   │       │       # Support nested accordions with proper indentation
+    │   │   │   │   │       │       # Props: items[], multiple, defaultExpanded[], onChange
+    │   │   │   │   │       ├── Breadcrumb/
+    │   │   │   │   │       │   └── Breadcrumb.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │       # Mobile breadcrumb navigation component
+    │   │   │   │   │       │       # Implementation:
+    │   │   │   │   │       │       # - Horizontal scroll for overflow (ScrollView)
+    │   │   │   │   │       │       # - Touch-optimized tap targets (min 44x44 pts)
+    │   │   │   │   │       │       # - Separator customization (chevron/slash)
+    │   │   │   │   │       │       # - Auto-collapse on small screens (show last 2 items)
+    │   │   │   │   │       │       # - Accessibility support
+    │   │   │   │   │       │       # - Back button integration
+    │   │   │   │   │       │       # BE: None (UI component)
+    │   │   │   │   │       │       # Tests: navigation + overflow handling
+    │   │   │   │   │       │       # Props: items[], maxVisible, separator, onNavigate
+    │   │   │   │   │       └── Drawer/
+    │   │   │   │   │           └── Drawer.native.tsx  # ❌ CREATE
+    │   │   │   │   │               # Mobile drawer component (BottomSheet pattern)
+    │   │   │   │   │               # Implementation:
+    │   │   │   │   │               # - Bottom sheet drawer (@gorhom/bottom-sheet)
+    │   │   │   │   │               # - Gesture-driven open/close
+    │   │   │   │   │               # - Snap points support
+    │   │   │   │   │               # - Backdrop with dismiss
+    │   │   │   │   │               # - Keyboard-aware behavior
+    │   │   │   │   │               # - Accessibility support (role, label)
+    │   │   │   │   │               # BE: None (UI component)
+    │   │   │   │   │               # Tests: gestures + keyboard behavior
+    │   │   │   │   │               # Props: snapPoints[], onDismiss, backdrop, children
     │   │   │   │   ├── Navigation/
     │   │   │   │   │   ├── Header.tsx  # Screen header
     │   │   │   │   │   └── TabBar.tsx  # Custom tab bar
@@ -16157,16 +16233,40 @@ fe/
     │   │   ├── cross-platform-routing.md  # ❌ CREATE
     │   │   │   # Cross-Platform Routing Guide
     │   │   │   # Next.js App Router vs Expo Router; parity; deep links; nav state; SEO notes
+    │   │   │   # Content:
+    │   │   │   # - Next.js App Router conventions (app/, page.tsx, layout.tsx)
+    │   │   │   # - Expo Router conventions (app/, index.tsx, _layout.tsx, (groups))
+    │   │   │   # - Maintaining route parity between platforms
+    │   │   │   # - Deep linking setup and testing
+    │   │   │   # - Navigation state management
+    │   │   │   # - SEO considerations for web
+    │   │   │   # - Mobile-specific navigation patterns
     │   │   ├── deployment.md
     │   │   ├── development-workflow.md
     │   │   ├── development.md
     │   │   ├── error-boundary-patterns.md  # ❌ CREATE
     │   │   │   # Error Boundary Implementation Patterns
     │   │   │   # Placement; fallback UIs; logging; recovery strategies; testing
+    │   │   │   # Content:
+    │   │   │   # - Where to place error boundaries (route groups, feature boundaries)
+    │   │   │   # - Fallback UI design patterns
+    │   │   │   # - Error logging integration (Sentry)
+    │   │   │   # - Recovery strategies (retry, navigate home)
+    │   │   │   # - Testing error boundaries
+    │   │   │   # - React Native specific considerations
+    │   │   │   # - Example implementations
     │   │   ├── getting-started.md
     │   │   ├── mobile-native-components.md  # ❌ CREATE
     │   │   │   # Mobile Native Component Implementation Guide
     │   │   │   # When to create .native.tsx; libraries; gestures; performance; testing; pitfalls
+    │   │   │   # Content:
+    │   │   │   # - When to create platform-specific components
+    │   │   │   # - Recommended native libraries (react-native-gesture-handler, reanimated)
+    │   │   │   # - Gesture handling best practices
+    │   │   │   # - Performance optimization techniques
+    │   │   │   # - Testing native components
+    │   │   │   # - Common pitfalls and solutions
+    │   │   │   # - Example component patterns
     │   │   ├── testing-guide.md
     │   │   ├── testing.md
     │   │   ├── troubleshooting.md
@@ -16185,15 +16285,57 @@ fe/
     │   # ✅ CORRECT LOCATION for all shared code
     │   # Shared packages
     │   ├── analytics/  # ⚠️ VERIFY EXISTENCE OR CREATE
+    │   │   # ⚠️ CREATE ENTIRE PACKAGE - Analytics tracking
+    │   │   # Analytics, earnings, and insights tracking
+    │   │   # Shared analytics utilities for web and mobile
     │   │   ├── index.ts  # ❌ CREATE IF MISSING
+    │   │   │   # ❌ CREATE
+    │   │   │   # export * from './use-analytics';
+    │   │   │   # export * from './use-earnings';
+    │   │   │   # export * from './use-insights';
+    │   │   │   # export * from './use-performance';
+    │   │   ├── package.json  # ❌ CREATE
+    │   │   │   # {
+    │   │   │   # "name": "@packages/analytics",
+    │   │   │   # "version": "0.1.0",
+    │   │   │   # "main": "index.ts",
+    │   │   │   # "dependencies": {
+    │   │   │   # "@tanstack/react-query": "^5.0.0"
+    │   │   │   # }
+    │   │   ├── tsconfig.json  # ❌ CREATE
+    │   │   │   # Extends base tsconfig from packages/config/typescript-config
     │   │   ├── use-analytics.ts  # ❌ CREATE IF MISSING
     │   │   │   # GET /v1/analytics/overview; dashboard metrics; BE: admin-be/analytics
+    │   │   │   # ❌ CREATE
+    │   │   │   # Hook: useAnalytics(scope, dateRange)
+    │   │   │   # Returns: { data, isLoading, error }
+    │   │   │   # API: GET /v1/analytics?scope=&from=&to=
+    │   │   │   # BE: admin-be/analytics
+    │   │   │   # Features: Dashboard metrics, trend data
     │   │   ├── use-earnings.ts  # ❌ CREATE IF MISSING
     │   │   │   # GET /v1/analytics/earnings; BE: financial-be/analytics
+    │   │   │   # ❌ CREATE
+    │   │   │   # Hook: useEarnings(userId, filters)
+    │   │   │   # Returns: { earnings, breakdown, isLoading }
+    │   │   │   # API: GET /v1/analytics/earnings?user_id=&period=
+    │   │   │   # BE: financial-be/analytics
+    │   │   │   # Features: Earnings breakdown, period comparisons
     │   │   ├── use-insights.ts  # ❌ CREATE IF MISSING
     │   │   │   # GET /v1/analytics/insights; AI insights; BE: admin-be/insights
+    │   │   │   # ❌ CREATE
+    │   │   │   # Hook: useInsights(context)
+    │   │   │   # Returns: { insights, recommendations, isLoading }
+    │   │   │   # API: GET /v1/analytics/insights?context=
+    │   │   │   # BE: admin-be/insights
+    │   │   │   # Features: AI-powered insights, recommendations
     │   │   └── use-performance.ts  # ❌ CREATE IF MISSING
     │   │       # GET /v1/analytics/performance; KPIs; BE: proposals-be/analytics
+    │   │       # ❌ CREATE
+    │   │       # Hook: usePerformance(entityId, entityType)
+    │   │       # Returns: { metrics, trends, isLoading }
+    │   │       # API: GET /v1/analytics/performance?entity=&type=
+    │   │       # BE: proposals-be/analytics
+    │   │       # Features: KPIs, performance metrics
     │   ├── config/  # Shared configurations
     │   │   ├── eslint-config/
     │   │   │   ├── index.js  # Base ESLint config
@@ -16219,36 +16361,104 @@ fe/
     │   │       └── react-native.json  # React Native TS config
     │   ├── hooks/  # ✅ ALL shared hooks belong HERE
     │   │   # React hooks library
+    │   │   ├── admin/  # ⚠️ CREATE IF MISSING - Admin hooks
+    │   │   │   ├── index.ts  # ❌ CREATE
+    │   │   │   │   # export * from './use-audit-logs';
+    │   │   │   │   # export * from './use-moderation';
+    │   │   │   │   # export * from './use-reports';
+    │   │   │   │   # export * from './use-system-health';
+    │   │   │   ├── use-audit-logs.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useAuditLogs(filters)
+    │   │   │   │   # Returns: { logs, export, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/admin/audits?filters=
+    │   │   │   │   # - POST /v1/admin/audits/export
+    │   │   │   │   # BE: admin-be/audit
+    │   │   │   │   # Features: Audit trail viewing and export
+    │   │   │   ├── use-moderation.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useModeration(contentType, contentId)
+    │   │   │   │   # Returns: { moderate, history, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - POST /v1/admin/moderation/{type}/{id}/review
+    │   │   │   │   # - GET /v1/admin/moderation/{type}/{id}/history
+    │   │   │   │   # BE: admin-be/moderation
+    │   │   │   │   # Features: Content moderation actions
+    │   │   │   ├── use-reports.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useReports(reportType, params)
+    │   │   │   │   # Returns: { report, generate, download, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - POST /v1/admin/reports/generate
+    │   │   │   │   # - GET /v1/admin/reports/{id}
+    │   │   │   │   # - GET /v1/admin/reports/{id}/download
+    │   │   │   │   # BE: admin-be/report
+    │   │   │   │   # Features: Admin report generation
+    │   │   │   └── use-system-health.ts  # ❌ CREATE
+    │   │   │       # Hook: useSystemHealth()
+    │   │   │       # Returns: { health, metrics, incidents, isLoading }
+    │   │   │       # API:
+    │   │   │       # - GET /v1/admin/health
+    │   │   │       # - GET /v1/admin/metrics
+    │   │   │       # - GET /v1/admin/incidents
+    │   │   │       # BE: admin-be/health, admin-be/incident
+    │   │   │       # Features: System health monitoring
     │   │   ├── analytics/  # ⚠️ VERIFY OR CREATE ENTIRE DOMAIN - Analytics hooks
     │   │   │   # Analytics, earnings, and insights tracking
     │   │   │   # BE: analytics-be microservice
+    │   │   │   # ❌ CREATE ENTIRE DOMAIN
+    │   │   │   # BE: admin-be/analytics, financial-be/analytics
     │   │   │   ├── index.ts  # ❌ CREATE - Analytics hooks barrel
     │   │   │   │   # Exports: analytics, earnings, performance, insights
     │   │   │   │   # ⚠️ VERIFY - Barrel export
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # export * from './use-analytics';
+    │   │   │   │   # export * from './use-earnings';
+    │   │   │   │   # export * from './use-insights';
+    │   │   │   │   # export * from './use-performance';
     │   │   │   ├── use-analytics.ts  # ❌ CREATE - Analytics overview
     │   │   │   │   # Hook: useAnalytics(scope, dateRange)
     │   │   │   │   # Returns: { data, isLoading, error }
     │   │   │   │   # API: GET /v1/analytics?scope=&from=&to=
     │   │   │   │   # BE: users-be/analytics
     │   │   │   │   # ⚠️ VERIFY - General analytics
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # BE: admin-be/analytics
+    │   │   │   │   # Features: Dashboard metrics, trend data
     │   │   │   ├── use-earnings.ts  # ❌ CREATE - Earnings
     │   │   │   │   # Hook: useEarnings(dateRange)
     │   │   │   │   # Returns: { totals, series, breakdown }
     │   │   │   │   # API: GET /v1/analytics/earnings
     │   │   │   │   # BE: financial-be/wallet
     │   │   │   │   # ⚠️ VERIFY - Earnings tracking
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Hook: useEarnings(userId, filters)
+    │   │   │   │   # Returns: { earnings, breakdown, isLoading }
+    │   │   │   │   # API: GET /v1/analytics/earnings?user_id=&period=
+    │   │   │   │   # BE: financial-be/analytics
+    │   │   │   │   # Features: Earnings breakdown, period comparisons
     │   │   │   ├── use-insights.ts  # ❌ CREATE - Insights
     │   │   │   │   # Hook: useInsights(query)
     │   │   │   │   # Returns: { insights, isLoading }
     │   │   │   │   # API: GET /v1/analytics/insights?q={query}
     │   │   │   │   # BE: users-be/analytics
     │   │   │   │   # ⚠️ VERIFY - AI-powered insights
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Hook: useInsights(context)
+    │   │   │   │   # Returns: { insights, recommendations, isLoading }
+    │   │   │   │   # API: GET /v1/analytics/insights?context=
+    │   │   │   │   # BE: admin-be/insights
+    │   │   │   │   # Features: AI-powered insights, recommendations
     │   │   │   └── use-performance.ts  # ❌ CREATE - Performance KPIs
     │   │   │       # Hook: usePerformance(dateRange)
     │   │   │       # Returns: { successRate, responseTime, satisfaction, completion }
     │   │   │       # API: GET /v1/analytics/performance
     │   │   │       # BE: users-be/analytics
     │   │   │       # ⚠️ VERIFY - Performance metrics
+    │   │   │       # ❌ CREATE
+    │   │   │       # Hook: usePerformance(entityId, entityType)
+    │   │   │       # Returns: { metrics, trends, isLoading }
+    │   │   │       # API: GET /v1/analytics/performance?entity=&type=
+    │   │   │       # BE: proposals-be/analytics
+    │   │   │       # Features: KPIs, performance metrics
     │   │   ├── api/  # ✅ EXISTS
     │   │   │   # ✅ EXISTS - Generic API hooks
     │   │   │   ├── use-api.ts  # ✅ KEEP (shared)
@@ -16593,6 +16803,7 @@ fe/
     │   │   │   # ⚠️ VERIFY OR CREATE ENTIRE DOMAIN - Financial hooks
     │   │   │   # Financial operations for wallet, transactions, payments
     │   │   │   # BE: financial-be microservice
+    │   │   │   # ⚠️ VERIFY - Financial operations hooks
     │   │   │   ├── index.ts  # ❌ CREATE - Export all financial hooks
     │   │   │   │   # export * from './use-wallet';
     │   │   │   │   # export * from './use-balance';
@@ -16660,6 +16871,14 @@ fe/
     │   │   │   │   # ❌ CREATE - Wallet operations
     │   │   │   │   # GET wallet / POST add-funds / transfer / PUT settings
     │   │   │   │   # ⚠️ VERIFY - Wallet operations
+    │   │   │   │   # Hook: useWallet()
+    │   │   │   │   # Returns: { wallet, addFunds, transfer, settings, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/wallet
+    │   │   │   │   # - POST /v1/wallet/add-funds
+    │   │   │   │   # - POST /v1/wallet/transfer
+    │   │   │   │   # - PUT /v1/wallet/settings
+    │   │   │   │   # Features: Wallet management
     │   │   │   └── use-withdraw.ts  # Withdrawal operations
     │   │   │       # ❌ CREATE
     │   │   │       # - Request withdrawal
@@ -16674,6 +16893,14 @@ fe/
     │   │   │       # ❌ CREATE - Withdrawal operations
     │   │   │       # POST create / GET list|detail / DELETE cancel
     │   │   │       # ⚠️ VERIFY - Withdrawal operations
+    │   │   │       # Hook: useWithdraw()
+    │   │   │       # Returns: { request, status, list, cancel, isLoading }
+    │   │   │       # API:
+    │   │   │       # - POST /v1/withdrawals
+    │   │   │       # - GET /v1/withdrawals
+    │   │   │       # - GET /v1/withdrawals/{id}
+    │   │   │       # - DELETE /v1/withdrawals/{id}
+    │   │   │       # Features: Withdrawal operations
     │   │   ├── forms/  # ✅ EXISTS
     │   │   │   # ✅ EXISTS - Form validation hooks
     │   │   │   ├── use-form-state.ts  # ✅ KEEP (shared)
@@ -16703,6 +16930,9 @@ fe/
     │   │   │   │   # ❌ CREATE - Jobs hooks barrel
     │   │   │   │   # Exports: job, jobs, job-actions, job-analytics, job-applicants
     │   │   │   │   # ⚠️ VERIFY - Barrel export
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # export * from './use-job-analytics';
+    │   │   │   │   # export * from './use-job-applicants';
     │   │   │   ├── use-job-actions.ts  # ❌ CREATE - Job actions
     │   │   │   │   # publish/close/archive/delete
     │   │   │   │   # POST /v1/jobs/{id}/publish|close|archive, DELETE /v1/jobs/{id}
@@ -16721,6 +16951,10 @@ fe/
     │   │   │   │   # API: POST /v1/jobs/{id}/{action}
     │   │   │   │   # publish/close/pause/delete
     │   │   │   │   # ⚠️ VERIFY - Job lifecycle (publish/close/archive)
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Returns: { publish, close, reopen, archive, delete }
+    │   │   │   │   # - DELETE /v1/jobs/{id}
+    │   │   │   │   # Features: Job lifecycle management
     │   │   │   ├── use-job-analytics.ts  # ❌ CREATE - Job analytics
     │   │   │   │   # Hook: useJobAnalytics(jobId)
     │   │   │   │   # Returns: { views, applies, hires, trend }
@@ -16728,6 +16962,9 @@ fe/
     │   │   │   │   # BE: jobs-be/analytics
     │   │   │   │   # GET /v1/jobs/{id}/analytics; BE: jobs-be/analytics
     │   │   │   │   # ⚠️ VERIFY - Job analytics (views/applies/hires)
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Returns: { views, applies, hires, trend, isLoading }
+    │   │   │   │   # Features: Job performance metrics
     │   │   │   ├── use-job-applicants.ts  # ❌ CREATE - Applicants
     │   │   │   │   # Hook: useJobApplicants(jobId)
     │   │   │   │   # Returns: { applicants, isLoading, hasMore, loadMore }
@@ -16735,6 +16972,10 @@ fe/
     │   │   │   │   # BE: jobs-be/applicant
     │   │   │   │   # GET /v1/jobs/{id}/applicants; shortlist/reject/interview
     │   │   │   │   # ⚠️ VERIFY - Applicants management
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Hook: useJobApplicants(jobId, filters)
+    │   │   │   │   # API: GET /v1/jobs/{id}/applicants?filters=&page=
+    │   │   │   │   # Features: Applicant list, shortlist, reject, interview
     │   │   │   ├── use-job-application.ts  # ❌ CREATE
     │   │   │   │   # Job application operations
     │   │   │   │   # - Apply to job
@@ -16748,6 +16989,14 @@ fe/
     │   │   │   │   # ❌ CREATE - Job application operations
     │   │   │   │   # POST apply; DELETE withdraw; GET status
     │   │   │   │   # ⚠️ VERIFY - Application operations
+    │   │   │   │   # Hook: useJobApplication(applicationId)
+    │   │   │   │   # Returns: { application, apply, withdraw, update, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - POST /v1/jobs/{job_id}/applications
+    │   │   │   │   # - GET /v1/applications/{id}
+    │   │   │   │   # - DELETE /v1/applications/{id}
+    │   │   │   │   # - PUT /v1/applications/{id}
+    │   │   │   │   # Features: Application management
     │   │   │   ├── use-job-recommendations.ts  # ❌ CREATE
     │   │   │   │   # Job recommendations
     │   │   │   │   # - Get recommended jobs
@@ -16758,6 +17007,13 @@ fe/
     │   │   │   │   # POST /v1/recommendations/jobs/{id}/dismiss
     │   │   │   │   # ❌ CREATE - Job recommendations
     │   │   │   │   # GET recommendations; POST dismiss/feedback
+    │   │   │   │   # Hook: useJobRecommendations(userId)
+    │   │   │   │   # Returns: { recommendations, dismiss, feedback, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/recommendations/jobs
+    │   │   │   │   # - POST /v1/recommendations/jobs/{id}/dismiss
+    │   │   │   │   # - POST /v1/recommendations/jobs/{id}/feedback
+    │   │   │   │   # Features: Personalized job recommendations
     │   │   │   ├── use-job-search.ts  # ❌ CREATE
     │   │   │   │   # Job search functionality
     │   │   │   │   # - Search jobs by keywords
@@ -16769,8 +17025,23 @@ fe/
     │   │   │   │   # POST /v1/search/jobs/saved
     │   │   │   │   # ❌ CREATE - Job search operations
     │   │   │   │   # POST /v1/search/jobs; GET /v1/search/suggestions
+    │   │   │   │   # Hook: useJobSearch(query, filters)
+    │   │   │   │   # Returns: { results, facets, refine, isLoading }
+    │   │   │   │   # API: GET /v1/search/jobs?q=&filters=&facets=
+    │   │   │   │   # BE: search-be/search
+    │   │   │   │   # Features: Advanced search, filters, facets
     │   │   │   ├── use-job-templates.ts  # ❌ CREATE - Job template operations
     │   │   │   │   # GET list; POST from-template/save-as; DELETE template
+    │   │   │   │   # ❌ CREATE
+    │   │   │   │   # Hook: useJobTemplates(category)
+    │   │   │   │   # Returns: { templates, create, update, delete, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/jobs/templates?category=
+    │   │   │   │   # - POST /v1/jobs/templates
+    │   │   │   │   # - PUT /v1/jobs/templates/{id}
+    │   │   │   │   # - DELETE /v1/jobs/templates/{id}
+    │   │   │   │   # BE: jobs-be/template
+    │   │   │   │   # Features: Job template management
     │   │   │   ├── use-job.ts  # ❌ CREATE
     │   │   │   │   # Single job operations
     │   │   │   │   # - Fetch job by ID
@@ -16796,6 +17067,8 @@ fe/
     │   │   │   │   # ❌ CREATE - Single job
     │   │   │   │   # GET/PATCH/DELETE /v1/jobs/{id}; BE: jobs-be/job
     │   │   │   │   # ⚠️ VERIFY - Single job operations
+    │   │   │   │   # Returns: { job, isLoading, error }
+    │   │   │   │   # Features: Single job details
     │   │   │   ├── use-jobs.ts  # ❌ CREATE
     │   │   │   │   # List/filter jobs
     │   │   │   │   # - Get all jobs (paginated)
@@ -16821,6 +17094,10 @@ fe/
     │   │   │   │   # API: GET /v1/jobs?status&category&skills&...
     │   │   │   │   # GET /v1/jobs?status&category&budget&location
     │   │   │   │   # ⚠️ VERIFY - Job list with filters
+    │   │   │   │   # Hook: useJobs(filters, pagination)
+    │   │   │   │   # Returns: { jobs, hasMore, loadMore, isLoading }
+    │   │   │   │   # API: GET /v1/jobs?filters=&page=&limit=
+    │   │   │   │   # Features: Job list with filters
     │   │   │   └── │
     │   │   ├── messages/  # ❌ CREATE ENTIRE DOMAIN
     │   │   │   ├── index.ts  # ❌ CREATE - Export all message hooks
@@ -17167,6 +17444,89 @@ fe/
     │   │   │   │   # BE: proposals-be/rate_card
     │   │   │   │   # GET/POST /v1/rate-cards; BE: proposals-be/rate_card
     │   │   │   └── │
+    │   │   ├── search/  # ⚠️ VERIFY - Search hooks
+    │   │   │   ├── use-saved-searches.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSavedSearches()
+    │   │   │   │   # Returns: { searches, save, delete, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/search/saved
+    │   │   │   │   # - POST /v1/search/saved
+    │   │   │   │   # - DELETE /v1/search/saved/{id}
+    │   │   │   │   # BE: search-be/saved_query
+    │   │   │   │   # Features: Saved search management
+    │   │   │   ├── use-search-alerts.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSearchAlerts()
+    │   │   │   │   # Returns: { alerts, create, update, delete, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/search/alerts
+    │   │   │   │   # - POST /v1/search/alerts
+    │   │   │   │   # - PUT /v1/search/alerts/{id}
+    │   │   │   │   # - DELETE /v1/search/alerts/{id}
+    │   │   │   │   # BE: search-be/alert
+    │   │   │   │   # Features: Search alert management
+    │   │   │   └── use-search-personalization.ts  # ❌ CREATE
+    │   │   │       # Hook: useSearchPersonalization()
+    │   │   │       # Returns: { preferences, update, reset, isLoading }
+    │   │   │       # API:
+    │   │   │       # - GET /v1/search/personalization
+    │   │   │       # - PUT /v1/search/personalization
+    │   │   │       # - POST /v1/search/personalization/reset
+    │   │   │       # BE: search-be/personalization
+    │   │   │       # Features: Search personalization settings
+    │   │   ├── subscriptions/  # ⚠️ VERIFY - Subscription hooks
+    │   │   │   ├── use-subscription-actions.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSubscriptionActions()
+    │   │   │   │   # Returns: { changePlan, cancel, resume, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - POST /v1/subscriptions/change
+    │   │   │   │   # - POST /v1/subscriptions/cancel
+    │   │   │   │   # - POST /v1/subscriptions/resume
+    │   │   │   │   # BE: financial-be/subscription
+    │   │   │   │   # Features: Subscription management
+    │   │   │   ├── use-subscription-invoices.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSubscriptionInvoices()
+    │   │   │   │   # Returns: { invoices, download, isLoading }
+    │   │   │   │   # API:
+    │   │   │   │   # - GET /v1/subscriptions/{id}/invoices
+    │   │   │   │   # - GET /v1/subscriptions/invoices/{id}/download
+    │   │   │   │   # BE: financial-be/subscription
+    │   │   │   │   # Features: Invoice history
+    │   │   │   └── use-subscription.ts  # ❌ CREATE
+    │   │   │       # Hook: useSubscription()
+    │   │   │       # Returns: { subscription, features, isLoading }
+    │   │   │       # API: GET /v1/subscriptions/me
+    │   │   │       # BE: financial-be/subscription
+    │   │   │       # Features: Current subscription details
+    │   │   ├── support/  # ❌ CREATE ENTIRE DOMAIN
+    │   │   │   # Support ticket and help desk operations
+    │   │   │   # BE: admin-be/support_ticket
+    │   │   │   ├── index.ts  # ❌ CREATE
+    │   │   │   │   # export * from './use-support-ticket';
+    │   │   │   │   # export * from './use-support-tickets';
+    │   │   │   │   # export * from './use-ticket-actions';
+    │   │   │   ├── use-support-ticket.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSupportTicket(ticketId)
+    │   │   │   │   # Returns: { ticket, messages, isLoading, error }
+    │   │   │   │   # API: GET /v1/support/tickets/{id}
+    │   │   │   │   # BE: admin-be/support_ticket
+    │   │   │   │   # Features: Ticket details, message thread
+    │   │   │   ├── use-support-tickets.ts  # ❌ CREATE
+    │   │   │   │   # Hook: useSupportTickets(filters)
+    │   │   │   │   # Returns: { tickets, hasMore, loadMore, isLoading }
+    │   │   │   │   # API: GET /v1/support/tickets?status=&page=
+    │   │   │   │   # BE: admin-be/support_ticket
+    │   │   │   │   # Features: Ticket list with filters
+    │   │   │   └── use-ticket-actions.ts  # ❌ CREATE
+    │   │   │       # Hook: useTicketActions(ticketId)
+    │   │   │       # Returns: { create, reply, close, reopen, attach, isLoading }
+    │   │   │       # API:
+    │   │   │       # - POST /v1/support/tickets
+    │   │   │       # - POST /v1/support/tickets/{id}/messages
+    │   │   │       # - POST /v1/support/tickets/{id}/close
+    │   │   │       # - POST /v1/support/tickets/{id}/reopen
+    │   │   │       # BE: admin-be/support_ticket
+    │   │   │       # BE: storage-be/asset (attachments)
+    │   │   │       # Features: Ticket lifecycle management
     │   │   ├── ui/  # ✅ EXISTS
     │   │   └── │
     │   ├── shared/  # Business logic, hooks, utilities
@@ -19341,9 +19701,14 @@ fe/
     │   │   │   │   │   │   │   │   # - Supports nested accordions
     │   │   │   │   │   │   │   │   # - Haptic feedback on expand/collapse
     │   │   │   │   │   │   │   │   # BE: None (UI only)
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - Accessibility: role, aria-expanded
     │   │   │   │   │   │   │   ├── Accordion.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Accordion.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── Accordion.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   ├── Breadcrumb/
     │   │   │   │   │   │   │   ├── Breadcrumb.native.tsx  # ❌ CREATE
     │   │   │   │   │   │   │   │   # Mobile breadcrumb navigation component
@@ -19378,9 +19743,20 @@ fe/
     │   │   │   │   │   │   │   │   # - Touch-optimized navigation items
     │   │   │   │   │   │   │   │   # - Truncation for long paths
     │   │   │   │   │   │   │   │   # BE: None (UI only)
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - Horizontal scroll for overflow (ScrollView)
+    │   │   │   │   │   │   │   │   # - Touch-optimized tap targets (min 44x44 pts)
+    │   │   │   │   │   │   │   │   # - Separator customization (chevron/slash icons)
+    │   │   │   │   │   │   │   │   # - Auto-collapse on small screens (show last 2 items)
+    │   │   │   │   │   │   │   │   # - Accessibility support (role, label)
+    │   │   │   │   │   │   │   │   # - Back button integration
+    │   │   │   │   │   │   │   │   # Props: items[], maxVisible, separator, onNavigate
     │   │   │   │   │   │   │   ├── Breadcrumb.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Breadcrumb.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── Breadcrumb.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   ├── Drawer/
     │   │   │   │   │   │   │   ├── Drawer.native.tsx  # ❌ CREATE
     │   │   │   │   │   │   │   │   # React Native bottom sheet drawer component
@@ -19423,9 +19799,20 @@ fe/
     │   │   │   │   │   │   │   │   # - Keyboard-aware scrolling
     │   │   │   │   │   │   │   │   # - Haptic feedback
     │   │   │   │   │   │   │   │   # BE: None (UI only)
+    │   │   │   │   │   │   │   │   # Mobile drawer component (BottomSheet)
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - Bottom sheet drawer (@gorhom/bottom-sheet)
+    │   │   │   │   │   │   │   │   # - Gesture-driven open/close (swipe down to dismiss)
+    │   │   │   │   │   │   │   │   # - Snap points support (25%, 50%, 90%)
+    │   │   │   │   │   │   │   │   # - Keyboard-aware behavior (adjusts on keyboard open)
+    │   │   │   │   │   │   │   │   # - Accessibility support (role, aria-modal)
+    │   │   │   │   │   │   │   │   # Props: snapPoints[], onDismiss, backdrop, children
     │   │   │   │   │   │   │   ├── Drawer.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Drawer.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── Drawer.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   ├── Tabs/
     │   │   │   │   │   │   │   └── Tabs.native.tsx  # 🔧 ENHANCE - Mobile tabs
     │   │   │   │   │   │   │       # Enhancements
@@ -19434,6 +19821,14 @@ fe/
     │   │   │   │   │   │   │       # - Horizontal overflow handling
     │   │   │   │   │   │   │       # - Accessibility roles/labels
     │   │   │   │   │   │   │       # BE: None (UI component)
+    │   │   │   │   │   │   │       # ⚠️ VERIFY/ENHANCE
+    │   │   │   │   │   │   │       # CURRENT: May exist but needs verification
+    │   │   │   │   │   │   │       # REQUIRED FEATURES:
+    │   │   │   │   │   │   │       # - Horizontal scrollable tabs
+    │   │   │   │   │   │   │       # - Touch-optimized tap targets
+    │   │   │   │   │   │   │       # - Accessibility support
+    │   │   │   │   │   │   │       # - Badge support for counts
+    │   │   │   │   │   │   │       # BE: None (UI only)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── Overlay/
     │   │   │   │   │   │   ├── Popover/
@@ -19466,9 +19861,20 @@ fe/
     │   │   │   │   │   │   │   │   # - Arrow pointer to anchor element
     │   │   │   │   │   │   │   │   # - Safe area aware
     │   │   │   │   │   │   │   │   # BE: None (UI only)
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - Modal-based popover (react-native-modal)
+    │   │   │   │   │   │   │   │   # - Position-aware (top/bottom/left/right)
+    │   │   │   │   │   │   │   │   # - Automatic repositioning on screen edges
+    │   │   │   │   │   │   │   │   # - Arrow pointer to trigger element
+    │   │   │   │   │   │   │   │   # - Dismiss on backdrop tap
+    │   │   │   │   │   │   │   │   # - Keyboard-aware positioning
+    │   │   │   │   │   │   │   │   # Props: trigger, placement, content, onDismiss
     │   │   │   │   │   │   │   ├── Popover.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Popover.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── Popover.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   ├── Tooltip/
     │   │   │   │   │   │   │   ├── Tooltip.native.tsx  # ❌ CREATE
     │   │   │   │   │   │   │   │   # Mobile tooltip component
@@ -19501,9 +19907,21 @@ fe/
     │   │   │   │   │   │   │   │   # - Max-width constraint for text wrapping
     │   │   │   │   │   │   │   │   # - Portal rendering for z-index
     │   │   │   │   │   │   │   │   # BE: None (UI only)
+    │   │   │   │   │   │   │   │   # Mobile tooltip component (long press)
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - Long press gesture to show (react-native-gesture-handler)
+    │   │   │   │   │   │   │   │   # - Haptic feedback on show
+    │   │   │   │   │   │   │   │   # - Auto-dismiss after delay (3s default)
+    │   │   │   │   │   │   │   │   # - Position-aware (avoid edges)
+    │   │   │   │   │   │   │   │   # - Accessible alternative text
+    │   │   │   │   │   │   │   │   # - Dark/light theme support
+    │   │   │   │   │   │   │   │   # Props: content, delay, position, children
     │   │   │   │   │   │   │   ├── Tooltip.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Tooltip.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── Tooltip.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   └── │
     │   │   │   │   │   └── │
     │   │   │   │   ├── Navigation/
@@ -19623,9 +20041,22 @@ fe/
     │   │   │   │   │   │   │   │   # - Swipe actions (edit/delete)
     │   │   │   │   │   │   │   │   # - Search/filter integration
     │   │   │   │   │   │   │   │   # BE: Various endpoints depending on data source
+    │   │   │   │   │   │   │   │   # Mobile data grid component (FlashList)
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - @shopify/flash-list for performance
+    │   │   │   │   │   │   │   │   # - Horizontal scroll for columns
+    │   │   │   │   │   │   │   │   # - Virtual scrolling for rows
+    │   │   │   │   │   │   │   │   # - Touch-optimized cell interactions
+    │   │   │   │   │   │   │   │   # - Sorting and filtering
+    │   │   │   │   │   │   │   │   # - Pull-to-refresh support
+    │   │   │   │   │   │   │   │   # Props: columns[], data[], onSort, onFilter
+    │   │   │   │   │   │   │   │   # BE: Varies by usage
     │   │   │   │   │   │   │   ├── DataGrid.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── DataGrid.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── DataGrid.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   ├── KanbanBoard/
     │   │   │   │   │   │   │   ├── KanbanBoard.native.tsx  # ❌ CREATE
     │   │   │   │   │   │   │   │   # Mobile kanban board component
@@ -19663,9 +20094,21 @@ fe/
     │   │   │   │   │   │   │   │   # - Haptic feedback on drag/drop
     │   │   │   │   │   │   │   │   # - Add card FAB per column
     │   │   │   │   │   │   │   │   # BE: Various endpoints depending on board type
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - Horizontal columns (ScrollView)
+    │   │   │   │   │   │   │   │   # - Drag-and-drop cards (react-native-draggable-flatlist)
+    │   │   │   │   │   │   │   │   # - Haptic feedback on drag
+    │   │   │   │   │   │   │   │   # - Optimistic updates
+    │   │   │   │   │   │   │   │   # - Column collapse/expand
+    │   │   │   │   │   │   │   │   # - Card preview modal
+    │   │   │   │   │   │   │   │   # Props: columns[], cards[], onCardMove, onCardClick
+    │   │   │   │   │   │   │   │   # BE: Varies by usage
     │   │   │   │   │   │   │   ├── KanbanBoard.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── KanbanBoard.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── KanbanBoard.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   ├── Table/
     │   │   │   │   │   │   │   ├── Table.native.tsx  # ❌ CREATE
     │   │   │   │   │   │   │   │   # Mobile responsive table component
@@ -19706,9 +20149,22 @@ fe/
     │   │   │   │   │   │   │   │   # - Sort by column (tap header)
     │   │   │   │   │   │   │   │   # - Pagination footer
     │   │   │   │   │   │   │   │   # BE: Various endpoints depending on data source
+    │   │   │   │   │   │   │   │   # Mobile table component (FlashList)
+    │   │   │   │   │   │   │   │   # Implementation:
+    │   │   │   │   │   │   │   │   # - @shopify/flash-list for performance
+    │   │   │   │   │   │   │   │   # - Responsive column visibility (hide on small screens)
+    │   │   │   │   │   │   │   │   # - Expandable rows for details
+    │   │   │   │   │   │   │   │   # - Sorting and filtering
+    │   │   │   │   │   │   │   │   # - Pull-to-refresh
+    │   │   │   │   │   │   │   │   # - Infinite scroll pagination
+    │   │   │   │   │   │   │   │   # Props: columns[], data[], onSort, expandable
+    │   │   │   │   │   │   │   │   # BE: Varies by usage
     │   │   │   │   │   │   │   ├── Table.tsx  # ✅ EXISTS - Base component
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   ├── Table.types.ts  # ✅ EXISTS - Shared types
+    │   │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   └── Table.web.tsx  # ✅ EXISTS - Web implementation
+    │   │   │   │   │   │   │       # ✅ EXISTS
     │   │   │   │   │   │   └── │
     │   │   │   │   │   └── │
     │   │   │   │   ├── Overlay/
