@@ -7373,7 +7373,6 @@ fe/
     │   │   │   │   ├── notifications.tsx  # Notification settings
     │   │   │   │   ├── privacy.tsx  # Privacy settings
     │   │   │   │   └── security.tsx  # Security settings
-    │   │   │   │  
     │   │   │   ├── status/
     │   │   │   │   └── index.tsx  # Status & incidents (mobile)
     │   │   │   │       # BE: utility/status — GET /v1/status, /v1/incidents
@@ -7646,6 +7645,257 @@ fe/
     │   │   │   │   │   # - Token storage
     │   │   │   │   │   # - Biometric keys
     │   │   │   │   └── utils.ts  # General utilities
+    │   │   │   ├── screens/
+    │   │   │   │   └── developer/
+    │   │   │   │       └── webhooks/
+    │   │   │   │           ├── [webhook_id]/
+    │   │   │   │           │   ├── analytics/
+    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook analytics dashboard (mobile)
+    │   │   │   │           │   │       # Webhook performance and usage analytics
+    │   │   │   │           │   │       # Content:
+    │   │   │   │           │   │       # - Delivery success rate chart (line graph, 7/30/90 day view)
+    │   │   │   │           │   │       # - Event type distribution (pie chart)
+    │   │   │   │           │   │       # - Average response time trend
+    │   │   │   │           │   │       # - Total deliveries count (with period comparison)
+    │   │   │   │           │   │       # - Failed deliveries count (with period comparison)
+    │   │   │   │           │   │       # - Peak usage times (heatmap)
+    │   │   │   │           │   │       # - Export analytics data button
+    │   │   │   │           │   │       # Features:
+    │   │   │   │           │   │       # - Time range selector (7d/30d/90d)
+    │   │   │   │           │   │       # - Refresh data
+    │   │   │   │           │   │       # - Export as CSV/JSON
+    │   │   │   │           │   │       # BE: users-be/webhook
+    │   │   │   │           │   │       # GET /v1/developer/webhooks/{webhook_id}/analytics
+    │   │   │   │           │   ├── health/
+    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook health monitoring (mobile)
+    │   │   │   │           │   │       # Webhook health and uptime monitoring
+    │   │   │   │           │   │       # Content:
+    │   │   │   │           │   │       # - Health status indicator (healthy/degraded/down)
+    │   │   │   │           │   │       # - Uptime percentage (24h/7d/30d)
+    │   │   │   │           │   │       # - Current latency (p50/p95/p99)
+    │   │   │   │           │   │       # - Error rate chart
+    │   │   │   │           │   │       # - Recent incidents timeline
+    │   │   │   │           │   │       # - Health check history (last 24 hours)
+    │   │   │   │           │   │       # - Alert configuration button
+    │   │   │   │           │   │       # Features:
+    │   │   │   │           │   │       # - Manual health check trigger
+    │   │   │   │           │   │       # - Auto-refresh every 30s
+    │   │   │   │           │   │       # - Configure health alerts
+    │   │   │   │           │   │       # - View incident details
+    │   │   │   │           │   │       # BE: users-be/webhook
+    │   │   │   │           │   │       # GET /v1/developer/webhooks/{webhook_id}/health
+    │   │   │   │           │   │       # POST /v1/developer/webhooks/{webhook_id}/health-check
+    │   │   │   │           │   ├── retry-config/
+    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook retry configuration (mobile)
+    │   │   │   │           │   │       # Configure webhook retry policies
+    │   │   │   │           │   │       # Content:
+    │   │   │   │           │   │       # - Enable/disable automatic retries toggle
+    │   │   │   │           │   │       # - Max retry attempts slider (1-10)
+    │   │   │   │           │   │       # - Backoff strategy selector (linear/exponential/fibonacci)
+    │   │   │   │           │   │       # - Initial retry delay input (seconds)
+    │   │   │   │           │   │       # - Max retry delay input (seconds)
+    │   │   │   │           │   │       # - Retry on status codes (multi-select: 4xx/5xx)
+    │   │   │   │           │   │       # - Retry preview timeline visualization
+    │   │   │   │           │   │       # - Dead letter queue configuration
+    │   │   │   │           │   │       # Features:
+    │   │   │   │           │   │       # - Calculate total retry duration
+    │   │   │   │           │   │       # - Preview retry schedule
+    │   │   │   │           │   │       # - Test retry policy
+    │   │   │   │           │   │       # - Save configuration
+    │   │   │   │           │   │       # BE: users-be/webhook
+    │   │   │   │           │   │       # GET /v1/developer/webhooks/{webhook_id}/retry-config
+    │   │   │   │           │   │       # PUT /v1/developer/webhooks/{webhook_id}/retry-config
+    │   │   │   │           │   ├── security/
+    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook security settings (mobile)
+    │   │   │   │           │   │       # Webhook security configuration
+    │   │   │   │           │   │       # Content:
+    │   │   │   │           │   │       # - IP whitelist management (add/remove IPs)
+    │   │   │   │           │   │       # - Rate limiting configuration (requests per minute/hour)
+    │   │   │   │           │   │       # - Secret key management (view/regenerate/rotate schedule)
+    │   │   │   │           │   │       # - Signature algorithm selector (HMAC-SHA256/Ed25519)
+    │   │   │   │           │   │       # - Request timeout setting (seconds)
+    │   │   │   │           │   │       # - TLS version requirement
+    │   │   │   │           │   │       # - Custom headers configuration
+    │   │   │   │           │   │       # Features:
+    │   │   │   │           │   │       # - IP CIDR validation
+    │   │   │   │           │   │       # - Secret rotation scheduling
+    │   │   │   │           │   │       # - Test security settings
+    │   │   │   │           │   │       # - Security audit log link
+    │   │   │   │           │   │       # BE: users-be/webhook
+    │   │   │   │           │   │       # GET /v1/developer/webhooks/{webhook_id}/security
+    │   │   │   │           │   │       # PUT /v1/developer/webhooks/{webhook_id}/security
+    │   │   │   │           │   └── transform/
+    │   │   │   │           │       └── index.tsx  # ❌ CREATE - Webhook payload transformation (mobile)
+    │   │   │   │           │           # Configure payload transformation rules
+    │   │   │   │           │           # Content:
+    │   │   │   │           │           # - Transformation rules list (add/edit/delete)
+    │   │   │   │           │           # - JSONPath selector for field mapping
+    │   │   │   │           │           # - Field rename rules
+    │   │   │   │           │           # - Field filter rules (include/exclude)
+    │   │   │   │           │           # - Custom headers (key-value pairs)
+    │   │   │   │           │           # - Payload template editor (JSON)
+    │   │   │   │           │           # - Before/after preview panel
+    │   │   │   │           │           # Features:
+    │   │   │   │           │           # - Test transformation with sample payload
+    │   │   │   │           │           # - JSON validation
+    │   │   │   │           │           # - Transformation templates library
+    │   │   │   │           │           # - Save/apply rules
+    │   │   │   │           │           # BE: users-be/webhook
+    │   │   │   │           │           # GET /v1/developer/webhooks/{webhook_id}/transform
+    │   │   │   │           │           # PUT /v1/developer/webhooks/{webhook_id}/transform
+    │   │   │   │           ├── batch-retry/
+    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook batch retry (mobile)
+    │   │   │   │           │       # Bulk retry operations for failed deliveries
+    │   │   │   │           │       # Content:
+    │   │   │   │           │       # - Failed deliveries summary card (total count, date range)
+    │   │   │   │           │       # - Filters section:
+    │   │   │   │           │       # - Date range picker
+    │   │   │   │           │       # - Webhook selector (multi-select)
+    │   │   │   │           │       # - Event type filter
+    │   │   │   │           │       # - HTTP status code filter
+    │   │   │   │           │       # - Failed deliveries list (checkboxes)
+    │   │   │   │           │       # - Select all/none buttons
+    │   │   │   │           │       # - Selected count indicator
+    │   │   │   │           │       # - Retry options:
+    │   │   │   │           │       # - Retry immediately radio
+    │   │   │   │           │       # - Schedule retry radio (datetime picker)
+    │   │   │   │           │       # - "Retry Selected" action button
+    │   │   │   │           │       # Features:
+    │   │   │   │           │       # - Bulk select deliveries
+    │   │   │   │           │       # - Preview retry impact
+    │   │   │   │           │       # - Confirm retry dialog
+    │   │   │   │           │       # - Show retry progress
+    │   │   │   │           │       # BE: users-be/webhook
+    │   │   │   │           │       # GET /v1/developer/webhooks/failed-deliveries
+    │   │   │   │           │       # POST /v1/developer/webhooks/batch-retry
+    │   │   │   │           ├── compare/
+    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook comparison view (mobile)
+    │   │   │   │           │       # Compare multiple webhooks side-by-side
+    │   │   │   │           │       # Content:
+    │   │   │   │           │       # - Webhook selector (multi-select, max 3)
+    │   │   │   │           │       # - Comparison table (horizontal scroll):
+    │   │   │   │           │       # - URL
+    │   │   │   │           │       # - Active status
+    │   │   │   │           │       # - Events subscribed (count + list)
+    │   │   │   │           │       # - Success rate (last 7d)
+    │   │   │   │           │       # - Total deliveries
+    │   │   │   │           │       # - Avg response time
+    │   │   │   │           │       # - Retry configuration
+    │   │   │   │           │       # - Security settings
+    │   │   │   │           │       # - Created date
+    │   │   │   │           │       # - Highlight differences toggle
+    │   │   │   │           │       # Features:
+    │   │   │   │           │       # - Add/remove webhooks from comparison
+    │   │   │   │           │       # - Export comparison as CSV
+    │   │   │   │           │       # - Quick actions per webhook
+    │   │   │   │           │       # - Show only differences mode
+    │   │   │   │           │       # BE: users-be/webhook
+    │   │   │   │           │       # GET /v1/developer/webhooks/{webhook_ids}/compare
+    │   │   │   │           ├── docs/
+    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook documentation (mobile)
+    │   │   │   │           │       # Inline webhook usage documentation
+    │   │   │   │           │       # Content:
+    │   │   │   │           │       # - Getting Started guide
+    │   │   │   │           │       # - Quick setup tutorial (step-by-step)
+    │   │   │   │           │       # - Authentication guide (signature verification)
+    │   │   │   │           │       # - Event types reference
+    │   │   │   │           │       # - Code examples (Node.js/Python/PHP/Ruby)
+    │   │   │   │           │       # - Best practices section
+    │   │   │   │           │       # - Troubleshooting guide
+    │   │   │   │           │       # - FAQ accordion
+    │   │   │   │           │       # - Video tutorials links
+    │   │   │   │           │       # Features:
+    │   │   │   │           │       # - Copy code snippets
+    │   │   │   │           │       # - Search documentation
+    │   │   │   │           │       # - Language selector for examples
+    │   │   │   │           │       # - Bookmark sections
+    │   │   │   │           │       # - Share documentation link
+    │   │   │   │           │       # BE: Static content or
+    │   │   │   │           │       # GET /v1/developer/webhooks/documentation
+    │   │   │   │           ├── events-catalog/
+    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook events catalog (mobile)
+    │   │   │   │           │       # Comprehensive webhook events documentation
+    │   │   │   │           │       # Content:
+    │   │   │   │           │       # - Events list grouped by category (payments/jobs/users/etc)
+    │   │   │   │           │       # - Event cards with: name, description, frequency indicator
+    │   │   │   │           │       # - Search events
+    │   │   │   │           │       # - Filter by category
+    │   │   │   │           │       # - Event detail view (expandable):
+    │   │   │   │           │       # - Full event name
+    │   │   │   │           │       # - Detailed description
+    │   │   │   │           │       # - Trigger conditions
+    │   │   │   │           │       # - Payload schema (JSON schema viewer)
+    │   │   │   │           │       # - Sample payload (JSON, copyable)
+    │   │   │   │           │       # - Related events
+    │   │   │   │           │       # Features:
+    │   │   │   │           │       # - Copy event name
+    │   │   │   │           │       # - Copy sample payload
+    │   │   │   │           │       # - Subscribe to event (quick action)
+    │   │   │   │           │       # - View webhooks using this event
+    │   │   │   │           │       # BE: users-be/webhook
+    │   │   │   │           │       # GET /v1/developer/webhooks/events-catalog
+    │   │   │   │           ├── import-export/
+    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook import/export (mobile)
+    │   │   │   │           │       # Bulk webhook configuration management
+    │   │   │   │           │       # Content:
+    │   │   │   │           │       # - Tab selector: Import / Export
+    │   │   │   │           │       # Export tab:
+    │   │   │   │           │       # - Select webhooks (checkboxes, select all)
+    │   │   │   │           │       # - Export format selector (JSON/YAML/CSV)
+    │   │   │   │           │       # - Include secrets toggle
+    │   │   │   │           │       # - Export button
+    │   │   │   │           │       # Import tab:
+    │   │   │   │           │       # - File upload area (drag-drop or browse)
+    │   │   │   │           │       # - Format auto-detection
+    │   │   │   │           │       # - Preview import data (table view)
+    │   │   │   │           │       # - Conflict resolution strategy (skip/overwrite/merge)
+    │   │   │   │           │       # - Validation results
+    │   │   │   │           │       # - Import button
+    │   │   │   │           │       # Features:
+    │   │   │   │           │       # - Validate import file
+    │   │   │   │           │       # - Show import preview
+    │   │   │   │           │       # - Download export file
+    │   │   │   │           │       # - Import history log
+    │   │   │   │           │       # BE: users-be/webhook
+    │   │   │   │           │       # POST /v1/developer/webhooks/export
+    │   │   │   │           │       # POST /v1/developer/webhooks/import
+    │   │   │   │           ├── settings/
+    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook global settings (mobile)
+    │   │   │   │           │       # Global webhook preferences and configuration
+    │   │   │   │           │       # Content:
+    │   │   │   │           │       # - Default timeout duration (seconds)
+    │   │   │   │           │       # - Default retry policy preset selector
+    │   │   │   │           │       # - Default signature algorithm
+    │   │   │   │           │       # - Enable webhook notifications toggle
+    │   │   │   │           │       # - Notification channels (email/slack/sms)
+    │   │   │   │           │       # - Alert thresholds (failure rate %, response time)
+    │   │   │   │           │       # - Webhook naming convention template
+    │   │   │   │           │       # - Auto-disable webhooks after X failures toggle
+    │   │   │   │           │       # Features:
+    │   │   │   │           │       # - Apply to all webhooks option
+    │   │   │   │           │       # - Reset to defaults
+    │   │   │   │           │       # - Save settings
+    │   │   │   │           │       # BE: users-be/webhook
+    │   │   │   │           │       # GET /v1/developer/webhooks/settings
+    │   │   │   │           │       # PUT /v1/developer/webhooks/settings
+    │   │   │   │           └── templates/
+    │   │   │   │               └── index.tsx  # ❌ CREATE - Webhook templates (mobile)
+    │   │   │   │                   # Pre-configured webhook templates library
+    │   │   │   │                   # Content:
+    │   │   │   │                   # - Templates list (cards: Slack, Discord, Teams, Custom)
+    │   │   │   │                   # - Template preview (shows events, payload structure)
+    │   │   │   │                   # - Template details (name, description, events included)
+    │   │   │   │                   # - Popular templates section
+    │   │   │   │                   # - Recently used templates section
+    │   │   │   │                   # - Search/filter templates
+    │   │   │   │                   # - "Use Template" button per template
+    │   │   │   │                   # Features:
+    │   │   │   │                   # - Filter by category (messaging/analytics/monitoring)
+    │   │   │   │                   # - Save custom templates
+    │   │   │   │                   # - Edit template before use
+    │   │   │   │                   # - Quick setup with template
+    │   │   │   │                   # BE: users-be/webhook
+    │   │   │   │                   # GET /v1/developer/webhooks/templates
     │   │   │   ├── stores/  # Mobile-specific Zustand stores
     │   │   │   │   ├── biometric-store.ts  # Biometric settings
     │   │   │   │   ├── camera-store.ts  # Camera state
@@ -7743,6 +7993,194 @@ fe/
     │   │   └── │
     │   ├── web/  # Next.js web application
     │   │   # Next.js web app
+    │   │   ├── app/
+    │   │   │   └── (authenticated)/
+    │   │   │       └── developer/
+    │   │   │           └── webhooks/
+    │   │   │               ├── [webhook_id]/
+    │   │   │               │   ├── analytics/
+    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook analytics dashboard
+    │   │   │               │   │       # Webhook performance and usage analytics
+    │   │   │               │   │       # - Delivery success rate chart (line graph, 7/30/90 day view)
+    │   │   │               │   │       # - Event type distribution (pie chart)
+    │   │   │               │   │       # - Average response time trend
+    │   │   │               │   │       # - Total deliveries count (with period comparison)
+    │   │   │               │   │       # - Failed deliveries count (with period comparison)
+    │   │   │               │   │       # - Peak usage times (heatmap)
+    │   │   │               │   │       # - Export analytics data button
+    │   │   │               │   │       # BE: users-be/webhook
+    │   │   │               │   │       # GET /v1/developer/webhooks/{webhook_id}/analytics
+    │   │   │               │   ├── health/
+    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook health monitoring
+    │   │   │               │   │       # Webhook health and uptime monitoring
+    │   │   │               │   │       # - Health status indicator (healthy/degraded/down)
+    │   │   │               │   │       # - Uptime percentage (24h/7d/30d)
+    │   │   │               │   │       # - Current latency (p50/p95/p99)
+    │   │   │               │   │       # - Error rate chart
+    │   │   │               │   │       # - Recent incidents timeline
+    │   │   │               │   │       # - Health check history (last 24 hours)
+    │   │   │               │   │       # - Alert configuration button
+    │   │   │               │   │       # BE: users-be/webhook
+    │   │   │               │   │       # GET /v1/developer/webhooks/{webhook_id}/health
+    │   │   │               │   │       # POST /v1/developer/webhooks/{webhook_id}/health-check
+    │   │   │               │   ├── retry-config/
+    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook retry configuration
+    │   │   │               │   │       # Configure webhook retry policies
+    │   │   │               │   │       # - Enable/disable automatic retries toggle
+    │   │   │               │   │       # - Max retry attempts slider (1-10)
+    │   │   │               │   │       # - Backoff strategy selector (linear/exponential/fibonacci)
+    │   │   │               │   │       # - Initial retry delay input (seconds)
+    │   │   │               │   │       # - Max retry delay input (seconds)
+    │   │   │               │   │       # - Retry on status codes (multi-select: 4xx/5xx)
+    │   │   │               │   │       # - Retry preview timeline visualization
+    │   │   │               │   │       # - Dead letter queue configuration
+    │   │   │               │   │       # BE: users-be/webhook
+    │   │   │               │   │       # GET /v1/developer/webhooks/{webhook_id}/retry-config
+    │   │   │               │   │       # PUT /v1/developer/webhooks/{webhook_id}/retry-config
+    │   │   │               │   ├── security/
+    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook security settings
+    │   │   │               │   │       # Webhook security configuration
+    │   │   │               │   │       # - IP whitelist management (add/remove IPs, CIDR validation)
+    │   │   │               │   │       # - Rate limiting configuration (requests per minute/hour)
+    │   │   │               │   │       # - Secret key management (view/regenerate/rotate schedule)
+    │   │   │               │   │       # - Signature algorithm selector (HMAC-SHA256/Ed25519)
+    │   │   │               │   │       # - Request timeout setting (seconds)
+    │   │   │               │   │       # - TLS version requirement
+    │   │   │               │   │       # - Custom headers configuration
+    │   │   │               │   │       # BE: users-be/webhook
+    │   │   │               │   │       # GET /v1/developer/webhooks/{webhook_id}/security
+    │   │   │               │   │       # PUT /v1/developer/webhooks/{webhook_id}/security
+    │   │   │               │   └── transform/
+    │   │   │               │       └── page.tsx  # ❌ CREATE - Webhook payload transformation
+    │   │   │               │           # Configure payload transformation rules
+    │   │   │               │           # - Transformation rules list (add/edit/delete)
+    │   │   │               │           # - JSONPath selector for field mapping
+    │   │   │               │           # - Field rename rules
+    │   │   │               │           # - Field filter rules (include/exclude)
+    │   │   │               │           # - Custom headers (key-value pairs)
+    │   │   │               │           # - Payload template editor (JSON)
+    │   │   │               │           # - Before/after preview panel
+    │   │   │               │           # - Test transformation with sample payload
+    │   │   │               │           # BE: users-be/webhook
+    │   │   │               │           # GET /v1/developer/webhooks/{webhook_id}/transform
+    │   │   │               │           # PUT /v1/developer/webhooks/{webhook_id}/transform
+    │   │   │               ├── batch-retry/
+    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook batch retry
+    │   │   │               │       # Bulk retry operations for failed deliveries
+    │   │   │               │       # - Failed deliveries summary card (total count, date range)
+    │   │   │               │       # - Filters section:
+    │   │   │               │       # - Date range picker
+    │   │   │               │       # - Webhook multi-select
+    │   │   │               │       # - Event type filter
+    │   │   │               │       # - HTTP status code filter
+    │   │   │               │       # - Failed deliveries table (checkboxes)
+    │   │   │               │       # - Bulk actions toolbar (select all/none)
+    │   │   │               │       # - Selected count indicator
+    │   │   │               │       # - Retry options modal:
+    │   │   │               │       # - Retry immediately
+    │   │   │               │       # - Schedule retry (datetime picker)
+    │   │   │               │       # - "Retry Selected" action button
+    │   │   │               │       # - Progress indicator during batch operation
+    │   │   │               │       # BE: users-be/webhook
+    │   │   │               │       # GET /v1/developer/webhooks/failed-deliveries
+    │   │   │               │       # POST /v1/developer/webhooks/batch-retry
+    │   │   │               ├── compare/
+    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook comparison view
+    │   │   │               │       # Compare multiple webhooks side-by-side
+    │   │   │               │       # - Webhook selector (multi-select, max 4)
+    │   │   │               │       # - Comparison table:
+    │   │   │               │       # - URL
+    │   │   │               │       # - Active status
+    │   │   │               │       # - Events subscribed (count + expandable list)
+    │   │   │               │       # - Success rate (last 7d)
+    │   │   │               │       # - Total deliveries
+    │   │   │               │       # - Avg response time
+    │   │   │               │       # - Retry configuration
+    │   │   │               │       # - Security settings
+    │   │   │               │       # - Created date
+    │   │   │               │       # - Highlight differences toggle
+    │   │   │               │       # - Export comparison as CSV
+    │   │   │               │       # BE: users-be/webhook
+    │   │   │               │       # GET /v1/developer/webhooks/{webhook_ids}/compare
+    │   │   │               ├── docs/
+    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook documentation
+    │   │   │               │       # Inline webhook usage documentation
+    │   │   │               │       # - Getting Started guide
+    │   │   │               │       # - Quick setup tutorial (step-by-step with code)
+    │   │   │               │       # - Authentication guide (signature verification)
+    │   │   │               │       # - Event types reference
+    │   │   │               │       # - Code examples tabs (Node.js/Python/PHP/Ruby/cURL)
+    │   │   │               │       # - Best practices section
+    │   │   │               │       # - Troubleshooting guide
+    │   │   │               │       # - FAQ accordion
+    │   │   │               │       # - Video tutorials links
+    │   │   │               │       # - Copy code snippets button
+    │   │   │               │       # BE: Static content or
+    │   │   │               │       # GET /v1/developer/webhooks/documentation
+    │   │   │               ├── events-catalog/
+    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook events catalog
+    │   │   │               │       # Comprehensive webhook events documentation
+    │   │   │               │       # - Events table grouped by category (payments/jobs/users/etc)
+    │   │   │               │       # - Columns: Event name, description, frequency indicator
+    │   │   │               │       # - Search events
+    │   │   │               │       # - Filter by category
+    │   │   │               │       # - Event detail drawer (expandable):
+    │   │   │               │       # - Full event name
+    │   │   │               │       # - Detailed description
+    │   │   │               │       # - Trigger conditions
+    │   │   │               │       # - Payload schema (JSON schema viewer)
+    │   │   │               │       # - Sample payload (JSON, copyable)
+    │   │   │               │       # - Related events
+    │   │   │               │       # - Subscribe to event (quick action)
+    │   │   │               │       # BE: users-be/webhook
+    │   │   │               │       # GET /v1/developer/webhooks/events-catalog
+    │   │   │               ├── import-export/
+    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook import/export
+    │   │   │               │       # Bulk webhook configuration management
+    │   │   │               │       # - Tab selector: Import / Export
+    │   │   │               │       # Export section:
+    │   │   │               │       # - Select webhooks table (checkboxes, select all)
+    │   │   │               │       # - Export format selector (JSON/YAML/CSV)
+    │   │   │               │       # - Include secrets toggle
+    │   │   │               │       # - Export button (downloads file)
+    │   │   │               │       # Import section:
+    │   │   │               │       # - File upload area (drag-drop or browse)
+    │   │   │               │       # - Format auto-detection
+    │   │   │               │       # - Preview import data (table view)
+    │   │   │               │       # - Conflict resolution strategy (skip/overwrite/merge)
+    │   │   │               │       # - Validation results panel
+    │   │   │               │       # - Import button
+    │   │   │               │       # - Import history log
+    │   │   │               │       # BE: users-be/webhook
+    │   │   │               │       # POST /v1/developer/webhooks/export
+    │   │   │               │       # POST /v1/developer/webhooks/import
+    │   │   │               ├── settings/
+    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook global settings
+    │   │   │               │       # Global webhook preferences and configuration
+    │   │   │               │       # - Default timeout duration (seconds)
+    │   │   │               │       # - Default retry policy preset selector
+    │   │   │               │       # - Default signature algorithm
+    │   │   │               │       # - Enable webhook notifications toggle
+    │   │   │               │       # - Notification channels (email/slack/sms)
+    │   │   │               │       # - Alert thresholds (failure rate %, response time)
+    │   │   │               │       # - Webhook naming convention template
+    │   │   │               │       # - Auto-disable webhooks after X failures toggle
+    │   │   │               │       # BE: users-be/webhook
+    │   │   │               │       # GET /v1/developer/webhooks/settings
+    │   │   │               │       # PUT /v1/developer/webhooks/settings
+    │   │   │               └── templates/
+    │   │   │                   └── page.tsx  # ❌ CREATE - Webhook templates
+    │   │   │                       # Pre-configured webhook templates library
+    │   │   │                       # - Templates grid (Slack, Discord, Teams, Custom)
+    │   │   │                       # - Template preview modal (shows events, payload structure)
+    │   │   │                       # - Template details (name, description, events included)
+    │   │   │                       # - Popular templates section
+    │   │   │                       # - Recently used templates section
+    │   │   │                       # - Search/filter templates by category
+    │   │   │                       # - "Use Template" button per template
+    │   │   │                       # - Save custom templates
+    │   │   │                       # BE: users-be/webhook
+    │   │   │                       # GET /v1/developer/webhooks/templates
     │   │   ├── e2e/
     │   │   │   ├── auth/
     │   │   │   │   ├── login.spec.ts
