@@ -3,11 +3,11 @@ fe/
 └── fe/  # Root monorepo
     ├── (error-boundaries)/
     │   ├── contracts/
-    │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   └── _layout.tsx  #  ErrorBoundary
     │   ├── jobs/
-    │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   └── _layout.tsx  #  ErrorBoundary
     │   └── proposals/
-    │       └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │       └── _layout.tsx  #  ErrorBoundary
     ├── .github/  # GitHub workflows
     │   ├── actions/
     │   │   ├── build-mobile/
@@ -78,44 +78,44 @@ fe/
     ├── apps/  # Application workspaces
     │   ├── mobile/  # React Native/Expo application
     │   │   ├── (contracts)/
-    │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary (react-error-boundary / Sentry)
+    │   │   │   └── _layout.tsx  #  ErrorBoundary (react-error-boundary / Sentry)
     │   │   ├── (jobs)/
-    │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   │   └── _layout.tsx  #  ErrorBoundary
     │   │   ├── (proposals)/
-    │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
-    │   │   ├── (public)/  # ❌ CREATE ENTIRE SECTION - Public/marketing pages
+    │   │   │   └── _layout.tsx  #  ErrorBoundary
+    │   │   ├── (public)/  #  ENTIRE SECTION - Public/marketing pages
     │   │   │   ├── about/
-    │   │   │   │   └── index.tsx  # ❌ CREATE - About page (mobile)
+    │   │   │   │   └── index.tsx  # About page (mobile)
     │   │   │   ├── blog/
     │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Blog post detail
-    │   │   │   │   └── index.tsx  # ❌ CREATE - Blog list
+    │   │   │   │   │   └── index.tsx  # Blog post detail
+    │   │   │   │   └── index.tsx  # Blog list
     │   │   │   ├── case-studies/
     │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Case study detail
-    │   │   │   │   └── index.tsx  # ❌ CREATE - Case studies list
+    │   │   │   │   │   └── index.tsx  # Case study detail
+    │   │   │   │   └── index.tsx  # Case studies list
     │   │   │   ├── contact/
-    │   │   │   │   └── index.tsx  # ❌ CREATE - Contact page
+    │   │   │   │   └── index.tsx  # Contact page
     │   │   │   ├── developer/
     │   │   │   │   ├── docs/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Developer docs
+    │   │   │   │   │   └── index.tsx  # Developer docs
     │   │   │   │   ├── examples/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Code examples
-    │   │   │   │   └── index.tsx  # ❌ CREATE - Developer hub
+    │   │   │   │   │   └── index.tsx  # Code examples
+    │   │   │   │   └── index.tsx  # Developer hub
     │   │   │   ├── help/
     │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Help article detail
-    │   │   │   │   └── index.tsx  # ❌ CREATE - Help center
+    │   │   │   │   │   └── index.tsx  # Help article detail
+    │   │   │   │   └── index.tsx  # Help center
     │   │   │   ├── legal/
     │   │   │   │   ├── cookies/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Cookie policy
+    │   │   │   │   │   └── index.tsx  # Cookie policy
     │   │   │   │   ├── privacy/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Privacy policy
+    │   │   │   │   │   └── index.tsx  # Privacy policy
     │   │   │   │   └── terms/
-    │   │   │   │       └── index.tsx  # ❌ CREATE - Terms of service
+    │   │   │   │       └── index.tsx  # Terms of service
     │   │   │   ├── pricing/
-    │   │   │   │   └── index.tsx  # ❌ CREATE - Pricing page
-    │   │   │   └── _layout.tsx  # ❌ CREATE - Public routes layout
+    │   │   │   │   └── index.tsx  # Pricing page
+    │   │   │   └── _layout.tsx  # Public routes layout
     │   │   ├── app/  # Expo Router file-based routing
     │   │   │   ├── (admin)/  # Optional mobile admin area (if enabled later)
     │   │   │   │   ├── analytics/
@@ -132,9 +132,9 @@ fe/
     │   │   │   │   │   │   └── index.tsx  # Revenue dashboard
     │   │   │   │   │   ├── users/
     │   │   │   │   │   │   └── page.tsx  # User analytics  # BE: admin-be/reports/users
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Analytics overview (mobile)
-    │   │   │   │   │   ├── performance.tsx  # ❌ CREATE - Performance metrics (mobile)
-    │   │   │   │   │   ├── revenue.tsx  # ❌ CREATE - Revenue dashboard (mobile)
+    │   │   │   │   │   ├── index.tsx  # Analytics overview (mobile)
+    │   │   │   │   │   ├── performance.tsx  # Performance metrics (mobile)
+    │   │   │   │   │   ├── revenue.tsx  # Revenue dashboard (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── audit-logs/
     │   │   │   │   │   ├── [logId]/
@@ -181,22 +181,22 @@ fe/
     │   │   │   │   │   │   └── page.tsx  # Moderation disputes
     │   │   │   │   │   ├── flags/
     │   │   │   │   │   │   ├── [flagId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Flag detail & resolution (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Flagged content queue (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Flag detail & resolution (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Flagged content queue (mobile)
     │   │   │   │   │   │   └── page.tsx  # Content flags
     │   │   │   │   │   ├── queue/
     │   │   │   │   │   │   └── page.tsx  # Moderation queue
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Content moderation home (mobile)
+    │   │   │   │   │   └── index.tsx  # Content moderation home (mobile)
     │   │   │   │   ├── disputes/
     │   │   │   │   │   ├── [disputeId]/
     │   │   │   │   │   │   ├── evidence/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Dispute evidence review (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Dispute evidence review (mobile)
     │   │   │   │   │   │   ├── messages/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Dispute messages thread (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Dispute resolution (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Dispute messages thread (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Dispute resolution (mobile)
     │   │   │   │   │   │   ├── page.tsx  # Dispute resolution
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Disputes dashboard (mobile)
+    │   │   │   │   │   ├── index.tsx  # Disputes dashboard (mobile)
     │   │   │   │   │   ├── page.tsx  # All disputes
     │   │   │   │   │   └── │
     │   │   │   │   ├── escalations/
@@ -210,16 +210,16 @@ fe/
     │   │   │   │   ├── financial/
     │   │   │   │   │   ├── payouts/
     │   │   │   │   │   │   ├── [payoutId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Payout detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Payout approvals (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Payout detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Payout approvals (mobile)
     │   │   │   │   │   ├── refunds/
     │   │   │   │   │   │   ├── [refundId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Refund detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Refund management (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Refund detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Refund management (mobile)
     │   │   │   │   │   └── transactions/
     │   │   │   │   │       ├── [transactionId]/
-    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Transaction detail (mobile)
-    │   │   │   │   │       └── index.tsx  # ❌ CREATE - Transaction monitoring (mobile)
+    │   │   │   │   │       │   └── index.tsx  # Transaction detail (mobile)
+    │   │   │   │   │       └── index.tsx  # Transaction monitoring (mobile)
     │   │   │   │   ├── financial-ops/
     │   │   │   │   │   ├── chargebacks/
     │   │   │   │   │   │   └── page.tsx  # Chargeback management
@@ -262,7 +262,7 @@ fe/
     │   │   │   │   │   ├── profiles/
     │   │   │   │   │   │   └── page.tsx  # Profile reviews
     │   │   │   │   │   ├── queue/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Moderation queue (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Moderation queue (mobile)
     │   │   │   │   │   ├── reports/
     │   │   │   │   │   │   ├── [reportId]/
     │   │   │   │   │   │   │   └── index.tsx  # Report detail
@@ -274,7 +274,7 @@ fe/
     │   │   │   │   │   │   │   └── index.tsx  # User moderation detail
     │   │   │   │   │   │   ├── index.tsx  # User moderation queue
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Moderation overview (mobile)
+    │   │   │   │   │   ├── index.tsx  # Moderation overview (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── notifications/
     │   │   │   │   │   ├── campaigns/
@@ -329,10 +329,10 @@ fe/
     │   │   │   │   ├── settings/
     │   │   │   │   │   ├── feature-flags/
     │   │   │   │   │   │   ├── [flagId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Feature flag detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Feature flag management (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Feature flag detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Feature flag management (mobile)
     │   │   │   │   │   └── platform/
-    │   │   │   │   │       └── index.tsx  # ❌ CREATE - Platform settings (mobile)
+    │   │   │   │   │       └── index.tsx  # Platform settings (mobile)
     │   │   │   │   ├── support/
     │   │   │   │   │   ├── [ticketId]/
     │   │   │   │   │   │   └── page.tsx  # Admin ticket detail
@@ -344,9 +344,9 @@ fe/
     │   │   │   │   │   │   └── page.tsx  # Admin KB
     │   │   │   │   │   ├── tickets/
     │   │   │   │   │   │   ├── [ticketId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Admin ticket detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Admin tickets list (mobile)
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Support admin overview (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Admin ticket detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Admin tickets list (mobile)
+    │   │   │   │   │   └── index.tsx  # Support admin overview (mobile)
     │   │   │   │   ├── system/
     │   │   │   │   │   ├── announcements/
     │   │   │   │   │   │   └── page.tsx  # System announcements  # BE: communications-be/announcements
@@ -366,13 +366,13 @@ fe/
     │   │   │   │   ├── users/
     │   │   │   │   │   ├── [userId]/
     │   │   │   │   │   │   ├── actions/
-    │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - User actions (mobile)
+    │   │   │   │   │   │   │   ├── index.tsx  # User actions (mobile)
     │   │   │   │   │   │   │   └── page.tsx  # Admin user actions      # BE: admin-be/users
     │   │   │   │   │   │   ├── activity/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - User activity log (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # User activity log (mobile)
     │   │   │   │   │   │   ├── impersonate/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - User impersonation (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Admin user detail (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # User impersonation (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Admin user detail (mobile)
     │   │   │   │   │   │   └── page.tsx  # Admin user detail       # BE: users-be/profile
     │   │   │   │   │   ├── banned/
     │   │   │   │   │   │   └── page.tsx  # Banned users
@@ -388,13 +388,13 @@ fe/
     │   │   │   │   │   │   └── page.tsx  # Role management
     │   │   │   │   │   ├── search/
     │   │   │   │   │   │   └── page.tsx  # Advanced user search
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Admin users list (mobile)
-    │   │   │   │   ├── _layout.tsx  # ❌ CREATE - Admin layout (mobile)
-    │   │   │   │   ├── index.tsx  # ❌ CREATE - Admin home (mobile)
+    │   │   │   │   │   └── index.tsx  # Admin users list (mobile)
+    │   │   │   │   ├── _layout.tsx  # Admin layout (mobile)
+    │   │   │   │   ├── index.tsx  # Admin home (mobile)
     │   │   │   │   ├── README.md  # Placeholder for future admin screens on mobile
     │   │   │   │   └── │
     │   │   │   ├── (auth)/  # Auth screens
-    │   │   │   │   ├── kyc/  # ❌ ADD COMPLETE KYC FLOW
+    │   │   │   │   ├── kyc/  #  COMPLETE KYC FLOW
     │   │   │   │   │   ├── _layout.tsx
     │   │   │   │   │   ├── address-proof.tsx  # Step 3: Address verification
     │   │   │   │   │   ├── business-verification.tsx  # Step 4: Business verification (if applicable)
@@ -422,39 +422,39 @@ fe/
     │   │   │   │   ├── offers/
     │   │   │   │   │   └── [id]/
     │   │   │   │   │       └── index.tsx  # Offer (mobile - accept/decline)
-    │   │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   │   │   └── _layout.tsx  #  ErrorBoundary
     │   │   │   ├── (dashboard)/
     │   │   │   │   ├── activity-feed/
     │   │   │   │   │   └── index.tsx  # Activity feed
-    │   │   │   │   ├── analytics/  # ❌ CREATE ENTIRE SECTION - User analytics on mobile
+    │   │   │   │   ├── analytics/  #  ENTIRE SECTION - User analytics on mobile
     │   │   │   │   │   ├── earnings/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Earnings analytics (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Earnings analytics (mobile)
     │   │   │   │   │   ├── jobs/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Job analytics
+    │   │   │   │   │   │   └── index.tsx  # Job analytics
     │   │   │   │   │   ├── performance/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Performance metrics (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Performance metrics (mobile)
     │   │   │   │   │   ├── proposals/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Proposal analytics
+    │   │   │   │   │   │   └── index.tsx  # Proposal analytics
     │   │   │   │   │   ├── _layout.tsx  # Analytics layout
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Analytics overview (mobile)
-    │   │   │   │   ├── authorized-apps/  # ❌ CREATE ENTIRE SECTION
+    │   │   │   │   │   └── index.tsx  # Analytics overview (mobile)
+    │   │   │   │   ├── authorized-apps/  #  ENTIRE SECTION
     │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   ├── billing/
     │   │   │   │   │   └── subscription/
     │   │   │   │   │       ├── manage.tsx  # Manage subscription (mobile)
     │   │   │   │   │       └── plans.tsx  # Subscription plans (mobile)
-    │   │   │   │   ├── budgets/  # ❌ CREATE ENTIRE SECTION - Budget tracking on mobile
+    │   │   │   │   ├── budgets/  #  ENTIRE SECTION - Budget tracking on mobile
     │   │   │   │   │   ├── [budgetId]/
     │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit budget (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Budget detail (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Edit budget (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Budget detail (mobile)
     │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create budget (mobile)
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Budgets list (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Create budget (mobile)
+    │   │   │   │   │   └── index.tsx  # Budgets list (mobile)
     │   │   │   │   ├── contracts/
     │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   └── work-diary/
@@ -463,31 +463,31 @@ fe/
     │   │   │   │   │   ├── [id]/
     │   │   │   │   │   │   ├── amendments/
     │   │   │   │   │   │   │   ├── [amendmentId]/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Amendment detail (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Amendment detail (mobile)
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create amendment (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Amendments list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create amendment (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Amendments list (mobile)
     │   │   │   │   │   │   ├── disputes/
     │   │   │   │   │   │   │   ├── [disputeId]/
     │   │   │   │   │   │   │   │   ├── evidence/
     │   │   │   │   │   │   │   │   │   ├── upload/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Upload evidence (mobile)
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Evidence list (mobile)
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Dispute detail (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # Upload evidence (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Evidence list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Dispute detail (mobile)
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Open dispute (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Disputes list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Open dispute (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Disputes list (mobile)
     │   │   │   │   │   │   └── versions/
     │   │   │   │   │   │       ├── [versionId]/
     │   │   │   │   │   │       │   ├── compare/
-    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Compare contract versions (mobile)
-    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Contract version detail (mobile)
-    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - Contract versions list (mobile)
+    │   │   │   │   │   │       │   │   └── index.tsx  # Compare contract versions (mobile)
+    │   │   │   │   │   │       │   └── index.tsx  # Contract version detail (mobile)
+    │   │   │   │   │   │       └── index.tsx  # Contract versions list (mobile)
     │   │   │   │   │   └── page.tsx  # Contracts list
     │   │   │   │   ├── dashboard/
     │   │   │   │   │   └── page.tsx  # Dashboard home (role-based)
     │   │   │   │   ├── data-export/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   ├── deliverables/
     │   │   │   │   │   ├── submit/
     │   │   │   │   │   │   └── page.tsx  # Submit deliverable (upload files, notes)
@@ -497,105 +497,105 @@ fe/
     │   │   │   │   ├── jobs/
     │   │   │   │   │   ├── archived/
     │   │   │   │   │   │   ├── [jobId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Archived job detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Archived jobs list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Archived job detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Archived jobs list (mobile)
     │   │   │   │   │   └── drafts/
     │   │   │   │   │       ├── [draftId]/
     │   │   │   │   │       │   ├── edit/
-    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Edit draft job (mobile)
-    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Draft job detail (mobile)
-    │   │   │   │   │       └── index.tsx  # ❌ CREATE - Draft jobs list (mobile)
+    │   │   │   │   │       │   │   └── index.tsx  # Edit draft job (mobile)
+    │   │   │   │   │       │   └── index.tsx  # Draft job detail (mobile)
+    │   │   │   │   │       └── index.tsx  # Draft jobs list (mobile)
     │   │   │   │   ├── proposals/
     │   │   │   │   │   ├── drafts/
     │   │   │   │   │   │   ├── [draftId]/
     │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit draft proposal (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Draft proposal detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Draft proposals list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Edit draft proposal (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Draft proposal detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Draft proposals list (mobile)
     │   │   │   │   │   └── templates/
     │   │   │   │   │       ├── [templateId]/
     │   │   │   │   │       │   ├── edit/
-    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Edit proposal template (mobile)
+    │   │   │   │   │       │   │   └── index.tsx  # Edit proposal template (mobile)
     │   │   │   │   │       │   ├── use/
-    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Use template (mobile)
-    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Proposal template detail (mobile)
+    │   │   │   │   │       │   │   └── index.tsx  # Use template (mobile)
+    │   │   │   │   │       │   └── index.tsx  # Proposal template detail (mobile)
     │   │   │   │   │       ├── create/
-    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Create proposal template (mobile)
-    │   │   │   │   │       └── index.tsx  # ❌ CREATE - Proposal templates list (mobile)
+    │   │   │   │   │       │   └── index.tsx  # Create proposal template (mobile)
+    │   │   │   │   │       └── index.tsx  # Proposal templates list (mobile)
     │   │   │   │   ├── quick-actions/
     │   │   │   │   │   └── index.tsx  # Quick actions screen
     │   │   │   │   ├── settings/
     │   │   │   │   │   ├── authorized-apps/
     │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - App permissions detail (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Authorized app detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Authorized apps list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # App permissions detail (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Authorized app detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Authorized apps list (mobile)
     │   │   │   │   │   ├── developer/
     │   │   │   │   │   │   ├── api-keys/
     │   │   │   │   │   │   │   └── [keyId]/
     │   │   │   │   │   │   │       ├── logs/
-    │   │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - API key usage logs (mobile)
+    │   │   │   │   │   │   │       │   └── index.tsx  # API key usage logs (mobile)
     │   │   │   │   │   │   │       ├── permissions/
-    │   │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - API key permissions (mobile)
-    │   │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - API key detail (mobile)
+    │   │   │   │   │   │   │       │   └── index.tsx  # API key permissions (mobile)
+    │   │   │   │   │   │   │       └── index.tsx  # API key detail (mobile)
     │   │   │   │   │   │   ├── oauth-apps/
     │   │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   │   ├── credentials/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth credentials (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth credentials (mobile)
     │   │   │   │   │   │   │   │   ├── scopes/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app scopes (mobile)
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app detail (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app scopes (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app detail (mobile)
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create OAuth app (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth apps list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create OAuth app (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # OAuth apps list (mobile)
     │   │   │   │   │   │   └── webhooks/
     │   │   │   │   │   │       ├── [webhookId]/
     │   │   │   │   │   │       │   ├── deliveries/
     │   │   │   │   │   │       │   │   ├── [deliveryId]/
-    │   │   │   │   │   │       │   │   │   └── index.tsx  # ❌ CREATE - Webhook delivery detail (mobile)
-    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Webhook deliveries (mobile)
+    │   │   │   │   │   │       │   │   │   └── index.tsx  # Webhook delivery detail (mobile)
+    │   │   │   │   │   │       │   │   └── index.tsx  # Webhook deliveries (mobile)
     │   │   │   │   │   │       │   ├── test/
-    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - Test webhook (mobile)
-    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Webhook detail (mobile)
+    │   │   │   │   │   │       │   │   └── index.tsx  # Test webhook (mobile)
+    │   │   │   │   │   │       │   └── index.tsx  # Webhook detail (mobile)
     │   │   │   │   │   │       ├── create/
-    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - Create webhook (mobile)
-    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - Webhooks list (mobile)
+    │   │   │   │   │   │       │   └── index.tsx  # Create webhook (mobile)
+    │   │   │   │   │   │       └── index.tsx  # Webhooks list (mobile)
     │   │   │   │   │   ├── devices/
     │   │   │   │   │   │   ├── [deviceId]/
     │   │   │   │   │   │   │   ├── revoke/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Revoke device (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Device detail (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Connected devices list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Revoke device (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Device detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Connected devices list (mobile)
     │   │   │   │   │   ├── integrations/
     │   │   │   │   │   │   ├── available/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Available integrations (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Available integrations (mobile)
     │   │   │   │   │   │   ├── calendar/
     │   │   │   │   │   │   │   ├── connect/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Connect calendar (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Calendar integration settings (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Connect calendar (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Calendar integration settings (mobile)
     │   │   │   │   │   │   ├── connected/
     │   │   │   │   │   │   │   ├── [integrationId]/
     │   │   │   │   │   │   │   │   ├── disconnect/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Disconnect integration (mobile)
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integration detail (mobile)
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Connected integrations (mobile)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integrations hub (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Disconnect integration (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Integration detail (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Connected integrations (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Integrations hub (mobile)
     │   │   │   │   │   └── team/
     │   │   │   │   │       ├── categories/
     │   │   │   │   │       │   ├── [categoryId]/
-    │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - KB category detail (mobile)
-    │   │   │   │   │       │   └── index.tsx  # ❌ CREATE - KB categories (mobile, read-only)
+    │   │   │   │   │       │   │   └── index.tsx  # KB category detail (mobile)
+    │   │   │   │   │       │   └── index.tsx  # KB categories (mobile, read-only)
     │   │   │   │   │       ├── knowledge-base/
     │   │   │   │   │       │   └── articles/
     │   │   │   │   │       │       └── [articleId]/
-    │   │   │   │   │       │           └── index.tsx  # ❌ CREATE - KB article view (mobile, read-only)
+    │   │   │   │   │       │           └── index.tsx  # KB article view (mobile, read-only)
     │   │   │   │   │       └── policies/
     │   │   │   │   │           ├── [policyId]/
     │   │   │   │   │           │   ├── attest/
-    │   │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Attest to policy (mobile)
-    │   │   │   │   │           │   └── index.tsx  # ❌ CREATE - Policy detail (mobile, read-only)
-    │   │   │   │   │           └── index.tsx  # ❌ CREATE - Policies list (mobile, read-only)
+    │   │   │   │   │           │   │   └── index.tsx  # Attest to policy (mobile)
+    │   │   │   │   │           │   └── index.tsx  # Policy detail (mobile, read-only)
+    │   │   │   │   │           └── index.tsx  # Policies list (mobile, read-only)
     │   │   │   │   ├── support/
     │   │   │   │   │   ├── help-center/
     │   │   │   │   │   │   └── index.tsx  # Help articles (mobile)
@@ -612,13 +612,13 @@ fe/
     │   │   │   │       │   └── index.tsx  # Notifications widget
     │   │   │   │       └── time-tracker/
     │   │   │   │           └── index.tsx  # Time tracker widget
-    │   │   │   ├── (error-boundaries)/  # ❌ CREATE ENTIRE SECTION - Error boundary wrappers
+    │   │   │   ├── (error-boundaries)/  #  ENTIRE SECTION - Error boundary wrappers
     │   │   │   │   ├── contracts/
-    │   │   │   │   │   └── _layout.tsx  # ❌ ADD - Contract ErrorBoundary wrapper
+    │   │   │   │   │   └── _layout.tsx  #  - Contract ErrorBoundary wrapper
     │   │   │   │   ├── jobs/
-    │   │   │   │   │   └── _layout.tsx  # ❌ ADD - Jobs ErrorBoundary wrapper
+    │   │   │   │   │   └── _layout.tsx  #  - Jobs ErrorBoundary wrapper
     │   │   │   │   └── proposals/
-    │   │   │   │       └── _layout.tsx  # ❌ ADD - Proposals ErrorBoundary wrapper
+    │   │   │   │       └── _layout.tsx  #  - Proposals ErrorBoundary wrapper
     │   │   │   ├── (inbox)/
     │   │   │   │   ├── messages/
     │   │   │   │   │   ├── [conversationId]/
@@ -627,7 +627,7 @@ fe/
     │   │   │   │   └── proposals/
     │   │   │   │       └── index.tsx  # Proposals inbox (mobile)
     │   │   │   ├── (jobs)/
-    │   │   │   │   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   │   │   └── _layout.tsx  #  ErrorBoundary
     │   │   │   ├── (market)/
     │   │   │   │   └── jobs/
     │   │   │   │       └── index.tsx  # Job discovery (mobile)
@@ -639,115 +639,115 @@ fe/
     │   │   │   │   ├── skills.tsx  # Skills selection
     │   │   │   │   └── welcome.tsx  # Welcome screen
     │   │   │   ├── (proposals)/
-    │   │   │   │   └── _layout.tsx  # ❌ CREATE - Proposals route error boundary
+    │   │   │   │   └── _layout.tsx  # Proposals route error boundary
     │   │   │   ├── (public)/  # Optional: if exposing public/marketing in mobile
     │   │   │   │   ├── about/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - About page (mobile)
+    │   │   │   │   │   └── index.tsx  # About page (mobile)
     │   │   │   │   ├── api/
     │   │   │   │   │   ├── documentation/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API docs (static)
+    │   │   │   │   │   │   └── index.tsx  # API docs (static)
     │   │   │   │   │   ├── pricing/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API pricing (static)
+    │   │   │   │   │   │   └── index.tsx  # API pricing (static)
     │   │   │   │   │   ├── sdks/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - SDK docs (static)
+    │   │   │   │   │   │   └── index.tsx  # SDK docs (static)
     │   │   │   │   │   └── │
     │   │   │   │   ├── blog/
     │   │   │   │   │   ├── [slug]/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Blog post detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Blog post detail (mobile)
     │   │   │   │   │   ├── categories/
     │   │   │   │   │   │   └── [category]/
-    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - Blog category (mobile)
+    │   │   │   │   │   │       └── index.tsx  # Blog category (mobile)
     │   │   │   │   │   ├── category/
     │   │   │   │   │   │   └── [category]/
-    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - Blog category
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Blog listing (mobile)
+    │   │   │   │   │   │       └── index.tsx  # Blog category
+    │   │   │   │   │   ├── index.tsx  # Blog listing (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── careers/
     │   │   │   │   │   ├── [jobId]/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Career detail (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Career detail (mobile)
     │   │   │   │   │   ├── [jobSlug]/
     │   │   │   │   │   │   ├── apply/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Job application form (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Job posting detail (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Job application form (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Job posting detail (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── [slug]/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Job posting detail (static/CMS)
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Careers overview (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Job posting detail (static/CMS)
+    │   │   │   │   │   ├── index.tsx  # Careers overview (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── case-studies/
     │   │   │   │   │   ├── [slug]/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Case study detail (mobile)
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Case studies listing (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Case study detail (mobile)
+    │   │   │   │   │   ├── index.tsx  # Case studies listing (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── community/
     │   │   │   │   │   ├── events/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Community events (optional BE)
+    │   │   │   │   │   │   └── index.tsx  # Community events (optional BE)
     │   │   │   │   │   ├── forum/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Forum (if exists)
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Community home (static)
+    │   │   │   │   │   │   └── index.tsx  # Forum (if exists)
+    │   │   │   │   │   ├── index.tsx  # Community home (static)
     │   │   │   │   │   └── │
     │   │   │   │   ├── contact/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Contact page (mobile)
+    │   │   │   │   │   └── index.tsx  # Contact page (mobile)
     │   │   │   │   ├── developer/
     │   │   │   │   │   ├── docs/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Dev docs hub
+    │   │   │   │   │   │   └── index.tsx  # Dev docs hub
     │   │   │   │   │   ├── examples/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Code examples
+    │   │   │   │   │   │   └── index.tsx  # Code examples
     │   │   │   │   │   ├── getting-started/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Onboarding
+    │   │   │   │   │   │   └── index.tsx  # Onboarding
     │   │   │   │   │   ├── github/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - GitHub repos
+    │   │   │   │   │   │   └── index.tsx  # GitHub repos
     │   │   │   │   │   ├── plugins/
     │   │   │   │   │   │   ├── shopify/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Shopify plugin docs
+    │   │   │   │   │   │   │   └── index.tsx  # Shopify plugin docs
     │   │   │   │   │   │   ├── wordpress/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - WordPress plugin docs
+    │   │   │   │   │   │   │   └── index.tsx  # WordPress plugin docs
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── sdks/
     │   │   │   │   │   │   ├── javascript/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - JS SDK
+    │   │   │   │   │   │   │   └── index.tsx  # JS SDK
     │   │   │   │   │   │   ├── python/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Python SDK
+    │   │   │   │   │   │   │   └── index.tsx  # Python SDK
     │   │   │   │   │   │   ├── ruby/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Ruby SDK
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - SDK overview
+    │   │   │   │   │   │   │   └── index.tsx  # Ruby SDK
+    │   │   │   │   │   │   ├── index.tsx  # SDK overview
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── index.tsx  # Developer docs hub
     │   │   │   │   │   └── │
     │   │   │   │   ├── developers/
     │   │   │   │   │   ├── api-reference/
     │   │   │   │   │   │   ├── [endpoint]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API endpoint detail (static)
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API reference home (static)
+    │   │   │   │   │   │   │   └── index.tsx  # API endpoint detail (static)
+    │   │   │   │   │   │   └── index.tsx  # API reference home (static)
     │   │   │   │   │   ├── getting-started/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Developer onboarding (static)
+    │   │   │   │   │   │   └── index.tsx  # Developer onboarding (static)
     │   │   │   │   │   ├── guides/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Developer guides (static)
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Developer portal (static)
+    │   │   │   │   │   │   └── index.tsx  # Developer guides (static)
+    │   │   │   │   │   └── index.tsx  # Developer portal (static)
     │   │   │   │   ├── enterprise/
     │   │   │   │   │   ├── contact/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Enterprise contact
+    │   │   │   │   │   │   └── index.tsx  # Enterprise contact
     │   │   │   │   │   ├── demo/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Request demo
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Enterprise solutions (static)
+    │   │   │   │   │   │   └── index.tsx  # Request demo
+    │   │   │   │   │   ├── index.tsx  # Enterprise solutions (static)
     │   │   │   │   │   └── │
     │   │   │   │   ├── features/
     │   │   │   │   │   ├── [feature]/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Feature detail (mobile)
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Features overview (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Feature detail (mobile)
+    │   │   │   │   │   ├── index.tsx  # Features overview (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── help/
     │   │   │   │   │   ├── [category]/
     │   │   │   │   │   │   ├── [articleSlug]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Help article (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Help category (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Help article (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Help category (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── [slug]/
     │   │   │   │   │   │   └── index.tsx  # Help article detail
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Help center home (mobile)
+    │   │   │   │   │   ├── index.tsx  # Help center home (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── how-it-works/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - How it works page (mobile)
+    │   │   │   │   │   └── index.tsx  # How it works page (mobile)
     │   │   │   │   ├── legal/
     │   │   │   │   │   ├── cookies/
     │   │   │   │   │   │   └── index.tsx  # Cookie policy
@@ -755,22 +755,22 @@ fe/
     │   │   │   │   │   │   └── index.tsx  # Privacy policy
     │   │   │   │   │   ├── terms/
     │   │   │   │   │   │   └── index.tsx  # Terms of service
-    │   │   │   │   │   ├── cookies.tsx  # ❌ CREATE - Cookie policy (mobile)
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Legal hub (mobile)
-    │   │   │   │   │   ├── privacy.tsx  # ❌ CREATE - Privacy policy (mobile)
-    │   │   │   │   │   ├── terms.tsx  # ❌ CREATE - Terms of service (mobile)
+    │   │   │   │   │   ├── cookies.tsx  # Cookie policy (mobile)
+    │   │   │   │   │   ├── index.tsx  # Legal hub (mobile)
+    │   │   │   │   │   ├── privacy.tsx  # Privacy policy (mobile)
+    │   │   │   │   │   ├── terms.tsx  # Terms of service (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── pricing/
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Pricing page (mobile)
+    │   │   │   │   │   └── index.tsx  # Pricing page (mobile)
     │   │   │   │   ├── status/
     │   │   │   │   │   └── index.tsx  # System status
     │   │   │   │   ├── success-stories/
     │   │   │   │   │   ├── [slug]/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Success story detail (mobile)
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Success stories listing (mobile)
+    │   │   │   │   │   │   └── index.tsx  # Success story detail (mobile)
+    │   │   │   │   │   ├── index.tsx  # Success stories listing (mobile)
     │   │   │   │   │   └── │
     │   │   │   │   ├── _layout.tsx  # Public layout (no auth)
-    │   │   │   │   ├── index.tsx  # ❌ CREATE - Public home (mobile)
+    │   │   │   │   ├── index.tsx  # Public home (mobile)
     │   │   │   │   └── │
     │   │   │   ├── (shared)/
     │   │   │   │   └── deliverables/
@@ -781,80 +781,80 @@ fe/
     │   │   │   ├── (tabs)/  # Bottom tabs navigation
     │   │   │   │   ├── (authenticated)/
     │   │   │   │   │   ├── admin/  # ⚠️ EXPAND THIS
-    │   │   │   │   │   │   ├── financial-ops/  # ❌ ADD THIS
+    │   │   │   │   │   │   ├── financial-ops/  #  THIS
     │   │   │   │   │   │   │   ├── chargebacks/
     │   │   │   │   │   │   │   │   ├── [id]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Chargeback detail
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Chargeback detail
     │   │   │   │   │   │   │   │   └── index.tsx  # Chargeback management
     │   │   │   │   │   │   │   ├── disputes/
     │   │   │   │   │   │   │   │   ├── [id]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Dispute resolution
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Active disputes
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Dispute resolution
+    │   │   │   │   │   │   │   │   └── index.tsx  # Active disputes
     │   │   │   │   │   │   │   ├── refunds/
     │   │   │   │   │   │   │   │   ├── [id]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Process refund
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Process refund
     │   │   │   │   │   │   │   │   ├── history/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Refund history
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Refund history
     │   │   │   │   │   │   │   │   ├── [id].tsx  # Process refund
     │   │   │   │   │   │   │   │   ├── history.tsx  # Refund history
     │   │   │   │   │   │   │   │   └── index.tsx  # Refund requests
     │   │   │   │   │   │   │   ├── withdrawals/
     │   │   │   │   │   │   │   │   ├── [id]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Review withdrawal
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Review withdrawal
     │   │   │   │   │   │   │   │   ├── approve/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Bulk approve withdrawals
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Bulk approve withdrawals
     │   │   │   │   │   │   │   │   ├── [id].tsx  # Review withdrawal
     │   │   │   │   │   │   │   │   ├── approve.tsx  # Bulk approve
     │   │   │   │   │   │   │   │   └── index.tsx  # Pending withdrawals
-    │   │   │   │   │   │   │   ├── _layout.tsx  # ❌ CREATE - Financial ops layout
+    │   │   │   │   │   │   │   ├── _layout.tsx  # Financial ops layout
     │   │   │   │   │   │   │   └── index.tsx  # Financial operations dashboard
-    │   │   │   │   │   │   ├── kyc/  # ❌ ADD THIS
+    │   │   │   │   │   │   ├── kyc/  #  THIS
     │   │   │   │   │   │   │   ├── approved/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Approved verifications
+    │   │   │   │   │   │   │   │   └── index.tsx  # Approved verifications
     │   │   │   │   │   │   │   ├── flagged/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Flagged submissions
+    │   │   │   │   │   │   │   │   └── index.tsx  # Flagged submissions
     │   │   │   │   │   │   │   ├── pending/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Pending verifications
+    │   │   │   │   │   │   │   │   └── index.tsx  # Pending verifications
     │   │   │   │   │   │   │   ├── rejected/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Rejected verifications
+    │   │   │   │   │   │   │   │   └── index.tsx  # Rejected verifications
     │   │   │   │   │   │   │   ├── review/
     │   │   │   │   │   │   │   │   ├── [id]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Review KYC submission
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Review KYC submission
     │   │   │   │   │   │   │   │   └── [id].tsx  # Review submission
-    │   │   │   │   │   │   │   ├── _layout.tsx  # ❌ CREATE - KYC section layout
+    │   │   │   │   │   │   │   ├── _layout.tsx  # KYC section layout
     │   │   │   │   │   │   │   ├── approved.tsx  # Approved verifications
     │   │   │   │   │   │   │   ├── index.tsx  # KYC dashboard
     │   │   │   │   │   │   │   ├── pending.tsx  # Pending verifications
     │   │   │   │   │   │   │   └── rejected.tsx  # Rejected verifications
     │   │   │   │   │   │   ├── moderation/  # ⚠️ EXPAND THIS
-    │   │   │   │   │   │   │   ├── bans/  # ❌ ADD
+    │   │   │   │   │   │   │   ├── bans/  # 
     │   │   │   │   │   │   │   │   ├── [userId].tsx
     │   │   │   │   │   │   │   │   ├── appeals.tsx  # BE: admin-be/ban — GET /v1/admin/bans
     │   │   │   │   │   │   │   │   └── index.tsx
-    │   │   │   │   │   │   │   ├── disputes/  # ❌ ADD
+    │   │   │   │   │   │   │   ├── disputes/  # 
     │   │   │   │   │   │   │   │   ├── [id].tsx
     │   │   │   │   │   │   │   │   ├── escalated.tsx  # BE: admin-be/dispute — GET /v1/admin/disputes
     │   │   │   │   │   │   │   │   └── index.tsx
-    │   │   │   │   │   │   │   ├── reports/  # ❌ ADD
+    │   │   │   │   │   │   │   ├── reports/  # 
     │   │   │   │   │   │   │   │   ├── [id]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Review moderation report
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Review moderation report
     │   │   │   │   │   │   │   │   ├── [id].tsx
-    │   │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Moderation queue
+    │   │   │   │   │   │   │   │   ├── index.tsx  # Moderation queue
     │   │   │   │   │   │   │   │   └── resolved.tsx  # BE: admin-be/flag — GET /v1/admin/reports
     │   │   │   │   │   │   │   ├── users/
     │   │   │   │   │   │   │   │   ├── [userId]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - User moderation actions
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Flagged users list
-    │   │   │   │   │   │   │   ├── _layout.tsx  # ❌ CREATE - Moderation layout
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Moderation dashboard
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # User moderation actions
+    │   │   │   │   │   │   │   │   └── index.tsx  # Flagged users list
+    │   │   │   │   │   │   │   ├── _layout.tsx  # Moderation layout
+    │   │   │   │   │   │   │   └── index.tsx  # Moderation dashboard
     │   │   │   │   │   │   ├── _layout.tsx  # ✅ Exists
     │   │   │   │   │   │   └── index.tsx  # ✅ Exists
     │   │   │   │   │   ├── analytics/  # Advanced analytics now on mobile
     │   │   │   │   │   │   ├── clients/
     │   │   │   │   │   │   │   ├── retention/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Client retention ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Client retention 
     │   │   │   │   │   │   │   └── satisfaction/
-    │   │   │   │   │   │   │       └── index.tsx  # Client satisfaction ❌ (was missing)
+    │   │   │   │   │   │   │       └── index.tsx  # Client satisfaction 
     │   │   │   │   │   │   ├── cohorts/
     │   │   │   │   │   │   │   └── index.tsx  # Cohort analysis
     │   │   │   │   │   │   ├── conversion/
@@ -865,24 +865,24 @@ fe/
     │   │   │   │   │   │   │   └── index.tsx  # Data export tools
     │   │   │   │   │   │   ├── earnings/
     │   │   │   │   │   │   │   ├── breakdown/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Earnings breakdown ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Earnings breakdown 
     │   │   │   │   │   │   │   ├── forecast/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Earnings forecast ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Earnings forecast 
     │   │   │   │   │   │   │   └── trends/
-    │   │   │   │   │   │   │       └── index.tsx  # Earnings trends ❌ (was missing)
+    │   │   │   │   │   │   │       └── index.tsx  # Earnings trends 
     │   │   │   │   │   │   ├── exports/
-    │   │   │   │   │   │   │   └── index.tsx  # Export analytics ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Export analytics 
     │   │   │   │   │   │   ├── jobs/
     │   │   │   │   │   │   │   └── index.tsx  # Job analytics (client)
     │   │   │   │   │   │   ├── overview/
-    │   │   │   │   │   │   │   └── index.tsx  # Analytics overview ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Analytics overview 
     │   │   │   │   │   │   ├── performance/
     │   │   │   │   │   │   │   ├── completion-rate/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Project completion rates ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Project completion rates 
     │   │   │   │   │   │   │   ├── response-time/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Response time metrics ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Response time metrics 
     │   │   │   │   │   │   │   └── success-rate/
-    │   │   │   │   │   │   │       └── index.tsx  # Success rate analysis ❌ (was missing)
+    │   │   │   │   │   │   │       └── index.tsx  # Success rate analysis 
     │   │   │   │   │   │   ├── reports/
     │   │   │   │   │   │   │   ├── [id].tsx  # View report
     │   │   │   │   │   │   │   ├── create.tsx  # Custom report builder
@@ -906,13 +906,13 @@ fe/
     │   │   │   │   │   │   ├── jobs.tsx  # Job performance
     │   │   │   │   │   │   └── performance.tsx  # Overall performance
     │   │   │   │   │   ├── billing/
-    │   │   │   │   │   │   ├── invoices/  # ❌ ADD THIS
+    │   │   │   │   │   │   ├── invoices/  #  THIS
     │   │   │   │   │   │   │   ├── [id].tsx  # Invoice detail
     │   │   │   │   │   │   │   ├── _layout.tsx
     │   │   │   │   │   │   │   ├── create.tsx  # Create invoice
     │   │   │   │   │   │   │   ├── index.tsx  # Invoice list
     │   │   │   │   │   │   │   └── pay.tsx  # Pay invoice
-    │   │   │   │   │   │   ├── payment-methods/  # ❌ ADD THIS
+    │   │   │   │   │   │   ├── payment-methods/  #  THIS
     │   │   │   │   │   │   │   ├── [id]/
     │   │   │   │   │   │   │   │   ├── edit.tsx  # Edit payment method
     │   │   │   │   │   │   │   │   └── remove.tsx  # Remove payment method
@@ -921,7 +921,7 @@ fe/
     │   │   │   │   │   │   ├── subscriptions/
     │   │   │   │   │   │   │   └── index.tsx  # ✅ EXISTS
     │   │   │   │   │   │   └── tax-settings/
-    │   │   │   │   │   │       └── index.tsx  # ❌ ADD THIS — Tax information & settings
+    │   │   │   │   │   │       └── index.tsx  #  THIS — Tax information & settings
     │   │   │   │   │   ├── camera/
     │   │   │   │   │   │   ├── document-scan/
     │   │   │   │   │   │   │   └── index.tsx  # Document scanner (OCR)
@@ -933,14 +933,14 @@ fe/
     │   │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   │   ├── amendments/
     │   │   │   │   │   │   │   │   ├── [amendmentId]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Amendment detail ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Amendment detail 
     │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create amendment ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Amendments list ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create amendment 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Amendments list 
     │   │   │   │   │   │   │   ├── change-orders/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Change orders ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Change orders 
     │   │   │   │   │   │   │   └── compliance/
-    │   │   │   │   │   │   │       └── index.tsx  # Compliance documents ❌ (was missing)
+    │   │   │   │   │   │   │       └── index.tsx  # Compliance documents 
     │   │   │   │   │   │   ├── [id]/
     │   │   │   │   │   │   │   ├── amendments/
     │   │   │   │   │   │   │   │   ├── [amendmentId]/
@@ -973,13 +973,13 @@ fe/
     │   │   │   │   │   │   │   ├── milestones.tsx  # View milestones
     │   │   │   │   │   │   │   └── timesheet.tsx  # Log time
     │   │   │   │   │   │   ├── bulk-actions/
-    │   │   │   │   │   │   │   └── index.tsx  # Bulk contract actions ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Bulk contract actions 
     │   │   │   │   │   │   ├── reports/
     │   │   │   │   │   │   │   └── index.tsx  # Contract reports
     │   │   │   │   │   │   ├── templates/
     │   │   │   │   │   │   │   ├── [templateId]/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Contract template ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Contract templates ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Contract template 
+    │   │   │   │   │   │   │   └── index.tsx  # Contract templates 
     │   │   │   │   │   │   ├── active.tsx  # Active contracts
     │   │   │   │   │   │   ├── completed.tsx  # Completed contracts
     │   │   │   │   │   │   └── index.tsx  # All contracts
@@ -999,28 +999,28 @@ fe/
     │   │   │   │   │   │   ├── budgets/
     │   │   │   │   │   │   │   ├── [budgetId]/
     │   │   │   │   │   │   │   │   ├── alerts/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Budget alerts ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Budget alerts 
     │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit budget ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Budget detail ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit budget 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Budget detail 
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Create budget ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Budgets overview ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create budget 
+    │   │   │   │   │   │   │   └── index.tsx  # Budgets overview 
     │   │   │   │   │   │   ├── disputes/
     │   │   │   │   │   │   │   └── index.tsx  # Dispute list
     │   │   │   │   │   │   ├── escrow/
     │   │   │   │   │   │   │   ├── [escrowId]/
     │   │   │   │   │   │   │   │   ├── release/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Release escrow ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Escrow detail ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Escrow accounts ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Release escrow 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Escrow detail 
+    │   │   │   │   │   │   │   └── index.tsx  # Escrow accounts 
     │   │   │   │   │   │   ├── invoices/  # View invoices
     │   │   │   │   │   │   │   ├── bulk-actions/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Bulk invoice actions ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Bulk invoice actions 
     │   │   │   │   │   │   │   ├── recurring/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Recurring invoices ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Recurring invoices 
     │   │   │   │   │   │   │   ├── templates/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Invoice templates ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Invoice templates 
     │   │   │   │   │   │   │   └── index.tsx  # List
     │   │   │   │   │   │   ├── invoicing/
     │   │   │   │   │   │   │   ├── bulk-invoice/
@@ -1045,13 +1045,13 @@ fe/
     │   │   │   │   │   │   │   └── index.tsx  # Refunds
     │   │   │   │   │   │   ├── reports/
     │   │   │   │   │   │   │   ├── cash-flow/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Cash flow reports ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Cash flow reports 
     │   │   │   │   │   │   │   ├── profit-loss/
-    │   │   │   │   │   │   │   │   └── index.tsx  # P&L statements ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # P&L statements 
     │   │   │   │   │   │   │   ├── simple/
     │   │   │   │   │   │   │   │   └── index.tsx  # Basic financial reports
     │   │   │   │   │   │   │   └── tax/
-    │   │   │   │   │   │   │       └── index.tsx  # Tax reports ❌ (was missing)
+    │   │   │   │   │   │   │       └── index.tsx  # Tax reports 
     │   │   │   │   │   │   ├── tax/
     │   │   │   │   │   │   │   ├── documents/
     │   │   │   │   │   │   │   │   └── index.tsx  # Tax documents
@@ -1061,8 +1061,8 @@ fe/
     │   │   │   │   │   │   │       └── index.tsx  # Tax settings
     │   │   │   │   │   │   ├── tax-documents/
     │   │   │   │   │   │   │   ├── [documentId]/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Tax document detail ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Tax documents ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Tax document detail 
+    │   │   │   │   │   │   │   └── index.tsx  # Tax documents 
     │   │   │   │   │   │   ├── transactions/
     │   │   │   │   │   │   │   ├── [transactionId]/
     │   │   │   │   │   │   │   │   └── index.tsx  # Transaction detail
@@ -1077,31 +1077,31 @@ fe/
     │   │   │   │   │   ├── jobs/
     │   │   │   │   │   │   ├── [jobId]/
     │   │   │   │   │   │   │   ├── analytics/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Job analytics ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Job analytics 
     │   │   │   │   │   │   │   ├── applicants/
     │   │   │   │   │   │   │   │   └── index.tsx  # View applicants (client)
     │   │   │   │   │   │   │   ├── clone/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Clone job ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Clone job 
     │   │   │   │   │   │   │   ├── invite/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Invite candidates ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Invite candidates 
     │   │   │   │   │   │   │   ├── shortlist/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Shortlist candidates ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Shortlist candidates 
     │   │   │   │   │   │   │   ├── apply.tsx  # Quick apply
     │   │   │   │   │   │   │   └── details.tsx  # Job details
     │   │   │   │   │   │   ├── analytics/
     │   │   │   │   │   │   │   └── index.tsx  # Job analytics
     │   │   │   │   │   │   ├── bulk-actions/
-    │   │   │   │   │   │   │   └── index.tsx  # Bulk job actions ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Bulk job actions 
     │   │   │   │   │   │   ├── bulk-operations/
     │   │   │   │   │   │   │   └── index.tsx  # Bulk job operations
     │   │   │   │   │   │   ├── templates/
     │   │   │   │   │   │   │   ├── [templateId]/
     │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit job template ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Template detail ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit job template 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Template detail 
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Create job template ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Job templates ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create job template 
+    │   │   │   │   │   │   │   └── index.tsx  # Job templates 
     │   │   │   │   │   │   ├── create.tsx  # Simple job creation
     │   │   │   │   │   │   ├── drafts.tsx  # Drafts
     │   │   │   │   │   │   └── index.tsx  # Browse jobs (simplified)
@@ -1160,11 +1160,11 @@ fe/
     │   │   │   │   │   ├── messages/
     │   │   │   │   │   │   └── [conversationId]/
     │   │   │   │   │   │       ├── files/
-    │   │   │   │   │   │       │   └── index.tsx  # Conversation files ❌ (was missing)
+    │   │   │   │   │   │       │   └── index.tsx  # Conversation files 
     │   │   │   │   │   │       ├── participants/
-    │   │   │   │   │   │       │   └── index.tsx  # Manage participants ❌ (was missing)
+    │   │   │   │   │   │       │   └── index.tsx  # Manage participants 
     │   │   │   │   │   │       └── settings/
-    │   │   │   │   │   │           └── index.tsx  # Conversation settings ❌ (was missing)
+    │   │   │   │   │   │           └── index.tsx  # Conversation settings 
     │   │   │   │   │   ├── notifications/
     │   │   │   │   │   │   └── index.tsx  # Native notifications center
     │   │   │   │   │   ├── offline/
@@ -1175,29 +1175,29 @@ fe/
     │   │   │   │   │   ├── organization/
     │   │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   │   ├── history/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Billing history ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Billing history 
     │   │   │   │   │   │   │   ├── payment-methods/
     │   │   │   │   │   │   │   │   ├── add/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Add payment method ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Payment methods ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Add payment method 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Payment methods 
     │   │   │   │   │   │   │   └── subscription/
     │   │   │   │   │   │   │       ├── change/
-    │   │   │   │   │   │   │       │   └── index.tsx  # Change subscription ❌ (was missing)
-    │   │   │   │   │   │   │       └── index.tsx  # Organization subscription ❌ (was missing)
+    │   │   │   │   │   │   │       │   └── index.tsx  # Change subscription 
+    │   │   │   │   │   │   │       └── index.tsx  # Organization subscription 
     │   │   │   │   │   │   ├── roles/
-    │   │   │   │   │   │   │   └── index.tsx  # Roles management ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Roles management 
     │   │   │   │   │   │   └── team/
     │   │   │   │   │   │       ├── [memberId]/
     │   │   │   │   │   │       │   ├── permissions/
-    │   │   │   │   │   │       │   │   └── index.tsx  # Member permissions ❌ (was missing)
+    │   │   │   │   │   │       │   │   └── index.tsx  # Member permissions 
     │   │   │   │   │   │       │   └── projects/
-    │   │   │   │   │   │       │       └── index.tsx  # Member projects ❌ (was missing)
+    │   │   │   │   │   │       │       └── index.tsx  # Member projects 
     │   │   │   │   │   │       ├── bulk-actions/
-    │   │   │   │   │   │       │   └── index.tsx  # Bulk team actions ❌ (was missing)
+    │   │   │   │   │   │       │   └── index.tsx  # Bulk team actions 
     │   │   │   │   │   │       ├── invite/
     │   │   │   │   │   │       │   ├── bulk/
-    │   │   │   │   │   │       │   │   └── index.tsx  # Bulk invite ❌ (was missing)
-    │   │   │   │   │   │       │   └── index.tsx  # Invite team member ❌ (was missing)
+    │   │   │   │   │   │       │   │   └── index.tsx  # Bulk invite 
+    │   │   │   │   │   │       │   └── index.tsx  # Invite team member 
     │   │   │   │   │   │       └── members/
     │   │   │   │   │   │           └── index.tsx  # View team members
     │   │   │   │   │   ├── portfolio/
@@ -1229,12 +1229,12 @@ fe/
     │   │   │   │   │   │   ├── certifications/
     │   │   │   │   │   │   │   ├── [certId]/
     │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit certification ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit certification 
     │   │   │   │   │   │   │   │   └── verify/
-    │   │   │   │   │   │   │   │       └── index.tsx  # Verify certification ❌ (was missing)
+    │   │   │   │   │   │   │   │       └── index.tsx  # Verify certification 
     │   │   │   │   │   │   │   ├── add/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Add certification ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Certifications ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Add certification 
+    │   │   │   │   │   │   │   └── index.tsx  # Certifications 
     │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   ├── bio.tsx  # Quick bio edit
     │   │   │   │   │   │   │   ├── experience.tsx  # Experience
@@ -1252,8 +1252,8 @@ fe/
     │   │   │   │   │   │   │   └── index.tsx  # Public profile preview
     │   │   │   │   │   │   ├── publications/
     │   │   │   │   │   │   │   ├── add/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Add publication ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Publications ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Add publication 
+    │   │   │   │   │   │   │   └── index.tsx  # Publications 
     │   │   │   │   │   │   ├── skills/
     │   │   │   │   │   │   │   └── index.tsx  # Skills management
     │   │   │   │   │   │   ├── social/
@@ -1265,7 +1265,7 @@ fe/
     │   │   │   │   │   │   ├── video-intro/
     │   │   │   │   │   │   │   └── index.tsx  # Video introduction
     │   │   │   │   │   │   ├── visibility/
-    │   │   │   │   │   │   │   └── index.tsx  # Profile visibility settings ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Profile visibility settings 
     │   │   │   │   │   │   ├── index.tsx  # Profile view
     │   │   │   │   │   │   ├── reviews.tsx  # Reviews
     │   │   │   │   │   │   └── settings.tsx  # Basic settings
@@ -1281,46 +1281,46 @@ fe/
     │   │   │   │   │   ├── proposals/
     │   │   │   │   │   │   ├── [proposalId]/
     │   │   │   │   │   │   │   ├── compare/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Compare versions ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Compare versions 
     │   │   │   │   │   │   │   ├── details.tsx  # Proposal details
     │   │   │   │   │   │   │   ├── edit.tsx  # Quick edit
     │   │   │   │   │   │   │   └── withdraw.tsx  # Withdraw
     │   │   │   │   │   │   ├── bulk-actions/
-    │   │   │   │   │   │   │   └── index.tsx  # Bulk proposal actions ❌ (was missing)
-    │   │   │   │   │   │   ├── templates/  # ❌ CREATE - Proposal templates (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Bulk proposal actions 
+    │   │   │   │   │   │   ├── templates/  # Proposal templates (mobile)
     │   │   │   │   │   │   │   ├── [templateId]/
     │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit proposal template ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Template detail ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit proposal template 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Template detail 
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Create proposal template ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create proposal template 
     │   │   │   │   │   │   │   ├── quick/
     │   │   │   │   │   │   │   │   └── index.tsx  # Quick proposal templates
-    │   │   │   │   │   │   │   └── index.tsx  # Proposal templates ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Proposal templates 
     │   │   │   │   │   │   ├── active.tsx  # Active proposals
     │   │   │   │   │   │   ├── archived.tsx  # Archived proposals
     │   │   │   │   │   │   └── drafts.tsx  # Drafts
     │   │   │   │   │   ├── search/
     │   │   │   │   │   │   ├── advanced/
-    │   │   │   │   │   │   │   └── index.tsx  # Advanced search interface ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Advanced search interface 
     │   │   │   │   │   │   ├── alerts/
     │   │   │   │   │   │   │   ├── [alertId]/
     │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit search alert ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Alert detail ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit search alert 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Alert detail 
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Create search alert ❌ (was missing)
-    │   │   │   │   │   │   │   └── index.tsx  # Search alerts ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create search alert 
+    │   │   │   │   │   │   │   └── index.tsx  # Search alerts 
     │   │   │   │   │   │   ├── history/
     │   │   │   │   │   │   │   └── index.tsx  # Search history
     │   │   │   │   │   │   ├── saved/
     │   │   │   │   │   │   │   ├── [queryId]/
     │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit saved query ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # Run saved query ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit saved query 
+    │   │   │   │   │   │   │   │   └── index.tsx  # Run saved query 
     │   │   │   │   │   │   │   ├── [savedId]/
     │   │   │   │   │   │   │   │   └── index.tsx  # Saved search detail
-    │   │   │   │   │   │   │   └── index.tsx  # Saved searches (full mgmt) ❌ PARTIAL (was)
+    │   │   │   │   │   │   │   └── index.tsx  # Saved searches (full mgmt) 
     │   │   │   │   │   │   ├── filters.tsx  # Basic filters
     │   │   │   │   │   │   ├── freelancers.tsx  # Search freelancers
     │   │   │   │   │   │   ├── jobs.tsx  # Search jobs
@@ -1331,20 +1331,20 @@ fe/
     │   │   │   │   │   │   ├── advanced/
     │   │   │   │   │   │   │   ├── api-access/
     │   │   │   │   │   │   │   │   ├── create-token/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create API token ❌ (was missing)
-    │   │   │   │   │   │   │   │   └── index.tsx  # API access management ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create API token 
+    │   │   │   │   │   │   │   │   └── index.tsx  # API access management 
     │   │   │   │   │   │   │   ├── developer/
-    │   │   │   │   │   │   │   │   └── index.tsx  # Developer tools ❌ (was missing)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Developer tools 
     │   │   │   │   │   │   │   └── webhooks/
     │   │   │   │   │   │   │       ├── [webhookId]/
     │   │   │   │   │   │   │       │   ├── edit/
-    │   │   │   │   │   │   │       │   │   └── index.tsx  # Edit webhook ❌ (was missing)
+    │   │   │   │   │   │   │       │   │   └── index.tsx  # Edit webhook 
     │   │   │   │   │   │   │       │   ├── logs/
-    │   │   │   │   │   │   │       │   │   └── index.tsx  # Webhook logs ❌ (was missing)
-    │   │   │   │   │   │   │       │   └── index.tsx  # Webhook detail ❌ (was missing)
+    │   │   │   │   │   │   │       │   │   └── index.tsx  # Webhook logs 
+    │   │   │   │   │   │   │       │   └── index.tsx  # Webhook detail 
     │   │   │   │   │   │   │       ├── create/
-    │   │   │   │   │   │   │       │   └── index.tsx  # Create webhook ❌ (was missing)
-    │   │   │   │   │   │   │       └── index.tsx  # Webhooks list ❌ (was missing)
+    │   │   │   │   │   │   │       │   └── index.tsx  # Create webhook 
+    │   │   │   │   │   │   │       └── index.tsx  # Webhooks list 
     │   │   │   │   │   │   ├── api/
     │   │   │   │   │   │   │   ├── documentation/
     │   │   │   │   │   │   │   │   └── index.tsx  # API documentation
@@ -1365,9 +1365,9 @@ fe/
     │   │   │   │   │   │   ├── authorized-apps/
     │   │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - App permissions detail
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Authorized app detail
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Authorized apps list
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # App permissions detail
+    │   │   │   │   │   │   │   │   └── index.tsx  # Authorized app detail
+    │   │   │   │   │   │   │   └── index.tsx  # Authorized apps list
     │   │   │   │   │   │   ├── automation/
     │   │   │   │   │   │   │   ├── rules/
     │   │   │   │   │   │   │   │   └── index.tsx  # Automation rules
@@ -1378,92 +1378,92 @@ fe/
     │   │   │   │   │   │   ├── connected-accounts/
     │   │   │   │   │   │   │   └── index.tsx  # Connected accounts
     │   │   │   │   │   │   ├── data-export/
-    │   │   │   │   │   │   │   └── index.tsx  # Data export (comprehensive) ❌ (was missing)
-    │   │   │   │   │   │   ├── developer/  # ❌ CREATE ENTIRE SECTION - Developer tools (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Data export (comprehensive) 
+    │   │   │   │   │   │   ├── developer/  #  ENTIRE SECTION - Developer tools (mobile)
     │   │   │   │   │   │   │   ├── api-keys/
     │   │   │   │   │   │   │   │   ├── [keyId]/
     │   │   │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API key usage logs (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # API key usage logs (mobile)
     │   │   │   │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API key permissions (mobile)
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API key detail (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # API key permissions (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # API key detail (mobile)
     │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create API key (mobile)
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API keys list (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create API key (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # API keys list (mobile)
     │   │   │   │   │   │   │   ├── oauth-apps/
     │   │   │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   │   │   ├── authorizations/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth authorizations (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth authorizations (mobile)
     │   │   │   │   │   │   │   │   │   ├── credentials/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth credentials (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth credentials (mobile)
     │   │   │   │   │   │   │   │   │   ├── scopes/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app scopes (mobile)
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app detail (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app scopes (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app detail (mobile)
     │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create OAuth app (mobile)
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth apps list (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create OAuth app (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # OAuth apps list (mobile)
     │   │   │   │   │   │   │   ├── sandbox/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API sandbox/testing (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # API sandbox/testing (mobile)
     │   │   │   │   │   │   │   ├── usage/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API usage dashboard (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # API usage dashboard (mobile)
     │   │   │   │   │   │   │   ├── webhooks/
     │   │   │   │   │   │   │   │   ├── [webhookId]/
     │   │   │   │   │   │   │   │   │   ├── deliveries/
     │   │   │   │   │   │   │   │   │   │   ├── [deliveryId]/
-    │   │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook delivery detail (mobile)
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook deliveries (mobile)
+    │   │   │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook delivery detail (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook deliveries (mobile)
     │   │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit webhook (mobile)
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook detail (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit webhook (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook detail (mobile)
     │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create webhook (mobile)
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhooks list (mobile)
-    │   │   │   │   │   │   │   ├── _layout.tsx  # ❌ CREATE - Developer section layout
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Developer settings hub (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Create webhook (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Webhooks list (mobile)
+    │   │   │   │   │   │   │   ├── _layout.tsx  # Developer section layout
+    │   │   │   │   │   │   │   └── index.tsx  # Developer settings hub (mobile)
     │   │   │   │   │   │   ├── devices/
     │   │   │   │   │   │   │   ├── [deviceId]/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Device detail
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Active devices list
+    │   │   │   │   │   │   │   │   └── index.tsx  # Device detail
+    │   │   │   │   │   │   │   └── index.tsx  # Active devices list
     │   │   │   │   │   │   ├── integrations/
     │   │   │   │   │   │   │   ├── [integrationId]/
     │   │   │   │   │   │   │   │   ├── settings/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integration settings
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integration detail
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Integration settings
+    │   │   │   │   │   │   │   │   └── index.tsx  # Integration detail
     │   │   │   │   │   │   │   ├── available/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Available integrations
+    │   │   │   │   │   │   │   │   └── index.tsx  # Available integrations
     │   │   │   │   │   │   │   ├── calendar/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Calendar integration
+    │   │   │   │   │   │   │   │   └── index.tsx  # Calendar integration
     │   │   │   │   │   │   │   ├── connected/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Connected integrations
+    │   │   │   │   │   │   │   │   └── index.tsx  # Connected integrations
     │   │   │   │   │   │   │   ├── storage/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Cloud storage integration
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integrations hub
+    │   │   │   │   │   │   │   │   └── index.tsx  # Cloud storage integration
+    │   │   │   │   │   │   │   └── index.tsx  # Integrations hub
     │   │   │   │   │   │   └── security-questions/
-    │   │   │   │   │   │       └── index.tsx  # Security questions ❌ (was missing)
+    │   │   │   │   │   │       └── index.tsx  # Security questions 
     │   │   │   │   │   ├── support/
     │   │   │   │   │   │   ├── help-center/  # ⚠️ EXPAND THIS
     │   │   │   │   │   │   │   ├── article/
     │   │   │   │   │   │   │   │   └── [id].tsx  # Article detail
     │   │   │   │   │   │   │   ├── categories/
-    │   │   │   │   │   │   │   │   └── [slug].tsx  # ❌ ADD — Category articles
+    │   │   │   │   │   │   │   │   └── [slug].tsx  #  — Category articles
     │   │   │   │   │   │   │   ├── index.tsx  # ✅ Exists
-    │   │   │   │   │   │   │   └── search.tsx  # ❌ ADD — Help search
+    │   │   │   │   │   │   │   └── search.tsx  #  — Help search
     │   │   │   │   │   │   ├── knowledge-base/
     │   │   │   │   │   │   │   └── category/
     │   │   │   │   │   │   │       └── [categoryId]/
-    │   │   │   │   │   │   │           └── index.tsx  # KB category ❌ (was missing)
+    │   │   │   │   │   │   │           └── index.tsx  # KB category 
     │   │   │   │   │   │   ├── live-chat/
-    │   │   │   │   │   │   │   └── index.tsx  # Live chat support ❌ (was missing)
+    │   │   │   │   │   │   │   └── index.tsx  # Live chat support 
     │   │   │   │   │   │   ├── tickets/  # ✅ EXISTS (basic)
     │   │   │   │   │   │   │   ├── [ticketId]/
     │   │   │   │   │   │   │   │   ├── escalate/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # Escalate ticket ❌ (was missing)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Escalate ticket 
     │   │   │   │   │   │   │   │   └── history/
-    │   │   │   │   │   │   │   │       └── index.tsx  # Ticket history ❌ (was missing)
+    │   │   │   │   │   │   │   │       └── index.tsx  # Ticket history 
     │   │   │   │   │   │   │   ├── [id].tsx
     │   │   │   │   │   │   │   └── index.tsx
-    │   │   │   │   │   │   ├── contact.tsx  # ❌ ADD THIS — Contact support
-    │   │   │   │   │   │   └── faq.tsx  # ❌ ADD THIS — FAQ
+    │   │   │   │   │   │   ├── contact.tsx  #  THIS — Contact support
+    │   │   │   │   │   │   └── faq.tsx  #  THIS — FAQ
     │   │   │   │   │   ├── talent/
     │   │   │   │   │   │   ├── discovery/
     │   │   │   │   │   │   │   ├── advanced-filters/
@@ -1489,7 +1489,7 @@ fe/
     │   │   │   │   │   │       │   └── index.tsx  # Sourcing campaigns
     │   │   │   │   │   │       └── pipelines/
     │   │   │   │   │   │           └── index.tsx  # Hiring pipelines
-    │   │   │   │   │   ├── widgets/  # ❌ ADD THIS ENTIRE SECTION
+    │   │   │   │   │   ├── widgets/  #  THIS ENTIRE SECTION
     │   │   │   │   │   │   ├── [id]/
     │   │   │   │   │   │   │   └── edit.tsx  # Edit widget settings
     │   │   │   │   │   │   └── index.tsx  # Widget dashboard & configuration
@@ -1503,50 +1503,50 @@ fe/
     │   │   │   │   │   │   ├── api-keys/
     │   │   │   │   │   │   │   ├── [keyId]/
     │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit API key (mobile)
-    │   │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - API key detail (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit API key (mobile)
+    │   │   │   │   │   │   │   │   ├── index.tsx  # API key detail (mobile)
     │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create API key (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - API keys list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Create API key (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # API keys list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── oauth-apps/
     │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   ├── credentials/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app credentials (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app credentials (mobile)
     │   │   │   │   │   │   │   ├── scopes/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app scopes (mobile)
-    │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - OAuth app detail (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app scopes (mobile)
+    │   │   │   │   │   │   │   ├── index.tsx  # OAuth app detail (mobile)
     │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create OAuth app (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - OAuth apps list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Create OAuth app (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # OAuth apps list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── sandbox/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API sandbox/tester (mobile)
+    │   │   │   │   │   │   └── index.tsx  # API sandbox/tester (mobile)
     │   │   │   │   │   ├── usage/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API usage dashboard (mobile)
+    │   │   │   │   │   │   └── index.tsx  # API usage dashboard (mobile)
     │   │   │   │   │   ├── webhooks/
     │   │   │   │   │   │   ├── [webhookId]/
     │   │   │   │   │   │   │   ├── deliveries/
     │   │   │   │   │   │   │   │   ├── [deliveryId]/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook delivery detail (mobile)
-    │   │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Webhook deliveries list (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook delivery detail (mobile)
+    │   │   │   │   │   │   │   │   ├── index.tsx  # Webhook deliveries list (mobile)
     │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit webhook (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Edit webhook (mobile)
     │   │   │   │   │   │   │   ├── events/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook events config (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Webhook events config (mobile)
     │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook logs (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Webhook logs (mobile)
     │   │   │   │   │   │   │   ├── test/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Test webhook (mobile)
-    │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Webhook detail (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Test webhook (mobile)
+    │   │   │   │   │   │   │   ├── index.tsx  # Webhook detail (mobile)
     │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create webhook (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Webhooks list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Create webhook (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Webhooks list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   └── │
     │   │   │   │   ├── admin/
@@ -1561,7 +1561,7 @@ fe/
     │   │   │   │   │   │   └── index.tsx  # Users search (mobile)
     │   │   │   │   │   ├── _layout.tsx  # Admin tab layout
     │   │   │   │   │   └── index.tsx  # Admin dashboard (mobile)
-    │   │   │   │   ├── analytics/  # ❌ ADD - Analytics section (mobile)
+    │   │   │   │   ├── analytics/  #  - Analytics section (mobile)
     │   │   │   │   │   ├── contracts/
     │   │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   │   └── index.tsx  # Contract analytics detail
@@ -1609,12 +1609,12 @@ fe/
     │   │   │   │   │   └── categories.tsx  # Browse categories
     │   │   │   │   ├── camera/
     │   │   │   │   │   ├── document-scan/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE (for web parity) - Document scanner
+    │   │   │   │   │   │   └── index.tsx  #  (for web parity) - Document scanner
     │   │   │   │   │   ├── photo-upload/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE (for web parity)
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Camera/upload hub
-    │   │   │   │   │   └── layout.tsx  # ❌ CREATE - Camera section layout
-    │   │   │   │   ├── certifications/  # ❌ MISSING ENTIRE FEATURE
+    │   │   │   │   │   │   └── index.tsx  #  (for web parity)
+    │   │   │   │   │   ├── index.tsx  # Camera/upload hub
+    │   │   │   │   │   └── layout.tsx  # Camera section layout
+    │   │   │   │   ├── certifications/  #  ENTIRE FEATURE
     │   │   │   │   │   ├── [certId]/
     │   │   │   │   │   │   ├── details.tsx  # Certification details (mobile)
     │   │   │   │   │   │   └── verify.tsx  # Verify certification (mobile)
@@ -1623,7 +1623,7 @@ fe/
     │   │   │   │   │   ├── pending-verification/
     │   │   │   │   │   │   └── index.tsx  # Pending verification (mobile)
     │   │   │   │   │   └── index.tsx  # Certifications overview (mobile)
-    │   │   │   │   ├── contests/  # ❌ MISSING ENTIRE FEATURE
+    │   │   │   │   ├── contests/  #  ENTIRE FEATURE
     │   │   │   │   │   ├── [contestId]/
     │   │   │   │   │   │   ├── details.tsx  # Contest details (mobile)
     │   │   │   │   │   │   ├── entries.tsx  # Contest entries list (mobile)
@@ -1639,7 +1639,7 @@ fe/
     │   │   │   │   │       └── index.tsx  # My contest entries (mobile)
     │   │   │   │   ├── contracts/
     │   │   │   │   │   ├── [contractId]/
-    │   │   │   │   │   │   ├── disputes/  # ❌ ADD - Contract disputes
+    │   │   │   │   │   │   ├── disputes/  #  - Contract disputes
     │   │   │   │   │   │   │   ├── [disputeId]/
     │   │   │   │   │   │   │   │   ├── evidence/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Dispute evidence
@@ -1654,7 +1654,7 @@ fe/
     │   │   │   │   │   │   ├── milestones.tsx  # Milestones (mobile)
     │   │   │   │   │   │   ├── workdiary.tsx  # Work diary (mobile)
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── templates/  # ❌ ADD - Contract templates
+    │   │   │   │   │   ├── templates/  #  - Contract templates
     │   │   │   │   │   │   ├── [templateId]/
     │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   └── index.tsx  # Edit template
@@ -1678,12 +1678,12 @@ fe/
     │   │   │   │   ├── devices/
     │   │   │   │   │   ├── [deviceId]/
     │   │   │   │   │   │   ├── revoke/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Revoke device session (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Device detail (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Revoke device session (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Device detail (mobile)
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Devices list (mobile)
+    │   │   │   │   │   ├── index.tsx  # Devices list (mobile)
     │   │   │   │   │   └── │
-    │   │   │   │   ├── escrow/  # ❌ MISSING ENTIRE FEATURE
+    │   │   │   │   ├── escrow/  #  ENTIRE FEATURE
     │   │   │   │   │   ├── [escrowId]/
     │   │   │   │   │   │   ├── details.tsx  # Escrow details (mobile)
     │   │   │   │   │   │   ├── dispute.tsx  # File escrow dispute (mobile)
@@ -1696,7 +1696,7 @@ fe/
     │   │   │   │   │   ├── disputes/
     │   │   │   │   │   │   ├── [disputeId].tsx  # Dispute detail (mobile)
     │   │   │   │   │   │   └── index.tsx  # Disputes list (mobile)
-    │   │   │   │   │   ├── invoices/  # ❌ ADD - Invoice management
+    │   │   │   │   │   ├── invoices/  #  - Invoice management
     │   │   │   │   │   │   ├── [invoiceId]/
     │   │   │   │   │   │   │   ├── download/
     │   │   │   │   │   │   │   │   └── index.tsx  # Download invoice
@@ -1704,14 +1704,14 @@ fe/
     │   │   │   │   │   │   │   │   └── index.tsx  # Pay invoice
     │   │   │   │   │   │   │   └── index.tsx  # Invoice detail
     │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create invoice
+    │   │   │   │   │   │   │   └── index.tsx  # Create invoice
     │   │   │   │   │   │   ├── [invoiceId].tsx  # Invoice detail (mobile)
     │   │   │   │   │   │   └── index.tsx  # Invoices list (mobile)
     │   │   │   │   │   ├── payouts/
     │   │   │   │   │   │   ├── [payoutId].tsx  # Payout detail (mobile)
     │   │   │   │   │   │   ├── index.tsx  # Payouts list (mobile)
     │   │   │   │   │   │   └── request.tsx  # Request payout (mobile)
-    │   │   │   │   │   ├── tax-documents/  # ❌ ADD - Tax document management
+    │   │   │   │   │   ├── tax-documents/  #  - Tax document management
     │   │   │   │   │   │   ├── [documentId]/
     │   │   │   │   │   │   │   ├── download/
     │   │   │   │   │   │   │   │   └── index.tsx  # Download tax document
@@ -1723,7 +1723,7 @@ fe/
     │   │   │   │   │   ├── transactions.tsx  # Transaction history (mobile)
     │   │   │   │   │   ├── wallet.tsx  # Wallet (mobile)
     │   │   │   │   │   └── │
-    │   │   │   │   ├── groups/  # ❌ MISSING ENTIRE FEATURE
+    │   │   │   │   ├── groups/  #  ENTIRE FEATURE
     │   │   │   │   │   ├── [groupId]/
     │   │   │   │   │   │   ├── events/
     │   │   │   │   │   │   │   └── index.tsx  # Group events (mobile)
@@ -1744,17 +1744,17 @@ fe/
     │   │   │   │   │   │   ├── apply.tsx  # Apply to job (mobile)
     │   │   │   │   │   │   ├── details.tsx  # Job details (mobile)
     │   │   │   │   │   │   └── proposals.tsx  # Job proposals (client view, mobile)
-    │   │   │   │   │   ├── archived/  # ❌ CREATE ENTIRE SECTION
+    │   │   │   │   │   ├── archived/  #  ENTIRE SECTION
     │   │   │   │   │   │   ├── [jobId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Archived job detail
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Archived jobs list
-    │   │   │   │   │   ├── drafts/  # ❌ CREATE ENTIRE SECTION
+    │   │   │   │   │   │   │   └── index.tsx  # Archived job detail
+    │   │   │   │   │   │   └── index.tsx  # Archived jobs list
+    │   │   │   │   │   ├── drafts/  #  ENTIRE SECTION
     │   │   │   │   │   │   ├── [draftId]/
     │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit draft job
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Draft job detail
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Draft jobs list
-    │   │   │   │   │   ├── templates/  # ❌ ADD - Job templates
+    │   │   │   │   │   │   │   │   └── index.tsx  # Edit draft job
+    │   │   │   │   │   │   │   └── index.tsx  # Draft job detail
+    │   │   │   │   │   │   └── index.tsx  # Draft jobs list
+    │   │   │   │   │   ├── templates/  #  - Job templates
     │   │   │   │   │   │   ├── [templateId]/
     │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   └── index.tsx  # Edit job template
@@ -1779,7 +1779,7 @@ fe/
     │   │   │   │   │   ├── archived.tsx  # Archived conversations (mobile)
     │   │   │   │   │   ├── compose.tsx  # New message (mobile)
     │   │   │   │   │   └── index.tsx  # Conversations list (mobile)
-    │   │   │   │   ├── milestones/  # ❌ MISSING ENTIRE FEATURE (as separate tab)
+    │   │   │   │   ├── milestones/  #  ENTIRE FEATURE (as separate tab)
     │   │   │   │   │   ├── [milestoneId]/
     │   │   │   │   │   │   ├── approve.tsx  # Approve milestone (mobile)
     │   │   │   │   │   │   ├── details.tsx  # Milestone details (mobile)
@@ -1803,11 +1803,11 @@ fe/
     │   │   │   │   │   └── settings.tsx  # Notification settings
     │   │   │   │   ├── offline/
     │   │   │   │   │   ├── queue/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Pending actions
+    │   │   │   │   │   │   └── index.tsx  # Pending actions
     │   │   │   │   │   ├── sync/
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Sync status & controls
-    │   │   │   │   │   └── index.tsx  # ❌ CREATE - Offline dashboard
-    │   │   │   │   ├── organizations/  # ❌ ADD - Organization management
+    │   │   │   │   │   │   └── index.tsx  # Sync status & controls
+    │   │   │   │   │   └── index.tsx  # Offline dashboard
+    │   │   │   │   ├── organizations/  #  - Organization management
     │   │   │   │   │   ├── [orgId]/
     │   │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   │   ├── invoices/
@@ -1857,16 +1857,16 @@ fe/
     │   │   │   │   │   │   ├── details.tsx  # Proposal details (mobile)
     │   │   │   │   │   │   ├── edit.tsx  # Edit proposal (mobile)
     │   │   │   │   │   │   └── withdraw.tsx  # Withdraw proposal (mobile)
-    │   │   │   │   │   ├── templates/  # ❌ CREATE SECTION - Proposal templates
+    │   │   │   │   │   ├── templates/  #  SECTION - Proposal templates
     │   │   │   │   │   │   ├── [templateId]/
     │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Edit template
+    │   │   │   │   │   │   │   │   └── index.tsx  # Edit template
     │   │   │   │   │   │   │   ├── use/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Use proposal template
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Template detail
+    │   │   │   │   │   │   │   │   └── index.tsx  # Use proposal template
+    │   │   │   │   │   │   │   └── index.tsx  # Template detail
     │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create template
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Templates list
+    │   │   │   │   │   │   │   └── index.tsx  # Create template
+    │   │   │   │   │   │   └── index.tsx  # Templates list
     │   │   │   │   │   ├── _layout.tsx  # Proposals tab layout
     │   │   │   │   │   ├── active.tsx  # Active proposals (mobile)
     │   │   │   │   │   ├── archived.tsx  # Archived proposals (mobile)
@@ -1891,55 +1891,55 @@ fe/
     │   │   │   │   │   ├── advanced/
     │   │   │   │   │   │   ├── api-access/
     │   │   │   │   │   │   │   ├── create-token/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   ├── developer/
     │   │   │   │   │   │   │   ├── api-keys/
     │   │   │   │   │   │   │   │   ├── [keyId]/
     │   │   │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   ├── oauth-apps/
     │   │   │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   │   │   ├── authorizations/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   │   │   ├── credentials/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   │   │   ├── scopes/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   ├── sandbox/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   │   ├── usage/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │   │   └── index.tsx  # 
     │   │   │   │   │   │   └── webhooks/
     │   │   │   │   │   │       ├── [webhookId]/
     │   │   │   │   │   │       │   ├── deliveries/
     │   │   │   │   │   │       │   │   ├── [deliveryId]/
-    │   │   │   │   │   │       │   │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │   │   │   └── index.tsx  # 
+    │   │   │   │   │   │       │   │   └── index.tsx  # 
     │   │   │   │   │   │       │   ├── edit/
-    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │   │   └── index.tsx  # 
     │   │   │   │   │   │       │   ├── logs/
-    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE
+    │   │   │   │   │   │       │   │   └── index.tsx  # 
+    │   │   │   │   │   │       │   └── index.tsx  # 
     │   │   │   │   │   │       ├── create/
-    │   │   │   │   │   │       │   └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE
-    │   │   │   │   │   ├── api/  # ❌ ADD - API settings
+    │   │   │   │   │   │       │   └── index.tsx  # 
+    │   │   │   │   │   │       └── index.tsx  # 
+    │   │   │   │   │   ├── api/  #  - API settings
     │   │   │   │   │   │   ├── documentation/
     │   │   │   │   │   │   │   └── index.tsx  # API documentation
     │   │   │   │   │   │   ├── keys/
@@ -1953,16 +1953,16 @@ fe/
     │   │   │   │   │   │   │   │   └── index.tsx  # Create API key
     │   │   │   │   │   │   │   └── index.tsx  # API keys list
     │   │   │   │   │   │   └── index.tsx  # API settings home
-    │   │   │   │   │   ├── authorized-apps/  # ❌ CREATE ENTIRE SECTION
+    │   │   │   │   │   ├── authorized-apps/  #  ENTIRE SECTION
     │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - App permissions detail (mobile)
-    │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Authorized app detail (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # App permissions detail (mobile)
+    │   │   │   │   │   │   │   ├── index.tsx  # Authorized app detail (mobile)
     │   │   │   │   │   │   │   └── │
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Authorized apps list (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Authorized apps list (mobile)
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── automation/  # ❌ ADD - Automation settings
-    │   │   │   │   │   │   ├── rules/  # ❌ CREATE SECTION
+    │   │   │   │   │   ├── automation/  #  - Automation settings
+    │   │   │   │   │   │   ├── rules/  #  SECTION
     │   │   │   │   │   │   │   ├── [ruleId]/
     │   │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit automation rule
@@ -1983,39 +1983,39 @@ fe/
     │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   ├── payment-methods.tsx  # Payment methods (mobile)
     │   │   │   │   │   │   └── subscription.tsx  # Subscription (mobile)
-    │   │   │   │   │   ├── developer/  # ❌ ADD - Developer settings
-    │   │   │   │   │   │   ├── api-keys/  # ❌ CREATE ENTIRE SUBSECTION
+    │   │   │   │   │   ├── developer/  #  - Developer settings
+    │   │   │   │   │   │   ├── api-keys/  #  ENTIRE SUBSECTION
     │   │   │   │   │   │   │   ├── [keyId]/
     │   │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API key usage logs (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # API key usage logs (mobile)
     │   │   │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API key permissions (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # API key permissions (mobile)
     │   │   │   │   │   │   │   │   ├── regenerate/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Regenerate key
-    │   │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - API key detail (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Regenerate key
+    │   │   │   │   │   │   │   │   ├── index.tsx  # API key detail (mobile)
     │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create API key (mobile)
-    │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - API keys list (mobile)
+    │   │   │   │   │   │   │   │   └── index.tsx  # Create API key (mobile)
+    │   │   │   │   │   │   │   ├── index.tsx  # API keys list (mobile)
     │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Create new API key
+    │   │   │   │   │   │   │   └── index.tsx  # Create new API key
     │   │   │   │   │   │   ├── documentation/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Embedded API docs
-    │   │   │   │   │   │   ├── oauth-apps/  # ❌ CREATE ENTIRE SUBSECTION
+    │   │   │   │   │   │   │   └── index.tsx  # Embedded API docs
+    │   │   │   │   │   │   ├── oauth-apps/  #  ENTIRE SUBSECTION
     │   │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   │   ├── analytics/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app analytics
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app analytics
     │   │   │   │   │   │   │   │   ├── authorizations/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth authorizations (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth authorizations (mobile)
     │   │   │   │   │   │   │   │   ├── credentials/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app credentials
     │   │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit OAuth app
     │   │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth logs
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth logs
     │   │   │   │   │   │   │   │   ├── scopes/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - OAuth app scopes (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # OAuth app scopes (mobile)
     │   │   │   │   │   │   │   │   ├── index.tsx  # OAuth app detail
     │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   ├── create/
@@ -2023,20 +2023,20 @@ fe/
     │   │   │   │   │   │   │   ├── index.tsx  # OAuth apps list
     │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   ├── sandbox/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API sandbox/testing (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # API sandbox/testing (mobile)
     │   │   │   │   │   │   ├── usage/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - API usage dashboard (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # API usage dashboard (mobile)
     │   │   │   │   │   │   ├── webhooks/
     │   │   │   │   │   │   │   ├── [webhookId]/
     │   │   │   │   │   │   │   │   ├── deliveries/
     │   │   │   │   │   │   │   │   │   ├── [deliveryId]/
-    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook delivery detail (mobile)
-    │   │   │   │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Webhook deliveries (mobile)
+    │   │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook delivery detail (mobile)
+    │   │   │   │   │   │   │   │   │   ├── index.tsx  # Webhook deliveries (mobile)
     │   │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Edit webhook
     │   │   │   │   │   │   │   │   ├── events/
-    │   │   │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Webhook events config (mobile)
+    │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook events config (mobile)
     │   │   │   │   │   │   │   │   ├── logs/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Webhook logs
     │   │   │   │   │   │   │   │   ├── test/
@@ -2050,18 +2050,18 @@ fe/
     │   │   │   │   │   │   ├── _layout.tsx  # Developer settings layout
     │   │   │   │   │   │   ├── index.tsx  # Developer settings home
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── devices/  # ❌ ADD - Connected devices
+    │   │   │   │   │   ├── devices/  #  - Connected devices
     │   │   │   │   │   │   ├── [deviceId]/
     │   │   │   │   │   │   │   ├── revoke/
     │   │   │   │   │   │   │   │   └── index.tsx  # Revoke device access
     │   │   │   │   │   │   │   └── index.tsx  # Device detail
     │   │   │   │   │   │   └── index.tsx  # Connected devices list
-    │   │   │   │   │   ├── integrations/  # ❌ CREATE ENTIRE SECTION - Third-party integrations
+    │   │   │   │   │   ├── integrations/  #  ENTIRE SECTION - Third-party integrations
     │   │   │   │   │   │   ├── [integration]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integration detail
+    │   │   │   │   │   │   │   └── index.tsx  # Integration detail
     │   │   │   │   │   │   ├── available/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Integrations marketplace
-    │   │   │   │   │   │   ├── calendar/  # ❌ ADD - Calendar integration
+    │   │   │   │   │   │   │   └── index.tsx  # Integrations marketplace
+    │   │   │   │   │   │   ├── calendar/  #  - Calendar integration
     │   │   │   │   │   │   │   ├── google/
     │   │   │   │   │   │   │   │   ├── authorize/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Authorize Google Calendar
@@ -2075,7 +2075,7 @@ fe/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Outlook Calendar settings
     │   │   │   │   │   │   │   │   └── index.tsx  # Outlook Calendar integration
     │   │   │   │   │   │   │   └── index.tsx  # Calendar integrations
-    │   │   │   │   │   │   ├── payment/  # ❌ ADD - Payment provider integration
+    │   │   │   │   │   │   ├── payment/  #  - Payment provider integration
     │   │   │   │   │   │   │   ├── paypal/
     │   │   │   │   │   │   │   │   ├── authorize/
     │   │   │   │   │   │   │   │   │   └── index.tsx  # Authorize PayPal
@@ -2090,14 +2090,14 @@ fe/
     │   │   │   │   │   │   │   │   └── index.tsx  # Stripe integration
     │   │   │   │   │   │   │   └── index.tsx  # Payment provider integrations
     │   │   │   │   │   │   ├── slack/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Slack integration
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Integrations overview
+    │   │   │   │   │   │   │   └── index.tsx  # Slack integration
+    │   │   │   │   │   │   ├── index.tsx  # Integrations overview
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── labs/  # ❌ CREATE - Experimental features
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Experimental features
-    │   │   │   │   │   ├── login-history/  # ❌ CREATE - Login audit trail
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Login history
-    │   │   │   │   │   ├── organization/  # ❌ ADD - Organization settings (mobile)
+    │   │   │   │   │   ├── labs/  # Experimental features
+    │   │   │   │   │   │   └── index.tsx  # Experimental features
+    │   │   │   │   │   ├── login-history/  # Login audit trail
+    │   │   │   │   │   │   └── index.tsx  # Login history
+    │   │   │   │   │   ├── organization/  #  - Organization settings (mobile)
     │   │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   │   └── index.tsx  # Organization billing (mobile)
     │   │   │   │   │   │   ├── members/
@@ -2105,26 +2105,26 @@ fe/
     │   │   │   │   │   │   └── index.tsx  # Organization settings (mobile)
     │   │   │   │   │   ├── preferences/
     │   │   │   │   │   │   └── accessibility/
-    │   │   │   │   │   │       └── index.tsx  # ❌ CREATE - Accessibility settings
+    │   │   │   │   │   │       └── index.tsx  # Accessibility settings
     │   │   │   │   │   ├── privacy-security/
     │   │   │   │   │   │   └── authorized-apps/
     │   │   │   │   │   │       ├── [appId]/
     │   │   │   │   │   │       │   ├── permissions/
-    │   │   │   │   │   │       │   │   └── index.tsx  # ❌ CREATE - App permissions detail
-    │   │   │   │   │   │       │   ├── index.tsx  # ❌ CREATE - Authorized app detail
+    │   │   │   │   │   │       │   │   └── index.tsx  # App permissions detail
+    │   │   │   │   │   │       │   ├── index.tsx  # Authorized app detail
     │   │   │   │   │   │       │   └── │
-    │   │   │   │   │   │       ├── index.tsx  # ❌ CREATE - Authorized apps list
+    │   │   │   │   │   │       ├── index.tsx  # Authorized apps list
     │   │   │   │   │   │       └── │
     │   │   │   │   │   ├── security/
-    │   │   │   │   │   │   ├── sessions/  # ❌ ADD - Active sessions
+    │   │   │   │   │   │   ├── sessions/  #  - Active sessions
     │   │   │   │   │   │   │   ├── [sessionId]/
     │   │   │   │   │   │   │   │   └── index.tsx  # Session detail
     │   │   │   │   │   │   │   └── index.tsx  # Active sessions
     │   │   │   │   │   │   └── │
-    │   │   │   │   │   ├── subscription/  # ❌ CREATE ENTIRE SECTION
+    │   │   │   │   │   ├── subscription/  #  ENTIRE SECTION
     │   │   │   │   │   │   ├── change-plan/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Change subscription plan
-    │   │   │   │   │   │   ├── manage-plan/  # ❌ ENHANCE - Add full plan management
+    │   │   │   │   │   │   │   └── index.tsx  # Change subscription plan
+    │   │   │   │   │   │   ├── manage-plan/  # full plan management
     │   │   │   │   │   │   │   ├── cancel/
     │   │   │   │   │   │   │   │   └── index.tsx  # Cancel subscription
     │   │   │   │   │   │   │   ├── change/
@@ -2134,14 +2134,14 @@ fe/
     │   │   │   │   │   │   │   ├── resume/
     │   │   │   │   │   │   │   │   └── index.tsx  # Resume subscription
     │   │   │   │   │   │   │   └── index.tsx  # Manage subscription plan
-    │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Subscription management
+    │   │   │   │   │   │   └── index.tsx  # Subscription management
     │   │   │   │   │   ├── _layout.tsx  # Settings tab layout
     │   │   │   │   │   ├── index.tsx  # Settings overview (mobile)
     │   │   │   │   │   ├── notifications.tsx  # Notification settings (mobile)
     │   │   │   │   │   ├── privacy.tsx  # Privacy settings (mobile)
     │   │   │   │   │   ├── security.tsx  # Security settings (mobile)
     │   │   │   │   │   └── │
-    │   │   │   │   ├── skills-tests/  # ❌ MISSING ENTIRE FEATURE
+    │   │   │   │   ├── skills-tests/  #  ENTIRE FEATURE
     │   │   │   │   │   ├── [testId]/
     │   │   │   │   │   │   ├── results.tsx  # Test results (mobile)
     │   │   │   │   │   │   ├── start.tsx  # Start skills test (mobile)
@@ -2151,7 +2151,7 @@ fe/
     │   │   │   │   │   ├── completed/
     │   │   │   │   │   │   └── index.tsx  # Completed tests (mobile)
     │   │   │   │   │   └── index.tsx  # Skills tests overview (mobile)
-    │   │   │   │   ├── talent-cloud/  # ❌ MISSING ENTIRE FEATURE
+    │   │   │   │   ├── talent-cloud/  #  ENTIRE FEATURE
     │   │   │   │   │   ├── agencies/
     │   │   │   │   │   │   ├── [agencyId]/
     │   │   │   │   │   │   │   └── details.tsx  # Agency details (mobile)
@@ -2165,7 +2165,7 @@ fe/
     │   │   │   │   │       │   ├── details.tsx  # Team details (mobile)
     │   │   │   │   │       │   └── members.tsx  # Team members (mobile)
     │   │   │   │   │       └── index.tsx  # Teams list (mobile)
-    │   │   │   │   ├── timesheet/  # ❌ MISSING ENTIRE FEATURE (as separate tab)
+    │   │   │   │   ├── timesheet/  #  ENTIRE FEATURE (as separate tab)
     │   │   │   │   │   ├── [timesheetId]/
     │   │   │   │   │   │   ├── details.tsx  # Timesheet details (mobile)
     │   │   │   │   │   │   └── edit.tsx  # Edit timesheet (mobile)
@@ -2211,33 +2211,33 @@ fe/
     │   │   │   │   ├── [id]/
     │   │   │   │   │   ├── amendments/
     │   │   │   │   │   │   ├── [amendmentId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Amendment detail (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Amendments list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Amendment detail (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Amendments list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── deliverables/
     │   │   │   │   │   │   ├── [deliverableId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Deliverable detail (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Deliverables list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Deliverable detail (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Deliverables list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── disputes/
     │   │   │   │   │   │   ├── [disputeId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Dispute detail (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Disputes list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Dispute detail (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Disputes list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── invoices/
     │   │   │   │   │   │   ├── [invoiceId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Invoice detail (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Invoices list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Invoice detail (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Invoices list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── milestones/
     │   │   │   │   │   │   ├── [milestoneId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Milestone detail (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Milestones list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Milestone detail (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Milestones list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── time-tracking/
     │   │   │   │   │   │   ├── [entryId]/
-    │   │   │   │   │   │   │   └── index.tsx  # ❌ CREATE - Time entry detail (mobile)
-    │   │   │   │   │   │   ├── index.tsx  # ❌ CREATE - Time tracking list (mobile)
+    │   │   │   │   │   │   │   └── index.tsx  # Time entry detail (mobile)
+    │   │   │   │   │   │   ├── index.tsx  # Time tracking list (mobile)
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── index.tsx  # Contract overview
     │   │   │   │   │   ├── messages.tsx  # Contract messages
@@ -2403,7 +2403,7 @@ fe/
     │   │   │   ├── +not-found.tsx  # 404 screen
     │   │   │   ├── _layout.tsx  # Root layout
     │   │   │   ├── index.tsx  # App entry point
-    │   │   │   ├── |   └── _layout.tsx  # ❌ ADD ErrorBoundary
+    │   │   │   ├── |   └── _layout.tsx  #  ErrorBoundary
     │   │   │   └── │
     │   │   ├── assets/  # Mobile assets
     │   │   │   ├── fonts/  # Custom fonts
@@ -2450,11 +2450,11 @@ fe/
     │   │   │   │   ├── molecules/
     │   │   │   │   │   └── Navigation/
     │   │   │   │   │       ├── Accordion/
-    │   │   │   │   │       │   └── Accordion.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │   └── Accordion.native.tsx  # 
     │   │   │   │   │       ├── Breadcrumb/
-    │   │   │   │   │       │   └── Breadcrumb.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │   └── Breadcrumb.native.tsx  # 
     │   │   │   │   │       ├── Drawer/
-    │   │   │   │   │       │   └── Drawer.native.tsx  # ❌ CREATE
+    │   │   │   │   │       │   └── Drawer.native.tsx  # 
     │   │   │   │   │       └── │
     │   │   │   │   ├── Navigation/
     │   │   │   │   │   ├── Header.tsx  # Screen header
@@ -2505,29 +2505,29 @@ fe/
     │   │   │   │       └── webhooks/
     │   │   │   │           ├── [webhook_id]/
     │   │   │   │           │   ├── analytics/
-    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook analytics dashboard (mobile)
+    │   │   │   │           │   │   └── index.tsx  # Webhook analytics dashboard (mobile)
     │   │   │   │           │   ├── health/
-    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook health monitoring (mobile)
+    │   │   │   │           │   │   └── index.tsx  # Webhook health monitoring (mobile)
     │   │   │   │           │   ├── retry-config/
-    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook retry configuration (mobile)
+    │   │   │   │           │   │   └── index.tsx  # Webhook retry configuration (mobile)
     │   │   │   │           │   ├── security/
-    │   │   │   │           │   │   └── index.tsx  # ❌ CREATE - Webhook security settings (mobile)
+    │   │   │   │           │   │   └── index.tsx  # Webhook security settings (mobile)
     │   │   │   │           │   └── transform/
-    │   │   │   │           │       └── index.tsx  # ❌ CREATE - Webhook payload transformation (mobile)
+    │   │   │   │           │       └── index.tsx  # Webhook payload transformation (mobile)
     │   │   │   │           ├── batch-retry/
-    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook batch retry (mobile)
+    │   │   │   │           │   └── index.tsx  # Webhook batch retry (mobile)
     │   │   │   │           ├── compare/
-    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook comparison view (mobile)
+    │   │   │   │           │   └── index.tsx  # Webhook comparison view (mobile)
     │   │   │   │           ├── docs/
-    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook documentation (mobile)
+    │   │   │   │           │   └── index.tsx  # Webhook documentation (mobile)
     │   │   │   │           ├── events-catalog/
-    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook events catalog (mobile)
+    │   │   │   │           │   └── index.tsx  # Webhook events catalog (mobile)
     │   │   │   │           ├── import-export/
-    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook import/export (mobile)
+    │   │   │   │           │   └── index.tsx  # Webhook import/export (mobile)
     │   │   │   │           ├── settings/
-    │   │   │   │           │   └── index.tsx  # ❌ CREATE - Webhook global settings (mobile)
+    │   │   │   │           │   └── index.tsx  # Webhook global settings (mobile)
     │   │   │   │           └── templates/
-    │   │   │   │               └── index.tsx  # ❌ CREATE - Webhook templates (mobile)
+    │   │   │   │               └── index.tsx  # Webhook templates (mobile)
     │   │   │   ├── stores/  # Mobile-specific Zustand stores
     │   │   │   │   ├── biometric-store.ts  # Biometric settings
     │   │   │   │   ├── camera-store.ts  # Camera state
@@ -2541,24 +2541,24 @@ fe/
     │   │   │           ├── molecules/
     │   │   │           │   ├── Navigation/
     │   │   │           │   │   ├── Accordion/
-    │   │   │           │   │   │   └── Accordion.native.tsx  # ❌ ADD
+    │   │   │           │   │   │   └── Accordion.native.tsx  # 
     │   │   │           │   │   ├── Breadcrumb/
-    │   │   │           │   │   │   └── Breadcrumb.native.tsx  # ❌ ADD
+    │   │   │           │   │   │   └── Breadcrumb.native.tsx  # 
     │   │   │           │   │   └── Drawer/
-    │   │   │           │   │       └── Drawer.native.tsx  # ❌ ADD
+    │   │   │           │   │       └── Drawer.native.tsx  # 
     │   │   │           │   └── Overlay/
     │   │   │           │       ├── Popover/
-    │   │   │           │       │   └── Popover.native.tsx  # ❌ ADD
+    │   │   │           │       │   └── Popover.native.tsx  # 
     │   │   │           │       └── Tooltip/
-    │   │   │           │           └── Tooltip.native.tsx  # ❌ ADD
+    │   │   │           │           └── Tooltip.native.tsx  # 
     │   │   │           └── organisms/
     │   │   │               └── DataDisplay/
     │   │   │                   ├── DataGrid/
-    │   │   │                   │   └── DataGrid.native.tsx  # ❌ ADD
+    │   │   │                   │   └── DataGrid.native.tsx  # 
     │   │   │                   ├── KanbanBoard/
-    │   │   │                   │   └── KanbanBoard.native.tsx  # ❌ ADD
+    │   │   │                   │   └── KanbanBoard.native.tsx  # 
     │   │   │                   └── Table/
-    │   │   │                       └── Table.native.tsx  # ❌ ADD
+    │   │   │                       └── Table.native.tsx  # 
     │   │   ├── widgets/
     │   │   │   ├── quick-actions.tsx  # Quick actions widget
     │   │   │   └── time-tracker.tsx  # Home screen time tracker widget
@@ -2584,29 +2584,29 @@ fe/
     │   │   │           └── webhooks/
     │   │   │               ├── [webhook_id]/
     │   │   │               │   ├── analytics/
-    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook analytics dashboard
+    │   │   │               │   │   └── page.tsx  # Webhook analytics dashboard
     │   │   │               │   ├── health/
-    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook health monitoring
+    │   │   │               │   │   └── page.tsx  # Webhook health monitoring
     │   │   │               │   ├── retry-config/
-    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook retry configuration
+    │   │   │               │   │   └── page.tsx  # Webhook retry configuration
     │   │   │               │   ├── security/
-    │   │   │               │   │   └── page.tsx  # ❌ CREATE - Webhook security settings
+    │   │   │               │   │   └── page.tsx  # Webhook security settings
     │   │   │               │   └── transform/
-    │   │   │               │       └── page.tsx  # ❌ CREATE - Webhook payload transformation
+    │   │   │               │       └── page.tsx  # Webhook payload transformation
     │   │   │               ├── batch-retry/
-    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook batch retry
+    │   │   │               │   └── page.tsx  # Webhook batch retry
     │   │   │               ├── compare/
-    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook comparison view
+    │   │   │               │   └── page.tsx  # Webhook comparison view
     │   │   │               ├── docs/
-    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook documentation
+    │   │   │               │   └── page.tsx  # Webhook documentation
     │   │   │               ├── events-catalog/
-    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook events catalog
+    │   │   │               │   └── page.tsx  # Webhook events catalog
     │   │   │               ├── import-export/
-    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook import/export
+    │   │   │               │   └── page.tsx  # Webhook import/export
     │   │   │               ├── settings/
-    │   │   │               │   └── page.tsx  # ❌ CREATE - Webhook global settings
+    │   │   │               │   └── page.tsx  # Webhook global settings
     │   │   │               └── templates/
-    │   │   │                   └── page.tsx  # ❌ CREATE - Webhook templates
+    │   │   │                   └── page.tsx  # Webhook templates
     │   │   ├── e2e/
     │   │   │   ├── auth/
     │   │   │   │   ├── login.spec.ts
@@ -2722,36 +2722,36 @@ fe/
     │   │   ├── src/
     │   │   │   ├── app/  # ✅ Next.js App Router
     │   │   │   │   ├── (admin)/
-    │   │   │   │   │   ├── admin/  # WEB ADMIN ROUTES - ALL ❌ CREATE
+    │   │   │   │   │   ├── admin/  # WEB ADMIN ROUTES - ALL 
     │   │   │   │   │   │   ├── analytics/  # Admin analytics dashboards
     │   │   │   │   │   │   │   ├── contracts/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Contracts analytics
+    │   │   │   │   │   │   │   │   └── page.tsx  # Contracts analytics
     │   │   │   │   │   │   │   ├── financial/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Financial analytics
+    │   │   │   │   │   │   │   │   └── page.tsx  # Financial analytics
     │   │   │   │   │   │   │   ├── jobs/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Jobs analytics
+    │   │   │   │   │   │   │   │   └── page.tsx  # Jobs analytics
     │   │   │   │   │   │   │   ├── proposals/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Proposals analytics
+    │   │   │   │   │   │   │   │   └── page.tsx  # Proposals analytics
     │   │   │   │   │   │   │   ├── search/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Search analytics
+    │   │   │   │   │   │   │   │   └── page.tsx  # Search analytics
     │   │   │   │   │   │   │   ├── users/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Users analytics
+    │   │   │   │   │   │   │   │   └── page.tsx  # Users analytics
     │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   ├── audit/  # Audit logs and compliance
     │   │   │   │   │   │   │   ├── events/
     │   │   │   │   │   │   │   │   ├── [eventId]/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Audit event detail
-    │   │   │   │   │   │   │   │   ├── page.tsx  # ❌ CREATE - Audit events list
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Audit event detail
+    │   │   │   │   │   │   │   │   ├── page.tsx  # Audit events list
     │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   ├── exports/
     │   │   │   │   │   │   │   │   ├── [exportId]/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Audit export detail
-    │   │   │   │   │   │   │   │   ├── page.tsx  # ❌ CREATE - Audit exports list
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Audit export detail
+    │   │   │   │   │   │   │   │   ├── page.tsx  # Audit exports list
     │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   ├── reports/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Compliance reports
+    │   │   │   │   │   │   │   │   └── page.tsx  # Compliance reports
     │   │   │   │   │   │   │   ├── settings/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Audit settings
+    │   │   │   │   │   │   │   │   └── page.tsx  # Audit settings
     │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   ├── content/
     │   │   │   │   │   │   │   ├── blog/
@@ -3100,7 +3100,7 @@ fe/
     │   │   │   │   ├── (auth)/
     │   │   │   │   ├── (dashboard)/
     │   │   │   │   │   ├── (routes)/
-    │   │   │   │   │   │   ├── analytics/  # ❌ VERIFY - Ensure complete section
+    │   │   │   │   │   │   ├── analytics/  # 
     │   │   │   │   │   │   │   ├── contracts/
     │   │   │   │   │   │   │   │   ├── [contractId]/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # ✅ Verify exists
@@ -3148,27 +3148,27 @@ fe/
     │   │   │   │   │   │           ├── api-keys/
     │   │   │   │   │   │           │   └── [keyId]/
     │   │   │   │   │   │           │       ├── logs/
-    │   │   │   │   │   │           │       │   └── page.tsx  # ❌ CREATE - API key usage logs
+    │   │   │   │   │   │           │       │   └── page.tsx  # API key usage logs
     │   │   │   │   │   │           │       └── permissions/
-    │   │   │   │   │   │           │           └── page.tsx  # ❌ CREATE - API key permissions
+    │   │   │   │   │   │           │           └── page.tsx  # API key permissions
     │   │   │   │   │   │           └── oauth-apps/
     │   │   │   │   │   │               ├── [appId]/
     │   │   │   │   │   │               │   ├── authorizations/
-    │   │   │   │   │   │               │   │   └── page.tsx  # ❌ CREATE - OAuth app authorizations
+    │   │   │   │   │   │               │   │   └── page.tsx  # OAuth app authorizations
     │   │   │   │   │   │               │   ├── credentials/
-    │   │   │   │   │   │               │   │   └── page.tsx  # ❌ CREATE - OAuth credentials
+    │   │   │   │   │   │               │   │   └── page.tsx  # OAuth credentials
     │   │   │   │   │   │               │   └── scopes/
-    │   │   │   │   │   │               │       └── page.tsx  # ❌ CREATE - OAuth app scopes
+    │   │   │   │   │   │               │       └── page.tsx  # OAuth app scopes
     │   │   │   │   │   │               └── new/
-    │   │   │   │   │   │                   └── page.tsx  # ❌ CREATE - Create OAuth app
-    │   │   │   │   │   ├── camera/  # ❌ ADD THIS (Web equivalents)
+    │   │   │   │   │   │                   └── page.tsx  # Create OAuth app
+    │   │   │   │   │   ├── camera/  #  THIS (Web equivalents)
     │   │   │   │   │   │   ├── document-scan/
     │   │   │   │   │   │   │   └── page.tsx  # Document scanner (web fallback)
     │   │   │   │   │   │   ├── photo-upload/
     │   │   │   │   │   │   │   └── page.tsx  # Photo upload with cropping / bulk upload
     │   │   │   │   │   │   ├── layout.tsx
     │   │   │   │   │   │   └── page.tsx  # Camera/upload hub
-    │   │   │   │   │   ├── offline/  # ❌ ADD THIS ENTIRE SECTION
+    │   │   │   │   │   ├── offline/  #  THIS ENTIRE SECTION
     │   │   │   │   │   │   ├── queue/
     │   │   │   │   │   │   │   └── page.tsx  # View pending actions
     │   │   │   │   │   │   ├── sync/
@@ -3176,8 +3176,8 @@ fe/
     │   │   │   │   │   │   ├── layout.tsx
     │   │   │   │   │   │   └── page.tsx  # Offline status page
     │   │   │   │   │   ├── quick-actions/
-    │   │   │   │   │   │   └── page.tsx  # ❌ ADD THIS — Quick actions (message/proposal/time/invoice)
-    │   │   │   │   │   ├── scanner/  # ❌ ADD THIS
+    │   │   │   │   │   │   └── page.tsx  #  THIS — Quick actions (message/proposal/time/invoice)
+    │   │   │   │   │   ├── scanner/  #  THIS
     │   │   │   │   │   │   ├── document/
     │   │   │   │   │   │   │   └── page.tsx  # Document scanner (web)
     │   │   │   │   │   │   ├── qr-code/
@@ -3190,94 +3190,94 @@ fe/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
-    │   │   │   │   │   │   ├── automation/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   │   │   ├── automation/  #  ENTIRE SECTION
     │   │   │   │   │   │   │   ├── rules/
     │   │   │   │   │   │   │   │   ├── [ruleId]/
     │   │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit automation rule
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit automation rule
     │   │   │   │   │   │   │   │   │   ├── history/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Rule execution history
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Rule detail view
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Rule execution history
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Rule detail view
     │   │   │   │   │   │   │   │   ├── new/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create new automation rule
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Automation rules list
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Create new automation rule
+    │   │   │   │   │   │   │   │   └── page.tsx  # Automation rules list
     │   │   │   │   │   │   │   ├── templates/
     │   │   │   │   │   │   │   │   ├── [templateId]/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Automation template detail
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Automation templates list
-    │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Automation home
-    │   │   │   │   │   │   ├── developer/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Automation template detail
+    │   │   │   │   │   │   │   │   └── page.tsx  # Automation templates list
+    │   │   │   │   │   │   │   └── page.tsx  # Automation home
+    │   │   │   │   │   │   ├── developer/  #  ENTIRE SECTION
     │   │   │   │   │   │   │   ├── api-keys/
     │   │   │   │   │   │   │   │   ├── [keyId]/
     │   │   │   │   │   │   │   │   │   ├── logs/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   │   │   ├── permissions/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - API key detail
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # API key detail
     │   │   │   │   │   │   │   │   ├── create/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   │   ├── new/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create API key
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - API keys list
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Create API key
+    │   │   │   │   │   │   │   │   └── page.tsx  # API keys list
     │   │   │   │   │   │   │   ├── oauth-apps/
     │   │   │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   │   │   ├── authorizations/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth app authorizations
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth app authorizations
     │   │   │   │   │   │   │   │   │   ├── credentials/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth credentials
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth credentials
     │   │   │   │   │   │   │   │   │   ├── scopes/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth app scopes
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth app detail
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth app scopes
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth app detail
     │   │   │   │   │   │   │   │   ├── create/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   │   ├── new/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create OAuth app
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth apps list
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Create OAuth app
+    │   │   │   │   │   │   │   │   └── page.tsx  # OAuth apps list
     │   │   │   │   │   │   │   ├── sandbox/
     │   │   │   │   │   │   │   │   ├── environments/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Sandbox environments
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Sandbox environments
     │   │   │   │   │   │   │   │   └── test-data/
-    │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Test data management
+    │   │   │   │   │   │   │   │       └── page.tsx  # Test data management
     │   │   │   │   │   │   │   ├── webhooks/
     │   │   │   │   │   │   │   │   ├── [webhookId]/
     │   │   │   │   │   │   │   │   │   ├── deliveries/
     │   │   │   │   │   │   │   │   │   │   ├── [deliveryId]/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Webhook delivery detail
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Webhook deliveries list
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook delivery detail
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook deliveries list
     │   │   │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   │   │   ├── events/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Webhook events config
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook events config
     │   │   │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Webhook logs
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Webhook detail
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook logs
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook detail
     │   │   │   │   │   │   │   │   ├── create/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   │   ├── new/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create webhook
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Webhooks list
-    │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Developer home
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Create webhook
+    │   │   │   │   │   │   │   │   └── page.tsx  # Webhooks list
+    │   │   │   │   │   │   │   └── page.tsx  # Developer home
     │   │   │   │   │   │   ├── devices/  # ⚠️ VERIFY ENTIRE SECTION
     │   │   │   │   │   │   │   ├── [deviceId]/
     │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
-    │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Connected devices
+    │   │   │   │   │   │   │   └── page.tsx  # Connected devices
     │   │   │   │   │   │   ├── integrations/  # ⚠️ PARTIALLY MISSING (expand existing)
     │   │   │   │   │   │   │   ├── [integration]/
     │   │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   │   ├── available/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Available integrations
+    │   │   │   │   │   │   │   │   └── page.tsx  # Available integrations
     │   │   │   │   │   │   │   ├── calendar/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Calendar integration
+    │   │   │   │   │   │   │   │   └── page.tsx  # Calendar integration
     │   │   │   │   │   │   │   ├── connected/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Connected integrations
+    │   │   │   │   │   │   │   │   └── page.tsx  # Connected integrations
     │   │   │   │   │   │   │   ├── drive/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Drive integration
+    │   │   │   │   │   │   │   │   └── page.tsx  # Drive integration
     │   │   │   │   │   │   │   ├── slack/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Slack integration
+    │   │   │   │   │   │   │   │   └── page.tsx  # Slack integration
     │   │   │   │   │   │   │   ├── time-tracking/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Time tracking integration
+    │   │   │   │   │   │   │   │   └── page.tsx  # Time tracking integration
     │   │   │   │   │   │   │   ├── zapier/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Zapier integration
+    │   │   │   │   │   │   │   │   └── page.tsx  # Zapier integration
     │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   ├── labs/  # ⚠️ VERIFY
     │   │   │   │   │   │   │   └── page.tsx  # ⚠️ VERIFY
@@ -3286,40 +3286,40 @@ fe/
     │   │   │   │   │   │   ├── policies/
     │   │   │   │   │   │   │   ├── [policyId]/
     │   │   │   │   │   │   │   │   ├── attestations/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Policy attestations
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Policy attestations
     │   │   │   │   │   │   │   │   ├── versions/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Policy versions
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Policy detail
-    │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Policies list
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Policy versions
+    │   │   │   │   │   │   │   │   └── page.tsx  # Policy detail
+    │   │   │   │   │   │   │   └── page.tsx  # Policies list
     │   │   │   │   │   │   ├── preferences/
     │   │   │   │   │   │   │   └── accessibility/
     │   │   │   │   │   │   │       └── page.tsx  # ⚠️ VERIFY
     │   │   │   │   │   │   ├── team/  # ⚠️ PARTIALLY MISSING (expand existing)
     │   │   │   │   │   │   │   ├── categories/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - KB categories
+    │   │   │   │   │   │   │   │   └── page.tsx  # KB categories
     │   │   │   │   │   │   │   ├── knowledge-base/
     │   │   │   │   │   │   │   │   ├── articles/
     │   │   │   │   │   │   │   │   │   └── [articleId]/
     │   │   │   │   │   │   │   │   │       ├── edit/
-    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Edit KB article
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # Edit KB article
     │   │   │   │   │   │   │   │   │       ├── versions/
-    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Article version history
-    │   │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Article detail
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Articles list
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # Article version history
+    │   │   │   │   │   │   │   │   │       └── page.tsx  # Article detail
+    │   │   │   │   │   │   │   │   └── page.tsx  # Articles list
     │   │   │   │   │   │   │   └── search/
-    │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - KB search
+    │   │   │   │   │   │   │       └── page.tsx  # KB search
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── status/
-    │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - System status page
-    │   │   │   │   │   ├── support/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   │   │   └── page.tsx  # System status page
+    │   │   │   │   │   ├── support/  #  ENTIRE SECTION
     │   │   │   │   │   │   └── tickets/
     │   │   │   │   │   │       ├── [ticketId]/
-    │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Support ticket detail
+    │   │   │   │   │   │       │   └── page.tsx  # Support ticket detail
     │   │   │   │   │   │       ├── new/
-    │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Create support ticket
-    │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Support tickets list
+    │   │   │   │   │   │       │   └── page.tsx  # Create support ticket
+    │   │   │   │   │   │       └── page.tsx  # Support tickets list
     │   │   │   │   │   └── today/
-    │   │   │   │   │       └── page.tsx  # ❌ ADD THIS — Today's schedule/tasks/metrics/activity
+    │   │   │   │   │       └── page.tsx  #  THIS — Today's schedule/tasks/metrics/activity
     │   │   │   │   ├── (legal)/
     │   │   │   │   ├── (marketing)/
     │   │   │   │   ├── [locale]/  # Internationalized routing (en, ar, zh, hi, de, fr, tr, es, ru)
@@ -3917,110 +3917,110 @@ fe/
     │   │   │   │   │   │   ├── (admin)/
     │   │   │   │   │   │   │   ├── analytics/
     │   │   │   │   │   │   │   │   ├── performance/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Platform performance metrics
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Platform performance metrics
     │   │   │   │   │   │   │   │   ├── retention/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - User retention analysis
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # User retention analysis
     │   │   │   │   │   │   │   │   └── revenue/
-    │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Revenue dashboard
+    │   │   │   │   │   │   │   │       └── page.tsx  # Revenue dashboard
     │   │   │   │   │   │   │   ├── budgets/
     │   │   │   │   │   │   │   │   ├── [budgetId]/
     │   │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit budget
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Budget detail
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit budget
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Budget detail
     │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create new budget
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Budgets list
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Create new budget
+    │   │   │   │   │   │   │   │   └── page.tsx  # Budgets list
     │   │   │   │   │   │   │   ├── moderation/
     │   │   │   │   │   │   │   │   └── appeals/
-    │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Appeals queue
+    │   │   │   │   │   │   │   │       └── page.tsx  # Appeals queue
     │   │   │   │   │   │   │   ├── search-admin/
     │   │   │   │   │   │   │   │   ├── boosts/
     │   │   │   │   │   │   │   │   │   ├── [boostId]/
     │   │   │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit boost rule
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Boost rule detail
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit boost rule
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Boost rule detail
     │   │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create boost rule
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Boost rules list
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Create boost rule
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Boost rules list
     │   │   │   │   │   │   │   │   ├── facets/
     │   │   │   │   │   │   │   │   │   ├── [facetId]/
     │   │   │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit facet configuration
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Facet detail
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit facet configuration
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Facet detail
     │   │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create facet
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Facets list
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Create facet
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Facets list
     │   │   │   │   │   │   │   │   ├── rewrites/
     │   │   │   │   │   │   │   │   │   ├── [rewriteId]/
     │   │   │   │   │   │   │   │   │   │   ├── edit/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Edit query rewrite
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Rewrite rule detail
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit query rewrite
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Rewrite rule detail
     │   │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create rewrite rule
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Query rewrites list
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Create rewrite rule
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # Query rewrites list
     │   │   │   │   │   │   │   │   └── synonyms/
     │   │   │   │   │   │   │   │       ├── [synonymId]/
     │   │   │   │   │   │   │   │       │   ├── edit/
-    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # ❌ CREATE - Edit synonym group
-    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Synonym group detail
+    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # Edit synonym group
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # Synonym group detail
     │   │   │   │   │   │   │   │       ├── create/
-    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Create synonym group
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # Create synonym group
     │   │   │   │   │   │   │   │       ├── import/
-    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Import synonyms (CSV/JSON)
-    │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Synonyms list
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # Import synonyms (CSV/JSON)
+    │   │   │   │   │   │   │   │       └── page.tsx  # Synonyms list
     │   │   │   │   │   │   │   ├── settings/
     │   │   │   │   │   │   │   │   ├── developer/
     │   │   │   │   │   │   │   │   │   ├── oauth-apps/
     │   │   │   │   │   │   │   │   │   │   └── [appId]/
     │   │   │   │   │   │   │   │   │   │       ├── credentials/
-    │   │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - OAuth app credentials detail
+    │   │   │   │   │   │   │   │   │   │       │   └── page.tsx  # OAuth app credentials detail
     │   │   │   │   │   │   │   │   │   │       └── scopes/
-    │   │   │   │   │   │   │   │   │   │           └── page.tsx  # ❌ CREATE - OAuth app scopes management
+    │   │   │   │   │   │   │   │   │   │           └── page.tsx  # OAuth app scopes management
     │   │   │   │   │   │   │   │   │   └── sandbox/
     │   │   │   │   │   │   │   │   │       ├── environments/
     │   │   │   │   │   │   │   │   │       │   ├── [envId]/
     │   │   │   │   │   │   │   │   │       │   │   ├── reset/
-    │   │   │   │   │   │   │   │   │       │   │   │   └── page.tsx  # ❌ CREATE - Reset sandbox environment
-    │   │   │   │   │   │   │   │   │       │   │   └── page.tsx  # ❌ CREATE - Sandbox environment detail
-    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Sandbox environments list
+    │   │   │   │   │   │   │   │   │       │   │   │   └── page.tsx  # Reset sandbox environment
+    │   │   │   │   │   │   │   │   │       │   │   └── page.tsx  # Sandbox environment detail
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # Sandbox environments list
     │   │   │   │   │   │   │   │   │       └── test-data/
     │   │   │   │   │   │   │   │   │           ├── generate/
-    │   │   │   │   │   │   │   │   │           │   └── page.tsx  # ❌ CREATE - Generate test data
-    │   │   │   │   │   │   │   │   │           └── page.tsx  # ❌ CREATE - Test data management
+    │   │   │   │   │   │   │   │   │           │   └── page.tsx  # Generate test data
+    │   │   │   │   │   │   │   │   │           └── page.tsx  # Test data management
     │   │   │   │   │   │   │   │   ├── notifications/
     │   │   │   │   │   │   │   │   │   └── channels/
     │   │   │   │   │   │   │   │   │       ├── email/
-    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Email channel settings
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # Email channel settings
     │   │   │   │   │   │   │   │   │       ├── push/
-    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - Push notification settings
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # Push notification settings
     │   │   │   │   │   │   │   │   │       ├── sms/
-    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - SMS channel settings
-    │   │   │   │   │   │   │   │   │       └── page.tsx  # ❌ CREATE - Notification channels overview
+    │   │   │   │   │   │   │   │   │       │   └── page.tsx  # SMS channel settings
+    │   │   │   │   │   │   │   │   │       └── page.tsx  # Notification channels overview
     │   │   │   │   │   │   │   │   └── team/
     │   │   │   │   │   │   │   │       ├── categories/
     │   │   │   │   │   │   │   │       │   ├── [categoryId]/
     │   │   │   │   │   │   │   │       │   │   ├── edit/
-    │   │   │   │   │   │   │   │       │   │   │   └── page.tsx  # ❌ CREATE - Edit KB category
-    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # ❌ CREATE - KB category detail
-    │   │   │   │   │   │   │   │       │   └── page.tsx  # ❌ CREATE - KB categories list
+    │   │   │   │   │   │   │   │       │   │   │   └── page.tsx  # Edit KB category
+    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # KB category detail
+    │   │   │   │   │   │   │   │       │   └── page.tsx  # KB categories list
     │   │   │   │   │   │   │   │       └── knowledge-base/
     │   │   │   │   │   │   │   │           └── articles/
     │   │   │   │   │   │   │   │               └── [articleId]/
     │   │   │   │   │   │   │   │                   ├── edit/
-    │   │   │   │   │   │   │   │                   │   └── page.tsx  # ❌ CREATE - Edit KB article
+    │   │   │   │   │   │   │   │                   │   └── page.tsx  # Edit KB article
     │   │   │   │   │   │   │   │                   └── versions/
     │   │   │   │   │   │   │   │                       ├── [versionId]/
     │   │   │   │   │   │   │   │                       │   ├── compare/
-    │   │   │   │   │   │   │   │                       │   │   └── page.tsx  # ❌ CREATE - Compare article versions
-    │   │   │   │   │   │   │   │                       │   └── page.tsx  # ❌ CREATE - Article version detail
-    │   │   │   │   │   │   │   │                       └── page.tsx  # ❌ CREATE - Article version history
+    │   │   │   │   │   │   │   │                       │   │   └── page.tsx  # Compare article versions
+    │   │   │   │   │   │   │   │                       │   └── page.tsx  # Article version detail
+    │   │   │   │   │   │   │   │                       └── page.tsx  # Article version history
     │   │   │   │   │   │   │   └── support/
     │   │   │   │   │   │   │       └── analytics/
     │   │   │   │   │   │   │           ├── performance/
-    │   │   │   │   │   │   │           │   └── page.tsx  # ❌ CREATE - Support performance metrics
+    │   │   │   │   │   │   │           │   └── page.tsx  # Support performance metrics
     │   │   │   │   │   │   │           ├── satisfaction/
-    │   │   │   │   │   │   │           │   └── page.tsx  # ❌ CREATE - Customer satisfaction metrics
-    │   │   │   │   │   │   │           └── page.tsx  # ❌ CREATE - Support analytics overview
+    │   │   │   │   │   │   │           │   └── page.tsx  # Customer satisfaction metrics
+    │   │   │   │   │   │   │           └── page.tsx  # Support analytics overview
     │   │   │   │   │   │   ├── admin/  # Admin panel (SUPER_ADMIN only)
     │   │   │   │   │   │   │   ├── analytics/
     │   │   │   │   │   │   │   │   ├── platform/
@@ -4510,13 +4510,13 @@ fe/
     │   │   │   │   │   │   │           └── page.tsx  # Manage subscription
     │   │   │   │   │   │   ├── budgets/
     │   │   │   │   │   │   │   └── page.tsx  # Client org budgets & spend controls
-    │   │   │   │   │   │   ├── camera/  # ❌ ADD ENTIRE SECTION
+    │   │   │   │   │   │   ├── camera/  #  ENTIRE SECTION
     │   │   │   │   │   │   │   ├── document-scan/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Document scanner (web)
+    │   │   │   │   │   │   │   │   └── page.tsx  # Document scanner (web)
     │   │   │   │   │   │   │   ├── photo-upload/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Photo upload with tools
-    │   │   │   │   │   │   │   ├── layout.tsx  # ❌ CREATE - Camera/upload layout
-    │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Camera/upload hub
+    │   │   │   │   │   │   │   │   └── page.tsx  # Photo upload with tools
+    │   │   │   │   │   │   │   ├── layout.tsx  # Camera/upload layout
+    │   │   │   │   │   │   │   └── page.tsx  # Camera/upload hub
     │   │   │   │   │   │   ├── collaboration/
     │   │   │   │   │   │   │   ├── boards/
     │   │   │   │   │   │   │   │   ├── [boardId]/
@@ -4764,7 +4764,7 @@ fe/
     │   │   │   │   │   │   │   │   ├── create/
     │   │   │   │   │   │   │   │   │   └── page.tsx  # Create contract template
     │   │   │   │   │   │   │   │   └── page.tsx  # Contract templates (for recurring work)
-    │   │   │   │   │   │   │   ├── error.tsx  # ❌ ADD ErrorBoundary
+    │   │   │   │   │   │   │   ├── error.tsx  #  ErrorBoundary
     │   │   │   │   │   │   │   └── page.tsx  # Contracts list
     │   │   │   │   │   │   ├── dashboard/  # Dashboard home (role-based view)
     │   │   │   │   │   │   │   └── page.tsx  # Main dashboard
@@ -5147,7 +5147,7 @@ fe/
     │   │   │   │   │   │   │   │   │   └── use/
     │   │   │   │   │   │   │   │   │       └── page.tsx  # Use template to create job
     │   │   │   │   │   │   │   │   └── page.tsx  # Job templates list
-    │   │   │   │   │   │   │   ├── error.tsx  # ❌ ADD ErrorBoundary
+    │   │   │   │   │   │   │   ├── error.tsx  #  ErrorBoundary
     │   │   │   │   │   │   │   └── page.tsx  # Jobs list (role-based)
     │   │   │   │   │   │   ├── learning/
     │   │   │   │   │   │   │   ├── achievements/
@@ -5307,15 +5307,15 @@ fe/
     │   │   │   │   │   │   │   ├── unread/
     │   │   │   │   │   │   │   │   └── page.tsx  # Unread notifications only
     │   │   │   │   │   │   │   └── page.tsx  # Notifications center
-    │   │   │   │   │   │   ├── offline/  # ❌ ADD ENTIRE SECTION
+    │   │   │   │   │   │   ├── offline/  #  ENTIRE SECTION
     │   │   │   │   │   │   │   ├── queue/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Pending actions queue
+    │   │   │   │   │   │   │   │   └── page.tsx  # Pending actions queue
     │   │   │   │   │   │   │   ├── settings/
     │   │   │   │   │   │   │   │   └── page.tsx  # Offline mode configuration
     │   │   │   │   │   │   │   ├── sync/
-    │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Sync management
-    │   │   │   │   │   │   │   ├── layout.tsx  # ❌ CREATE - Offline mode layout
-    │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Offline status overview
+    │   │   │   │   │   │   │   │   └── page.tsx  # Sync management
+    │   │   │   │   │   │   │   ├── layout.tsx  # Offline mode layout
+    │   │   │   │   │   │   │   └── page.tsx  # Offline status overview
     │   │   │   │   │   │   ├── organization/  # Organization management (for clients)
     │   │   │   │   │   │   │   ├── analytics/
     │   │   │   │   │   │   │   │   └── page.tsx  # Organization analytics
@@ -5601,10 +5601,10 @@ fe/
     │   │   │   │   │   │   │   │   └── page.tsx  # Proposal templates
     │   │   │   │   │   │   │   ├── withdrawn/
     │   │   │   │   │   │   │   │   └── page.tsx  # Withdrawn proposals
-    │   │   │   │   │   │   │   ├── error.tsx  # ❌ ADD ErrorBoundary
+    │   │   │   │   │   │   │   ├── error.tsx  #  ErrorBoundary
     │   │   │   │   │   │   │   └── page.tsx  # Proposals list
     │   │   │   │   │   │   ├── quick-actions/
-    │   │   │   │   │   │   │   └── page.tsx  # ❌ ADD - Quick actions (web equivalent)
+    │   │   │   │   │   │   │   └── page.tsx  #  - Quick actions (web equivalent)
     │   │   │   │   │   │   ├── reports/
     │   │   │   │   │   │   │   ├── earnings/
     │   │   │   │   │   │   │   │   ├── by-client/
@@ -5770,9 +5770,9 @@ fe/
     │   │   │   │   │   │   │   │   ├── api-keys/
     │   │   │   │   │   │   │   │   │   ├── [keyId]/
     │   │   │   │   │   │   │   │   │   │   ├── logs/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - API key usage logs
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # API key usage logs
     │   │   │   │   │   │   │   │   │   │   ├── permissions/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - API key permissions
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # API key permissions
     │   │   │   │   │   │   │   │   │   │   ├── regenerate/
     │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Regenerate API key
     │   │   │   │   │   │   │   │   │   │   ├── revoke/
@@ -5786,15 +5786,15 @@ fe/
     │   │   │   │   │   │   │   │   ├── oauth-apps/
     │   │   │   │   │   │   │   │   │   ├── [appId]/
     │   │   │   │   │   │   │   │   │   │   ├── analytics/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth app analytics (web)
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth app analytics (web)
     │   │   │   │   │   │   │   │   │   │   ├── authorizations/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth app authorizations
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth app authorizations
     │   │   │   │   │   │   │   │   │   │   ├── credentials/
     │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth credentials
     │   │   │   │   │   │   │   │   │   │   ├── edit/
     │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Edit OAuth app
     │   │   │   │   │   │   │   │   │   │   ├── scopes/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - OAuth app scopes
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # OAuth app scopes
     │   │   │   │   │   │   │   │   │   │   ├── page.tsx  # OAuth app detail
     │   │   │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   │   │   ├── create/
@@ -5802,18 +5802,18 @@ fe/
     │   │   │   │   │   │   │   │   │   ├── page.tsx  # OAuth apps list
     │   │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   │   ├── sandbox/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - API sandbox (web)
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # API sandbox (web)
     │   │   │   │   │   │   │   │   ├── usage/
-    │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - API usage dashboard (web)
+    │   │   │   │   │   │   │   │   │   └── page.tsx  # API usage dashboard (web)
     │   │   │   │   │   │   │   │   ├── webhooks/
     │   │   │   │   │   │   │   │   │   ├── [webhookId]/
     │   │   │   │   │   │   │   │   │   │   ├── deliveries/
-    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Webhook deliveries (web)
-    │   │   │   │   │   │   │   │   │   │   ├── page.tsx  # ❌ CREATE - Webhook detail (web)
+    │   │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Webhook deliveries (web)
+    │   │   │   │   │   │   │   │   │   │   ├── page.tsx  # Webhook detail (web)
     │   │   │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   │   │   ├── create/
-    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # ❌ CREATE - Create webhook (web)
-    │   │   │   │   │   │   │   │   │   ├── page.tsx  # ❌ CREATE - Webhooks list (web)
+    │   │   │   │   │   │   │   │   │   │   └── page.tsx  # Create webhook (web)
+    │   │   │   │   │   │   │   │   │   ├── page.tsx  # Webhooks list (web)
     │   │   │   │   │   │   │   │   │   └── │
     │   │   │   │   │   │   │   │   ├── page.tsx  # Developer settings
     │   │   │   │   │   │   │   │   └── │
@@ -5877,10 +5877,10 @@ fe/
     │   │   │   │   │   │   │   │   └── authorized-apps/
     │   │   │   │   │   │   │   │       ├── [appId]/
     │   │   │   │   │   │   │   │       │   ├── permissions/
-    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # ❌ CREATE - App permissions detail (web)
-    │   │   │   │   │   │   │   │       │   ├── page.tsx  # ❌ CREATE - Authorized app detail (web)
+    │   │   │   │   │   │   │   │       │   │   └── page.tsx  # App permissions detail (web)
+    │   │   │   │   │   │   │   │       │   ├── page.tsx  # Authorized app detail (web)
     │   │   │   │   │   │   │   │       │   └── │
-    │   │   │   │   │   │   │   │       ├── page.tsx  # ❌ CREATE - Authorized apps list (web)
+    │   │   │   │   │   │   │   │       ├── page.tsx  # Authorized apps list (web)
     │   │   │   │   │   │   │   │       └── │
     │   │   │   │   │   │   │   ├── security/
     │   │   │   │   │   │   │   │   ├── login-history/
@@ -7051,10 +7051,10 @@ fe/
     │   │   ├── 002-state-management.md
     │   │   ├── 003-authentication-approach.md
     │   │   ├── 004-component-library.md
-    │   │   ├── 005-mobile-admin-exclusion.md  # ❌ CREATE
-    │   │   ├── 006-public-pages-mobile-strategy.md  # ❌ CREATE
-    │   │   ├── 007-component-platform-variants.md  # ❌ CREATE
-    │   │   ├── 008-hooks-domain-organization.md  # ❌ CREATE
+    │   │   ├── 005-mobile-admin-exclusion.md  # 
+    │   │   ├── 006-public-pages-mobile-strategy.md  # 
+    │   │   ├── 007-component-platform-variants.md  # 
+    │   │   ├── 008-hooks-domain-organization.md  # 
     │   │   └── │
     │   ├── api/
     │   │   ├── endpoints/
@@ -7214,13 +7214,13 @@ fe/
     │   │   │   ├── local-development.md
     │   │   │   └── troubleshooting.md
     │   │   ├── contributing.md
-    │   │   ├── cross-platform-routing.md  # ❌ CREATE
+    │   │   ├── cross-platform-routing.md  # 
     │   │   ├── deployment.md
     │   │   ├── development-workflow.md
     │   │   ├── development.md
-    │   │   ├── error-boundary-patterns.md  # ❌ CREATE
+    │   │   ├── error-boundary-patterns.md  # 
     │   │   ├── getting-started.md
-    │   │   ├── mobile-native-components.md  # ❌ CREATE
+    │   │   ├── mobile-native-components.md  # 
     │   │   ├── testing-guide.md
     │   │   ├── testing.md
     │   │   ├── troubleshooting.md
@@ -7253,14 +7253,14 @@ fe/
     │   │   │   │   └── events.ts  # Event types
     │   │   │   ├── index.ts  # Package exports
     │   │   │   └── │
-    │   │   ├── index.ts  # ❌ CREATE IF MISSING
-    │   │   ├── package.json  # ❌ CREATE
+    │   │   ├── index.ts  #  IF MISSING
+    │   │   ├── package.json  # 
     │   │   ├── README.md  # Analytics docs
-    │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   ├── use-analytics.ts  # ❌ CREATE IF MISSING
-    │   │   ├── use-earnings.ts  # ❌ CREATE IF MISSING
-    │   │   ├── use-insights.ts  # ❌ CREATE IF MISSING
-    │   │   ├── use-performance.ts  # ❌ CREATE IF MISSING
+    │   │   ├── tsconfig.json  # 
+    │   │   ├── use-analytics.ts  #  IF MISSING
+    │   │   ├── use-earnings.ts  #  IF MISSING
+    │   │   ├── use-insights.ts  #  IF MISSING
+    │   │   ├── use-performance.ts  #  IF MISSING
     │   │   └── │
     │   ├── config/  # Shared configurations
     │   │   ├── eslint-config/
@@ -7281,16 +7281,16 @@ fe/
     │   │       └── react-native.json  # React Native TS config
     │   ├── hooks/  # ✅ ALL shared hooks belong HERE
     │   │   ├── admin/  # ⚠️ CREATE IF MISSING - Admin hooks
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-analytics.ts  # ❌ CREATE
-    │   │   │   ├── use-audit-logs.ts  # ❌ CREATE
-    │   │   │   ├── use-moderation.ts  # ❌ CREATE
-    │   │   │   ├── use-reports.ts  # ❌ CREATE
-    │   │   │   ├── use-system-config.ts  # ❌ CREATE
-    │   │   │   ├── use-system-health.ts  # ❌ CREATE
-    │   │   │   ├── use-user-management.ts  # ❌ CREATE
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-analytics.ts  # 
+    │   │   │   ├── use-audit-logs.ts  # 
+    │   │   │   ├── use-moderation.ts  # 
+    │   │   │   ├── use-reports.ts  # 
+    │   │   │   ├── use-system-config.ts  # 
+    │   │   │   ├── use-system-health.ts  # 
+    │   │   │   ├── use-user-management.ts  # 
     │   │   │   ├── useAdminSession.ts  # JIT admin session hook
     │   │   │   ├── useAdminUsers.ts
     │   │   │   ├── useDisputes.ts
@@ -7299,17 +7299,17 @@ fe/
     │   │   │   ├── useModeration.ts  # Moderation actions
     │   │   │   └── useSystemHealth.ts  # System health monitoring
     │   │   ├── analytics/  # ⚠️ VERIFY OR CREATE ENTIRE DOMAIN - Analytics hooks
-    │   │   │   ├── index.ts  # ❌ CREATE - Analytics hooks barrel
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-analytics-dashboard.ts  # ❌ CREATE
-    │   │   │   ├── use-analytics-events.ts  # ❌ CREATE
-    │   │   │   ├── use-analytics-report.ts  # ❌ CREATE
-    │   │   │   ├── use-analytics.ts  # ❌ CREATE - Analytics overview
-    │   │   │   ├── use-earnings.ts  # ❌ CREATE - Earnings
-    │   │   │   ├── use-insights.ts  # ❌ CREATE - Insights
-    │   │   │   ├── use-performance-metrics.ts  # ❌ CREATE
-    │   │   │   ├── use-performance.ts  # ❌ CREATE - Performance KPIs
+    │   │   │   ├── index.ts  # Analytics hooks barrel
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-analytics-dashboard.ts  # 
+    │   │   │   ├── use-analytics-events.ts  # 
+    │   │   │   ├── use-analytics-report.ts  # 
+    │   │   │   ├── use-analytics.ts  # Analytics overview
+    │   │   │   ├── use-earnings.ts  # Earnings
+    │   │   │   ├── use-insights.ts  # Insights
+    │   │   │   ├── use-performance-metrics.ts  # 
+    │   │   │   ├── use-performance.ts  # Performance KPIs
     │   │   │   ├── useAnalytics.ts  # Track events
     │   │   │   ├── useContractAnalytics.ts  # Contract analytics
     │   │   │   ├── useConversionTracking.ts  # Track conversions
@@ -7340,7 +7340,7 @@ fe/
     │   │   │   ├── useBidStrategies.ts  # List strategies
     │   │   │   ├── useBidStrategy.ts  # Bid strategy management
     │   │   │   └── usePlaceBid.ts  # Place bid
-    │   │   ├── certifications/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── certifications/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7348,44 +7348,44 @@ fe/
     │   │   │   ├── use-certification.ts  # Single certification hook
     │   │   │   ├── use-certifications.ts  # Certifications list hook
     │   │   │   └── use-verify-certification.ts  # Verify certification mutation
-    │   │   ├── chat/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-conversation.ts  # ❌ CREATE
-    │   │   │   ├── use-conversations.ts  # ❌ CREATE
-    │   │   │   ├── use-message.ts  # ❌ CREATE
-    │   │   │   ├── use-messages.ts  # ❌ CREATE
-    │   │   │   └── use-typing-indicator.ts  # ❌ CREATE
+    │   │   ├── chat/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-conversation.ts  # 
+    │   │   │   ├── use-conversations.ts  # 
+    │   │   │   ├── use-message.ts  # 
+    │   │   │   ├── use-messages.ts  # 
+    │   │   │   └── use-typing-indicator.ts  # 
     │   │   ├── collaboration/
     │   │   │   ├── useCollaboration.ts  # Collaboration session
     │   │   │   ├── useCursors.ts  # Cursor tracking
     │   │   │   ├── usePresence.ts  # User presence
     │   │   │   └── useSharedState.ts  # Shared state sync
-    │   │   ├── compliance/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-compliance-documents.ts  # ❌ CREATE
-    │   │   │   ├── use-tax-profile.ts  # ❌ CREATE
-    │   │   │   ├── use-tax-reports.ts  # ❌ CREATE
+    │   │   ├── compliance/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-compliance-documents.ts  # 
+    │   │   │   ├── use-tax-profile.ts  # 
+    │   │   │   ├── use-tax-reports.ts  # 
     │   │   │   ├── useComplianceDocuments.ts  # Document management
     │   │   │   ├── useComplianceProfile.ts  # Compliance profile
     │   │   │   ├── useTaxProfile.ts  # Tax profile management
     │   │   │   └── useTaxReports.ts  # Tax reports
-    │   │   ├── connects/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-connect-packages.ts  # ❌ CREATE
-    │   │   │   ├── use-connect-refund.ts  # ❌ CREATE
-    │   │   │   ├── use-connects.ts  # ❌ CREATE
-    │   │   │   ├── use-purchase-connects.ts  # ❌ CREATE
+    │   │   ├── connects/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-connect-packages.ts  # 
+    │   │   │   ├── use-connect-refund.ts  # 
+    │   │   │   ├── use-connects.ts  # 
+    │   │   │   ├── use-purchase-connects.ts  # 
     │   │   │   ├── useConnectPackages.ts  # Available packages
     │   │   │   ├── useConnectRefund.ts  # Request refund
     │   │   │   ├── useConnects.ts  # Connects balance and history
     │   │   │   └── usePurchaseConnects.ts  # Purchase connects
-    │   │   ├── contests/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── contests/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7394,23 +7394,23 @@ fe/
     │   │   │   ├── use-contest.ts  # Single contest hook
     │   │   │   ├── use-contests.ts  # Contests list hook
     │   │   │   └── use-submit-entry.ts  # Submit entry mutation
-    │   │   ├── contracts/  # ❌ CREATE THIS (domain hooks)
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all contract hooks
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-amendments.ts  # ❌ CREATE - Contract amendment operations
-    │   │   │   ├── use-contract-actions.ts  # ❌ CREATE - Contract actions
-    │   │   │   ├── use-contract-amendments.ts  # ❌ CREATE - Contract amendments
+    │   │   ├── contracts/  #  THIS (domain hooks)
+    │   │   │   ├── index.ts  # Export all contract hooks
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-amendments.ts  # Contract amendment operations
+    │   │   │   ├── use-contract-actions.ts  # Contract actions
+    │   │   │   ├── use-contract-amendments.ts  # Contract amendments
     │   │   │   ├── use-contract.ts  # Single contract operations
     │   │   │   ├── use-contracts.ts  # List contracts
-    │   │   │   ├── use-deliverables.ts  # ❌ CREATE - Deliverable management
+    │   │   │   ├── use-deliverables.ts  # Deliverable management
     │   │   │   ├── use-dispute.ts  # Contract dispute
-    │   │   │   ├── use-disputes.ts  # ❌ CREATE - Dispute management
-    │   │   │   ├── use-escrow.ts  # ❌ CREATE - Escrow operations
+    │   │   │   ├── use-disputes.ts  # Dispute management
+    │   │   │   ├── use-escrow.ts  # Escrow operations
     │   │   │   ├── use-invoices.ts  # Contract invoices
     │   │   │   ├── use-milestones.ts  # Milestone operations
-    │   │   │   ├── use-payment-schedule.ts  # ❌ CREATE - Payment schedule operations
-    │   │   │   ├── use-time-tracking.ts  # ❌ CREATE - Time tracking operations
+    │   │   │   ├── use-payment-schedule.ts  # Payment schedule operations
+    │   │   │   ├── use-time-tracking.ts  # Time tracking operations
     │   │   │   ├── use-timesheet.ts  # Timesheet operations
     │   │   │   ├── use-work-diary.ts  # Work diary operations
     │   │   │   ├── useContract.ts
@@ -7428,27 +7428,27 @@ fe/
     │   │   │   ├── useReviewDeliverable.ts  # Review deliverable (client)
     │   │   │   └── useUploadDeliverable.ts  # Upload deliverable
     │   │   ├── developer/
-    │   │   │   ├── use-api-keys.ts  # ❌ CREATE - API keys management
-    │   │   │   ├── use-api-usage.ts  # ❌ CREATE - API usage tracking
-    │   │   │   ├── use-oauth-apps.ts  # ❌ CREATE - OAuth apps management
-    │   │   │   ├── use-webhooks.ts  # ❌ CREATE - Webhooks management
+    │   │   │   ├── use-api-keys.ts  # API keys management
+    │   │   │   ├── use-api-usage.ts  # API usage tracking
+    │   │   │   ├── use-oauth-apps.ts  # OAuth apps management
+    │   │   │   ├── use-webhooks.ts  # Webhooks management
     │   │   │   └── │
-    │   │   ├── disputes/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-dispute-actions.ts  # ❌ CREATE
-    │   │   │   ├── use-dispute-evidence.ts  # ❌ CREATE
+    │   │   ├── disputes/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-dispute-actions.ts  # 
+    │   │   │   ├── use-dispute-evidence.ts  # 
     │   │   │   ├── use-dispute-mediation.ts  # Dispute mediation hook
-    │   │   │   ├── use-dispute-resolution.ts  # ❌ CREATE
-    │   │   │   ├── use-dispute.ts  # ❌ CREATE
-    │   │   │   ├── use-disputes.ts  # ❌ CREATE
+    │   │   │   ├── use-dispute-resolution.ts  # 
+    │   │   │   ├── use-dispute.ts  # 
+    │   │   │   ├── use-disputes.ts  # 
     │   │   │   ├── use-file-dispute.ts  # File dispute mutation
     │   │   │   ├── useDispute.ts  # Single dispute
     │   │   │   ├── useDisputeEvidence.ts  # Evidence management
     │   │   │   ├── useDisputeResolution.ts  # Resolution actions
     │   │   │   └── useDisputes.ts  # Disputes list
-    │   │   ├── events/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── events/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7461,49 +7461,49 @@ fe/
     │   │   │   ├── useRealTimeUpdates.ts  # Real-time data sync
     │   │   │   ├── useTypingIndicator.ts  # Typing indicators
     │   │   │   └── useWebSocket.ts  # WebSocket connection
-    │   │   ├── experiments/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-experiment-variant.ts  # ❌ CREATE
-    │   │   │   ├── use-experiment.ts  # ❌ CREATE
-    │   │   │   ├── use-experiments.ts  # ❌ CREATE
+    │   │   ├── experiments/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-experiment-variant.ts  # 
+    │   │   │   ├── use-experiment.ts  # 
+    │   │   │   ├── use-experiments.ts  # 
     │   │   │   ├── useExperiment.ts  # Experiment hook
     │   │   │   ├── useExperimentTracking.ts  # Track experiment events
     │   │   │   ├── useFeatureVariant.ts  # Feature variant hook
     │   │   │   └── useVariant.ts  # Variant hook
-    │   │   ├── feature-flags/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-feature-flag.ts  # ❌ CREATE
-    │   │   │   ├── use-feature-flags.ts  # ❌ CREATE
+    │   │   ├── feature-flags/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-feature-flag.ts  # 
+    │   │   │   ├── use-feature-flags.ts  # 
     │   │   │   ├── useFeatureFlag.ts  # Check single flag
     │   │   │   ├── useFeatureFlags.ts  # Get all flags
     │   │   │   └── useFeatureFlagVariant.ts  # A/B test variant
-    │   │   ├── financial/  # ❌ CREATE THIS
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all financial hooks
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
+    │   │   ├── financial/  #  THIS
+    │   │   │   ├── index.ts  # Export all financial hooks
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
     │   │   │   ├── use-balance.ts  # Balance queries
-    │   │   │   ├── use-billing-history.ts  # ❌ CREATE - Billing history
+    │   │   │   ├── use-billing-history.ts  # Billing history
     │   │   │   ├── use-bonus.ts  # Bonus
-    │   │   │   ├── use-connect-packages.ts  # ❌ CREATE - Connect packages
+    │   │   │   ├── use-connect-packages.ts  # Connect packages
     │   │   │   ├── use-connects.ts  # Connects
-    │   │   │   ├── use-earnings.ts  # ❌ CREATE
-    │   │   │   ├── use-escrow.ts  # ❌ CREATE - Escrow operations
-    │   │   │   ├── use-invoice.ts  # ❌ CREATE
-    │   │   │   ├── use-invoices.ts  # ❌ CREATE - Invoice operations
+    │   │   │   ├── use-earnings.ts  # 
+    │   │   │   ├── use-escrow.ts  # Escrow operations
+    │   │   │   ├── use-invoice.ts  # 
+    │   │   │   ├── use-invoices.ts  # Invoice operations
     │   │   │   ├── use-payment-method-actions.ts  # Payment method actions
-    │   │   │   ├── use-payment-method.ts  # ❌ CREATE
+    │   │   │   ├── use-payment-method.ts  # 
     │   │   │   ├── use-payment-methods.ts  # Payment methods
     │   │   │   ├── use-payment.ts  # Payment
     │   │   │   ├── use-payout.ts  # Payout
-    │   │   │   ├── use-payouts.ts  # ❌ CREATE
-    │   │   │   ├── use-purchase-connects.ts  # ❌ CREATE - Purchase connects
+    │   │   │   ├── use-payouts.ts  # 
+    │   │   │   ├── use-purchase-connects.ts  # Purchase connects
     │   │   │   ├── use-refund.ts  # Refund
-    │   │   │   ├── use-refunds.ts  # ❌ CREATE - Refund management
-    │   │   │   ├── use-subscription.ts  # ❌ CREATE - Subscription management
+    │   │   │   ├── use-refunds.ts  # Refund management
+    │   │   │   ├── use-subscription.ts  # Subscription management
     │   │   │   ├── use-transaction.ts  # Transaction
     │   │   │   ├── use-transactions.ts  # Transaction history
     │   │   │   ├── use-wallet.ts  # Wallet operations
@@ -7534,7 +7534,7 @@ fe/
     │   │   │   ├── useDistanceCalculation.ts  # Calculate distance
     │   │   │   ├── useGeolocation.ts  # Get current location
     │   │   │   └── useTimezone.ts  # Detect timezone
-    │   │   ├── groups/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── groups/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7561,30 +7561,30 @@ fe/
     │   │   │   ├── useInvitationAnalytics.ts  # Invitation metrics
     │   │   │   ├── useInvitations.ts  # Invitations management
     │   │   │   └── useSendInvitation.ts  # Send invitation (client)
-    │   │   ├── jobs/  # ❌ CREATE THIS
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all job hooks
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-job-actions.ts  # ❌ CREATE - Job actions
-    │   │   │   ├── use-job-analytics.ts  # ❌ CREATE - Job analytics
-    │   │   │   ├── use-job-applicants.ts  # ❌ CREATE - Applicants
+    │   │   ├── jobs/  #  THIS
+    │   │   │   ├── index.ts  # Export all job hooks
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-job-actions.ts  # Job actions
+    │   │   │   ├── use-job-analytics.ts  # Job analytics
+    │   │   │   ├── use-job-applicants.ts  # Applicants
     │   │   │   ├── use-job-application-actions.ts  # Application actions
-    │   │   │   ├── use-job-application.ts  # ❌ CREATE
+    │   │   │   ├── use-job-application.ts  # 
     │   │   │   ├── use-job-applications.ts  # User applications
-    │   │   │   ├── use-job-filters.ts  # ❌ CREATE - Job search filters
-    │   │   │   ├── use-job-invitations.ts  # ❌ CREATE
-    │   │   │   ├── use-job-invites.ts  # ❌ CREATE
-    │   │   │   ├── use-job-recommendations.ts  # ❌ CREATE
+    │   │   │   ├── use-job-filters.ts  # Job search filters
+    │   │   │   ├── use-job-invitations.ts  # 
+    │   │   │   ├── use-job-invites.ts  # 
+    │   │   │   ├── use-job-recommendations.ts  # 
     │   │   │   ├── use-job-saved.ts  # Saved jobs
-    │   │   │   ├── use-job-search.ts  # ❌ CREATE
+    │   │   │   ├── use-job-search.ts  # 
     │   │   │   ├── use-job-stats.ts  # Job stats
-    │   │   │   ├── use-job-templates.ts  # ❌ CREATE - Job template operations
-    │   │   │   ├── use-job.ts  # ❌ CREATE
-    │   │   │   ├── use-jobs.ts  # ❌ CREATE
-    │   │   │   ├── use-save-job.ts  # ❌ CREATE - Save/unsave job
-    │   │   │   ├── use-saved-jobs.ts  # ❌ CREATE
-    │   │   │   ├── use-similar-jobs.ts  # ❌ CREATE - Similar jobs
-    │   │   │   ├── use-trending-jobs.ts  # ❌ CREATE - Trending jobs
+    │   │   │   ├── use-job-templates.ts  # Job template operations
+    │   │   │   ├── use-job.ts  # 
+    │   │   │   ├── use-jobs.ts  # 
+    │   │   │   ├── use-save-job.ts  # Save/unsave job
+    │   │   │   ├── use-saved-jobs.ts  # 
+    │   │   │   ├── use-similar-jobs.ts  # Similar jobs
+    │   │   │   ├── use-trending-jobs.ts  # Trending jobs
     │   │   │   ├── useCreateJob.ts  # Create job mutation
     │   │   │   ├── useDeleteJob.ts  # Delete job mutation
     │   │   │   ├── useJob.ts  # Single job query
@@ -7593,18 +7593,18 @@ fe/
     │   │   │   ├── useSaveJob.ts  # Save/bookmark job
     │   │   │   ├── useUpdateJob.ts  # Update job mutation
     │   │   │   └── │
-    │   │   ├── learning/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-achievement.ts  # ❌ CREATE
-    │   │   │   ├── use-achievements.ts  # ❌ CREATE
+    │   │   ├── learning/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-achievement.ts  # 
+    │   │   │   ├── use-achievements.ts  # 
     │   │   │   ├── use-certificate.ts  # Certificate hook
     │   │   │   ├── use-course.ts  # Single course hook
     │   │   │   ├── use-courses.ts  # Courses list hook
-    │   │   │   ├── use-learning-path.ts  # ❌ CREATE
-    │   │   │   ├── use-learning-paths.ts  # ❌ CREATE
-    │   │   │   ├── use-learning-progress.ts  # ❌ CREATE
+    │   │   │   ├── use-learning-path.ts  # 
+    │   │   │   ├── use-learning-paths.ts  # 
+    │   │   │   ├── use-learning-progress.ts  # 
     │   │   │   ├── use-lesson-progress.ts  # Lesson progress hook
     │   │   │   ├── use-lesson.ts  # Single lesson hook
     │   │   │   ├── useAchievements.ts  # Achievements/badges
@@ -7615,35 +7615,35 @@ fe/
     │   │   ├── live-updates/
     │   │   │   ├── useLiveDocument.ts  # Live document hook
     │   │   │   └── useLiveQuery.ts  # Live query hook
-    │   │   ├── messages/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all message hooks
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-conversation.ts  # ❌ CREATE
-    │   │   │   ├── use-conversations.ts  # ❌ CREATE
-    │   │   │   ├── use-message-actions.ts  # ❌ CREATE
-    │   │   │   ├── use-message.ts  # ❌ CREATE
-    │   │   │   ├── use-messages.ts  # ❌ CREATE - Messages in conversation
-    │   │   │   ├── use-real-time.ts  # ❌ CREATE - Real-time messaging (WebSocket)
-    │   │   │   ├── use-realtime-messages.ts  # ❌ CREATE
-    │   │   │   ├── use-send-message.ts  # ❌ CREATE - Send message with optimistic UI
-    │   │   │   ├── use-typing-indicator.ts  # ❌ CREATE
+    │   │   ├── messages/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # Export all message hooks
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-conversation.ts  # 
+    │   │   │   ├── use-conversations.ts  # 
+    │   │   │   ├── use-message-actions.ts  # 
+    │   │   │   ├── use-message.ts  # 
+    │   │   │   ├── use-messages.ts  # Messages in conversation
+    │   │   │   ├── use-real-time.ts  # Real-time messaging (WebSocket)
+    │   │   │   ├── use-realtime-messages.ts  # 
+    │   │   │   ├── use-send-message.ts  # Send message with optimistic UI
+    │   │   │   ├── use-typing-indicator.ts  # 
     │   │   │   ├── useConversation.ts
     │   │   │   ├── useConversations.ts
     │   │   │   ├── useMessages.ts
     │   │   │   ├── useRealtimeMessages.ts  # WebSocket
     │   │   │   └── useSendMessage.ts
-    │   │   ├── messaging/  # ❌ CREATE THIS
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all messaging hooks
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-conversation.ts  # ❌ CREATE - Single conversation ops
-    │   │   │   ├── use-conversations.ts  # ❌ CREATE - Conversations list
-    │   │   │   ├── use-message-send.ts  # ❌ CREATE - Send message operations
-    │   │   │   ├── use-messages.ts  # ❌ CREATE - Messages for conversation
-    │   │   │   ├── use-real-time.ts  # ❌ CREATE - Real-time messaging (WS)
-    │   │   │   ├── use-send-message.ts  # ❌ CREATE - Send message with optimistic UI
-    │   │   │   └── use-typing-indicator.ts  # ❌ CREATE - Typing indicators
+    │   │   ├── messaging/  #  THIS
+    │   │   │   ├── index.ts  # Export all messaging hooks
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-conversation.ts  # Single conversation ops
+    │   │   │   ├── use-conversations.ts  # Conversations list
+    │   │   │   ├── use-message-send.ts  # Send message operations
+    │   │   │   ├── use-messages.ts  # Messages for conversation
+    │   │   │   ├── use-real-time.ts  # Real-time messaging (WS)
+    │   │   │   ├── use-send-message.ts  # Send message with optimistic UI
+    │   │   │   └── use-typing-indicator.ts  # Typing indicators
     │   │   ├── moderation/
     │   │   │   ├── useBlockUser.ts  # Block/unblock users
     │   │   │   ├── useContentModeration.ts  # Check content
@@ -7663,17 +7663,17 @@ fe/
     │   │   │   ├── useGroups.ts  # Groups management
     │   │   │   ├── useNetworkRecommendations.ts  # Connection recommendations
     │   │   │   └── useReferrals.ts  # Referral management
-    │   │   ├── notifications/  # ❌ CREATE THIS
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all notification hooks
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-mark-as-read.ts  # ❌ CREATE
-    │   │   │   ├── use-mark-read.ts  # ❌ CREATE - Mark notification as read
-    │   │   │   ├── use-notification-actions.ts  # ❌ CREATE
-    │   │   │   ├── use-notification-preferences.ts  # ❌ CREATE - Notification preferences
-    │   │   │   ├── use-notifications.ts  # ❌ CREATE - Notifications list
-    │   │   │   ├── use-realtime-notifications.ts  # ❌ CREATE
-    │   │   │   ├── use-unread-count.ts  # ❌ CREATE
+    │   │   ├── notifications/  #  THIS
+    │   │   │   ├── index.ts  # Export all notification hooks
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-mark-as-read.ts  # 
+    │   │   │   ├── use-mark-read.ts  # Mark notification as read
+    │   │   │   ├── use-notification-actions.ts  # 
+    │   │   │   ├── use-notification-preferences.ts  # Notification preferences
+    │   │   │   ├── use-notifications.ts  # Notifications list
+    │   │   │   ├── use-realtime-notifications.ts  # 
+    │   │   │   ├── use-unread-count.ts  # 
     │   │   │   ├── useMarkAsRead.ts
     │   │   │   ├── useNotifications.ts
     │   │   │   ├── useRealtimeNotifications.ts  # WebSocket
@@ -7685,14 +7685,14 @@ fe/
     │   │   │   ├── useOfflineSync.ts  # Data synchronization
     │   │   │   ├── useOnlineStatus.ts  # Online status hook
     │   │   │   └── useSyncStatus.ts  # Sync status hook
-    │   │   ├── organizations/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-budgets.ts  # ❌ CREATE
-    │   │   │   ├── use-organization.ts  # ❌ CREATE
-    │   │   │   ├── use-team-members.ts  # ❌ CREATE
-    │   │   │   ├── use-vendors.ts  # ❌ CREATE
+    │   │   ├── organizations/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-budgets.ts  # 
+    │   │   │   ├── use-organization.ts  # 
+    │   │   │   ├── use-team-members.ts  # 
+    │   │   │   ├── use-vendors.ts  # 
     │   │   │   ├── useBudgets.ts  # Budget management
     │   │   │   ├── useOrganization.ts  # Organization details
     │   │   │   ├── useTeamMembers.ts  # Team member management
@@ -7705,43 +7705,43 @@ fe/
     │   │   │   ├── useLocalStorage.ts
     │   │   │   ├── useMediaQuery.ts
     │   │   │   └── useToggle.ts
-    │   │   ├── payments/  # ❌ CREATE ENTIRE FOLDER - Payments domain hooks
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all payment hooks
-    │   │   │   ├── use-escrow.ts  # ❌ CREATE - Escrow
-    │   │   │   ├── use-invoices.ts  # ❌ CREATE - Invoices
-    │   │   │   ├── use-payment-methods.ts  # ❌ CREATE - Payment methods CRUD
-    │   │   │   ├── use-payment.ts  # ❌ CREATE - Single payment
-    │   │   │   ├── use-payments.ts  # ❌ CREATE - Payments list
-    │   │   │   ├── use-transactions.ts  # ❌ CREATE - Transaction history
-    │   │   │   └── use-wallet.ts  # ❌ CREATE - Wallet operations
+    │   │   ├── payments/  #  ENTIRE FOLDER - Payments domain hooks
+    │   │   │   ├── index.ts  # Export all payment hooks
+    │   │   │   ├── use-escrow.ts  # Escrow
+    │   │   │   ├── use-invoices.ts  # Invoices
+    │   │   │   ├── use-payment-methods.ts  # Payment methods CRUD
+    │   │   │   ├── use-payment.ts  # Single payment
+    │   │   │   ├── use-payments.ts  # Payments list
+    │   │   │   ├── use-transactions.ts  # Transaction history
+    │   │   │   └── use-wallet.ts  # Wallet operations
     │   │   ├── performance/
     │   │   │   ├── useAnalyticsTracking.ts  # Analytics events
     │   │   │   ├── useErrorTracking.ts  # Error tracking
     │   │   │   ├── usePerformanceMetrics.ts  # Web vitals tracking
     │   │   │   ├── usePerformanceMonitor.ts  # Monitor performance
     │   │   │   └── useWebVitals.ts  # Web Vitals
-    │   │   ├── presence/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-last-seen.ts  # ❌ CREATE
-    │   │   │   ├── use-online-status.ts  # ❌ CREATE
-    │   │   │   ├── use-presence-subscription.ts  # ❌ CREATE
+    │   │   ├── presence/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-last-seen.ts  # 
+    │   │   │   ├── use-online-status.ts  # 
+    │   │   │   ├── use-presence-subscription.ts  # 
     │   │   │   ├── useLastSeen.ts  # Last seen time
     │   │   │   ├── useOnlineStatus.ts  # Online status
     │   │   │   ├── useOnlineUsers.ts  # Online users hook
     │   │   │   ├── usePresence.ts  # Presence hook
     │   │   │   └── usePresenceSubscription.ts  # Subscribe to presence
-    │   │   ├── profile/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-education.ts  # ❌ CREATE
-    │   │   │   ├── use-experience.ts  # ❌ CREATE
-    │   │   │   ├── use-portfolio.ts  # ❌ CREATE
-    │   │   │   ├── use-profile.ts  # ❌ CREATE
-    │   │   │   ├── use-skills.ts  # ❌ CREATE
-    │   │   │   ├── use-update-profile.ts  # ❌ CREATE
+    │   │   ├── profile/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-education.ts  # 
+    │   │   │   ├── use-experience.ts  # 
+    │   │   │   ├── use-portfolio.ts  # 
+    │   │   │   ├── use-profile.ts  # 
+    │   │   │   ├── use-skills.ts  # 
+    │   │   │   ├── use-update-profile.ts  # 
     │   │   │   ├── useEducation.ts
     │   │   │   ├── useExperience.ts
     │   │   │   ├── usePortfolio.ts
@@ -7749,32 +7749,32 @@ fe/
     │   │   │   ├── useServiceCatalog.ts
     │   │   │   ├── useSkills.ts
     │   │   │   └── useUpdateProfile.ts
-    │   │   ├── proposals/  # ❌ CREATE THIS
-    │   │   │   ├── index.ts  # ❌ CREATE - Export all proposal hooks
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-bid-recommendations.ts  # ❌ CREATE - Bid recommendations
-    │   │   │   ├── use-bid.ts  # ❌ CREATE - Bid/pricing operations
-    │   │   │   ├── use-bidding.ts  # ❌ CREATE
-    │   │   │   ├── use-interview.ts  # ❌ CREATE - Interview scheduling
-    │   │   │   ├── use-milestones.ts  # ❌ CREATE - Proposal milestones
-    │   │   │   ├── use-negotiation.ts  # ❌ CREATE - Proposal negotiation
-    │   │   │   ├── use-proposal-actions.ts  # ❌ CREATE - Proposal actions
+    │   │   ├── proposals/  #  THIS
+    │   │   │   ├── index.ts  # Export all proposal hooks
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-bid-recommendations.ts  # Bid recommendations
+    │   │   │   ├── use-bid.ts  # Bid/pricing operations
+    │   │   │   ├── use-bidding.ts  # 
+    │   │   │   ├── use-interview.ts  # Interview scheduling
+    │   │   │   ├── use-milestones.ts  # Proposal milestones
+    │   │   │   ├── use-negotiation.ts  # Proposal negotiation
+    │   │   │   ├── use-proposal-actions.ts  # Proposal actions
     │   │   │   ├── use-proposal-analytics.ts  # Proposal analytics
-    │   │   │   ├── use-proposal-feedback.ts  # ❌ CREATE - Proposal feedback
-    │   │   │   ├── use-proposal-submission.ts  # ❌ CREATE - Proposal submission flow
+    │   │   │   ├── use-proposal-feedback.ts  # Proposal feedback
+    │   │   │   ├── use-proposal-submission.ts  # Proposal submission flow
     │   │   │   ├── use-proposal-template-actions.ts  # Template actions
     │   │   │   ├── use-proposal-template.ts  # Single template
-    │   │   │   ├── use-proposal-templates.ts  # ❌ CREATE
+    │   │   │   ├── use-proposal-templates.ts  # 
     │   │   │   ├── use-proposal-versions.ts  # Proposal versions
-    │   │   │   ├── use-proposal.ts  # ❌ CREATE
-    │   │   │   ├── use-proposals.ts  # ❌ CREATE
-    │   │   │   ├── use-rate-cards.ts  # ❌ CREATE - Rate cards
-    │   │   │   ├── use-revision.ts  # ❌ CREATE - Proposal revisions
-    │   │   │   ├── use-send-invitation.ts  # ❌ CREATE - Send job invitation
-    │   │   │   ├── use-submission.ts  # ❌ CREATE
-    │   │   │   ├── use-submit-proposal.ts  # ❌ CREATE
-    │   │   │   ├── use-withdraw-proposal.ts  # ❌ CREATE
+    │   │   │   ├── use-proposal.ts  # 
+    │   │   │   ├── use-proposals.ts  # 
+    │   │   │   ├── use-rate-cards.ts  # Rate cards
+    │   │   │   ├── use-revision.ts  # Proposal revisions
+    │   │   │   ├── use-send-invitation.ts  # Send job invitation
+    │   │   │   ├── use-submission.ts  # 
+    │   │   │   ├── use-submit-proposal.ts  # 
+    │   │   │   ├── use-withdraw-proposal.ts  # 
     │   │   │   ├── useBidding.ts  # Bidding hooks
     │   │   │   ├── useProposal.ts
     │   │   │   ├── useProposals.ts
@@ -7788,7 +7788,7 @@ fe/
     │   │   │   ├── useRealtimeNotifications.ts  # Real-time notifications
     │   │   │   ├── useTypingIndicator.ts  # Typing indicator
     │   │   │   └── useWebSocket.ts  # WebSocket connection
-    │   │   ├── referrals/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── referrals/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7800,56 +7800,56 @@ fe/
     │   │   │   ├── useReferralProgram.ts  # Referral program details
     │   │   │   ├── useReferralStats.ts  # Referral statistics
     │   │   │   └── useRewards.ts  # Rewards management
-    │   │   ├── reviews/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-dispute-review.ts  # ❌ CREATE - Dispute review
-    │   │   │   ├── use-review-actions.ts  # ❌ CREATE
+    │   │   ├── reviews/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-dispute-review.ts  # Dispute review
+    │   │   │   ├── use-review-actions.ts  # 
     │   │   │   ├── use-review-appeal.ts  # Review appeal
     │   │   │   ├── use-review-draft.ts  # Review draft
     │   │   │   ├── use-review-flag.ts  # Review flag
     │   │   │   ├── use-review-helpful.ts  # Review helpful
     │   │   │   ├── use-review-moderation.ts  # Review moderation
-    │   │   │   ├── use-review-reminders.ts  # ❌ CREATE - Review reminders
+    │   │   │   ├── use-review-reminders.ts  # Review reminders
     │   │   │   ├── use-review-reputation.ts  # Reputation
     │   │   │   ├── use-review-response.ts  # Review response
     │   │   │   ├── use-review-stats.ts  # Review stats
-    │   │   │   ├── use-review-templates.ts  # ❌ CREATE - Review templates
-    │   │   │   ├── use-review.ts  # ❌ CREATE
-    │   │   │   ├── use-reviews.ts  # ❌ CREATE
-    │   │   │   ├── use-submit-review.ts  # ❌ CREATE
-    │   │   │   ├── use-verify-review.ts  # ❌ CREATE - Verify review eligibility
+    │   │   │   ├── use-review-templates.ts  # Review templates
+    │   │   │   ├── use-review.ts  # 
+    │   │   │   ├── use-reviews.ts  # 
+    │   │   │   ├── use-submit-review.ts  # 
+    │   │   │   ├── use-verify-review.ts  # Verify review eligibility
     │   │   │   ├── useBadges.ts
     │   │   │   ├── useCreateReview.ts
     │   │   │   ├── useReviews.ts
     │   │   │   ├── useReviewStats.ts
     │   │   │   └── │
     │   │   ├── search/  # ⚠️ VERIFY - Search hooks
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-autocomplete.ts  # ❌ CREATE - Search autocomplete
-    │   │   │   ├── use-facets.ts  # ❌ CREATE - Search facets
-    │   │   │   ├── use-filters.ts  # ❌ CREATE - Search filters state
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-autocomplete.ts  # Search autocomplete
+    │   │   │   ├── use-facets.ts  # Search facets
+    │   │   │   ├── use-filters.ts  # Search filters state
     │   │   │   ├── use-personalization.ts  # Search personalization
-    │   │   │   ├── use-recent-searches.ts  # ❌ CREATE - Recent searches
+    │   │   │   ├── use-recent-searches.ts  # Recent searches
     │   │   │   ├── use-saved-search-actions.ts  # Saved search actions
     │   │   │   ├── use-saved-search.ts  # Single saved search
-    │   │   │   ├── use-saved-searches.ts  # ❌ CREATE
-    │   │   │   ├── use-search-alerts.ts  # ❌ CREATE
-    │   │   │   ├── use-search-contracts.ts  # ❌ CREATE - Search contracts
+    │   │   │   ├── use-saved-searches.ts  # 
+    │   │   │   ├── use-search-alerts.ts  # 
+    │   │   │   ├── use-search-contracts.ts  # Search contracts
     │   │   │   ├── use-search-facets.ts  # Search facets
-    │   │   │   ├── use-search-filters.ts  # ❌ CREATE
-    │   │   │   ├── use-search-freelancers.ts  # ❌ CREATE - Search freelancers
+    │   │   │   ├── use-search-filters.ts  # 
+    │   │   │   ├── use-search-freelancers.ts  # Search freelancers
     │   │   │   ├── use-search-history.ts  # Search history
-    │   │   │   ├── use-search-jobs.ts  # ❌ CREATE - Search jobs (alias)
+    │   │   │   ├── use-search-jobs.ts  # Search jobs (alias)
     │   │   │   ├── use-search-params.ts  # Search params
-    │   │   │   ├── use-search-personalization.ts  # ❌ CREATE
+    │   │   │   ├── use-search-personalization.ts  # 
     │   │   │   ├── use-search-results.ts  # Search results
-    │   │   │   ├── use-search-suggestions.ts  # ❌ CREATE
-    │   │   │   ├── use-search.ts  # ❌ CREATE
-    │   │   │   ├── use-trending-searches.ts  # ❌ CREATE - Trending searches
+    │   │   │   ├── use-search-suggestions.ts  # 
+    │   │   │   ├── use-search.ts  # 
+    │   │   │   ├── use-trending-searches.ts  # Trending searches
     │   │   │   ├── useFreelancerSearch.ts
     │   │   │   ├── useJobSearch.ts
     │   │   │   ├── useRecommendations.ts  # Recommendations
@@ -7859,7 +7859,7 @@ fe/
     │   │   │   ├── useSearchSuggestions.ts  # Auto-complete suggestions
     │   │   │   ├── useTrending.ts  # Trending items
     │   │   │   └── │
-    │   │   ├── service-catalog/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── service-catalog/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7869,13 +7869,13 @@ fe/
     │   │   │   ├── use-service.ts  # Single service hook
     │   │   │   └── use-services.ts  # Services list hook
     │   │   ├── settings/
-    │   │   │   └── use-authorized-apps.ts  # ❌ CREATE - Authorized apps management
+    │   │   │   └── use-authorized-apps.ts  # Authorized apps management
     │   │   ├── shortlists/
     │   │   │   ├── useAddToShortlist.ts  # Add candidate
     │   │   │   ├── useRemoveFromShortlist.ts  # Remove candidate
     │   │   │   ├── useShortlist.ts  # Single shortlist
     │   │   │   └── useShortlists.ts  # Shortlists management
-    │   │   ├── skills-tests/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── skills-tests/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7884,39 +7884,39 @@ fe/
     │   │   │   ├── use-test-results.ts  # Test results hook
     │   │   │   ├── use-test.ts  # Single test hook
     │   │   │   └── use-tests.ts  # Tests list hook
-    │   │   ├── storage/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-file-download.ts  # ❌ CREATE
+    │   │   ├── storage/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-file-download.ts  # 
     │   │   │   ├── use-file-upload.ts  # File upload
-    │   │   │   ├── use-files.ts  # ❌ CREATE - File management
-    │   │   │   ├── use-presigned-url.ts  # ❌ CREATE
+    │   │   │   ├── use-files.ts  # File management
+    │   │   │   ├── use-presigned-url.ts  # 
     │   │   │   ├── use-storage.ts  # Storage
-    │   │   │   ├── use-upload.ts  # ❌ CREATE
+    │   │   │   ├── use-upload.ts  # 
     │   │   │   ├── useFileDownload.ts
     │   │   │   ├── usePresignedUrl.ts
     │   │   │   ├── useUpload.ts
     │   │   │   └── │
     │   │   ├── subscriptions/  # ⚠️ VERIFY - Subscription hooks
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
     │   │   │   ├── use-addon.ts  # Subscription addon
-    │   │   │   ├── use-entitlements.ts  # ❌ CREATE
-    │   │   │   ├── use-plan-comparison.ts  # ❌ CREATE - Plan comparison
+    │   │   │   ├── use-entitlements.ts  # 
+    │   │   │   ├── use-plan-comparison.ts  # Plan comparison
     │   │   │   ├── use-plan.ts  # Subscription plan
-    │   │   │   ├── use-plans.ts  # ❌ CREATE
+    │   │   │   ├── use-plans.ts  # 
     │   │   │   ├── use-promo.ts  # Promo code
-    │   │   │   ├── use-subscription-actions.ts  # ❌ CREATE
-    │   │   │   ├── use-subscription-billing.ts  # ❌ CREATE - Subscription billing
-    │   │   │   ├── use-subscription-features.ts  # ❌ CREATE - Feature entitlements
-    │   │   │   ├── use-subscription-invoices.ts  # ❌ CREATE
+    │   │   │   ├── use-subscription-actions.ts  # 
+    │   │   │   ├── use-subscription-billing.ts  # Subscription billing
+    │   │   │   ├── use-subscription-features.ts  # Feature entitlements
+    │   │   │   ├── use-subscription-invoices.ts  # 
     │   │   │   ├── use-subscription-usage.ts  # Subscription usage
-    │   │   │   ├── use-subscription.ts  # ❌ CREATE
-    │   │   │   ├── use-trial.ts  # ❌ CREATE - Trial management
-    │   │   │   ├── use-upgrade.ts  # ❌ CREATE
-    │   │   │   ├── use-usage.ts  # ❌ CREATE
+    │   │   │   ├── use-subscription.ts  # 
+    │   │   │   ├── use-trial.ts  # Trial management
+    │   │   │   ├── use-upgrade.ts  # 
+    │   │   │   ├── use-usage.ts  # 
     │   │   │   ├── useConnects.ts
     │   │   │   ├── useEntitlements.ts  # Feature entitlements
     │   │   │   ├── usePlans.ts  # Subscription plans
@@ -7924,19 +7924,19 @@ fe/
     │   │   │   ├── useUpgrade.ts
     │   │   │   ├── useUsage.ts  # Usage metrics
     │   │   │   └── │
-    │   │   ├── support/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-support-categories.ts  # ❌ CREATE - Support categories
-    │   │   │   ├── use-support-ticket.ts  # ❌ CREATE
-    │   │   │   ├── use-support-tickets.ts  # ❌ CREATE
-    │   │   │   ├── use-ticket-actions.ts  # ❌ CREATE
+    │   │   ├── support/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-support-categories.ts  # Support categories
+    │   │   │   ├── use-support-ticket.ts  # 
+    │   │   │   ├── use-support-tickets.ts  # 
+    │   │   │   ├── use-ticket-actions.ts  # 
     │   │   │   ├── use-ticket-messages.ts  # Ticket messages
     │   │   │   ├── use-ticket.ts  # Ticket
-    │   │   │   ├── use-tickets.ts  # ❌ CREATE - Support tickets list
+    │   │   │   ├── use-tickets.ts  # Support tickets list
     │   │   │   └── │
-    │   │   ├── talent-cloud/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── talent-cloud/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7945,18 +7945,18 @@ fe/
     │   │   │   ├── use-agency.ts  # Single agency hook
     │   │   │   ├── use-team.ts  # Single team hook
     │   │   │   └── use-teams.ts  # Teams list hook
-    │   │   ├── tax/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-tax-documents.ts  # ❌ CREATE
-    │   │   │   ├── use-tax-profile.ts  # ❌ CREATE
-    │   │   │   ├── use-tax-reports.ts  # ❌ CREATE
-    │   │   │   ├── use-tax-withholding.ts  # ❌ CREATE
+    │   │   ├── tax/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-tax-documents.ts  # 
+    │   │   │   ├── use-tax-profile.ts  # 
+    │   │   │   ├── use-tax-reports.ts  # 
+    │   │   │   ├── use-tax-withholding.ts  # 
     │   │   │   ├── useTaxForms.ts  # Tax forms management
     │   │   │   ├── useTaxReports.ts  # Tax reports
     │   │   │   └── useTaxSettings.ts  # Tax settings
-    │   │   ├── timesheets/  # ❌ MISSING ENTIRE DOMAIN
+    │   │   ├── timesheets/  #  ENTIRE DOMAIN
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
     │   │   │   ├── tsconfig.json
@@ -7968,21 +7968,21 @@ fe/
     │   │   ├── typing-indicators/
     │   │   │   └── useTypingIndicator.ts  # Typing hook
     │   │   ├── ui/  # ✅ EXISTS
-    │   │   ├── users/  # ❌ CREATE 6 HOOKS - Users domain
-    │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-availability.ts  # ❌ CREATE - User availability
-    │   │   │   ├── use-certifications.ts  # ❌ CREATE - User certifications
-    │   │   │   ├── use-education.ts  # ❌ CREATE - Education history
-    │   │   │   ├── use-experience.ts  # ❌ CREATE - Work experience
+    │   │   ├── users/  #  6 HOOKS - Users domain
+    │   │   │   ├── index.ts  # Barrel export
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-availability.ts  # User availability
+    │   │   │   ├── use-certifications.ts  # User certifications
+    │   │   │   ├── use-education.ts  # Education history
+    │   │   │   ├── use-experience.ts  # Work experience
     │   │   │   ├── use-organization.ts  # Organization
-    │   │   │   ├── use-portfolio.ts  # ❌ CREATE - Portfolio items
+    │   │   │   ├── use-portfolio.ts  # Portfolio items
     │   │   │   ├── use-profile-actions.ts  # Profile actions
-    │   │   │   ├── use-profile.ts  # ❌ CREATE - User profile
-    │   │   │   ├── use-skills.ts  # ❌ CREATE - User skills
+    │   │   │   ├── use-profile.ts  # User profile
+    │   │   │   ├── use-skills.ts  # User skills
     │   │   │   ├── use-team.ts  # Team
-    │   │   │   ├── use-update-profile.ts  # ❌ CREATE - Update profile
+    │   │   │   ├── use-update-profile.ts  # Update profile
     │   │   │   ├── use-user-badge.ts  # User badge
     │   │   │   ├── use-verification.ts  # Verification
     │   │   │   ├── use-wallet-actions.ts  # Wallet actions
@@ -7992,14 +7992,14 @@ fe/
     │   │   │   ├── useScreenShare.ts  # Screen sharing
     │   │   │   ├── useVideoCall.ts  # Video call management
     │   │   │   └── useVideoDevices.ts  # Device selection
-    │   │   ├── webhooks/  # ❌ CREATE ENTIRE DOMAIN
-    │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   ├── package.json  # ❌ CREATE
-    │   │   │   ├── tsconfig.json  # ❌ CREATE
-    │   │   │   ├── use-webhook-logs.ts  # ❌ CREATE
-    │   │   │   ├── use-webhook-test.ts  # ❌ CREATE
-    │   │   │   ├── use-webhook.ts  # ❌ CREATE
-    │   │   │   ├── use-webhooks.ts  # ❌ CREATE
+    │   │   ├── webhooks/  #  ENTIRE DOMAIN
+    │   │   │   ├── index.ts  # 
+    │   │   │   ├── package.json  # 
+    │   │   │   ├── tsconfig.json  # 
+    │   │   │   ├── use-webhook-logs.ts  # 
+    │   │   │   ├── use-webhook-test.ts  # 
+    │   │   │   ├── use-webhook.ts  # 
+    │   │   │   ├── use-webhooks.ts  # 
     │   │   │   ├── useWebhook.ts  # Single webhook
     │   │   │   ├── useWebhookLogs.ts  # Webhook delivery logs
     │   │   │   ├── useWebhooks.ts  # List webhooks
@@ -8014,26 +8014,26 @@ fe/
     │   │   ├── components/
     │   │   │   ├── Auth/
     │   │   │   │   └── BiometricButton/
-    │   │   │   │       ├── BiometricButton.native.tsx  # ❌ CREATE - Biometric auth (native)
-    │   │   │   │       ├── BiometricButton.web.tsx  # ❌ CREATE - Web Authn fallback
+    │   │   │   │       ├── BiometricButton.native.tsx  # Biometric auth (native)
+    │   │   │   │       ├── BiometricButton.web.tsx  # Web Authn fallback
     │   │   │   │       └── │
     │   │   │   ├── FileUpload/
     │   │   │   │   ├── DocumentScanner/
-    │   │   │   │   │   └── DocumentScanner.native.tsx  # ❌ CREATE - Document scanner
+    │   │   │   │   │   └── DocumentScanner.native.tsx  # Document scanner
     │   │   │   │   ├── ImageCropper/
-    │   │   │   │   │   └── ImageCropper.native.tsx  # ❌ CREATE - Image cropper
+    │   │   │   │   │   └── ImageCropper.native.tsx  # Image cropper
     │   │   │   │   └── │
     │   │   │   ├── Offline/
     │   │   │   │   ├── OfflineIndicator/
-    │   │   │   │   │   └── OfflineIndicator.native.tsx  # ❌ CREATE - Offline banner
+    │   │   │   │   │   └── OfflineIndicator.native.tsx  # Offline banner
     │   │   │   │   ├── SyncStatus/
-    │   │   │   │   │   └── SyncStatus.native.tsx  # ❌ CREATE - Sync progress
+    │   │   │   │   │   └── SyncStatus.native.tsx  # Sync progress
     │   │   │   │   └── │
     │   │   │   ├── QRCode/
     │   │   │   │   ├── QRCodeGenerator/
-    │   │   │   │   │   └── QRCodeGenerator.native.tsx  # ❌ CREATE - QR generator
+    │   │   │   │   │   └── QRCodeGenerator.native.tsx  # QR generator
     │   │   │   │   ├── QRCodeScanner/
-    │   │   │   │   │   └── QRCodeScanner.native.tsx  # ❌ CREATE - QR scanner
+    │   │   │   │   │   └── QRCodeScanner.native.tsx  # QR scanner
     │   │   │   │   └── │
     │   │   │   └── │
     │   │   ├── src/
@@ -9027,7 +9027,7 @@ fe/
     │   │   │   │   │   └── index.ts  # Real-time types
     │   │   │   │   ├── webhooks/
     │   │   │   │   │   └── index.ts  # Webhook types
-    │   │   │   │   ├── admin.ts  # ❌ CREATE - Admin API types
+    │   │   │   │   ├── admin.ts  # Admin API types
     │   │   │   │   ├── common.ts  # Common types (pagination, filters, etc.)
     │   │   │   │   ├── contracts.ts  # ✅ EXISTS - Contracts API types
     │   │   │   │   ├── financial.ts  # ✅ EXISTS - Financial API types
@@ -9041,7 +9041,7 @@ fe/
     │   │   │   │   ├── subscriptions.ts  # ✅ EXISTS - Subscriptions API types
     │   │   │   │   └── users.ts  # ✅ EXISTS - Users API types
     │   │   │   ├── config/
-    │   │   │   │   └── index.ts  # ❌ CREATE - Configuration types
+    │   │   │   │   └── index.ts  # Configuration types
     │   │   │   ├── domains/
     │   │   │   │   ├── achievements/
     │   │   │   │   │   └── index.ts  # Achievement types
@@ -9065,81 +9065,81 @@ fe/
     │   │   │   │       └── index.ts  # Sourcing types
     │   │   │   ├── entities/  # Domain entities
     │   │   │   │   ├── admin/
-    │   │   │   │   │   ├── audit.ts  # ❌ CREATE - Audit entity
-    │   │   │   │   │   ├── flag.ts  # ❌ CREATE - Content flag entity
-    │   │   │   │   │   ├── incident.ts  # ❌ CREATE - System incident entity
-    │   │   │   │   │   ├── moderation-case.ts  # ❌ CREATE - Moderation case entity
-    │   │   │   │   │   └── report.ts  # ❌ CREATE - Report entity
+    │   │   │   │   │   ├── audit.ts  # Audit entity
+    │   │   │   │   │   ├── flag.ts  # Content flag entity
+    │   │   │   │   │   ├── incident.ts  # System incident entity
+    │   │   │   │   │   ├── moderation-case.ts  # Moderation case entity
+    │   │   │   │   │   └── report.ts  # Report entity
     │   │   │   │   ├── communications/
-    │   │   │   │   │   ├── attachment.ts  # ❌ CREATE - Message attachment entity
-    │   │   │   │   │   ├── channel.ts  # ❌ CREATE - Communication channel entity
-    │   │   │   │   │   ├── template.ts  # ❌ CREATE - Message template entity
-    │   │   │   │   │   └── thread.ts  # ❌ CREATE - Message thread entity
+    │   │   │   │   │   ├── attachment.ts  # Message attachment entity
+    │   │   │   │   │   ├── channel.ts  # Communication channel entity
+    │   │   │   │   │   ├── template.ts  # Message template entity
+    │   │   │   │   │   └── thread.ts  # Message thread entity
     │   │   │   │   ├── contracts/
-    │   │   │   │   │   ├── amendment.ts  # ❌ CREATE - Contract amendment entity
-    │   │   │   │   │   ├── change-order.ts  # ❌ CREATE - Change order entity
-    │   │   │   │   │   ├── compliance.ts  # ❌ CREATE - Contract compliance entity
-    │   │   │   │   │   ├── deliverable.ts  # ❌ CREATE - Deliverable entity
+    │   │   │   │   │   ├── amendment.ts  # Contract amendment entity
+    │   │   │   │   │   ├── change-order.ts  # Change order entity
+    │   │   │   │   │   ├── compliance.ts  # Contract compliance entity
+    │   │   │   │   │   ├── deliverable.ts  # Deliverable entity
     │   │   │   │   │   ├── dispute.ts  # Dispute entity types
     │   │   │   │   │   ├── milestone.ts  # Milestone entity types
     │   │   │   │   │   ├── offer.ts  # Offer entity types
-    │   │   │   │   │   ├── terms.ts  # ❌ CREATE - Contract terms entity
+    │   │   │   │   │   ├── terms.ts  # Contract terms entity
     │   │   │   │   │   └── timesheet.ts  # Timesheet entity types
     │   │   │   │   ├── financial/
-    │   │   │   │   │   ├── credit-note.ts  # ❌ CREATE - Credit note entity
-    │   │   │   │   │   ├── currency.ts  # ❌ CREATE - Currency entity
+    │   │   │   │   │   ├── credit-note.ts  # Credit note entity
+    │   │   │   │   │   ├── currency.ts  # Currency entity
     │   │   │   │   │   ├── escrow.ts  # Escrow DTOs
-    │   │   │   │   │   ├── fee.ts  # ❌ CREATE - Fee entity
-    │   │   │   │   │   ├── payment-method.ts  # ❌ CREATE - Payment method entity
-    │   │   │   │   │   ├── payout.ts  # ❌ CREATE - Payout entity
-    │   │   │   │   │   ├── refund.ts  # ❌ CREATE - Refund entity
+    │   │   │   │   │   ├── fee.ts  # Fee entity
+    │   │   │   │   │   ├── payment-method.ts  # Payment method entity
+    │   │   │   │   │   ├── payout.ts  # Payout entity
+    │   │   │   │   │   ├── refund.ts  # Refund entity
     │   │   │   │   │   ├── report.ts  # Billing report row DTOs
-    │   │   │   │   │   ├── reserve.ts  # ❌ CREATE - Reserve entity
-    │   │   │   │   │   ├── settlement.ts  # ❌ CREATE - Settlement entity
+    │   │   │   │   │   ├── reserve.ts  # Reserve entity
+    │   │   │   │   │   ├── settlement.ts  # Settlement entity
     │   │   │   │   │   ├── tax.ts  # Tax DTOs
-    │   │   │   │   │   └── wallet.ts  # ❌ CREATE - Wallet entity
+    │   │   │   │   │   └── wallet.ts  # Wallet entity
     │   │   │   │   ├── jobs/
-    │   │   │   │   │   ├── application.ts  # ❌ CREATE - Job application entity
-    │   │   │   │   │   ├── invite.ts  # ❌ CREATE - Job invite entity
-    │   │   │   │   │   ├── requirement.ts  # ❌ CREATE - Job requirement entity
-    │   │   │   │   │   └── template.ts  # ❌ CREATE - Job template entity
+    │   │   │   │   │   ├── application.ts  # Job application entity
+    │   │   │   │   │   ├── invite.ts  # Job invite entity
+    │   │   │   │   │   ├── requirement.ts  # Job requirement entity
+    │   │   │   │   │   └── template.ts  # Job template entity
     │   │   │   │   ├── organizations/
-    │   │   │   │   │   ├── budget.ts  # ❌ CREATE - Budget entity
-    │   │   │   │   │   ├── department.ts  # ❌ CREATE - Department entity
-    │   │   │   │   │   ├── organization.ts  # ❌ CREATE - Organization entity
-    │   │   │   │   │   ├── policy.ts  # ❌ CREATE - Policy entity
-    │   │   │   │   │   ├── procurement.ts  # ❌ CREATE - Procurement entity
-    │   │   │   │   │   └── team.ts  # ❌ CREATE - Team entity
+    │   │   │   │   │   ├── budget.ts  # Budget entity
+    │   │   │   │   │   ├── department.ts  # Department entity
+    │   │   │   │   │   ├── organization.ts  # Organization entity
+    │   │   │   │   │   ├── policy.ts  # Policy entity
+    │   │   │   │   │   ├── procurement.ts  # Procurement entity
+    │   │   │   │   │   └── team.ts  # Team entity
     │   │   │   │   ├── proposals/
-    │   │   │   │   │   ├── bid.ts  # ❌ CREATE - Bid entity
-    │   │   │   │   │   ├── quote.ts  # ❌ CREATE - Quote entity
-    │   │   │   │   │   ├── rate-card.ts  # ❌ CREATE - Rate card entity
-    │   │   │   │   │   └── template.ts  # ❌ CREATE - Proposal template entity
+    │   │   │   │   │   ├── bid.ts  # Bid entity
+    │   │   │   │   │   ├── quote.ts  # Quote entity
+    │   │   │   │   │   ├── rate-card.ts  # Rate card entity
+    │   │   │   │   │   └── template.ts  # Proposal template entity
     │   │   │   │   ├── search/
-    │   │   │   │   │   ├── alert.ts  # ❌ CREATE - Search alert entity
-    │   │   │   │   │   ├── facet.ts  # ❌ CREATE - Search facet entity
-    │   │   │   │   │   ├── filter.ts  # ❌ CREATE - Search filter entity
+    │   │   │   │   │   ├── alert.ts  # Search alert entity
+    │   │   │   │   │   ├── facet.ts  # Search facet entity
+    │   │   │   │   │   ├── filter.ts  # Search filter entity
     │   │   │   │   │   └── saved_query.ts  # Saved query/alert DTOs
     │   │   │   │   ├── storage/
-    │   │   │   │   │   ├── access.ts  # ❌ CREATE - File access entity
-    │   │   │   │   │   ├── file.ts  # ❌ CREATE - File entity
-    │   │   │   │   │   ├── folder.ts  # ❌ CREATE - Folder entity
-    │   │   │   │   │   └── scan.ts  # ❌ CREATE - File scan entity
+    │   │   │   │   │   ├── access.ts  # File access entity
+    │   │   │   │   │   ├── file.ts  # File entity
+    │   │   │   │   │   ├── folder.ts  # Folder entity
+    │   │   │   │   │   └── scan.ts  # File scan entity
     │   │   │   │   ├── subscriptions/
-    │   │   │   │   │   ├── connects.ts  # ❌ CREATE - Connects entity
-    │   │   │   │   │   ├── entitlement.ts  # ❌ CREATE - Entitlement entity
-    │   │   │   │   │   ├── plan.ts  # ❌ CREATE - Subscription plan entity
-    │   │   │   │   │   └── usage.ts  # ❌ CREATE - Usage entity
+    │   │   │   │   │   ├── connects.ts  # Connects entity
+    │   │   │   │   │   ├── entitlement.ts  # Entitlement entity
+    │   │   │   │   │   ├── plan.ts  # Subscription plan entity
+    │   │   │   │   │   └── usage.ts  # Usage entity
     │   │   │   │   ├── users/
-    │   │   │   │   │   ├── availability.ts  # ❌ CREATE - Availability entity
-    │   │   │   │   │   ├── certification.ts  # ❌ CREATE - Certification entity
-    │   │   │   │   │   ├── education.ts  # ❌ CREATE - Education entity
-    │   │   │   │   │   ├── experience.ts  # ❌ CREATE - Experience entity
-    │   │   │   │   │   ├── portfolio.ts  # ❌ CREATE - Portfolio entity
-    │   │   │   │   │   ├── preference.ts  # ❌ CREATE - User preference entity
-    │   │   │   │   │   ├── profile.ts  # ❌ CREATE - User profile entity
-    │   │   │   │   │   ├── skill.ts  # ❌ CREATE - Skill entity
-    │   │   │   │   │   └── verification.ts  # ❌ CREATE - Verification entity
+    │   │   │   │   │   ├── availability.ts  # Availability entity
+    │   │   │   │   │   ├── certification.ts  # Certification entity
+    │   │   │   │   │   ├── education.ts  # Education entity
+    │   │   │   │   │   ├── experience.ts  # Experience entity
+    │   │   │   │   │   ├── portfolio.ts  # Portfolio entity
+    │   │   │   │   │   ├── preference.ts  # User preference entity
+    │   │   │   │   │   ├── profile.ts  # User profile entity
+    │   │   │   │   │   ├── skill.ts  # Skill entity
+    │   │   │   │   │   └── verification.ts  # Verification entity
     │   │   │   │   ├── contract.ts  # ✅ EXISTS - Contract entity
     │   │   │   │   ├── invoice.ts  # ✅ EXISTS - Invoice entity
     │   │   │   │   ├── job.ts  # ✅ EXISTS - Job entity
@@ -9153,58 +9153,58 @@ fe/
     │   │   │   │   └── │
     │   │   │   ├── enums/  # Enums
     │   │   │   │   ├── contract-status.ts  # ✅ EXISTS
-    │   │   │   │   ├── country.ts  # ❌ CREATE
-    │   │   │   │   ├── currency.ts  # ❌ CREATE
-    │   │   │   │   ├── dispute-status.ts  # ❌ CREATE
-    │   │   │   │   ├── file-type.ts  # ❌ CREATE
+    │   │   │   │   ├── country.ts  # 
+    │   │   │   │   ├── currency.ts  # 
+    │   │   │   │   ├── dispute-status.ts  # 
+    │   │   │   │   ├── file-type.ts  # 
     │   │   │   │   ├── job-status.ts  # ✅ EXISTS
-    │   │   │   │   ├── language.ts  # ❌ CREATE
-    │   │   │   │   ├── milestone-status.ts  # ❌ CREATE
-    │   │   │   │   ├── moderation-status.ts  # ❌ CREATE
-    │   │   │   │   ├── notification-type.ts  # ❌ CREATE
+    │   │   │   │   ├── language.ts  # 
+    │   │   │   │   ├── milestone-status.ts  # 
+    │   │   │   │   ├── moderation-status.ts  # 
+    │   │   │   │   ├── notification-type.ts  # 
     │   │   │   │   ├── payment-status.ts  # ✅ EXISTS
-    │   │   │   │   ├── permission.ts  # ❌ CREATE
+    │   │   │   │   ├── permission.ts  # 
     │   │   │   │   ├── proposal-status.ts  # ✅ EXISTS
     │   │   │   │   ├── review-rating.ts  # ✅ EXISTS
-    │   │   │   │   ├── role.ts  # ❌ CREATE
-    │   │   │   │   ├── skill-level.ts  # ❌ CREATE
-    │   │   │   │   ├── subscription-status.ts  # ❌ CREATE
-    │   │   │   │   ├── timezone.ts  # ❌ CREATE
+    │   │   │   │   ├── role.ts  # 
+    │   │   │   │   ├── skill-level.ts  # 
+    │   │   │   │   ├── subscription-status.ts  # 
+    │   │   │   │   ├── timezone.ts  # 
     │   │   │   │   ├── user-type.ts  # ✅ EXISTS
-    │   │   │   │   └── verification-status.ts  # ❌ CREATE
+    │   │   │   │   └── verification-status.ts  # 
     │   │   │   ├── errors/
-    │   │   │   │   └── index.ts  # ❌ CREATE - Error types
+    │   │   │   │   └── index.ts  # Error types
     │   │   │   ├── forms/
-    │   │   │   │   └── index.ts  # ❌ CREATE - Form types
+    │   │   │   │   └── index.ts  # Form types
     │   │   │   ├── routing/
-    │   │   │   │   └── index.ts  # ❌ CREATE - Routing types
+    │   │   │   │   └── index.ts  # Routing types
     │   │   │   ├── shared/
     │   │   │   │   ├── address/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Address types
+    │   │   │   │   │   └── index.ts  # Address types
     │   │   │   │   ├── analytics/
     │   │   │   │   │   └── index.ts  # Analytics types
     │   │   │   │   ├── api-response/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - API response types
+    │   │   │   │   │   └── index.ts  # API response types
     │   │   │   │   ├── contact/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Contact types
+    │   │   │   │   │   └── index.ts  # Contact types
     │   │   │   │   ├── datetime/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Date/time types
+    │   │   │   │   │   └── index.ts  # Date/time types
     │   │   │   │   ├── filters/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Filter types
+    │   │   │   │   │   └── index.ts  # Filter types
     │   │   │   │   ├── geolocation/
     │   │   │   │   │   └── index.ts  # Geolocation types
     │   │   │   │   ├── media/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Media types
+    │   │   │   │   │   └── index.ts  # Media types
     │   │   │   │   ├── money/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Money/currency types
+    │   │   │   │   │   └── index.ts  # Money/currency types
     │   │   │   │   ├── pagination/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Pagination types
+    │   │   │   │   │   └── index.ts  # Pagination types
     │   │   │   │   ├── sort/
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Sort types
+    │   │   │   │   │   └── index.ts  # Sort types
     │   │   │   │   └── validation/
-    │   │   │   │       └── index.ts  # ❌ CREATE - Validation types
+    │   │   │   │       └── index.ts  # Validation types
     │   │   │   ├── state/
-    │   │   │   │   └── index.ts  # ❌ CREATE - State management types
+    │   │   │   │   └── index.ts  # State management types
     │   │   │   ├── audit.ts  # Audit Log/Export DTOs
     │   │   │   ├── index.ts  # Export all types
     │   │   │   ├── moderation.ts  # ModerationCase/Appeal types
@@ -9441,7 +9441,7 @@ fe/
     │   │   │   │   │   ├── VerificationStatus.native.tsx
     │   │   │   │   │   ├── VerificationStatus.tsx  # Verification status badge
     │   │   │   │   │   └── VerificationStatus.web.tsx
-    │   │   │   │   ├── contests/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   ├── contests/  #  ENTIRE SECTION
     │   │   │   │   │   ├── ContestCard.native.tsx  # Contest card (native)
     │   │   │   │   │   ├── ContestCard.tsx  # Contest card (base)
     │   │   │   │   │   ├── ContestCard.web.tsx  # Contest card (web)
@@ -9497,14 +9497,14 @@ fe/
     │   │   │   │   │       ├── RichTextEditor.native.tsx  # Native implementation
     │   │   │   │   │       ├── RichTextEditor.tsx
     │   │   │   │   │       └── RichTextEditor.web.tsx  # Web (e.g., TipTap/Slate)
-    │   │   │   │   ├── escrow/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   ├── escrow/  #  ENTIRE SECTION
     │   │   │   │   │   ├── EscrowStatus.native.tsx  # Escrow status (native)
     │   │   │   │   │   ├── EscrowStatus.tsx  # Escrow status (base)
     │   │   │   │   │   ├── EscrowStatus.web.tsx  # Escrow status (web)
     │   │   │   │   │   ├── ReleaseButton.native.tsx  # Release button (native)
     │   │   │   │   │   ├── ReleaseButton.tsx  # Release button (base)
     │   │   │   │   │   └── ReleaseButton.web.tsx  # Release button (web)
-    │   │   │   │   ├── events/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   ├── events/  #  ENTIRE SECTION
     │   │   │   │   │   ├── EventCalendar.native.tsx  # Event calendar (native)
     │   │   │   │   │   ├── EventCalendar.tsx  # Event calendar (base)
     │   │   │   │   │   ├── EventCalendar.web.tsx  # Event calendar (web)
@@ -9646,7 +9646,7 @@ fe/
     │   │   │   │   │       ├── Switch.tsx
     │   │   │   │   │       ├── Switch.types.ts
     │   │   │   │   │       └── Switch.web.tsx
-    │   │   │   │   ├── groups/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   ├── groups/  #  ENTIRE SECTION
     │   │   │   │   │   ├── GroupCard.native.tsx  # Group card (native)
     │   │   │   │   │   ├── GroupCard.tsx  # Group card (base)
     │   │   │   │   │   ├── GroupCard.web.tsx  # Group card (web)
@@ -9658,7 +9658,7 @@ fe/
     │   │   │   │   │   ├── Input.test.tsx
     │   │   │   │   │   ├── Input.tsx
     │   │   │   │   │   └── Input.web.tsx
-    │   │   │   │   ├── learning/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   ├── learning/  #  ENTIRE SECTION
     │   │   │   │   │   ├── AchievementBadge.native.tsx
     │   │   │   │   │   ├── AchievementBadge.tsx  # Achievement badge
     │   │   │   │   │   ├── AchievementBadge.web.tsx
@@ -9685,17 +9685,17 @@ fe/
     │   │   │   │   ├── molecules/
     │   │   │   │   │   ├── Navigation/
     │   │   │   │   │   │   ├── Accordion/
-    │   │   │   │   │   │   │   ├── Accordion.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── Accordion.native.tsx  # 
     │   │   │   │   │   │   │   ├── Accordion.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── Accordion.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── Accordion.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   ├── Breadcrumb/
-    │   │   │   │   │   │   │   ├── Breadcrumb.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── Breadcrumb.native.tsx  # 
     │   │   │   │   │   │   │   ├── Breadcrumb.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── Breadcrumb.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── Breadcrumb.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   ├── Drawer/
-    │   │   │   │   │   │   │   ├── Drawer.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── Drawer.native.tsx  # 
     │   │   │   │   │   │   │   ├── Drawer.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── Drawer.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── Drawer.web.tsx  # ✅ EXISTS - Web implementation
@@ -9704,12 +9704,12 @@ fe/
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── Overlay/
     │   │   │   │   │   │   ├── Popover/
-    │   │   │   │   │   │   │   ├── Popover.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── Popover.native.tsx  # 
     │   │   │   │   │   │   │   ├── Popover.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── Popover.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── Popover.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   ├── Tooltip/
-    │   │   │   │   │   │   │   ├── Tooltip.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── Tooltip.native.tsx  # 
     │   │   │   │   │   │   │   ├── Tooltip.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── Tooltip.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── Tooltip.web.tsx  # ✅ EXISTS - Web implementation
@@ -9738,46 +9738,46 @@ fe/
     │   │   │   │   ├── organisms/
     │   │   │   │   │   ├── Charts/
     │   │   │   │   │   │   ├── FunnelChart/
-    │   │   │   │   │   │   │   └── FunnelChart.native.tsx  # ❌ CREATE - Mobile funnel chart
+    │   │   │   │   │   │   │   └── FunnelChart.native.tsx  # Mobile funnel chart
     │   │   │   │   │   │   ├── HeatMap/
-    │   │   │   │   │   │   │   └── HeatMap.native.tsx  # ❌ CREATE - Mobile heat map
+    │   │   │   │   │   │   │   └── HeatMap.native.tsx  # Mobile heat map
     │   │   │   │   │   │   ├── OrgChart/
-    │   │   │   │   │   │   │   └── OrgChart.native.tsx  # ❌ CREATE - Mobile org chart
+    │   │   │   │   │   │   │   └── OrgChart.native.tsx  # Mobile org chart
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── DataDisplay/
     │   │   │   │   │   │   ├── DataGrid/
-    │   │   │   │   │   │   │   ├── DataGrid.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── DataGrid.native.tsx  # 
     │   │   │   │   │   │   │   ├── DataGrid.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── DataGrid.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── DataGrid.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   ├── KanbanBoard/
-    │   │   │   │   │   │   │   ├── KanbanBoard.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── KanbanBoard.native.tsx  # 
     │   │   │   │   │   │   │   ├── KanbanBoard.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── KanbanBoard.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── KanbanBoard.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   ├── Popover/
-    │   │   │   │   │   │   │   └── Popover.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   └── Popover.native.tsx  # 
     │   │   │   │   │   │   ├── Table/
-    │   │   │   │   │   │   │   ├── Table.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   ├── Table.native.tsx  # 
     │   │   │   │   │   │   │   ├── Table.tsx  # ✅ EXISTS - Base component
     │   │   │   │   │   │   │   ├── Table.types.ts  # ✅ EXISTS - Shared types
     │   │   │   │   │   │   │   └── Table.web.tsx  # ✅ EXISTS - Web implementation
     │   │   │   │   │   │   ├── Tooltip/
-    │   │   │   │   │   │   │   └── Tooltip.native.tsx  # ❌ CREATE
+    │   │   │   │   │   │   │   └── Tooltip.native.tsx  # 
     │   │   │   │   │   │   └── │
     │   │   │   │   │   └── │
     │   │   │   │   ├── Overlay/
     │   │   │   │   │   ├── Popover/
-    │   │   │   │   │   │   └── Popover.native.tsx  # ❌ CREATE - Mobile popover component
+    │   │   │   │   │   │   └── Popover.native.tsx  # Mobile popover component
     │   │   │   │   │   ├── Tooltip/
-    │   │   │   │   │   │   └── Tooltip.native.tsx  # ❌ CREATE - Mobile tooltip component
+    │   │   │   │   │   │   └── Tooltip.native.tsx  # Mobile tooltip component
     │   │   │   │   │   └── │
     │   │   │   │   ├── Pagination/
     │   │   │   │   ├── Popover/
     │   │   │   │   ├── Progress/
     │   │   │   │   ├── Radio/
     │   │   │   │   ├── Rating/
-    │   │   │   │   ├── referrals/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   ├── referrals/  #  ENTIRE SECTION
     │   │   │   │   │   ├── ReferralCard.native.tsx  # Referral card (native)
     │   │   │   │   │   ├── ReferralCard.tsx  # Referral card (base)
     │   │   │   │   │   ├── ReferralCard.web.tsx  # Referral card (web)
@@ -9786,7 +9786,7 @@ fe/
     │   │   │   │   │   └── ReferralStats.web.tsx  # Referral stats (web)
     │   │   │   │   ├── Select/
     │   │   │   │   ├── Skeleton/
-    │   │   │   │   ├── skills-tests/  # ❌ MISSING ENTIRE SECTION
+    │   │   │   │   ├── skills-tests/  #  ENTIRE SECTION
     │   │   │   │   │   ├── TestCard.native.tsx  # Test card (native)
     │   │   │   │   │   ├── TestCard.tsx  # Test card (base)
     │   │   │   │   │   ├── TestCard.web.tsx  # Test card (web)
@@ -9910,17 +9910,17 @@ fe/
     │   │   │   ├── molecules/
     │   │   │   │   ├── Navigation/
     │   │   │   │   │   ├── Accordion/
-    │   │   │   │   │   │   ├── Accordion.native.tsx  # ❌ ADD - Mobile needs accordion
+    │   │   │   │   │   │   ├── Accordion.native.tsx  #  - Mobile needs accordion
     │   │   │   │   │   │   ├── Accordion.tsx  # ✅ Base component
     │   │   │   │   │   │   ├── Accordion.types.ts  # ✅ Shared types
     │   │   │   │   │   │   └── Accordion.web.tsx  # ✅ Web implementation
     │   │   │   │   │   ├── Breadcrumb/
-    │   │   │   │   │   │   ├── Breadcrumb.native.tsx# ❌ ADD - Mobile needs breadcrumb
+    │   │   │   │   │   │   ├── Breadcrumb.native.tsx#  - Mobile needs breadcrumb
     │   │   │   │   │   │   ├── Breadcrumb.tsx  # ✅ Base component
     │   │   │   │   │   │   ├── Breadcrumb.types.ts  # ✅ Shared types
     │   │   │   │   │   │   └── Breadcrumb.web.tsx  # ✅ Web implementation
     │   │   │   │   │   ├── Drawer/
-    │   │   │   │   │   │   ├── Drawer.native.tsx  # ❌ ADD - Mobile needs drawer (BottomSheet)
+    │   │   │   │   │   │   ├── Drawer.native.tsx  #  - Mobile needs drawer (BottomSheet)
     │   │   │   │   │   │   ├── Drawer.tsx  # ✅ Base component
     │   │   │   │   │   │   ├── Drawer.types.ts  # ✅ Shared types
     │   │   │   │   │   │   └── Drawer.web.tsx  # ✅ Web implementation
@@ -9931,29 +9931,29 @@ fe/
     │   │   │   │   │       └── Tabs.web.tsx  # ✅ Web implementation
     │   │   │   │   └── Overlay/
     │   │   │   │       ├── Popover/
-    │   │   │   │       │   ├── Popover.native.tsx  # ❌ ADD - Mobile needs popover
+    │   │   │   │       │   ├── Popover.native.tsx  #  - Mobile needs popover
     │   │   │   │       │   ├── Popover.tsx  # ✅ Base component
     │   │   │   │       │   ├── Popover.types.ts  # ✅ Shared types
     │   │   │   │       │   └── Popover.web.tsx  # ✅ Web implementation
     │   │   │   │       └── Tooltip/
-    │   │   │   │           ├── Tooltip.native.tsx  # ❌ ADD - Mobile needs tooltip (long press)
+    │   │   │   │           ├── Tooltip.native.tsx  #  - Mobile needs tooltip (long press)
     │   │   │   │           ├── Tooltip.tsx  # ✅ Base component
     │   │   │   │           ├── Tooltip.types.ts  # ✅ Shared types
     │   │   │   │           └── Tooltip.web.tsx  # ✅ Web implementation
     │   │   │   ├── organisms/
     │   │   │   │   └── DataDisplay/
     │   │   │   │       ├── DataGrid/
-    │   │   │   │       │   ├── DataGrid.native.tsx  # ❌ ADD - Mobile needs data grid
+    │   │   │   │       │   ├── DataGrid.native.tsx  #  - Mobile needs data grid
     │   │   │   │       │   ├── DataGrid.tsx  # ✅ Base component
     │   │   │   │       │   ├── DataGrid.types.ts  # ✅ Shared types
     │   │   │   │       │   └── DataGrid.web.tsx  # ✅ Web implementation
     │   │   │   │       ├── KanbanBoard/
-    │   │   │   │       │   ├── KanbanBoard.native.tsx  # ❌ ADD - Mobile needs kanban
+    │   │   │   │       │   ├── KanbanBoard.native.tsx  #  - Mobile needs kanban
     │   │   │   │       │   ├── KanbanBoard.tsx  # ✅ Base component
     │   │   │   │       │   ├── KanbanBoard.types.ts  # ✅ Shared types
     │   │   │   │       │   └── KanbanBoard.web.tsx  # ✅ Web implementation
     │   │   │   │       └── Table/
-    │   │   │   │           ├── Table.native.tsx  # ❌ ADD - Mobile needs table (FlashList)
+    │   │   │   │           ├── Table.native.tsx  #  - Mobile needs table (FlashList)
     │   │   │   │           ├── Table.tsx  # ✅ Base component
     │   │   │   │           ├── Table.types.ts  # ✅ Shared types
     │   │   │   │           └── Table.web.tsx  # ✅ Web implementation
