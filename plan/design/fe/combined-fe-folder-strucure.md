@@ -25726,29 +25726,54 @@ fe/
     │   │   │   │   │       # - Web Vitals
     │   │   │   │   │       # - Performance metric
     │   │   │   │   │       # - Error event
+    │   │   │   │   │       # ❌ CREATE - Performance metrics types
+    │   │   │   │   │       # - PerformanceMetric
+    │   │   │   │   │       # - WebVitals (LCP, FID, CLS)
+    │   │   │   │   │       # - ResourceTiming
+    │   │   │   │   │       # - NavigationTiming
     │   │   │   │   ├── realtime/
     │   │   │   │   │   └── index.ts  # Real-time types
     │   │   │   │   │       # - WebSocket message
     │   │   │   │   │       # - Presence update
     │   │   │   │   │       # - Event subscription
+    │   │   │   │   │       # ❌ CREATE - Real-time/WebSocket types
+    │   │   │   │   │       # - WebSocketMessage
+    │   │   │   │   │       # - WebSocketEvent
+    │   │   │   │   │       # - WebSocketStatus
+    │   │   │   │   │       # - ConnectionState
     │   │   │   │   ├── webhooks/
     │   │   │   │   │   └── index.ts  # Webhook types
     │   │   │   │   │       # - Webhook event
     │   │   │   │   │       # - Webhook subscription
     │   │   │   │   │       # - Webhook delivery
-    │   │   │   │   ├── admin.ts
+    │   │   │   │   │       # ❌ CREATE - Webhook types
+    │   │   │   │   │       # - Webhook
+    │   │   │   │   │       # - WebhookEvent
+    │   │   │   │   │       # - WebhookDelivery
+    │   │   │   │   │       # - WebhookSecret
+    │   │   │   │   ├── admin.ts  # ❌ CREATE - Admin API types
+    │   │   │   │   │   # - AdminDashboard
+    │   │   │   │   │   # - SystemHealth
+    │   │   │   │   │   # - PlatformMetrics
+    │   │   │   │   │   # - AdminAction
     │   │   │   │   ├── common.ts  # Common types (pagination, filters, etc.)
-    │   │   │   │   ├── contracts.ts
-    │   │   │   │   ├── financial.ts
-    │   │   │   │   ├── jobs.ts
-    │   │   │   │   ├── messages.ts
-    │   │   │   │   ├── notifications.ts
-    │   │   │   │   ├── proposals.ts
-    │   │   │   │   ├── review.ts
-    │   │   │   │   ├── search.ts
-    │   │   │   │   ├── storage.ts
-    │   │   │   │   ├── subscriptions.ts
-    │   │   │   │   └── users.ts
+    │   │   │   │   │   # ✅ EXISTS - Common API types
+    │   │   │   │   ├── contracts.ts  # ✅ EXISTS - Contracts API types
+    │   │   │   │   ├── financial.ts  # ✅ EXISTS - Financial API types
+    │   │   │   │   ├── jobs.ts  # ✅ EXISTS - Jobs API types
+    │   │   │   │   ├── messages.ts  # ✅ EXISTS - Messages API types
+    │   │   │   │   ├── notifications.ts  # ✅ EXISTS - Notifications API types
+    │   │   │   │   ├── proposals.ts  # ✅ EXISTS - Proposals API types
+    │   │   │   │   ├── review.ts  # ✅ EXISTS - Review API types
+    │   │   │   │   ├── search.ts  # ✅ EXISTS - Search API types
+    │   │   │   │   ├── storage.ts  # ✅ EXISTS - Storage API types
+    │   │   │   │   ├── subscriptions.ts  # ✅ EXISTS - Subscriptions API types
+    │   │   │   │   └── users.ts  # ✅ EXISTS - Users API types
+    │   │   │   ├── config/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Configuration types
+    │   │   │   │       # - AppConfig
+    │   │   │   │       # - FeatureFlags
+    │   │   │   │       # - Environment
     │   │   │   ├── domains/
     │   │   │   │   ├── achievements/
     │   │   │   │   │   └── index.ts  # Achievement types
@@ -25756,102 +25781,491 @@ fe/
     │   │   │   │   │       # - User achievement
     │   │   │   │   │       # - Badge
     │   │   │   │   │       # - Points
+    │   │   │   │   │       # ✅ EXISTS - Achievement types
     │   │   │   │   ├── activity/
     │   │   │   │   │   └── index.ts  # Activity feed types
     │   │   │   │   │       # - Activity event
     │   │   │   │   │       # - Activity feed item
     │   │   │   │   │       # - Activity filters
+    │   │   │   │   │       # ✅ EXISTS - Activity feed types
     │   │   │   │   ├── compliance/
     │   │   │   │   │   └── index.ts  # Compliance types
     │   │   │   │   │       # - KYC case
     │   │   │   │   │       # - Business verification
     │   │   │   │   │       # - Document verification
     │   │   │   │   │       # - Privacy request
+    │   │   │   │   │       # ✅ EXISTS - Compliance types
     │   │   │   │   ├── experiments/
     │   │   │   │   │   └── index.ts  # Experiment types
     │   │   │   │   │       # - Experiment definition
     │   │   │   │   │       # - Variant
     │   │   │   │   │       # - User assignment
+    │   │   │   │   │       # ✅ EXISTS - Experiment types
     │   │   │   │   ├── flags/
     │   │   │   │   │   └── index.ts  # Feature flag types
     │   │   │   │   │       # - Flag definition
     │   │   │   │   │       # - Flag value
     │   │   │   │   │       # - Targeting rules
+    │   │   │   │   │       # ✅ EXISTS - Feature flag types
     │   │   │   │   ├── incidents/
     │   │   │   │   │   └── index.ts  # Incident types
     │   │   │   │   │       # - Incident
     │   │   │   │   │       # - Maintenance window
     │   │   │   │   │       # - System health
+    │   │   │   │   │       # ✅ EXISTS - Incident types
     │   │   │   │   ├── learning/
     │   │   │   │   │   └── index.ts  # Learning types
     │   │   │   │   │       # - Course
     │   │   │   │   │       # - Lesson
     │   │   │   │   │       # - Assessment
     │   │   │   │   │       # - Progress
+    │   │   │   │   │       # ✅ EXISTS - Learning types
     │   │   │   │   ├── moderation/
     │   │   │   │   │   └── index.ts  # Moderation types
     │   │   │   │   │       # - Report
     │   │   │   │   │       # - Moderation action
     │   │   │   │   │       # - Content check
+    │   │   │   │   │       # ✅ EXISTS - Moderation types
     │   │   │   │   ├── presence/
     │   │   │   │   │   └── index.ts  # Presence types
     │   │   │   │   │       # - Online status
     │   │   │   │   │       # - Last seen
     │   │   │   │   │       # - Typing indicator
+    │   │   │   │   │       # ✅ EXISTS - Presence types
     │   │   │   │   └── sourcing/
     │   │   │   │       └── index.ts  # Sourcing types
     │   │   │   │           # - Campaign
     │   │   │   │           # - Talent pool
     │   │   │   │           # - Invitation
+    │   │   │   │           # ✅ EXISTS - Sourcing types
     │   │   │   ├── entities/  # Domain entities
+    │   │   │   │   ├── admin/
+    │   │   │   │   │   ├── audit.ts  # ❌ CREATE - Audit entity
+    │   │   │   │   │   │   # - AuditLog
+    │   │   │   │   │   │   # - AuditEvent
+    │   │   │   │   │   │   # - AuditTrail
+    │   │   │   │   │   ├── flag.ts  # ❌ CREATE - Content flag entity
+    │   │   │   │   │   │   # - ContentFlag
+    │   │   │   │   │   │   # - FlagReason
+    │   │   │   │   │   │   # - FlagStatus
+    │   │   │   │   │   ├── incident.ts  # ❌ CREATE - System incident entity
+    │   │   │   │   │   │   # - Incident
+    │   │   │   │   │   │   # - IncidentSeverity
+    │   │   │   │   │   │   # - IncidentStatus
+    │   │   │   │   │   │   # - IncidentUpdate
+    │   │   │   │   │   ├── moderation-case.ts  # ❌ CREATE - Moderation case entity
+    │   │   │   │   │   │   # - ModerationCase
+    │   │   │   │   │   │   # - ModerationAction
+    │   │   │   │   │   │   # - ModerationStatus
+    │   │   │   │   │   │   # - ModerationAppeal
+    │   │   │   │   │   └── report.ts  # ❌ CREATE - Report entity
+    │   │   │   │   │       # - Report
+    │   │   │   │   │       # - ReportType
+    │   │   │   │   │       # - ReportSchedule
+    │   │   │   │   │       # - ReportExport
+    │   │   │   │   ├── communications/
+    │   │   │   │   │   ├── attachment.ts  # ❌ CREATE - Message attachment entity
+    │   │   │   │   │   │   # - Attachment
+    │   │   │   │   │   │   # - AttachmentType
+    │   │   │   │   │   │   # - AttachmentMetadata
+    │   │   │   │   │   ├── channel.ts  # ❌ CREATE - Communication channel entity
+    │   │   │   │   │   │   # - Channel
+    │   │   │   │   │   │   # - ChannelType
+    │   │   │   │   │   │   # - ChannelMember
+    │   │   │   │   │   ├── template.ts  # ❌ CREATE - Message template entity
+    │   │   │   │   │   │   # - MessageTemplate
+    │   │   │   │   │   │   # - TemplateVariable
+    │   │   │   │   │   │   # - TemplateType
+    │   │   │   │   │   └── thread.ts  # ❌ CREATE - Message thread entity
+    │   │   │   │   │       # - MessageThread
+    │   │   │   │   │       # - ThreadParticipant
+    │   │   │   │   │       # - ThreadStatus
     │   │   │   │   ├── contracts/
+    │   │   │   │   │   ├── amendment.ts  # ❌ CREATE - Contract amendment entity
+    │   │   │   │   │   │   # - Amendment
+    │   │   │   │   │   │   # - AmendmentStatus
+    │   │   │   │   │   │   # - AmendmentType
+    │   │   │   │   │   │   # - AmendmentApproval
+    │   │   │   │   │   ├── change-order.ts  # ❌ CREATE - Change order entity
+    │   │   │   │   │   │   # - ChangeOrder
+    │   │   │   │   │   │   # - ChangeOrderStatus
+    │   │   │   │   │   │   # - ChangeOrderImpact
+    │   │   │   │   │   ├── compliance.ts  # ❌ CREATE - Contract compliance entity
+    │   │   │   │   │   │   # - ComplianceCheck
+    │   │   │   │   │   │   # - ComplianceStatus
+    │   │   │   │   │   │   # - ComplianceRequirement
+    │   │   │   │   │   ├── deliverable.ts  # ❌ CREATE - Deliverable entity
+    │   │   │   │   │   │   # - Deliverable
+    │   │   │   │   │   │   # - DeliverableStatus
+    │   │   │   │   │   │   # - DeliverableReview
+    │   │   │   │   │   │   # - DeliverableAcceptance
     │   │   │   │   │   ├── dispute.ts  # Dispute entity types
+    │   │   │   │   │   │   # ✅ EXISTS - Dispute entity
     │   │   │   │   │   ├── milestone.ts  # Milestone entity types
+    │   │   │   │   │   │   # ✅ EXISTS - Milestone entity
     │   │   │   │   │   ├── offer.ts  # Offer entity types
+    │   │   │   │   │   │   # ✅ EXISTS - Offer entity
+    │   │   │   │   │   ├── terms.ts  # ❌ CREATE - Contract terms entity
+    │   │   │   │   │   │   # - ContractTerms
+    │   │   │   │   │   │   # - PaymentTerms
+    │   │   │   │   │   │   # - IPRights
+    │   │   │   │   │   │   # - NDATerms
     │   │   │   │   │   └── timesheet.ts  # Timesheet entity types
+    │   │   │   │   │       # ✅ EXISTS - Timesheet entity
     │   │   │   │   ├── financial/
+    │   │   │   │   │   ├── credit-note.ts  # ❌ CREATE - Credit note entity
+    │   │   │   │   │   │   # - CreditNote
+    │   │   │   │   │   │   # - CreditNoteStatus
+    │   │   │   │   │   │   # - CreditNoteAllocation
+    │   │   │   │   │   ├── currency.ts  # ❌ CREATE - Currency entity
+    │   │   │   │   │   │   # - Currency
+    │   │   │   │   │   │   # - CurrencyRate
+    │   │   │   │   │   │   # - CurrencyConversion
     │   │   │   │   │   ├── escrow.ts  # Escrow DTOs
+    │   │   │   │   │   │   # ✅ EXISTS - Escrow entity
+    │   │   │   │   │   ├── fee.ts  # ❌ CREATE - Fee entity
+    │   │   │   │   │   │   # - Fee
+    │   │   │   │   │   │   # - FeeStructure
+    │   │   │   │   │   │   # - FeeCalculation
+    │   │   │   │   │   │   # - FeeOverride
+    │   │   │   │   │   ├── payment-method.ts  # ❌ CREATE - Payment method entity
+    │   │   │   │   │   │   # - PaymentMethod
+    │   │   │   │   │   │   # - PaymentMethodType
+    │   │   │   │   │   │   # - PaymentMethodStatus
+    │   │   │   │   │   ├── payout.ts  # ❌ CREATE - Payout entity
+    │   │   │   │   │   │   # - Payout
+    │   │   │   │   │   │   # - PayoutStatus
+    │   │   │   │   │   │   # - PayoutMethod
+    │   │   │   │   │   │   # - PayoutSchedule
+    │   │   │   │   │   ├── refund.ts  # ❌ CREATE - Refund entity
+    │   │   │   │   │   │   # - Refund
+    │   │   │   │   │   │   # - RefundStatus
+    │   │   │   │   │   │   # - RefundReason
+    │   │   │   │   │   │   # - RefundPolicy
     │   │   │   │   │   ├── report.ts  # Billing report row DTOs
-    │   │   │   │   │   └── tax.ts  # Tax DTOs
+    │   │   │   │   │   │   # ✅ EXISTS - Billing report entity
+    │   │   │   │   │   ├── reserve.ts  # ❌ CREATE - Reserve entity
+    │   │   │   │   │   │   # - Reserve
+    │   │   │   │   │   │   # - ReserveType
+    │   │   │   │   │   │   # - ReserveAdjustment
+    │   │   │   │   │   │   # - ReserveRelease
+    │   │   │   │   │   ├── settlement.ts  # ❌ CREATE - Settlement entity
+    │   │   │   │   │   │   # - Settlement
+    │   │   │   │   │   │   # - SettlementBatch
+    │   │   │   │   │   │   # - SettlementStatus
+    │   │   │   │   │   │   # - SettlementRule
+    │   │   │   │   │   ├── tax.ts  # Tax DTOs
+    │   │   │   │   │   │   # ✅ EXISTS - Tax entity
+    │   │   │   │   │   └── wallet.ts  # ❌ CREATE - Wallet entity
+    │   │   │   │   │       # - Wallet
+    │   │   │   │   │       # - WalletBalance
+    │   │   │   │   │       # - WalletTransaction
+    │   │   │   │   │       # - WalletStatus
+    │   │   │   │   ├── jobs/
+    │   │   │   │   │   ├── application.ts  # ❌ CREATE - Job application entity
+    │   │   │   │   │   │   # - JobApplication
+    │   │   │   │   │   │   # - ApplicationStatus
+    │   │   │   │   │   │   # - ApplicationReview
+    │   │   │   │   │   ├── invite.ts  # ❌ CREATE - Job invite entity
+    │   │   │   │   │   │   # - JobInvite
+    │   │   │   │   │   │   # - InviteStatus
+    │   │   │   │   │   │   # - InviteResponse
+    │   │   │   │   │   ├── requirement.ts  # ❌ CREATE - Job requirement entity
+    │   │   │   │   │   │   # - JobRequirement
+    │   │   │   │   │   │   # - RequirementType
+    │   │   │   │   │   │   # - RequirementPriority
+    │   │   │   │   │   └── template.ts  # ❌ CREATE - Job template entity
+    │   │   │   │   │       # - JobTemplate
+    │   │   │   │   │       # - TemplateCategory
+    │   │   │   │   │       # - TemplateField
+    │   │   │   │   ├── organizations/
+    │   │   │   │   │   ├── budget.ts  # ❌ CREATE - Budget entity
+    │   │   │   │   │   │   # - Budget
+    │   │   │   │   │   │   # - BudgetAllocation
+    │   │   │   │   │   │   # - BudgetSpend
+    │   │   │   │   │   │   # - BudgetAlert
+    │   │   │   │   │   ├── department.ts  # ❌ CREATE - Department entity
+    │   │   │   │   │   │   # - Department
+    │   │   │   │   │   │   # - DepartmentHierarchy
+    │   │   │   │   │   ├── organization.ts  # ❌ CREATE - Organization entity
+    │   │   │   │   │   │   # - Organization
+    │   │   │   │   │   │   # - OrganizationType
+    │   │   │   │   │   │   # - OrganizationStatus
+    │   │   │   │   │   ├── policy.ts  # ❌ CREATE - Policy entity
+    │   │   │   │   │   │   # - Policy
+    │   │   │   │   │   │   # - PolicyVersion
+    │   │   │   │   │   │   # - PolicyAttestation
+    │   │   │   │   │   ├── procurement.ts  # ❌ CREATE - Procurement entity
+    │   │   │   │   │   │   # - ProcurementRequest
+    │   │   │   │   │   │   # - Vendor
+    │   │   │   │   │   │   # - PurchaseOrder
+    │   │   │   │   │   │   # - VendorEvaluation
+    │   │   │   │   │   └── team.ts  # ❌ CREATE - Team entity
+    │   │   │   │   │       # - Team
+    │   │   │   │   │       # - TeamMember
+    │   │   │   │   │       # - TeamRole
+    │   │   │   │   ├── proposals/
+    │   │   │   │   │   ├── bid.ts  # ❌ CREATE - Bid entity
+    │   │   │   │   │   │   # - Bid
+    │   │   │   │   │   │   # - BidStatus
+    │   │   │   │   │   │   # - BidStrategy
+    │   │   │   │   │   ├── quote.ts  # ❌ CREATE - Quote entity
+    │   │   │   │   │   │   # - Quote
+    │   │   │   │   │   │   # - QuoteLineItem
+    │   │   │   │   │   │   # - QuoteStatus
+    │   │   │   │   │   ├── rate-card.ts  # ❌ CREATE - Rate card entity
+    │   │   │   │   │   │   # - RateCard
+    │   │   │   │   │   │   # - ServicePackage
+    │   │   │   │   │   │   # - PricingModel
+    │   │   │   │   │   └── template.ts  # ❌ CREATE - Proposal template entity
+    │   │   │   │   │       # - ProposalTemplate
+    │   │   │   │   │       # - TemplateSection
+    │   │   │   │   │       # - TemplateVariable
     │   │   │   │   ├── search/
+    │   │   │   │   │   ├── alert.ts  # ❌ CREATE - Search alert entity
+    │   │   │   │   │   │   # - SearchAlert
+    │   │   │   │   │   │   # - AlertTrigger
+    │   │   │   │   │   │   # - AlertFrequency
+    │   │   │   │   │   ├── facet.ts  # ❌ CREATE - Search facet entity
+    │   │   │   │   │   │   # - SearchFacet
+    │   │   │   │   │   │   # - FacetBucket
+    │   │   │   │   │   │   # - FacetType
+    │   │   │   │   │   ├── filter.ts  # ❌ CREATE - Search filter entity
+    │   │   │   │   │   │   # - SearchFilter
+    │   │   │   │   │   │   # - FilterOperator
+    │   │   │   │   │   │   # - FilterValue
     │   │   │   │   │   └── saved_query.ts  # Saved query/alert DTOs
-    │   │   │   │   ├── contract.ts
-    │   │   │   │   ├── invoice.ts
-    │   │   │   │   ├── job.ts
-    │   │   │   │   ├── message.ts
+    │   │   │   │   │       # ✅ EXISTS - Saved query entity
+    │   │   │   │   ├── storage/
+    │   │   │   │   │   ├── access.ts  # ❌ CREATE - File access entity
+    │   │   │   │   │   │   # - FileAccess
+    │   │   │   │   │   │   # - AccessControl
+    │   │   │   │   │   │   # - ShareLink
+    │   │   │   │   │   │   # - AccessLog
+    │   │   │   │   │   ├── file.ts  # ❌ CREATE - File entity
+    │   │   │   │   │   │   # - File
+    │   │   │   │   │   │   # - FileMetadata
+    │   │   │   │   │   │   # - FileVersion
+    │   │   │   │   │   │   # - FileStatus
+    │   │   │   │   │   ├── folder.ts  # ❌ CREATE - Folder entity
+    │   │   │   │   │   │   # - Folder
+    │   │   │   │   │   │   # - FolderStructure
+    │   │   │   │   │   │   # - FolderPermission
+    │   │   │   │   │   └── scan.ts  # ❌ CREATE - File scan entity
+    │   │   │   │   │       # - FileScan
+    │   │   │   │   │       # - ScanResult
+    │   │   │   │   │       # - ThreatType
+    │   │   │   │   │       # - QuarantineInfo
+    │   │   │   │   ├── subscriptions/
+    │   │   │   │   │   ├── connects.ts  # ❌ CREATE - Connects entity
+    │   │   │   │   │   │   # - Connect
+    │   │   │   │   │   │   # - ConnectPackage
+    │   │   │   │   │   │   # - ConnectUsage
+    │   │   │   │   │   ├── entitlement.ts  # ❌ CREATE - Entitlement entity
+    │   │   │   │   │   │   # - Entitlement
+    │   │   │   │   │   │   # - EntitlementType
+    │   │   │   │   │   │   # - UsageLimit
+    │   │   │   │   │   ├── plan.ts  # ❌ CREATE - Subscription plan entity
+    │   │   │   │   │   │   # - SubscriptionPlan
+    │   │   │   │   │   │   # - PlanTier
+    │   │   │   │   │   │   # - PlanFeatures
+    │   │   │   │   │   │   # - PlanPricing
+    │   │   │   │   │   └── usage.ts  # ❌ CREATE - Usage entity
+    │   │   │   │   │       # - Usage
+    │   │   │   │   │       # - UsageMetric
+    │   │   │   │   │       # - UsageQuota
+    │   │   │   │   ├── users/
+    │   │   │   │   │   ├── availability.ts  # ❌ CREATE - Availability entity
+    │   │   │   │   │   │   # - Availability
+    │   │   │   │   │   │   # - AvailabilitySlot
+    │   │   │   │   │   │   # - AvailabilitySchedule
+    │   │   │   │   │   ├── certification.ts  # ❌ CREATE - Certification entity
+    │   │   │   │   │   │   # - Certification
+    │   │   │   │   │   │   # - CertificationType
+    │   │   │   │   │   │   # - CertificationStatus
+    │   │   │   │   │   │   # - CertificationVerification
+    │   │   │   │   │   ├── education.ts  # ❌ CREATE - Education entity
+    │   │   │   │   │   │   # - Education
+    │   │   │   │   │   │   # - Degree
+    │   │   │   │   │   │   # - EducationLevel
+    │   │   │   │   │   ├── experience.ts  # ❌ CREATE - Experience entity
+    │   │   │   │   │   │   # - WorkExperience
+    │   │   │   │   │   │   # - ExperienceType
+    │   │   │   │   │   │   # - ExperienceVerification
+    │   │   │   │   │   ├── portfolio.ts  # ❌ CREATE - Portfolio entity
+    │   │   │   │   │   │   # - PortfolioItem
+    │   │   │   │   │   │   # - PortfolioMedia
+    │   │   │   │   │   │   # - PortfolioCategory
+    │   │   │   │   │   ├── preference.ts  # ❌ CREATE - User preference entity
+    │   │   │   │   │   │   # - UserPreference
+    │   │   │   │   │   │   # - NotificationPreference
+    │   │   │   │   │   │   # - PrivacyPreference
+    │   │   │   │   │   │   # - DisplayPreference
+    │   │   │   │   │   ├── profile.ts  # ❌ CREATE - User profile entity
+    │   │   │   │   │   │   # - UserProfile
+    │   │   │   │   │   │   # - ProfileCompleteness
+    │   │   │   │   │   │   # - ProfileVisibility
+    │   │   │   │   │   ├── skill.ts  # ❌ CREATE - Skill entity
+    │   │   │   │   │   │   # - Skill
+    │   │   │   │   │   │   # - SkillLevel
+    │   │   │   │   │   │   # - SkillEndorsement
+    │   │   │   │   │   │   # - SkillCategory
+    │   │   │   │   │   └── verification.ts  # ❌ CREATE - Verification entity
+    │   │   │   │   │       # - Verification
+    │   │   │   │   │       # - VerificationType
+    │   │   │   │   │       # - VerificationStatus
+    │   │   │   │   │       # - VerificationDocument
+    │   │   │   │   ├── contract.ts  # ✅ EXISTS - Contract entity
+    │   │   │   │   ├── invoice.ts  # ✅ EXISTS - Invoice entity
+    │   │   │   │   ├── job.ts  # ✅ EXISTS - Job entity
+    │   │   │   │   ├── message.ts  # ✅ EXISTS - Message entity
     │   │   │   │   ├── notification.ts  # Notification DTOs
-    │   │   │   │   ├── proposal.ts
-    │   │   │   │   ├── review.ts
-    │   │   │   │   ├── subscription.ts
-    │   │   │   │   ├── transaction.ts
-    │   │   │   │   └── user.ts
+    │   │   │   │   │   # ✅ EXISTS - Notification entity
+    │   │   │   │   ├── proposal.ts  # ✅ EXISTS - Proposal entity
+    │   │   │   │   ├── review.ts  # ✅ EXISTS - Review entity
+    │   │   │   │   ├── subscription.ts  # ✅ EXISTS - Subscription entity
+    │   │   │   │   ├── transaction.ts  # ✅ EXISTS - Transaction entity
+    │   │   │   │   ├── user.ts  # ✅ EXISTS - User entity
+    │   │   │   │   └── │
     │   │   │   ├── enums/  # Enums
-    │   │   │   │   ├── contract-status.ts
-    │   │   │   │   ├── job-status.ts
-    │   │   │   │   ├── payment-status.ts
-    │   │   │   │   ├── proposal-status.ts
-    │   │   │   │   ├── review-rating.ts
-    │   │   │   │   └── user-type.ts
+    │   │   │   │   ├── contract-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── country.ts  # ❌ CREATE
+    │   │   │   │   │   # - Country codes (ISO 3166)
+    │   │   │   │   ├── currency.ts  # ❌ CREATE
+    │   │   │   │   │   # - USD, EUR, GBP, etc (ISO 4217)
+    │   │   │   │   ├── dispute-status.ts  # ❌ CREATE
+    │   │   │   │   │   # - Open, InProgress, Resolved, Escalated
+    │   │   │   │   ├── file-type.ts  # ❌ CREATE
+    │   │   │   │   │   # - Document, Image, Video, Audio, Archive
+    │   │   │   │   ├── job-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── language.ts  # ❌ CREATE
+    │   │   │   │   │   # - Language codes (ISO 639)
+    │   │   │   │   ├── milestone-status.ts  # ❌ CREATE
+    │   │   │   │   │   # - Pending, InProgress, Completed, Approved
+    │   │   │   │   ├── moderation-status.ts  # ❌ CREATE
+    │   │   │   │   │   # - Pending, Approved, Rejected, Flagged
+    │   │   │   │   ├── notification-type.ts  # ❌ CREATE
+    │   │   │   │   │   # - System, Email, Push, SMS, InApp
+    │   │   │   │   ├── payment-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── permission.ts  # ❌ CREATE
+    │   │   │   │   │   # - RBAC permissions
+    │   │   │   │   ├── proposal-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── review-rating.ts  # ✅ EXISTS
+    │   │   │   │   ├── role.ts  # ❌ CREATE
+    │   │   │   │   │   # - Admin, User, Moderator, etc
+    │   │   │   │   ├── skill-level.ts  # ❌ CREATE
+    │   │   │   │   │   # - Beginner, Intermediate, Advanced, Expert
+    │   │   │   │   ├── subscription-status.ts  # ❌ CREATE
+    │   │   │   │   │   # - Active, PastDue, Cancelled, Paused, Trial
+    │   │   │   │   ├── timezone.ts  # ❌ CREATE
+    │   │   │   │   │   # - IANA timezone identifiers
+    │   │   │   │   ├── user-type.ts  # ✅ EXISTS
+    │   │   │   │   └── verification-status.ts  # ❌ CREATE
+    │   │   │   │       # - Pending, Verified, Rejected, Expired
+    │   │   │   ├── errors/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Error types
+    │   │   │   │       # - AppError
+    │   │   │   │       # - NetworkError
+    │   │   │   │       # - ValidationError
+    │   │   │   │       # - AuthError
+    │   │   │   ├── forms/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Form types
+    │   │   │   │       # - FormState
+    │   │   │   │       # - FormField
+    │   │   │   │       # - FormValidation
+    │   │   │   │       # - FormErrors
+    │   │   │   ├── routing/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Routing types
+    │   │   │   │       # - Route
+    │   │   │   │       # - RouteParams
+    │   │   │   │       # - NavigationState
     │   │   │   ├── shared/
+    │   │   │   │   ├── address/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Address types
+    │   │   │   │   │       # - Address
+    │   │   │   │   │       # - Location
+    │   │   │   │   │       # - Coordinates
     │   │   │   │   ├── analytics/
     │   │   │   │   │   └── index.ts  # Analytics types
     │   │   │   │   │       # - Event
     │   │   │   │   │       # - Page view
     │   │   │   │   │       # - Conversion
-    │   │   │   │   └── geolocation/
-    │   │   │   │       └── index.ts  # Geolocation types
-    │   │   │   │           # - Coordinates
-    │   │   │   │           # - Location
-    │   │   │   │           # - Distance
+    │   │   │   │   │       # ✅ EXISTS - Analytics types
+    │   │   │   │   ├── api-response/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - API response types
+    │   │   │   │   │       # - ApiResponse<T>
+    │   │   │   │   │       # - ApiError
+    │   │   │   │   │       # - ApiSuccess<T>
+    │   │   │   │   ├── contact/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Contact types
+    │   │   │   │   │       # - ContactInfo
+    │   │   │   │   │       # - PhoneNumber
+    │   │   │   │   │       # - EmailAddress
+    │   │   │   │   ├── datetime/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Date/time types
+    │   │   │   │   │       # - DateRange
+    │   │   │   │   │       # - TimeSlot
+    │   │   │   │   │       # - Schedule
+    │   │   │   │   ├── filters/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Filter types
+    │   │   │   │   │       # - FilterOperator
+    │   │   │   │   │       # - FilterCondition
+    │   │   │   │   │       # - FilterGroup
+    │   │   │   │   ├── geolocation/
+    │   │   │   │   │   └── index.ts  # Geolocation types
+    │   │   │   │   │       # - Coordinates
+    │   │   │   │   │       # - Location
+    │   │   │   │   │       # - Distance
+    │   │   │   │   │       # ✅ EXISTS - Geolocation types
+    │   │   │   │   ├── media/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Media types
+    │   │   │   │   │       # - Image
+    │   │   │   │   │       # - Video
+    │   │   │   │   │       # - Document
+    │   │   │   │   │       # - MediaMetadata
+    │   │   │   │   ├── money/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Money/currency types
+    │   │   │   │   │       # - Money
+    │   │   │   │   │       # - CurrencyAmount
+    │   │   │   │   │       # - PriceRange
+    │   │   │   │   ├── pagination/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Pagination types
+    │   │   │   │   │       # - PaginatedResponse<T>
+    │   │   │   │   │       # - PaginationParams
+    │   │   │   │   │       # - CursorPagination
+    │   │   │   │   │       # - OffsetPagination
+    │   │   │   │   ├── sort/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Sort types
+    │   │   │   │   │       # - SortOrder
+    │   │   │   │   │       # - SortField
+    │   │   │   │   │       # - SortParams
+    │   │   │   │   └── validation/
+    │   │   │   │       └── index.ts  # ❌ CREATE - Validation types
+    │   │   │   │           # - ValidationError
+    │   │   │   │           # - ValidationRule
+    │   │   │   │           # - ValidationResult
+    │   │   │   ├── state/
+    │   │   │   │   └── index.ts  # ❌ CREATE - State management types
+    │   │   │   │       # - StoreState
+    │   │   │   │       # - Action
+    │   │   │   │       # - Reducer
     │   │   │   ├── audit.ts  # Audit Log/Export DTOs
+    │   │   │   │   # ✅ EXISTS - Audit log types
     │   │   │   ├── index.ts  # Export all types
+    │   │   │   │   # ✅ EXISTS - Main export file
     │   │   │   ├── moderation.ts  # ModerationCase/Appeal types
+    │   │   │   │   # ✅ EXISTS - Moderation case types
     │   │   │   ├── search-admin.ts  # Taxonomy/Facet/Rewrite/Speller DTOs
+    │   │   │   │   # ✅ EXISTS - Search admin types
     │   │   │   ├── subscription.ts  # Plan/Entitlement types
-    │   │   │   └── support.ts  # Ticket/Message types
+    │   │   │   │   # ✅ EXISTS - Subscription plan types
+    │   │   │   ├── support.ts  # Ticket/Message types
+    │   │   │   │   # ✅ EXISTS - Support ticket types
+    │   │   │   └── │
     │   │   ├── package.json
     │   │   ├── README.md
-    │   │   └── tsconfig.json
+    │   │   ├── tsconfig.json
+    │   │   └── │
     │   ├── ui/  # Cross-platform component library
     │   │   # Cross-platform UI component library
     │   │   # ✅ Shared UI components

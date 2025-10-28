@@ -9027,19 +9027,21 @@ fe/
     │   │   │   │   │   └── index.ts  # Real-time types
     │   │   │   │   ├── webhooks/
     │   │   │   │   │   └── index.ts  # Webhook types
-    │   │   │   │   ├── admin.ts
+    │   │   │   │   ├── admin.ts  # ❌ CREATE - Admin API types
     │   │   │   │   ├── common.ts  # Common types (pagination, filters, etc.)
-    │   │   │   │   ├── contracts.ts
-    │   │   │   │   ├── financial.ts
-    │   │   │   │   ├── jobs.ts
-    │   │   │   │   ├── messages.ts
-    │   │   │   │   ├── notifications.ts
-    │   │   │   │   ├── proposals.ts
-    │   │   │   │   ├── review.ts
-    │   │   │   │   ├── search.ts
-    │   │   │   │   ├── storage.ts
-    │   │   │   │   ├── subscriptions.ts
-    │   │   │   │   └── users.ts
+    │   │   │   │   ├── contracts.ts  # ✅ EXISTS - Contracts API types
+    │   │   │   │   ├── financial.ts  # ✅ EXISTS - Financial API types
+    │   │   │   │   ├── jobs.ts  # ✅ EXISTS - Jobs API types
+    │   │   │   │   ├── messages.ts  # ✅ EXISTS - Messages API types
+    │   │   │   │   ├── notifications.ts  # ✅ EXISTS - Notifications API types
+    │   │   │   │   ├── proposals.ts  # ✅ EXISTS - Proposals API types
+    │   │   │   │   ├── review.ts  # ✅ EXISTS - Review API types
+    │   │   │   │   ├── search.ts  # ✅ EXISTS - Search API types
+    │   │   │   │   ├── storage.ts  # ✅ EXISTS - Storage API types
+    │   │   │   │   ├── subscriptions.ts  # ✅ EXISTS - Subscriptions API types
+    │   │   │   │   └── users.ts  # ✅ EXISTS - Users API types
+    │   │   │   ├── config/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Configuration types
     │   │   │   ├── domains/
     │   │   │   │   ├── achievements/
     │   │   │   │   │   └── index.ts  # Achievement types
@@ -9062,48 +9064,158 @@ fe/
     │   │   │   │   └── sourcing/
     │   │   │   │       └── index.ts  # Sourcing types
     │   │   │   ├── entities/  # Domain entities
+    │   │   │   │   ├── admin/
+    │   │   │   │   │   ├── audit.ts  # ❌ CREATE - Audit entity
+    │   │   │   │   │   ├── flag.ts  # ❌ CREATE - Content flag entity
+    │   │   │   │   │   ├── incident.ts  # ❌ CREATE - System incident entity
+    │   │   │   │   │   ├── moderation-case.ts  # ❌ CREATE - Moderation case entity
+    │   │   │   │   │   └── report.ts  # ❌ CREATE - Report entity
+    │   │   │   │   ├── communications/
+    │   │   │   │   │   ├── attachment.ts  # ❌ CREATE - Message attachment entity
+    │   │   │   │   │   ├── channel.ts  # ❌ CREATE - Communication channel entity
+    │   │   │   │   │   ├── template.ts  # ❌ CREATE - Message template entity
+    │   │   │   │   │   └── thread.ts  # ❌ CREATE - Message thread entity
     │   │   │   │   ├── contracts/
+    │   │   │   │   │   ├── amendment.ts  # ❌ CREATE - Contract amendment entity
+    │   │   │   │   │   ├── change-order.ts  # ❌ CREATE - Change order entity
+    │   │   │   │   │   ├── compliance.ts  # ❌ CREATE - Contract compliance entity
+    │   │   │   │   │   ├── deliverable.ts  # ❌ CREATE - Deliverable entity
     │   │   │   │   │   ├── dispute.ts  # Dispute entity types
     │   │   │   │   │   ├── milestone.ts  # Milestone entity types
     │   │   │   │   │   ├── offer.ts  # Offer entity types
+    │   │   │   │   │   ├── terms.ts  # ❌ CREATE - Contract terms entity
     │   │   │   │   │   └── timesheet.ts  # Timesheet entity types
     │   │   │   │   ├── financial/
+    │   │   │   │   │   ├── credit-note.ts  # ❌ CREATE - Credit note entity
+    │   │   │   │   │   ├── currency.ts  # ❌ CREATE - Currency entity
     │   │   │   │   │   ├── escrow.ts  # Escrow DTOs
+    │   │   │   │   │   ├── fee.ts  # ❌ CREATE - Fee entity
+    │   │   │   │   │   ├── payment-method.ts  # ❌ CREATE - Payment method entity
+    │   │   │   │   │   ├── payout.ts  # ❌ CREATE - Payout entity
+    │   │   │   │   │   ├── refund.ts  # ❌ CREATE - Refund entity
     │   │   │   │   │   ├── report.ts  # Billing report row DTOs
-    │   │   │   │   │   └── tax.ts  # Tax DTOs
+    │   │   │   │   │   ├── reserve.ts  # ❌ CREATE - Reserve entity
+    │   │   │   │   │   ├── settlement.ts  # ❌ CREATE - Settlement entity
+    │   │   │   │   │   ├── tax.ts  # Tax DTOs
+    │   │   │   │   │   └── wallet.ts  # ❌ CREATE - Wallet entity
+    │   │   │   │   ├── jobs/
+    │   │   │   │   │   ├── application.ts  # ❌ CREATE - Job application entity
+    │   │   │   │   │   ├── invite.ts  # ❌ CREATE - Job invite entity
+    │   │   │   │   │   ├── requirement.ts  # ❌ CREATE - Job requirement entity
+    │   │   │   │   │   └── template.ts  # ❌ CREATE - Job template entity
+    │   │   │   │   ├── organizations/
+    │   │   │   │   │   ├── budget.ts  # ❌ CREATE - Budget entity
+    │   │   │   │   │   ├── department.ts  # ❌ CREATE - Department entity
+    │   │   │   │   │   ├── organization.ts  # ❌ CREATE - Organization entity
+    │   │   │   │   │   ├── policy.ts  # ❌ CREATE - Policy entity
+    │   │   │   │   │   ├── procurement.ts  # ❌ CREATE - Procurement entity
+    │   │   │   │   │   └── team.ts  # ❌ CREATE - Team entity
+    │   │   │   │   ├── proposals/
+    │   │   │   │   │   ├── bid.ts  # ❌ CREATE - Bid entity
+    │   │   │   │   │   ├── quote.ts  # ❌ CREATE - Quote entity
+    │   │   │   │   │   ├── rate-card.ts  # ❌ CREATE - Rate card entity
+    │   │   │   │   │   └── template.ts  # ❌ CREATE - Proposal template entity
     │   │   │   │   ├── search/
+    │   │   │   │   │   ├── alert.ts  # ❌ CREATE - Search alert entity
+    │   │   │   │   │   ├── facet.ts  # ❌ CREATE - Search facet entity
+    │   │   │   │   │   ├── filter.ts  # ❌ CREATE - Search filter entity
     │   │   │   │   │   └── saved_query.ts  # Saved query/alert DTOs
-    │   │   │   │   ├── contract.ts
-    │   │   │   │   ├── invoice.ts
-    │   │   │   │   ├── job.ts
-    │   │   │   │   ├── message.ts
+    │   │   │   │   ├── storage/
+    │   │   │   │   │   ├── access.ts  # ❌ CREATE - File access entity
+    │   │   │   │   │   ├── file.ts  # ❌ CREATE - File entity
+    │   │   │   │   │   ├── folder.ts  # ❌ CREATE - Folder entity
+    │   │   │   │   │   └── scan.ts  # ❌ CREATE - File scan entity
+    │   │   │   │   ├── subscriptions/
+    │   │   │   │   │   ├── connects.ts  # ❌ CREATE - Connects entity
+    │   │   │   │   │   ├── entitlement.ts  # ❌ CREATE - Entitlement entity
+    │   │   │   │   │   ├── plan.ts  # ❌ CREATE - Subscription plan entity
+    │   │   │   │   │   └── usage.ts  # ❌ CREATE - Usage entity
+    │   │   │   │   ├── users/
+    │   │   │   │   │   ├── availability.ts  # ❌ CREATE - Availability entity
+    │   │   │   │   │   ├── certification.ts  # ❌ CREATE - Certification entity
+    │   │   │   │   │   ├── education.ts  # ❌ CREATE - Education entity
+    │   │   │   │   │   ├── experience.ts  # ❌ CREATE - Experience entity
+    │   │   │   │   │   ├── portfolio.ts  # ❌ CREATE - Portfolio entity
+    │   │   │   │   │   ├── preference.ts  # ❌ CREATE - User preference entity
+    │   │   │   │   │   ├── profile.ts  # ❌ CREATE - User profile entity
+    │   │   │   │   │   ├── skill.ts  # ❌ CREATE - Skill entity
+    │   │   │   │   │   └── verification.ts  # ❌ CREATE - Verification entity
+    │   │   │   │   ├── contract.ts  # ✅ EXISTS - Contract entity
+    │   │   │   │   ├── invoice.ts  # ✅ EXISTS - Invoice entity
+    │   │   │   │   ├── job.ts  # ✅ EXISTS - Job entity
+    │   │   │   │   ├── message.ts  # ✅ EXISTS - Message entity
     │   │   │   │   ├── notification.ts  # Notification DTOs
-    │   │   │   │   ├── proposal.ts
-    │   │   │   │   ├── review.ts
-    │   │   │   │   ├── subscription.ts
-    │   │   │   │   ├── transaction.ts
-    │   │   │   │   └── user.ts
+    │   │   │   │   ├── proposal.ts  # ✅ EXISTS - Proposal entity
+    │   │   │   │   ├── review.ts  # ✅ EXISTS - Review entity
+    │   │   │   │   ├── subscription.ts  # ✅ EXISTS - Subscription entity
+    │   │   │   │   ├── transaction.ts  # ✅ EXISTS - Transaction entity
+    │   │   │   │   ├── user.ts  # ✅ EXISTS - User entity
+    │   │   │   │   └── │
     │   │   │   ├── enums/  # Enums
-    │   │   │   │   ├── contract-status.ts
-    │   │   │   │   ├── job-status.ts
-    │   │   │   │   ├── payment-status.ts
-    │   │   │   │   ├── proposal-status.ts
-    │   │   │   │   ├── review-rating.ts
-    │   │   │   │   └── user-type.ts
+    │   │   │   │   ├── contract-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── country.ts  # ❌ CREATE
+    │   │   │   │   ├── currency.ts  # ❌ CREATE
+    │   │   │   │   ├── dispute-status.ts  # ❌ CREATE
+    │   │   │   │   ├── file-type.ts  # ❌ CREATE
+    │   │   │   │   ├── job-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── language.ts  # ❌ CREATE
+    │   │   │   │   ├── milestone-status.ts  # ❌ CREATE
+    │   │   │   │   ├── moderation-status.ts  # ❌ CREATE
+    │   │   │   │   ├── notification-type.ts  # ❌ CREATE
+    │   │   │   │   ├── payment-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── permission.ts  # ❌ CREATE
+    │   │   │   │   ├── proposal-status.ts  # ✅ EXISTS
+    │   │   │   │   ├── review-rating.ts  # ✅ EXISTS
+    │   │   │   │   ├── role.ts  # ❌ CREATE
+    │   │   │   │   ├── skill-level.ts  # ❌ CREATE
+    │   │   │   │   ├── subscription-status.ts  # ❌ CREATE
+    │   │   │   │   ├── timezone.ts  # ❌ CREATE
+    │   │   │   │   ├── user-type.ts  # ✅ EXISTS
+    │   │   │   │   └── verification-status.ts  # ❌ CREATE
+    │   │   │   ├── errors/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Error types
+    │   │   │   ├── forms/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Form types
+    │   │   │   ├── routing/
+    │   │   │   │   └── index.ts  # ❌ CREATE - Routing types
     │   │   │   ├── shared/
+    │   │   │   │   ├── address/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Address types
     │   │   │   │   ├── analytics/
     │   │   │   │   │   └── index.ts  # Analytics types
-    │   │   │   │   └── geolocation/
-    │   │   │   │       └── index.ts  # Geolocation types
+    │   │   │   │   ├── api-response/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - API response types
+    │   │   │   │   ├── contact/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Contact types
+    │   │   │   │   ├── datetime/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Date/time types
+    │   │   │   │   ├── filters/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Filter types
+    │   │   │   │   ├── geolocation/
+    │   │   │   │   │   └── index.ts  # Geolocation types
+    │   │   │   │   ├── media/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Media types
+    │   │   │   │   ├── money/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Money/currency types
+    │   │   │   │   ├── pagination/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Pagination types
+    │   │   │   │   ├── sort/
+    │   │   │   │   │   └── index.ts  # ❌ CREATE - Sort types
+    │   │   │   │   └── validation/
+    │   │   │   │       └── index.ts  # ❌ CREATE - Validation types
+    │   │   │   ├── state/
+    │   │   │   │   └── index.ts  # ❌ CREATE - State management types
     │   │   │   ├── audit.ts  # Audit Log/Export DTOs
     │   │   │   ├── index.ts  # Export all types
     │   │   │   ├── moderation.ts  # ModerationCase/Appeal types
     │   │   │   ├── search-admin.ts  # Taxonomy/Facet/Rewrite/Speller DTOs
     │   │   │   ├── subscription.ts  # Plan/Entitlement types
-    │   │   │   └── support.ts  # Ticket/Message types
+    │   │   │   ├── support.ts  # Ticket/Message types
+    │   │   │   └── │
     │   │   ├── package.json
     │   │   ├── README.md
-    │   │   └── tsconfig.json
+    │   │   ├── tsconfig.json
+    │   │   └── │
     │   ├── ui/  # Cross-platform component library
     │   │   ├── src/
     │   │   │   ├── a11y/
