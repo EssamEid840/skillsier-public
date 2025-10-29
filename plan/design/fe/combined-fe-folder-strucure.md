@@ -25386,6 +25386,7 @@ fe/
     │   │   │   │   │   # Business logic types (MISSING ENTITIES BELOW)
     │   │   │   │   │   ├── admin/  # Admin domain types
     │   │   │   │   │   │   ├── activity-log.ts  # Admin activity logging
+    │   │   │   │   │   │   │   # AdminActivityLog, ActivityType, ActionCategory
     │   │   │   │   │   │   ├── admin-activity-log.ts  # Activity logging types
     │   │   │   │   │   │   ├── admin-api-key.ts  # Admin API keys
     │   │   │   │   │   │   ├── admin-bulk-action.ts  # Bulk actions
@@ -25394,24 +25395,35 @@ fe/
     │   │   │   │   │   │   ├── admin-user-role.ts  # User roles
     │   │   │   │   │   │   ├── admin-user.ts  # Admin user entity types
     │   │   │   │   │   │   ├── announcement.ts  # Platform-wide announcement types
+    │   │   │   │   │   │   ├── appeal.ts  # Appeal, AppealStatus, AppealDecision
     │   │   │   │   │   │   ├── approval-request.ts  # Approval requests
     │   │   │   │   │   │   ├── approval-workflow.ts  # Approval workflows
     │   │   │   │   │   │   ├── audit-entry.ts  # Audit entries
     │   │   │   │   │   │   ├── audit-trail.ts  # Audit logging types
+    │   │   │   │   │   │   ├── audit.ts  # AuditTrail, AuditEntry, AuditAction
     │   │   │   │   │   │   ├── ban-rule.ts  # Ban rules
     │   │   │   │   │   │   ├── break-glass-request.ts  # Break-glass requests
+    │   │   │   │   │   │   ├── break-glass.ts  # BreakGlassAccess, AccessApproval
+    │   │   │   │   │   │   ├── broadcast.ts  # Broadcast, BroadcastType, BroadcastStatus
+    │   │   │   │   │   │   ├── bulk-operation.ts  # BulkOperation, BulkOperationType, BulkStatus
     │   │   │   │   │   │   ├── canned-response.ts  # Canned responses
+    │   │   │   │   │   │   │   # CannedResponse, ResponseCategory
     │   │   │   │   │   │   ├── case-priority.ts  # Case priorities
+    │   │   │   │   │   │   ├── case.ts  # Case, CaseType, CaseStatus, CasePriority
     │   │   │   │   │   │   ├── change-request.ts  # Change requests
     │   │   │   │   │   │   │   # Change approval workflows
+    │   │   │   │   │   │   │   # ChangeRequest, ChangeApproval
+    │   │   │   │   │   │   ├── compliance-check.ts  # ComplianceCheck, ComplianceStatus
     │   │   │   │   │   │   ├── compliance-context.ts  # GDPR/CCPA compliance tracking
     │   │   │   │   │   │   ├── compliance-doc.ts  # Compliance documents
     │   │   │   │   │   │   ├── compliance-policy.ts  # Compliance policies
     │   │   │   │   │   │   ├── config-change.ts  # Config change history
     │   │   │   │   │   │   ├── content-action.ts  # Content actions (remove, hide, flag)
+    │   │   │   │   │   │   ├── content-policy.ts  # ContentPolicy, PolicyViolation
     │   │   │   │   │   │   ├── data-export.ts  # Data exports
     │   │   │   │   │   │   ├── dsar-request.ts  # DSAR requests
     │   │   │   │   │   │   ├── experiment.ts  # A/B testing experiment types
+    │   │   │   │   │   │   │   # Experiment, ExperimentVariant, ExperimentResults
     │   │   │   │   │   │   ├── export-job.ts  # Export jobs
     │   │   │   │   │   │   ├── feature-flag.ts  # Feature flag types
     │   │   │   │   │   │   ├── feedback-category.ts  # Feedback categories
@@ -25419,36 +25431,49 @@ fe/
     │   │   │   │   │   │   ├── flag.ts  # Content flags
     │   │   │   │   │   │   ├── goodwill-credit.ts  # Goodwill credits
     │   │   │   │   │   │   ├── hold-case.ts  # Financial holds
+    │   │   │   │   │   │   ├── hold.ts  # UserHold, HoldReason, HoldDuration
     │   │   │   │   │   │   ├── impersonation.ts  # Admin impersonation sessions
     │   │   │   │   │   │   ├── incident-timeline.ts  # Incident timeline
     │   │   │   │   │   │   ├── incident.ts  # System incidents
+    │   │   │   │   │   │   │   # Incident, IncidentSeverity, IncidentResponse
     │   │   │   │   │   │   ├── index.ts  # Barrel export for admin domain
     │   │   │   │   │   │   ├── integration-health.ts  # Integration health
     │   │   │   │   │   │   ├── integration.ts  # Third-party integrations
+    │   │   │   │   │   │   │   # Integration, IntegrationConfig, IntegrationStatus
     │   │   │   │   │   │   ├── kb-article-version.ts  # KB article versions
     │   │   │   │   │   │   ├── kb-article.ts  # Knowledge base articles
     │   │   │   │   │   │   ├── kb-category.ts  # KB categories
+    │   │   │   │   │   │   ├── knowledge-base.ts  # KBArticle, KBCategory, KBVersion
     │   │   │   │   │   │   ├── legal-hold.ts  # Legal holds
     │   │   │   │   │   │   │   # Legal data preservation
+    │   │   │   │   │   │   │   # LegalHold, HoldReason
     │   │   │   │   │   │   ├── maintenance-window.ts  # Maintenance windows
     │   │   │   │   │   │   ├── maintenance.ts  # Maintenance mode types
     │   │   │   │   │   │   ├── metrics.ts  # System metrics and analytics types
     │   │   │   │   │   │   ├── moderation-action.ts  # Moderation actions
+    │   │   │   │   │   │   │   # ModerationAction, ActionType, ActionSeverity
     │   │   │   │   │   │   ├── moderation-case.ts  # Moderation cases
     │   │   │   │   │   │   ├── moderation-item.ts  # Moderation items
     │   │   │   │   │   │   ├── moderation-queue.ts  # Moderation queue item types
     │   │   │   │   │   │   ├── moderation-rule.ts  # Moderation rules
     │   │   │   │   │   │   ├── permission-grant.ts  # Permission grants
     │   │   │   │   │   │   ├── permission.ts  # Permissions
+    │   │   │   │   │   │   │   # Permission, PermissionGroup
+    │   │   │   │   │   │   ├── pii-access.ts  # PIIAccessLog, PIIAccessRequest
+    │   │   │   │   │   │   ├── platform-settings.ts  # PlatformSettings, SystemConfig
     │   │   │   │   │   │   ├── policy-doc.ts  # Policy document types
+    │   │   │   │   │   │   │   # PolicyDocument, PolicyVersion
     │   │   │   │   │   │   ├── policy-version.ts  # Policy versions
     │   │   │   │   │   │   ├── privacy-request.ts  # DSAR/GDPR requests
+    │   │   │   │   │   │   │   # PrivacyRequest, DSARType, DSARStatus
     │   │   │   │   │   │   ├── rate-limit.ts  # Rate limiting configuration types
     │   │   │   │   │   │   ├── refund-case.ts  # Refund cases
     │   │   │   │   │   │   ├── report.ts  # Admin reports
     │   │   │   │   │   │   ├── sanction-screening.ts  # Sanctions screening
     │   │   │   │   │   │   ├── sanctions-screening.ts  # Sanctions/AML checks
+    │   │   │   │   │   │   ├── sanctions.ts  # SanctionsCheck, SanctionsMatch, SanctionsProvider
     │   │   │   │   │   │   ├── session.ts  # Admin session management
+    │   │   │   │   │   │   │   # AdminSession, SessionStatus
     │   │   │   │   │   │   ├── sla-rule.ts  # SLA rules
     │   │   │   │   │   │   ├── support-case-note.ts  # Case notes
     │   │   │   │   │   │   ├── support-case.ts  # Support cases
@@ -25460,17 +25485,25 @@ fe/
     │   │   │   │   │   │   ├── system-health.ts  # System health monitoring types
     │   │   │   │   │   │   ├── system-settings.ts  # System configuration types
     │   │   │   │   │   │   ├── throttle-policy.ts  # API throttle policy types
+    │   │   │   │   │   │   │   # ThrottlePolicy, RateLimit
     │   │   │   │   │   │   ├── trust-safety-rule.ts  # Trust & safety rules
     │   │   │   │   │   │   ├── user-action.ts  # User actions (suspend, ban, warn)
     │   │   │   │   │   │   ├── watchlist-entry.ts  # Watchlist entries
+    │   │   │   │   │   │   ├── watchlist.ts  # WatchlistEntry, WatchlistType
     │   │   │   │   │   │   └── workflow-step.ts  # Workflow steps
     │   │   │   │   │   ├── communications/  # Communications domain types
+    │   │   │   │   │   │   ├── analytics.ts  # CommunicationAnalytics, Metrics
     │   │   │   │   │   │   ├── attachment.ts  # Message attachment types
+    │   │   │   │   │   │   │   # MessageAttachment, AttachmentType
     │   │   │   │   │   │   ├── audit.ts  # Communications audit log types
     │   │   │   │   │   │   ├── blocklist.ts  # User blocking
+    │   │   │   │   │   │   │   # Blocklist, BlockedEntity
     │   │   │   │   │   │   ├── bookmark.ts  # Message bookmarks
+    │   │   │   │   │   │   │   # Bookmark, BookmarkFolder
     │   │   │   │   │   │   ├── calendar-invite.ts  # Calendar integrations
+    │   │   │   │   │   │   │   # CalendarInvite, InviteResponse
     │   │   │   │   │   │   ├── call.ts  # Voice/video calls
+    │   │   │   │   │   │   │   # Call, CallParticipant
     │   │   │   │   │   │   ├── channel-member.ts  # Channel members
     │   │   │   │   │   │   ├── channel-subscription.ts  # Channel subscriptions
     │   │   │   │   │   │   ├── channel.ts  # Channel types
@@ -25478,6 +25511,7 @@ fe/
     │   │   │   │   │   │   ├── collaboration-participant.ts  # Collaboration participants
     │   │   │   │   │   │   ├── collaboration-version.ts  # Document versions
     │   │   │   │   │   │   ├── collaboration.ts  # Real-time collaboration types
+    │   │   │   │   │   │   │   # Collaboration, SharedDocument
     │   │   │   │   │   │   ├── compliance-action.ts  # Compliance actions
     │   │   │   │   │   │   ├── compliance.ts  # Data retention/GDPR compliance types
     │   │   │   │   │   │   ├── conversation-export.ts  # Conversation exports
@@ -25485,30 +25519,40 @@ fe/
     │   │   │   │   │   │   ├── conversation.ts  # Conversation entity types
     │   │   │   │   │   │   ├── delivery-log.ts  # Delivery log types
     │   │   │   │   │   │   │   # Message delivery tracking
+    │   │   │   │   │   │   │   # DeliveryLog, LogEntry
     │   │   │   │   │   │   ├── delivery.ts  # Message delivery tracking
     │   │   │   │   │   │   │   # Delivery status per recipient
+    │   │   │   │   │   │   │   # DeliveryStatus, DeliveryAttempt
     │   │   │   │   │   │   ├── device-token.ts  # Device tokens
     │   │   │   │   │   │   ├── device.ts  # Device registry types
     │   │   │   │   │   │   ├── digest-entry.ts  # Digest entries
     │   │   │   │   │   │   ├── digest.ts  # Email digest types
     │   │   │   │   │   │   │   # Email digest aggregation
+    │   │   │   │   │   │   │   # Digest, DigestSchedule
     │   │   │   │   │   │   ├── document-version.ts  # Document version types
     │   │   │   │   │   │   ├── draft.ts  # Message drafts
+    │   │   │   │   │   │   │   # MessageDraft, DraftStatus
     │   │   │   │   │   │   ├── email-bounce.ts  # Email bounces
     │   │   │   │   │   │   ├── email-bridge.ts  # Email-to-platform bridge
+    │   │   │   │   │   │   │   # EmailBridge, InboundEmail
     │   │   │   │   │   │   ├── email-click.ts  # Email clicks
     │   │   │   │   │   │   ├── email-notification.ts  # Email notification types
     │   │   │   │   │   │   ├── email-open.ts  # Email opens
     │   │   │   │   │   │   ├── email-template.ts  # Email template types
     │   │   │   │   │   │   ├── email.ts  # Email notifications
     │   │   │   │   │   │   ├── encryption.ts  # E2E encryption keys
+    │   │   │   │   │   │   │   # EncryptionKey, EncryptionConfig
+    │   │   │   │   │   │   ├── export.ts  # ConversationExport, ExportFormat
     │   │   │   │   │   │   ├── gdpr-request.ts  # GDPR requests
     │   │   │   │   │   │   ├── idempotency.ts  # Idempotency registry types
     │   │   │   │   │   │   ├── in-app-notification.ts  # In-app notification display state
     │   │   │   │   │   │   ├── index.ts  # Barrel export for communications domain
     │   │   │   │   │   │   ├── interview.ts  # Interview scheduling
+    │   │   │   │   │   │   │   # Interview, InterviewParticipant
     │   │   │   │   │   │   ├── mail-tracking.ts  # Email provider webhooks
+    │   │   │   │   │   │   │   # MailTracking, TrackingEvent
     │   │   │   │   │   │   ├── mention.ts  # @mention types
+    │   │   │   │   │   │   │   # Mention, MentionType
     │   │   │   │   │   │   ├── message-edit.ts  # Message edit history
     │   │   │   │   │   │   ├── message-reaction.ts  # Message reactions
     │   │   │   │   │   │   ├── message-search.ts  # Message search index
@@ -25516,55 +25560,73 @@ fe/
     │   │   │   │   │   │   ├── message.ts  # Message entity types
     │   │   │   │   │   │   ├── moderation.ts  # Moderation types
     │   │   │   │   │   │   │   # Message moderation
+    │   │   │   │   │   │   │   # MessageModeration, ModerationAction
     │   │   │   │   │   │   ├── notification-channel.ts  # Notification channels
     │   │   │   │   │   │   ├── notification-preference.ts  # User notification settings
     │   │   │   │   │   │   ├── notification-queue.ts  # Notification queue types
     │   │   │   │   │   │   │   # Notification queue management
+    │   │   │   │   │   │   │   # NotificationQueue, QueuePriority
     │   │   │   │   │   │   ├── notification-stat.ts  # Notification statistics
     │   │   │   │   │   │   ├── notification-template.ts  # Notification templates
     │   │   │   │   │   │   ├── notification.ts  # Notification entity types
     │   │   │   │   │   │   ├── participant.ts  # Conversation participant types
     │   │   │   │   │   │   ├── pin.ts  # Pinned messages
+    │   │   │   │   │   │   │   # PinnedMessage, PinPriority
     │   │   │   │   │   │   ├── platform-alert.ts  # System-wide alerts
+    │   │   │   │   │   │   │   # PlatformAlert, AlertDelivery
     │   │   │   │   │   │   ├── preference.ts  # User preferences
     │   │   │   │   │   │   ├── presence-history.ts  # Presence history
     │   │   │   │   │   │   ├── presence.ts  # User presence/online status types
+    │   │   │   │   │   │   │   # Presence, PresenceStatus
     │   │   │   │   │   │   ├── push-device.ts  # Push notification device registry
+    │   │   │   │   │   │   │   # PushDevice, DeviceToken
     │   │   │   │   │   │   ├── push-notification.ts  # Push notification types
     │   │   │   │   │   │   ├── push-subscription.ts  # Push subscription types
+    │   │   │   │   │   │   ├── quota.ts  # MessageQuota, QuotaLimit
     │   │   │   │   │   │   ├── rate-limit.ts  # Message rate limiting types
     │   │   │   │   │   │   ├── reaction.ts  # Message reaction types
     │   │   │   │   │   │   ├── read-receipt.ts  # Read receipt types
     │   │   │   │   │   │   ├── read-state.ts  # Read state tracking
     │   │   │   │   │   │   │   # Message read/unread state
+    │   │   │   │   │   │   │   # ReadState, ReadReceipt
     │   │   │   │   │   │   ├── retention-policy.ts  # Retention policies
     │   │   │   │   │   │   ├── search.ts  # Message search types
+    │   │   │   │   │   │   │   # MessageSearch, SearchIndex
     │   │   │   │   │   │   ├── sms-notification.ts  # SMS notification types
     │   │   │   │   │   │   ├── sms.ts  # SMS notifications
     │   │   │   │   │   │   ├── spam-detection.ts  # Spam filtering
+    │   │   │   │   │   │   │   # SpamDetection, SpamRule
     │   │   │   │   │   │   ├── spam.ts  # Spam detection types
     │   │   │   │   │   │   ├── suppression.ts  # Suppression list types
     │   │   │   │   │   │   │   # Notification suppression
+    │   │   │   │   │   │   │   # SuppressionList, SuppressionReason
     │   │   │   │   │   │   ├── system-message.ts  # System-generated messages
+    │   │   │   │   │   │   │   # SystemMessage, MessageTemplate
     │   │   │   │   │   │   ├── template.ts  # Message template types
     │   │   │   │   │   │   ├── thread-follower.ts  # Thread followers
     │   │   │   │   │   │   ├── thread-stat.ts  # Thread statistics
     │   │   │   │   │   │   ├── thread.ts  # Message thread types
     │   │   │   │   │   │   │   # Conversation threads
+    │   │   │   │   │   │   │   # Thread, ThreadParticipant
     │   │   │   │   │   │   ├── typing-indicator.ts  # Typing indicator types
     │   │   │   │   │   │   ├── unsubscribe.ts  # Unsubscribe types
     │   │   │   │   │   │   │   # Unsubscribe management
+    │   │   │   │   │   │   │   # UnsubscribeRegistry, UnsubscribeType
     │   │   │   │   │   │   ├── url-safety.ts  # URL scanning/safety
+    │   │   │   │   │   │   │   # URLSafetyCheck, SafetyScore
     │   │   │   │   │   │   ├── usage-metric.ts  # Usage metrics
     │   │   │   │   │   │   ├── webhook-delivery.ts  # Webhook delivery types
     │   │   │   │   │   │   ├── webhook.ts  # Webhook subscription types
+    │   │   │   │   │   │   │   # Webhook, WebhookEvent
     │   │   │   │   │   │   └── websocket.ts  # WebSocket connection types
     │   │   │   │   │   ├── contracts/  # Contracts domain types
     │   │   │   │   │   │   ├── activity-level.ts  # Activity tracking types
     │   │   │   │   │   │   ├── activity-log.ts  # Milestone/contract activity logs
+    │   │   │   │   │   │   ├── activity.ts  # ContractActivity, ActivityType
     │   │   │   │   │   │   ├── agency-assignment.ts  # Agency assignments
     │   │   │   │   │   │   ├── agency-contract.ts  # Agency contracts
     │   │   │   │   │   │   │   # Agency-specific contracts
+    │   │   │   │   │   │   │   # AgencyContract, AgencyMember, BillingSplit
     │   │   │   │   │   │   ├── amendment.ts  # Contract amendment types
     │   │   │   │   │   │   ├── analytics.ts  # Contract analytics
     │   │   │   │   │   │   ├── approval.ts  # Contract approval workflow types
@@ -25579,20 +25641,24 @@ fe/
     │   │   │   │   │   │   ├── budget-tracking.ts  # Budget tracking
     │   │   │   │   │   │   ├── budget.ts  # Contract budget tracking types
     │   │   │   │   │   │   │   # Contract budget tracking
+    │   │   │   │   │   │   │   # ContractBudget, BudgetAlert
     │   │   │   │   │   │   ├── cancellation.ts  # Contract cancellation
     │   │   │   │   │   │   ├── change-order.ts  # Change order types
     │   │   │   │   │   │   ├── clause.ts  # Contract clause types
     │   │   │   │   │   │   ├── compliance-check.ts  # Compliance checks
     │   │   │   │   │   │   ├── compliance.ts  # Contract compliance tracking types
     │   │   │   │   │   │   │   # Contract compliance checks
+    │   │   │   │   │   │   │   # ContractCompliance, AuditLog
     │   │   │   │   │   │   ├── contract-approval.ts  # Multi-tier approvals
     │   │   │   │   │   │   ├── contract-comparison.ts  # Contract comparisons
     │   │   │   │   │   │   ├── contract-permission.ts  # Contract permissions
     │   │   │   │   │   │   ├── contract-stat.ts  # Contract statistics
+    │   │   │   │   │   │   ├── contract-terms.ts  # ContractTerms, PaymentTerms, TerminationClause
     │   │   │   │   │   │   ├── contract-timeline.ts  # Contract timeline events
     │   │   │   │   │   │   ├── contract-type.ts  # Contract types
     │   │   │   │   │   │   ├── contract.ts  # Contract entity types
     │   │   │   │   │   │   ├── deliverable.ts  # Deliverable types
+    │   │   │   │   │   │   ├── direct-contract.ts  # DirectContract, InvitationToken
     │   │   │   │   │   │   ├── dispute-evidence.ts  # Dispute evidence
     │   │   │   │   │   │   ├── dispute-resolution.ts  # Dispute resolutions
     │   │   │   │   │   │   ├── dispute.ts  # Contract dispute types
@@ -25603,32 +25669,38 @@ fe/
     │   │   │   │   │   │   ├── external-reference.ts  # External system references
     │   │   │   │   │   │   ├── feedback.ts  # Contract feedback types
     │   │   │   │   │   │   │   # Post-contract feedback
+    │   │   │   │   │   │   │   # ContractFeedback, FeedbackType
     │   │   │   │   │   │   ├── hold.ts  # Financial hold types
     │   │   │   │   │   │   ├── index.ts  # Barrel export for contracts domain
     │   │   │   │   │   │   ├── insurance.ts  # Insurance coverage types
     │   │   │   │   │   │   ├── invitation.ts  # Contract invitation types
     │   │   │   │   │   │   ├── kpi.ts  # Performance KPIs
     │   │   │   │   │   │   ├── legal-review.ts  # Legal reviews
+    │   │   │   │   │   │   │   # LegalReview, ReviewStatus
     │   │   │   │   │   │   ├── liability.ts  # Liability clause types
     │   │   │   │   │   │   ├── milestone.ts  # Milestone entity types
+    │   │   │   │   │   │   ├── negotiation.ts  # Negotiation, NegotiationOffer
     │   │   │   │   │   │   ├── notification.ts  # Contract notifications
     │   │   │   │   │   │   ├── participant.ts  # Contract participants
     │   │   │   │   │   │   ├── pause-history.ts  # Pause history
     │   │   │   │   │   │   ├── payment-terms.ts  # Payment terms
     │   │   │   │   │   │   ├── penalty.ts  # Penalty clause types
     │   │   │   │   │   │   ├── performance-kpi.ts  # Contract KPIs
+    │   │   │   │   │   │   ├── rate-adjustment.ts  # RateAdjustment, AdjustmentReason
     │   │   │   │   │   │   ├── rate-card.ts  # Rate card types
     │   │   │   │   │   │   ├── recurring-schedule.ts  # Recurring schedules
     │   │   │   │   │   │   ├── recurring.ts  # Recurring contract types
     │   │   │   │   │   │   ├── reminder.ts  # Contract reminder types
     │   │   │   │   │   │   ├── renewal.ts  # Auto-renewal types
     │   │   │   │   │   │   │   # Contract renewal
+    │   │   │   │   │   │   ├── report.ts  # ContractReport, ReportType
     │   │   │   │   │   │   ├── revision.ts  # Contract revisions
     │   │   │   │   │   │   ├── risk-assessment.ts  # Contract risk assessments
     │   │   │   │   │   │   │   # Contract risk scoring
     │   │   │   │   │   │   ├── screenshot-monitoring.ts  # Screenshot monitoring
     │   │   │   │   │   │   ├── screenshot.ts  # Screenshot monitoring types
     │   │   │   │   │   │   ├── search.ts  # Contract search index types
+    │   │   │   │   │   │   ├── security-clearance.ts  # SecurityClearance, ClearanceLevel
     │   │   │   │   │   │   ├── signature.ts  # Digital signature types
     │   │   │   │   │   │   ├── sla-breach.ts  # SLA breaches
     │   │   │   │   │   │   ├── sla.ts  # Service level agreement types
@@ -25645,16 +25717,21 @@ fe/
     │   │   │   │   │   │   ├── version.ts  # Contract versioning
     │   │   │   │   │   │   ├── work-diary.ts  # Work diary entry types
     │   │   │   │   │   │   │   # Daily work logs
+    │   │   │   │   │   │   ├── work-scope.ts  # WorkScope, Deliverable, Milestone
     │   │   │   │   │   │   ├── workroom-note.ts  # Workroom notes
     │   │   │   │   │   │   ├── workroom-task.ts  # Workroom tasks
+    │   │   │   │   │   │   ├── workroom.ts  # Workroom, WorkroomTask, WorkroomNote
     │   │   │   │   │   │   └── workspace.ts  # Workspace types
     │   │   │   │   │   │       # Contract workspace/workroom
     │   │   │   │   │   ├── financial/  # Financial domain types
     │   │   │   │   │   │   ├── allowance.ts  # Allowance tracking
     │   │   │   │   │   │   ├── analytics.ts  # Financial analytics types
+    │   │   │   │   │   │   │   # FinancialAnalytics, PlatformMetrics
     │   │   │   │   │   │   ├── balance-snapshot.ts  # Balance snapshot types
     │   │   │   │   │   │   ├── bank-account.ts  # Bank account types
+    │   │   │   │   │   │   │   # BankAccount, AccountType
     │   │   │   │   │   │   ├── bank-verification.ts  # Bank account verification types
+    │   │   │   │   │   │   │   # BankVerification, VerificationStatus
     │   │   │   │   │   │   ├── billing-address.ts  # Billing address management
     │   │   │   │   │   │   ├── bonus.ts  # Bonus payment types
     │   │   │   │   │   │   ├── budget.ts  # Budget tracking
@@ -25662,9 +25739,11 @@ fe/
     │   │   │   │   │   │   │   # Chargeback handling
     │   │   │   │   │   │   ├── commission.ts  # Commission calculations
     │   │   │   │   │   │   ├── connects.ts  # Connects purchase types
+    │   │   │   │   │   │   ├── coupon.ts  # Coupon, CouponRedemption
     │   │   │   │   │   │   ├── currency-conversion.ts  # Forex types
     │   │   │   │   │   │   │   # Multi-currency conversions
     │   │   │   │   │   │   ├── currency-preference.ts  # Currency preference types
+    │   │   │   │   │   │   │   # CurrencyPreference, RateLock
     │   │   │   │   │   │   ├── currency.ts  # Currency entity types
     │   │   │   │   │   │   ├── dispute.ts  # Payment dispute types
     │   │   │   │   │   │   ├── escrow-account.ts  # Escrow accounts
@@ -25674,6 +25753,7 @@ fe/
     │   │   │   │   │   │   ├── exchange-rate.ts  # Exchange rate types
     │   │   │   │   │   │   ├── expense-reimbursement.ts  # Expense reimbursements
     │   │   │   │   │   │   ├── expense.ts  # Expense reimbursement types
+    │   │   │   │   │   │   │   # ExpenseReimbursement, ExpenseType
     │   │   │   │   │   │   ├── fee-rule.ts  # Fee rules & overrides
     │   │   │   │   │   │   ├── fee-transaction.ts  # Fee transactions
     │   │   │   │   │   │   ├── fee-version.ts  # Fee versioning types
@@ -25681,19 +25761,24 @@ fe/
     │   │   │   │   │   │   │   # Fee structures
     │   │   │   │   │   │   ├── forex-rate.ts  # Exchange rates
     │   │   │   │   │   │   ├── forex.ts  # Currency exchange types
+    │   │   │   │   │   │   │   # ExchangeRate, CurrencyConversion
     │   │   │   │   │   │   ├── fraud-alert.ts  # Fraud alert types
+    │   │   │   │   │   │   │   # FraudAlert, FraudIndicator
     │   │   │   │   │   │   ├── fraud-detection.ts  # Fraud detection
     │   │   │   │   │   │   ├── fraud-signal.ts  # Fraud signals
     │   │   │   │   │   │   ├── gateway-config.ts  # Gateway configurations
     │   │   │   │   │   │   ├── gateway-webhook.ts  # Gateway webhooks
     │   │   │   │   │   │   ├── gateway.ts  # Payment gateway configuration types
+    │   │   │   │   │   │   │   # GatewayConfig, GatewayWebhook
     │   │   │   │   │   │   ├── hold.ts  # Payment holds
     │   │   │   │   │   │   ├── index.ts  # Barrel export for financial domain
     │   │   │   │   │   │   ├── insurance-claim.ts  # Insurance claims
+    │   │   │   │   │   │   │   # InsuranceClaim, ClaimStatus
     │   │   │   │   │   │   ├── insurance-policy.ts  # Insurance policies
     │   │   │   │   │   │   ├── insurance-provider.ts  # Insurance providers
     │   │   │   │   │   │   ├── insurance.ts  # Payment insurance types
     │   │   │   │   │   │   ├── international-payment.ts  # International payment types
+    │   │   │   │   │   │   │   # InternationalPayment, ComplianceCheck
     │   │   │   │   │   │   ├── intl-compliance-check.ts  # International compliance checks
     │   │   │   │   │   │   ├── invoice-line-item.ts  # Invoice line items
     │   │   │   │   │   │   ├── invoice.ts  # Invoice entity types
@@ -25705,6 +25790,7 @@ fe/
     │   │   │   │   │   │   ├── payment-dispute.ts  # Payment dispute types
     │   │   │   │   │   │   ├── payment-method.ts  # Payment method types
     │   │   │   │   │   │   ├── payment-schedule.ts  # Payment schedule types
+    │   │   │   │   │   │   │   # PaymentSchedule, ScheduleType
     │   │   │   │   │   │   ├── payment.ts  # Payment entity types
     │   │   │   │   │   │   ├── payout-batch.ts  # Payout batches
     │   │   │   │   │   │   ├── payout.ts  # Payout types
@@ -25721,19 +25807,23 @@ fe/
     │   │   │   │   │   │   ├── reconciliation-report.ts  # Reconciliation reports
     │   │   │   │   │   │   ├── reconciliation.ts  # Financial reconciliation types
     │   │   │   │   │   │   │   # Payment reconciliation
+    │   │   │   │   │   │   │   # ReconciliationReport, Discrepancy
     │   │   │   │   │   │   ├── recurring-payment.ts  # Recurring payment setup
     │   │   │   │   │   │   ├── refund.ts  # Refund types
     │   │   │   │   │   │   ├── reminder-escalation.ts  # Payment reminder escalations
     │   │   │   │   │   │   ├── reminder-template.ts  # Reminder templates
     │   │   │   │   │   │   ├── reminder.ts  # Payment reminder types
+    │   │   │   │   │   │   │   # PaymentReminder, ReminderTemplate
     │   │   │   │   │   │   ├── reserve.ts  # Reserve types
     │   │   │   │   │   │   ├── risk-assessment.ts  # Risk assessment types
     │   │   │   │   │   │   ├── risk.ts  # Risk assessment types
     │   │   │   │   │   │   ├── settlement.ts  # Settlement types
     │   │   │   │   │   │   ├── subscription-billing.ts  # Subscription billing types
+    │   │   │   │   │   │   │   # SubscriptionBilling, BillingCycle
     │   │   │   │   │   │   ├── subscription-invoice.ts  # Subscription invoices (financial side)
     │   │   │   │   │   │   ├── tax-document.ts  # Tax documents
     │   │   │   │   │   │   ├── tax-form.ts  # Tax form types (1099, W9)
+    │   │   │   │   │   │   │   # TaxForm, TaxFormType
     │   │   │   │   │   │   ├── tax-profile.ts  # Tax profiles
     │   │   │   │   │   │   ├── tax-withholding.ts  # Tax withholdings
     │   │   │   │   │   │   ├── tax.ts  # Tax calculation types
@@ -25741,9 +25831,11 @@ fe/
     │   │   │   │   │   │   ├── transaction.ts  # Transaction entity types
     │   │   │   │   │   │   ├── wallet.ts  # Digital wallet types
     │   │   │   │   │   │   ├── withdrawal-limit.ts  # Withdrawal limit types
+    │   │   │   │   │   │   │   # WithdrawalLimit, LimitType
     │   │   │   │   │   │   └── withdrawal.ts  # Withdrawal processing
     │   │   │   │   │   ├── jobs/  # Jobs domain types
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
+    │   │   │   │   │   │   ├── ai-suggest.ts  # AISuggestion, AIOptimization
     │   │   │   │   │   │   ├── analytics.ts  # Job analytics types
     │   │   │   │   │   │   │   # Job analytics
     │   │   │   │   │   │   ├── application.ts  # Job application types
@@ -25755,6 +25847,7 @@ fe/
     │   │   │   │   │   │   │   # Job budget management
     │   │   │   │   │   │   ├── bulk-operation.ts  # Bulk operation types
     │   │   │   │   │   │   ├── bulk-ops.ts  # Bulk operations
+    │   │   │   │   │   │   │   # BulkOperation, BulkJobAction
     │   │   │   │   │   │   ├── category-taxonomy.ts  # Category hierarchy
     │   │   │   │   │   │   ├── category.ts  # Job category types
     │   │   │   │   │   │   ├── client-preference.ts  # Client preferences
@@ -25762,12 +25855,16 @@ fe/
     │   │   │   │   │   │   ├── comparison.ts  # Job comparisons
     │   │   │   │   │   │   ├── compliance.ts  # Job compliance
     │   │   │   │   │   │   ├── contract-transition.ts  # Job to contract types
+    │   │   │   │   │   │   │   # ContractTransition, TransitionStatus
     │   │   │   │   │   │   ├── custom-field.ts  # Custom field types
+    │   │   │   │   │   │   ├── custom-fields.ts  # CustomField, FieldType
     │   │   │   │   │   │   ├── dispute.ts  # Job disputes
     │   │   │   │   │   │   ├── draft.ts  # Job drafts
     │   │   │   │   │   │   ├── duplicate.ts  # Duplicate detection types
     │   │   │   │   │   │   ├── eligibility.ts  # Eligibility types
+    │   │   │   │   │   │   │   # JobEligibility, EligibilityRules
     │   │   │   │   │   │   ├── esg.ts  # ESG attribute types
+    │   │   │   │   │   │   │   # ESGAttributes, SustainabilityScore
     │   │   │   │   │   │   ├── event-log.ts  # Job event logs
     │   │   │   │   │   │   ├── expiration.ts  # Job expiration types
     │   │   │   │   │   │   ├── expiry.ts  # Job expiration handling
@@ -25778,10 +25875,15 @@ fe/
     │   │   │   │   │   │   ├── flag.ts  # Job flags
     │   │   │   │   │   │   ├── fraud-signal.ts  # Fraud detection signal types
     │   │   │   │   │   │   ├── fraud.ts  # Fraud signal types
+    │   │   │   │   │   │   │   # FraudSignal, FraudScore
+    │   │   │   │   │   │   ├── geo.ts  # GeoLocation, GeoFencing
     │   │   │   │   │   │   ├── health-checkpoint.ts  # Health checkpoint types
+    │   │   │   │   │   │   ├── health.ts  # HealthCheckpoint, HealthStatus
     │   │   │   │   │   │   ├── hiring-option.ts  # Hiring option types
+    │   │   │   │   │   │   ├── hiring-options.ts  # HiringOptions, MultiHire, Repost
     │   │   │   │   │   │   ├── history.ts  # Job history
     │   │   │   │   │   │   ├── inclusivity.ts  # Inclusivity flag types
+    │   │   │   │   │   │   │   # InclusivityFlags, AccessibilityFeatures
     │   │   │   │   │   │   ├── index.ts  # Barrel export for jobs domain
     │   │   │   │   │   │   ├── invitation.ts  # Freelancer invitation types
     │   │   │   │   │   │   ├── invite.ts  # Freelancer invite types
@@ -25794,10 +25896,13 @@ fe/
     │   │   │   │   │   │   ├── job-preference.ts  # Job preferences
     │   │   │   │   │   │   ├── job-stat.ts  # Job statistics
     │   │   │   │   │   │   ├── job.ts  # Job entity types
+    │   │   │   │   │   │   ├── lifecycle.ts  # JobLifecycle, LifecycleStage
     │   │   │   │   │   │   ├── localization.ts  # Multi-language localization types
+    │   │   │   │   │   │   │   # JobLocalization, Translation
     │   │   │   │   │   │   ├── match.ts  # Job-freelancer matching
     │   │   │   │   │   │   ├── milestone.ts  # Job milestones
     │   │   │   │   │   │   ├── moderation.ts  # Job moderation types
+    │   │   │   │   │   │   │   # JobModeration, ModerationState
     │   │   │   │   │   │   ├── notification.ts  # Job notification types
     │   │   │   │   │   │   ├── offer.ts  # Job offer types
     │   │   │   │   │   │   ├── package.ts  # Job packages
@@ -25823,6 +25928,7 @@ fe/
     │   │   │   │   │   │   ├── search-index.ts  # Search indexing
     │   │   │   │   │   │   ├── share.ts  # Job sharing
     │   │   │   │   │   │   ├── sharing.ts  # Job share link types
+    │   │   │   │   │   │   │   # ShareLink, ShareAnalytics
     │   │   │   │   │   │   ├── shortlist.ts  # Job shortlists
     │   │   │   │   │   │   ├── skill-requirement.ts  # Skill requirements
     │   │   │   │   │   │   ├── skill.ts  # Required skill types
@@ -25838,58 +25944,77 @@ fe/
     │   │   │   │   │   │   ├── template.ts  # Job template types
     │   │   │   │   │   │   ├── translation.ts  # Job translations
     │   │   │   │   │   │   ├── upsell.ts  # Upsell suggestion types
+    │   │   │   │   │   │   │   # UpsellSuggestion, UpsellType
     │   │   │   │   │   │   ├── version.ts  # Job versions
     │   │   │   │   │   │   ├── versioning.ts  # Job version history types
     │   │   │   │   │   │   ├── view.ts  # Job view tracking types
     │   │   │   │   │   │   ├── visibility.ts  # Job visibility setting types
     │   │   │   │   │   │   │   # Job visibility controls
+    │   │   │   │   │   │   │   # JobVisibility, VisibilityRules
     │   │   │   │   │   │   ├── watch.ts  # Job watchers
     │   │   │   │   │   │   ├── webhook.ts  # Webhook types
+    │   │   │   │   │   │   │   # WebhookSubscription, WebhookEvent
     │   │   │   │   │   │   └── workspace.ts  # Job workspace
     │   │   │   │   │   ├── proposals/  # Proposals domain types
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── ai-assist.ts  # AI suggestions
+    │   │   │   │   │   │   │   # AIAssist, AISuggestion, AIOptimization
     │   │   │   │   │   │   ├── ai-optimization.ts  # AI optimizations
     │   │   │   │   │   │   ├── ai-suggestion.ts  # AI suggestions
     │   │   │   │   │   │   ├── analytics.ts  # Proposal analytics types
     │   │   │   │   │   │   ├── anomaly.ts  # Bid anomaly detection
     │   │   │   │   │   │   ├── archive.ts  # Archive tracking
+    │   │   │   │   │   │   │   # ProposalArchive, ArchiveReason
     │   │   │   │   │   │   ├── archived.ts  # Archived proposal types
     │   │   │   │   │   │   ├── attachment.ts  # Proposal attachment types
     │   │   │   │   │   │   ├── auction.ts  # Auction mechanics
+    │   │   │   │   │   │   │   # Auction, BidHistory
     │   │   │   │   │   │   ├── audit.ts  # Proposal audit types
     │   │   │   │   │   │   ├── bid-history.ts  # Bid history
     │   │   │   │   │   │   ├── bid-notification.ts  # Bid notifications
+    │   │   │   │   │   │   │   # BidNotification, NotificationPreference
     │   │   │   │   │   │   ├── bid-strategy.ts  # Auto-bidding
+    │   │   │   │   │   │   │   # BidStrategy, StrategyType
     │   │   │   │   │   │   ├── bid.ts  # Bid entity types
     │   │   │   │   │   │   │   # Proposal bids
     │   │   │   │   │   │   ├── boost.ts  # Proposal boost types
+    │   │   │   │   │   │   │   # ProposalBoost, BoostType
     │   │   │   │   │   │   ├── collaboration.ts  # Team proposals
+    │   │   │   │   │   │   │   # TeamProposal, TeamMember
     │   │   │   │   │   │   ├── comparison.ts  # Comparison types
     │   │   │   │   │   │   │   # Proposal comparison
     │   │   │   │   │   │   ├── compliance.ts  # Compliance checks
+    │   │   │   │   │   │   │   # ProposalCompliance, ComplianceCheck
     │   │   │   │   │   │   ├── connect-refund.ts  # Connect refunds
+    │   │   │   │   │   │   │   # ConnectRefund, RefundReason
     │   │   │   │   │   │   ├── connect.ts  # Connects usage
     │   │   │   │   │   │   ├── context.ts  # Context enrichment
+    │   │   │   │   │   │   │   # ProposalContext, ContextData
     │   │   │   │   │   │   ├── contract-gen.ts  # Contract generation types
     │   │   │   │   │   │   ├── conversation-tracking.ts  # Proposal messaging tracking
     │   │   │   │   │   │   ├── conversation.ts  # Proposal conversations
+    │   │   │   │   │   │   │   # ProposalConversation, ConversationThread
     │   │   │   │   │   │   ├── cover-letter-template.ts  # Cover letter templates
     │   │   │   │   │   │   ├── cover-letter.ts  # Cover letter types
     │   │   │   │   │   │   ├── draft.ts  # Proposal drafts
     │   │   │   │   │   │   ├── eligibility.ts  # Eligibility types
     │   │   │   │   │   │   ├── engagement.ts  # Engagement tracking
+    │   │   │   │   │   │   │   # ProposalEngagement, InterestSignal, FollowUp
     │   │   │   │   │   │   ├── expiration.ts  # Expiration tracking
+    │   │   │   │   │   │   │   # ProposalExpiration, ExpiryRules
     │   │   │   │   │   │   ├── favorite.ts  # Favorite types
     │   │   │   │   │   │   ├── feedback.ts  # Proposal feedback types
     │   │   │   │   │   │   │   # Client feedback on proposals
+    │   │   │   │   │   │   │   # ProposalFeedback, FeedbackType
     │   │   │   │   │   │   ├── flag.ts  # Flagging system
+    │   │   │   │   │   │   │   # ProposalFlag, FlagReason
     │   │   │   │   │   │   ├── follow-up.ts  # Follow-up types
     │   │   │   │   │   │   ├── history.ts  # Proposal history
     │   │   │   │   │   │   ├── index.ts  # Barrel export for proposals domain
     │   │   │   │   │   │   ├── interview.ts  # Interview types
     │   │   │   │   │   │   │   # Interview scheduling from proposals
     │   │   │   │   │   │   ├── invitation.ts  # Direct invitations
+    │   │   │   │   │   │   ├── invite.ts  # Invitation, InviteStatus
     │   │   │   │   │   │   ├── milestone-proposal.ts  # Milestone-based proposal types
     │   │   │   │   │   │   ├── milestone.ts  # Proposal milestone types
     │   │   │   │   │   │   ├── negotiation.ts  # Negotiation types
@@ -25899,39 +26024,56 @@ fe/
     │   │   │   │   │   │   ├── performance.ts  # Analytics
     │   │   │   │   │   │   ├── pipeline-stage.ts  # Pipeline stages
     │   │   │   │   │   │   ├── pipeline.ts  # Pipeline stages
+    │   │   │   │   │   │   │   # ProposalPipeline, PipelineStage
     │   │   │   │   │   │   ├── portfolio-item.ts  # Portfolio item reference types
     │   │   │   │   │   │   │   # Portfolio attachments
+    │   │   │   │   │   │   ├── portfolio-link.ts  # PortfolioLink, SelectionCriteria
     │   │   │   │   │   │   ├── portfolio.ts  # Portfolio showcase
     │   │   │   │   │   │   ├── proposal.ts  # Proposal entity types
     │   │   │   │   │   │   ├── question-answer.ts  # Q&A responses
     │   │   │   │   │   │   │   # Screening question answers
+    │   │   │   │   │   │   │   # QuestionAnswer, AnswerValidation
     │   │   │   │   │   │   ├── questions-answers.ts  # Q&A types
     │   │   │   │   │   │   ├── quote.ts  # Quote types
     │   │   │   │   │   │   ├── rate-card.ts  # Rate card types
     │   │   │   │   │   │   ├── recommendation.ts  # AI recommendation
     │   │   │   │   │   │   │   # Proposal recommendations
+    │   │   │   │   │   │   │   # ProposalRecommendation, RecommendationType
     │   │   │   │   │   │   ├── recycling.ts  # Proposal reuse types
+    │   │   │   │   │   │   │   # ProposalRecycling, RecycleConditions
     │   │   │   │   │   │   ├── reference.ts  # Reference types
+    │   │   │   │   │   │   │   # ProposalReference, ReferenceCheck
     │   │   │   │   │   │   ├── revision.ts  # Revision history
+    │   │   │   │   │   │   │   # ProposalRevision, RevisionHistory
     │   │   │   │   │   │   ├── risk-assessment.ts  # Risk assessment
+    │   │   │   │   │   │   │   # ProposalRiskAssessment, RiskFactors
     │   │   │   │   │   │   ├── shortlist.ts  # Shortlist types
     │   │   │   │   │   │   │   # Client shortlisting
+    │   │   │   │   │   │   │   # Shortlist, ShortlistReason
     │   │   │   │   │   │   ├── similarity.ts  # Deduplication types
+    │   │   │   │   │   │   │   # ProposalSimilarity, Fingerprint, Clustering
     │   │   │   │   │   │   ├── skill-match.ts  # Skill matching
+    │   │   │   │   │   │   │   # SkillMatch, MatchScore
     │   │   │   │   │   │   ├── spam-detection.ts  # Spam detection
+    │   │   │   │   │   │   │   # SpamDetection, SpamIndicator
     │   │   │   │   │   │   ├── statistics.ts  # Proposal statistics
     │   │   │   │   │   │   ├── tag.ts  # Proposal tags
     │   │   │   │   │   │   ├── template.ts  # Proposal template types
     │   │   │   │   │   │   ├── urgency.ts  # Urgency tracking
+    │   │   │   │   │   │   │   # ProposalUrgency, UrgencyLevel
     │   │   │   │   │   │   ├── version.ts  # Proposal versioning
     │   │   │   │   │   │   ├── video-intro.ts  # Video intro types
+    │   │   │   │   │   │   │   # VideoIntroduction, VideoMetadata
     │   │   │   │   │   │   ├── withdrawal.ts  # Withdrawal types
+    │   │   │   │   │   │   │   # ProposalWithdrawal, WithdrawalReason
     │   │   │   │   │   │   └── withdrawn.ts  # Withdrawn proposal types
     │   │   │   │   │   ├── reviews/  # Reviews domain types
     │   │   │   │   │   │   ├── appeal-evidence.ts  # Appeal evidence
     │   │   │   │   │   │   ├── appeal.ts  # Review appeal types
     │   │   │   │   │   │   │   # Review appeals
+    │   │   │   │   │   │   │   # ReviewAppeal, AppealStatus
     │   │   │   │   │   │   ├── audit-trail.ts  # Audit trail
+    │   │   │   │   │   │   │   # AuditTrail, AuditEntry
     │   │   │   │   │   │   ├── badge-eligibility.ts  # Badge eligibility checks
     │   │   │   │   │   │   │   # Badge eligibility tracking
     │   │   │   │   │   │   ├── badge.ts  # Badge entity types
@@ -25939,17 +26081,22 @@ fe/
     │   │   │   │   │   │   ├── compliance-action.ts  # Compliance actions
     │   │   │   │   │   │   ├── compliance.ts  # Compliance tracking
     │   │   │   │   │   │   │   # Review compliance
+    │   │   │   │   │   │   │   # ReviewCompliance, ComplianceAction
     │   │   │   │   │   │   ├── criteria-version.ts  # Criteria versioning
     │   │   │   │   │   │   ├── criteria.ts  # Rating criteria types
     │   │   │   │   │   │   ├── double-blind-window.ts  # Double-blind windows
     │   │   │   │   │   │   │   # Double-blind review window
     │   │   │   │   │   │   ├── double-blind.ts  # Double-blind review types
+    │   │   │   │   │   │   │   # DoubleBlindWindow, BlindStatus
     │   │   │   │   │   │   ├── draft.ts  # Review draft types
     │   │   │   │   │   │   ├── eligibility-policy.ts  # Eligibility policies
     │   │   │   │   │   │   ├── eligibility.ts  # Review eligibility types
+    │   │   │   │   │   │   │   # ReviewEligibility, EligibilityPolicy
     │   │   │   │   │   │   ├── evidence.ts  # Appeal evidence
     │   │   │   │   │   │   │   # Review evidence attachments
+    │   │   │   │   │   │   │   # Evidence, EvidenceType
     │   │   │   │   │   │   ├── featured.ts  # Featured review types
+    │   │   │   │   │   │   │   # FeaturedReview, FeaturedCriteria
     │   │   │   │   │   │   ├── feedback.ts  # Private feedback types
     │   │   │   │   │   │   ├── flag.ts  # Review flag types
     │   │   │   │   │   │   │   # Review flagging
@@ -25958,15 +26105,20 @@ fe/
     │   │   │   │   │   │   ├── moderation-history.ts  # Moderation history
     │   │   │   │   │   │   ├── moderation.ts  # Review moderation types
     │   │   │   │   │   │   │   # Review moderation
+    │   │   │   │   │   │   │   # ReviewModeration, ModerationAction
     │   │   │   │   │   │   ├── private-feedback.ts  # Private feedback
     │   │   │   │   │   │   │   # Private client-only feedback
+    │   │   │   │   │   │   │   # PrivateFeedback, FeedbackChannel
     │   │   │   │   │   │   ├── rating-aggregate.ts  # Rating aggregates
     │   │   │   │   │   │   ├── rating-criteria.ts  # Rating dimensions
+    │   │   │   │   │   │   │   # RatingCriteria, CriteriaWeight
     │   │   │   │   │   │   ├── rating-dimension.ts  # Multi-dimensional ratings
     │   │   │   │   │   │   ├── rating.ts  # Rating entity types
     │   │   │   │   │   │   ├── redaction-policy.ts  # Redaction policies
     │   │   │   │   │   │   ├── redaction.ts  # PII redaction
+    │   │   │   │   │   │   │   # Redaction, RedactionPolicy
     │   │   │   │   │   │   ├── reminder.ts  # Review reminder types
+    │   │   │   │   │   │   │   # ReviewReminder, ReminderType
     │   │   │   │   │   │   ├── reputation-history.ts  # Reputation history
     │   │   │   │   │   │   ├── reputation-rule.ts  # Top-rated rules
     │   │   │   │   │   │   ├── reputation.ts  # Reputation score types
@@ -25974,12 +26126,16 @@ fe/
     │   │   │   │   │   │   ├── response.ts  # Review response types
     │   │   │   │   │   │   │   # Freelancer responses to reviews
     │   │   │   │   │   │   ├── review-draft.ts  # Review drafts
+    │   │   │   │   │   │   │   # ReviewDraft, DraftStatus
+    │   │   │   │   │   │   ├── review-flag.ts  # ReviewFlag, FlagReason
     │   │   │   │   │   │   ├── review-rating.ts  # Review ratings
     │   │   │   │   │   │   ├── review-stat.ts  # Review statistics
     │   │   │   │   │   │   ├── review.ts  # Review entity types
     │   │   │   │   │   │   ├── statistics.ts  # Review statistics
     │   │   │   │   │   │   ├── stats.ts  # Review statistics
+    │   │   │   │   │   │   │   # ReviewStats, StatsAggregation
     │   │   │   │   │   │   ├── user-badge.ts  # User badge assignment types
+    │   │   │   │   │   │   │   # UserBadge, BadgeEligibility
     │   │   │   │   │   │   └── window.ts  # Review window management
     │   │   │   │   │   ├── search/  # Search domain types
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
@@ -25989,6 +26145,7 @@ fe/
     │   │   │   │   │   │   ├── analytics-event.ts  # Analytics events
     │   │   │   │   │   │   ├── analytics.ts  # Search analytics types
     │   │   │   │   │   │   │   # Search analytics
+    │   │   │   │   │   │   │   # SearchAnalytics, QueryMetrics
     │   │   │   │   │   │   ├── auto-complete.ts  # Auto-complete types
     │   │   │   │   │   │   ├── backfill-job.ts  # Backfill jobs
     │   │   │   │   │   │   ├── backfill.ts  # Backfill job types
@@ -26005,10 +26162,12 @@ fe/
     │   │   │   │   │   │   ├── facet-config.ts  # Facet configurations
     │   │   │   │   │   │   ├── facet.ts  # Search facet types
     │   │   │   │   │   │   │   # Search facets
+    │   │   │   │   │   │   │   # Facet, FacetBanding
     │   │   │   │   │   │   ├── feed.ts  # Feed types
     │   │   │   │   │   │   ├── feedback.ts  # Search feedback
     │   │   │   │   │   │   ├── filter.ts  # Search filter types
     │   │   │   │   │   │   │   # Search filters
+    │   │   │   │   │   │   │   # SearchFilter, FilterCriteria
     │   │   │   │   │   │   ├── geo-config.ts  # Geo configurations
     │   │   │   │   │   │   ├── geo-location.ts  # Geo locations
     │   │   │   │   │   │   ├── geo.ts  # Geo search types
@@ -26016,11 +26175,13 @@ fe/
     │   │   │   │   │   │   ├── hygiene-job.ts  # Hygiene jobs
     │   │   │   │   │   │   ├── hygiene.ts  # Data hygiene types
     │   │   │   │   │   │   │   # Search index hygiene
+    │   │   │   │   │   │   │   # HygieneTask, Deduplication
     │   │   │   │   │   │   ├── index-config.ts  # Index configurations
     │   │   │   │   │   │   ├── index-lifecycle.ts  # Index lifecycle types
     │   │   │   │   │   │   ├── index-mapping.ts  # Index mappings
     │   │   │   │   │   │   ├── index-shard.ts  # Index shards
     │   │   │   │   │   │   ├── index.ts  # Barrel export for search domain
+    │   │   │   │   │   │   │   # SearchIndex, IndexConfig
     │   │   │   │   │   │   ├── ingest-pipeline.ts  # Ingest pipelines
     │   │   │   │   │   │   ├── language-config.ts  # Language configs
     │   │   │   │   │   │   ├── ltr.ts  # Learning to rank types
@@ -26041,14 +26202,17 @@ fe/
     │   │   │   │   │   │   │   # Query rewriting rules
     │   │   │   │   │   │   ├── query.ts  # Search query types
     │   │   │   │   │   │   │   # Search query structure
+    │   │   │   │   │   │   │   # SearchQuery, QueryParser
     │   │   │   │   │   │   ├── ranking-profile.ts  # Ranking profiles
     │   │   │   │   │   │   ├── ranking.ts  # Result ranking
     │   │   │   │   │   │   │   # Search ranking
+    │   │   │   │   │   │   │   # RankingAlgorithm, RankingFactor
     │   │   │   │   │   │   ├── recommendation.ts  # Search-based recommendation types
     │   │   │   │   │   │   ├── relevance-tuning.ts  # Relevance tuning
     │   │   │   │   │   │   ├── result.ts  # Search result types
     │   │   │   │   │   │   │   # Search result structure
     │   │   │   │   │   │   ├── safety-filter.ts  # Safety filter types
+    │   │   │   │   │   │   ├── safety.ts  # SafetyFilter, ContentModeration
     │   │   │   │   │   │   ├── saved-query.ts  # Saved searches
     │   │   │   │   │   │   ├── saved-search.ts  # Saved search types
     │   │   │   │   │   │   ├── saved_query.ts  # Saved query types
@@ -26066,14 +26230,17 @@ fe/
     │   │   │   │   │   │   ├── stop-word.ts  # Stop words
     │   │   │   │   │   │   ├── stopword.ts  # Stopword types
     │   │   │   │   │   │   ├── suggestion.ts  # Search suggestion types
+    │   │   │   │   │   │   │   # SearchSuggestion, AutoComplete
     │   │   │   │   │   │   ├── synonym.ts  # Synonym types
     │   │   │   │   │   │   │   # Search synonyms
     │   │   │   │   │   │   ├── taxonomy.ts  # Taxonomy types
+    │   │   │   │   │   │   │   # Taxonomy, Category, Synonym
     │   │   │   │   │   │   ├── trending.ts  # Trending types
     │   │   │   │   │   │   └── user-preference.ts  # User preference types
     │   │   │   │   │   ├── storage/  # Storage domain types
     │   │   │   │   │   │   ├── access-control.ts  # Access control
     │   │   │   │   │   │   │   # File access control
+    │   │   │   │   │   │   │   # AccessControl, Permission
     │   │   │   │   │   │   ├── access-grant.ts  # Access grants
     │   │   │   │   │   │   ├── access-log.ts  # Access log types
     │   │   │   │   │   │   ├── access.ts  # Access control types
@@ -26096,6 +26263,7 @@ fe/
     │   │   │   │   │   │   ├── device-sync.ts  # Device sync
     │   │   │   │   │   │   ├── download-link.ts  # Download links
     │   │   │   │   │   │   ├── download.ts  # File download types
+    │   │   │   │   │   │   │   # Download, DownloadLink
     │   │   │   │   │   │   ├── embedding.ts  # AI embeddings
     │   │   │   │   │   │   ├── encryption-key.ts  # Encryption keys
     │   │   │   │   │   │   ├── encryption.ts  # Encryption types
@@ -26103,12 +26271,14 @@ fe/
     │   │   │   │   │   │   ├── extraction.ts  # Content extraction types
     │   │   │   │   │   │   ├── favorite.ts  # Favorite files
     │   │   │   │   │   │   ├── file-link.ts  # File links
+    │   │   │   │   │   │   ├── file-metadata.ts  # FileMetadata, MimeType, FileSize
     │   │   │   │   │   │   ├── file-snapshot.ts  # File snapshots
     │   │   │   │   │   │   ├── file-transfer.ts  # File transfers
     │   │   │   │   │   │   ├── file.ts  # File entity types
     │   │   │   │   │   │   ├── folder-permission.ts  # Folder permissions
     │   │   │   │   │   │   ├── folder.ts  # Folder entity types
     │   │   │   │   │   │   │   # Folder management
+    │   │   │   │   │   │   │   # Folder, FolderStructure
     │   │   │   │   │   │   ├── geo-replication.ts  # Geo replication
     │   │   │   │   │   │   ├── import.ts  # File imports
     │   │   │   │   │   │   ├── index.ts  # Barrel export for storage domain
@@ -26140,6 +26310,7 @@ fe/
     │   │   │   │   │   │   ├── quota-override.ts  # Quota overrides
     │   │   │   │   │   │   ├── quota.ts  # Storage quota types
     │   │   │   │   │   │   │   # Storage quota tracking
+    │   │   │   │   │   │   │   # StorageQuota, QuotaUsage
     │   │   │   │   │   │   ├── recovery-point.ts  # Recovery points
     │   │   │   │   │   │   ├── replication-log.ts  # Replication logs
     │   │   │   │   │   │   ├── replication.ts  # Replication types
@@ -26170,36 +26341,46 @@ fe/
     │   │   │   │   │   │   ├── upload-session.ts  # Resumable upload session types
     │   │   │   │   │   │   │   # Multi-part upload sessions
     │   │   │   │   │   │   ├── upload.ts  # File upload types
+    │   │   │   │   │   │   │   # Upload, UploadProgress, UploadStatus
     │   │   │   │   │   │   ├── version-history.ts  # Version history
     │   │   │   │   │   │   ├── version.ts  # File version types
     │   │   │   │   │   │   │   # File versioning
+    │   │   │   │   │   │   │   # FileVersion, VersionHistory
     │   │   │   │   │   │   ├── virus-definition.ts  # Virus definitions
     │   │   │   │   │   │   ├── virus-scan.ts  # Virus scan types
+    │   │   │   │   │   │   │   # VirusScan, ScanResult
     │   │   │   │   │   │   ├── watermark.ts  # Watermark types
     │   │   │   │   │   │   └── webhook.ts  # Storage webhook types
     │   │   │   │   │   ├── subscriptions/  # Subscriptions domain types
     │   │   │   │   │   │   ├── addon.ts  # Add-on types
     │   │   │   │   │   │   │   # Subscription add-ons
+    │   │   │   │   │   │   │   # Addon, AddonType
     │   │   │   │   │   │   ├── allowance-transaction.ts  # Allowance transactions
     │   │   │   │   │   │   ├── allowance.ts  # Allowance types
     │   │   │   │   │   │   │   # Monthly allowances (connects, bids)
+    │   │   │   │   │   │   │   # Allowance, AllowanceTransaction
     │   │   │   │   │   │   ├── analytics.ts  # Subscription analytics types
     │   │   │   │   │   │   ├── billing-cycle.ts  # Billing cycle types
     │   │   │   │   │   │   ├── billing-history.ts  # Billing history types
+    │   │   │   │   │   │   │   # BillingHistory, HistoryEntry
     │   │   │   │   │   │   ├── billing-profile.ts  # Billing profile types
     │   │   │   │   │   │   │   # Billing information
+    │   │   │   │   │   │   │   # BillingProfile, ProfileDetails
     │   │   │   │   │   │   ├── cancellation-reason.ts  # Cancellation reasons
     │   │   │   │   │   │   ├── cancellation.ts  # Cancellation types
     │   │   │   │   │   │   ├── change-request.ts  # Subscription change request types
     │   │   │   │   │   │   ├── connect-balance.ts  # Connects system types
     │   │   │   │   │   │   │   # Connect balance tracking
     │   │   │   │   │   │   ├── connect-package.ts  # Connect packages
+    │   │   │   │   │   │   │   # ConnectPackage, PackageType
     │   │   │   │   │   │   ├── connect-transaction.ts  # Connect transactions
     │   │   │   │   │   │   │   # Connect usage transactions
+    │   │   │   │   │   │   │   # ConnectTransaction, TransactionType
     │   │   │   │   │   │   ├── connect.ts  # Connect balance types
     │   │   │   │   │   │   ├── coupon.ts  # Promotional coupons
     │   │   │   │   │   │   ├── credit-application.ts  # Credit applications
     │   │   │   │   │   │   ├── credit-note.ts  # Credit note types
+    │   │   │   │   │   │   │   # CreditNote, CreditApplication
     │   │   │   │   │   │   ├── credit.ts  # Account credits
     │   │   │   │   │   │   ├── discount.ts  # Discount/coupon types
     │   │   │   │   │   │   │   # Discounts
@@ -26207,10 +26388,13 @@ fe/
     │   │   │   │   │   │   ├── dunning-schedule.ts  # Dunning schedules
     │   │   │   │   │   │   ├── dunning.ts  # Dunning process types
     │   │   │   │   │   │   │   # Failed payment recovery
+    │   │   │   │   │   │   │   # DunningCase, DunningAction
     │   │   │   │   │   │   ├── entitlement-grant.ts  # Entitlement grants
+    │   │   │   │   │   │   │   # EntitlementGrant, GrantType
     │   │   │   │   │   │   ├── entitlement.ts  # Entitlement types
     │   │   │   │   │   │   │   # Feature entitlements
     │   │   │   │   │   │   ├── feature-toggle.ts  # Feature toggle types
+    │   │   │   │   │   │   │   # FeatureToggle, ToggleRule
     │   │   │   │   │   │   ├── feature-usage.ts  # Feature usage
     │   │   │   │   │   │   ├── feature.ts  # Feature entitlement types
     │   │   │   │   │   │   ├── grant.ts  # Bonus grants
@@ -26219,43 +26403,56 @@ fe/
     │   │   │   │   │   │   ├── invoice-line-item.ts  # Invoice line items
     │   │   │   │   │   │   ├── invoice.ts  # Subscription invoice types
     │   │   │   │   │   │   │   # Billing invoices
+    │   │   │   │   │   │   │   # Invoice, InvoiceLineItem
     │   │   │   │   │   │   ├── meter.ts  # Usage meters
     │   │   │   │   │   │   ├── payment-attempt.ts  # Payment attempt types
+    │   │   │   │   │   │   │   # PaymentAttempt, AttemptStatus
     │   │   │   │   │   │   ├── payment-history.ts  # Payment history
     │   │   │   │   │   │   ├── payment-webhook.ts  # Payment webhooks
+    │   │   │   │   │   │   │   # PaymentWebhook, WebhookEvent
     │   │   │   │   │   │   ├── payment.ts  # Subscription payment types
     │   │   │   │   │   │   ├── plan-comparison.ts  # Plan comparison
     │   │   │   │   │   │   ├── plan-feature.ts  # Plan features
     │   │   │   │   │   │   ├── plan-limit.ts  # Plan limits
     │   │   │   │   │   │   ├── plan-pricing.ts  # Pricing tiers
+    │   │   │   │   │   │   │   # PlanPricing, PricingTier
     │   │   │   │   │   │   ├── plan-version.ts  # Plan versioning
+    │   │   │   │   │   │   │   # PlanVersion, VersionHistory
     │   │   │   │   │   │   ├── plan.ts  # Subscription plan types
     │   │   │   │   │   │   ├── pricing.ts  # Pricing types
     │   │   │   │   │   │   ├── promotion-redemption.ts  # Promotion redemptions
     │   │   │   │   │   │   ├── promotion.ts  # Promotion types
+    │   │   │   │   │   │   │   # Promotion, PromotionRedemption
     │   │   │   │   │   │   ├── proration.ts  # Proration types
     │   │   │   │   │   │   │   # Proration calculations
     │   │   │   │   │   │   ├── renewal.ts  # Renewal types
     │   │   │   │   │   │   ├── seat-assignment.ts  # Seat assignments
     │   │   │   │   │   │   ├── seat-billing.ts  # Seat billing types
+    │   │   │   │   │   │   │   # SeatBilling, SeatAssignment
     │   │   │   │   │   │   ├── seat-overage.ts  # Seat overage history
     │   │   │   │   │   │   ├── seat.ts  # Seat billing types
     │   │   │   │   │   │   ├── subscription-addon.ts  # Subscription addons
     │   │   │   │   │   │   ├── subscription-change.ts  # Subscription changes
+    │   │   │   │   │   │   │   # SubscriptionChange, ChangeRequest
     │   │   │   │   │   │   ├── subscription.ts  # Subscription types
     │   │   │   │   │   │   ├── tax-binding.ts  # Tax bindings
     │   │   │   │   │   │   ├── tax-class.ts  # Tax class types
+    │   │   │   │   │   │   │   # TaxClass, TaxBinding
     │   │   │   │   │   │   ├── tier.ts  # Plan tier types
     │   │   │   │   │   │   ├── trial.ts  # Trial period types
     │   │   │   │   │   │   │   # Free trial tracking
+    │   │   │   │   │   │   │   # Trial, TrialStatus
     │   │   │   │   │   │   ├── upgrade-path.ts  # Upgrade/downgrade paths
     │   │   │   │   │   │   ├── upgrade.ts  # Upgrade/downgrade types
     │   │   │   │   │   │   ├── usage-counter.ts  # Usage counters
     │   │   │   │   │   │   ├── usage-event.ts  # Usage events
+    │   │   │   │   │   │   │   # UsageEvent, EventType
     │   │   │   │   │   │   ├── usage-tracking.ts  # Feature usage tracking
     │   │   │   │   │   │   ├── usage.ts  # Usage tracking types
     │   │   │   │   │   │   └── user-entitlement.ts  # User entitlement grants
     │   │   │   │   │   ├── users/  # Users domain types
+    │   │   │   │   │   │   ├── account-recovery.ts  # AccountRecovery, RecoveryMethod
+    │   │   │   │   │   │   ├── account-settings.ts  # AccountSettings, SettingsGroup
     │   │   │   │   │   │   ├── achievement.ts  # Achievement types
     │   │   │   │   │   │   ├── activity.ts  # User activity types
     │   │   │   │   │   │   ├── address.ts  # User addresses
@@ -26263,17 +26460,21 @@ fe/
     │   │   │   │   │   │   ├── analytics.ts  # User analytics types
     │   │   │   │   │   │   ├── announcement.ts  # Announcement types
     │   │   │   │   │   │   ├── api-key.ts  # API keys
+    │   │   │   │   │   │   ├── appeal.ts  # UserAppeal, AppealStatus
     │   │   │   │   │   │   ├── assessment.ts  # Assessment types
     │   │   │   │   │   │   ├── audit-log.ts  # User audit logs
     │   │   │   │   │   │   ├── automation.ts  # Automation rules
     │   │   │   │   │   │   ├── availability-rule.ts  # Recurring availability types
+    │   │   │   │   │   │   ├── availability-schedule.ts  # AvailabilitySchedule, RecurringRules
     │   │   │   │   │   │   ├── availability.ts  # Availability types
     │   │   │   │   │   │   │   # Freelancer availability
     │   │   │   │   │   │   ├── background-check.ts  # Background check types
     │   │   │   │   │   │   ├── badge.ts  # User badge types
+    │   │   │   │   │   │   ├── ban.ts  # Ban, BanReason, BanDuration
     │   │   │   │   │   │   ├── bio.ts  # User bios
     │   │   │   │   │   │   ├── block.ts  # Blocked user types
     │   │   │   │   │   │   ├── blocked-user.ts  # Blocked users types
+    │   │   │   │   │   │   ├── blocked-users.ts  # BlockedUser, BlockReason
     │   │   │   │   │   │   ├── bookmark.ts  # User bookmarks
     │   │   │   │   │   │   ├── capability.ts  # User capability types
     │   │   │   │   │   │   │   # User capabilities
@@ -26284,13 +26485,16 @@ fe/
     │   │   │   │   │   │   ├── client.ts  # Client-specific types
     │   │   │   │   │   │   ├── communication-channel.ts  # Communication routing
     │   │   │   │   │   │   ├── compliance.ts  # Compliance records
+    │   │   │   │   │   │   │   # UserCompliance, ComplianceCheck
     │   │   │   │   │   │   ├── connection-request.ts  # Connection requests
     │   │   │   │   │   │   ├── connection.ts  # User connection types
     │   │   │   │   │   │   ├── consent.ts  # User consents
     │   │   │   │   │   │   ├── contact-info.ts  # Contact information
     │   │   │   │   │   │   ├── credit.ts  # User credits
     │   │   │   │   │   │   ├── device.ts  # Trusted device types
+    │   │   │   │   │   │   │   # Device, DeviceType
     │   │   │   │   │   │   ├── earning-goal.ts  # Earning goal types
+    │   │   │   │   │   │   ├── earning-goals.ts  # EarningGoals, GoalTracking
     │   │   │   │   │   │   ├── earning.ts  # Earnings tracking
     │   │   │   │   │   │   ├── earnings-report.ts  # Earnings reports
     │   │   │   │   │   │   ├── education.ts  # Education types
@@ -26306,6 +26510,7 @@ fe/
     │   │   │   │   │   │   ├── feed-item.ts  # Feed items
     │   │   │   │   │   │   ├── feedback.ts  # User feedback
     │   │   │   │   │   │   ├── financial-profile.ts  # Financial profile
+    │   │   │   │   │   │   ├── flag.ts  # UserFlag, FlagReason
     │   │   │   │   │   │   ├── follow.ts  # Follow/connection types
     │   │   │   │   │   │   ├── freelancer-profile.ts  # Freelancer-specific profile types
     │   │   │   │   │   │   ├── freelancer.ts  # Freelancer-specific types
@@ -26321,15 +26526,19 @@ fe/
     │   │   │   │   │   │   ├── language-preference.ts  # Language preferences
     │   │   │   │   │   │   ├── language.ts  # Language proficiency types
     │   │   │   │   │   │   ├── learning-path.ts  # Learning path types
+    │   │   │   │   │   │   │   # LearningPath, CourseProgress
     │   │   │   │   │   │   ├── login-history.ts  # Login history
+    │   │   │   │   │   │   │   # LoginHistory, LoginAttempt
     │   │   │   │   │   │   ├── mention.ts  # User mentions
     │   │   │   │   │   │   ├── mentorship.ts  # Mentorship types
+    │   │   │   │   │   │   │   # Mentorship, MentorshipStatus
     │   │   │   │   │   │   ├── metric.ts  # User metric types
     │   │   │   │   │   │   │   # User performance metrics
     │   │   │   │   │   │   ├── network-stat.ts  # Network statistics
     │   │   │   │   │   │   ├── newsletter-subscription.ts  # Newsletter subscriptions
     │   │   │   │   │   │   ├── note.ts  # User notes
     │   │   │   │   │   │   ├── notification-preference.ts  # Notification preference types
+    │   │   │   │   │   │   ├── notification-preferences.ts  # NotificationPreferences, Channel
     │   │   │   │   │   │   ├── notification-setting.ts  # Notification prefs
     │   │   │   │   │   │   ├── notification.ts  # Notification types
     │   │   │   │   │   │   ├── oauth-app.ts  # OAuth applications
@@ -26338,6 +26547,7 @@ fe/
     │   │   │   │   │   │   ├── organization.ts  # Organization types
     │   │   │   │   │   │   │   # Organization/company profiles
     │   │   │   │   │   │   ├── password-reset.ts  # Password resets
+    │   │   │   │   │   │   │   # PasswordReset, ResetToken
     │   │   │   │   │   │   ├── payment-method.ts  # Payment method types
     │   │   │   │   │   │   ├── payment-preference.ts  # Payment preferences
     │   │   │   │   │   │   ├── phone-verification.ts  # Phone verifications
@@ -26347,24 +26557,29 @@ fe/
     │   │   │   │   │   │   │   # Portfolio items
     │   │   │   │   │   │   ├── preference.ts  # User preference types
     │   │   │   │   │   │   ├── privacy-setting.ts  # Privacy setting types
+    │   │   │   │   │   │   ├── privacy-settings.ts  # PrivacySettings, VisibilityControl
     │   │   │   │   │   │   ├── privacy.ts  # Privacy setting types
+    │   │   │   │   │   │   ├── professional-network.ts  # Connection, ConnectionRequest
     │   │   │   │   │   │   ├── profile-completeness.ts  # Profile completeness
     │   │   │   │   │   │   ├── profile-completion.ts  # Profile completion
     │   │   │   │   │   │   ├── profile-view.ts  # Profile views
     │   │   │   │   │   │   ├── profile-visibility.ts  # Visibility control types
     │   │   │   │   │   │   ├── profile.ts  # User profile types
     │   │   │   │   │   │   │   # User profile
+    │   │   │   │   │   │   ├── rate-card.ts  # UserRateCard, RateType
     │   │   │   │   │   │   ├── rate-history.ts  # Rate history types
     │   │   │   │   │   │   ├── rate.ts  # Rate settings
     │   │   │   │   │   │   ├── recommendation.ts  # User recommendations
     │   │   │   │   │   │   ├── recovery.ts  # Account recovery types
     │   │   │   │   │   │   ├── referral.ts  # Referral types
+    │   │   │   │   │   │   │   # Referral, ReferralCode, ReferralReward
     │   │   │   │   │   │   ├── relationship.ts  # User relationships
     │   │   │   │   │   │   ├── report.ts  # User reports
     │   │   │   │   │   │   ├── reputation.ts  # Reputation types
     │   │   │   │   │   │   ├── review-stat.ts  # Review statistics
     │   │   │   │   │   │   ├── saved-freelancer.ts  # Saved freelancers
     │   │   │   │   │   │   ├── saved-item.ts  # Saved item types
+    │   │   │   │   │   │   ├── saved-items.ts  # SavedItem, ItemType
     │   │   │   │   │   │   ├── saved-job.ts  # Saved jobs
     │   │   │   │   │   │   ├── saved-search.ts  # Saved searches
     │   │   │   │   │   │   ├── scoring.ts  # User scoring
@@ -26372,8 +26587,11 @@ fe/
     │   │   │   │   │   │   ├── security-event.ts  # Security event types
     │   │   │   │   │   │   ├── security-question.ts  # Security questions
     │   │   │   │   │   │   ├── security-setting.ts  # Security settings
+    │   │   │   │   │   │   ├── security.ts  # SecuritySettings, TrustedDevice
     │   │   │   │   │   │   ├── service-catalog.ts  # Service catalog types
+    │   │   │   │   │   │   │   # ServiceCatalog, ServicePackage
     │   │   │   │   │   │   ├── session.ts  # Session types
+    │   │   │   │   │   │   │   # UserSession, SessionStatus
     │   │   │   │   │   │   ├── setting.ts  # User setting types
     │   │   │   │   │   │   ├── skill-assessment.ts  # Skill assessments
     │   │   │   │   │   │   ├── skill-category.ts  # Skill categories
@@ -26384,10 +26602,12 @@ fe/
     │   │   │   │   │   │   ├── social-connection.ts  # Social connection types
     │   │   │   │   │   │   ├── social-link.ts  # Social links
     │   │   │   │   │   │   ├── specialization.ts  # Specialization types
+    │   │   │   │   │   │   │   # Specialization, SpecializationLevel
     │   │   │   │   │   │   ├── spending-limit.ts  # Spending limits
     │   │   │   │   │   │   ├── spending.ts  # Spending tracking
     │   │   │   │   │   │   ├── stat.ts  # User statistics
     │   │   │   │   │   │   ├── suspend-history.ts  # Suspension history
+    │   │   │   │   │   │   ├── suspension.ts  # Suspension, SuspensionReason
     │   │   │   │   │   │   ├── tag.ts  # User tag types
     │   │   │   │   │   │   ├── tax-info.ts  # Tax information
     │   │   │   │   │   │   ├── tax.ts  # Tax profile types
@@ -26395,255 +26615,340 @@ fe/
     │   │   │   │   │   │   ├── team.ts  # Team types
     │   │   │   │   │   │   │   # Team management
     │   │   │   │   │   │   ├── testimonial.ts  # Testimonials
+    │   │   │   │   │   │   ├── time-zone.ts  # TimeZonePreference, TimeZoneOverlap
     │   │   │   │   │   │   ├── timezone-preference.ts  # Timezone preferences
     │   │   │   │   │   │   ├── transaction-history.ts  # Transaction history
     │   │   │   │   │   │   ├── trust-score.ts  # Trust score types
     │   │   │   │   │   │   │   # Trust/safety scoring
+    │   │   │   │   │   │   ├── two-factor-auth.ts  # TwoFactorAuth, AuthMethod
     │   │   │   │   │   │   ├── two-factor.ts  # Two-factor auth
+    │   │   │   │   │   │   ├── user-group.ts  # UserGroup, GroupMembership
     │   │   │   │   │   │   ├── user.ts  # User entity types
     │   │   │   │   │   │   ├── verification-document.ts  # Verification documents
     │   │   │   │   │   │   ├── verification.ts  # Identity verification types
     │   │   │   │   │   │   │   # Identity verification
     │   │   │   │   │   │   ├── video-intro.ts  # Video introductions
     │   │   │   │   │   │   ├── view-history.ts  # View history
+    │   │   │   │   │   │   ├── warning.ts  # Warning, WarningSeverity
     │   │   │   │   │   │   ├── watch.ts  # User watches
     │   │   │   │   │   │   ├── webhook.ts  # User webhook types
     │   │   │   │   │   │   └── workload-capacity.ts  # Workload capacity types
+    │   │   │   │   │   │       # WorkloadCapacity, CapacityStatus
     │   │   │   │   │   └── │
     │   │   │   │   ├── enums/  # Shared enumeration types
     │   │   │   │   │   # Shared enumerations (MISSING ENUMS BELOW)
     │   │   │   │   │   ├── admin/  # Admin enumerations
-    │   │   │   │   │   │   ├── access-level.enum.ts  # 
+    │   │   │   │   │   │   ├── access-level.enum.ts
+    │   │   │   │   │   │   ├── action-category.enum.ts  # ActionCategory
     │   │   │   │   │   │   ├── action-type.enum.ts  # Admin action types
-    │   │   │   │   │   │   ├── admin-activity-type.enum.ts  # 
+    │   │   │   │   │   │   │   # ActionType
+    │   │   │   │   │   │   ├── admin-activity-type.enum.ts
     │   │   │   │   │   │   ├── admin-role.enum.ts  # Admin roles
+    │   │   │   │   │   │   ├── appeal-status.enum.ts  # AppealStatus
     │   │   │   │   │   │   ├── approval-status.enum.ts  # Approval statuses
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── bulk-operation-type.enum.ts  # BulkOperationType
     │   │   │   │   │   │   ├── case-priority.enum.ts  # Case priorities
+    │   │   │   │   │   │   │   # CasePriority
     │   │   │   │   │   │   ├── case-status.enum.ts  # Case statuses
+    │   │   │   │   │   │   │   # CaseStatus
     │   │   │   │   │   │   ├── case-type.enum.ts  # Case types
-    │   │   │   │   │   │   ├── change-type.enum.ts  # 
+    │   │   │   │   │   │   ├── change-type.enum.ts
     │   │   │   │   │   │   ├── dsar-status.enum.ts  # DSAR request statuses
+    │   │   │   │   │   │   │   # DSARStatus
+    │   │   │   │   │   │   ├── dsar-type.enum.ts  # DSARType (Data Subject Access Request)
     │   │   │   │   │   │   ├── experiment-status.enum.ts  # Experiment statuses
+    │   │   │   │   │   │   │   # ExperimentStatus
+    │   │   │   │   │   │   ├── hold-reason.enum.ts  # HoldReason
     │   │   │   │   │   │   ├── hold-type.enum.ts  # Hold types
-    │   │   │   │   │   │   ├── impersonation-reason.enum.ts  # 
+    │   │   │   │   │   │   ├── impersonation-reason.enum.ts
     │   │   │   │   │   │   ├── incident-severity.enum.ts  # Incident severities
+    │   │   │   │   │   │   │   # IncidentSeverity
     │   │   │   │   │   │   ├── incident-status.enum.ts  # Incident statuses
+    │   │   │   │   │   │   ├── index.ts
     │   │   │   │   │   │   ├── integration-status.enum.ts  # Integration statuses
+    │   │   │   │   │   │   │   # IntegrationStatus
     │   │   │   │   │   │   ├── kb-status.enum.ts  # Knowledge base statuses
     │   │   │   │   │   │   ├── legal-hold-status.enum.ts  # Legal hold statuses
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── maintenance-status.enum.ts  # Maintenance statuses
+    │   │   │   │   │   │   ├── moderation-action-type.enum.ts  # ModerationActionType
     │   │   │   │   │   │   ├── moderation-action.enum.ts  # Moderation actions
     │   │   │   │   │   │   ├── moderation-status.enum.ts  # Moderation statuses
     │   │   │   │   │   │   ├── policy-type.enum.ts  # Policy types
-    │   │   │   │   │   │   ├── privacy-request-type.enum.ts  # 
+    │   │   │   │   │   │   ├── privacy-request-type.enum.ts
     │   │   │   │   │   │   ├── refund-reason.enum.ts  # Refund reasons
     │   │   │   │   │   │   ├── refund-status.enum.ts  # Refund statuses
-    │   │   │   │   │   │   ├── sanctions-risk.enum.ts  # 
-    │   │   │   │   │   │   ├── session-status.enum.ts  # 
+    │   │   │   │   │   │   ├── sanctions-risk.enum.ts
+    │   │   │   │   │   │   ├── session-status.enum.ts
     │   │   │   │   │   │   ├── session-type.enum.ts  # Admin session types
     │   │   │   │   │   │   └── ticket-priority.enum.ts  # Ticket priorities
     │   │   │   │   │   ├── communications/  # Communications enumerations
+    │   │   │   │   │   │   ├── alert-severity.enum.ts  # AlertSeverity
     │   │   │   │   │   │   ├── attachment-type.enum.ts  # Attachment types
-    │   │   │   │   │   │   ├── call-status.enum.ts  # 
-    │   │   │   │   │   │   ├── call-type.enum.ts  # 
+    │   │   │   │   │   │   ├── call-status.enum.ts  # CallStatus
+    │   │   │   │   │   │   ├── call-type.enum.ts
     │   │   │   │   │   │   ├── channel-type.enum.ts  # Channel types
     │   │   │   │   │   │   ├── collaboration-action.enum.ts  # Collaboration actions
+    │   │   │   │   │   │   ├── conversation-type.enum.ts  # ConversationType
     │   │   │   │   │   │   ├── delivery-channel.enum.ts  # Delivery channels
     │   │   │   │   │   │   ├── delivery-status.enum.ts  # Delivery statuses
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # DeliveryStatus
     │   │   │   │   │   │   ├── digest-frequency.enum.ts  # Digest frequencies
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── email-bounce-type.enum.ts  # 
+    │   │   │   │   │   │   ├── email-bounce-type.enum.ts
     │   │   │   │   │   │   ├── email-status.enum.ts  # Email statuses
-    │   │   │   │   │   │   ├── encryption-algorithm.enum.ts  # 
+    │   │   │   │   │   │   ├── encryption-algorithm.enum.ts
+    │   │   │   │   │   │   ├── encryption-type.enum.ts  # EncryptionType
+    │   │   │   │   │   │   ├── export-format.enum.ts  # ExportFormat
+    │   │   │   │   │   │   ├── index.ts
+    │   │   │   │   │   │   ├── interview-status.enum.ts  # InterviewStatus
     │   │   │   │   │   │   ├── message-format.enum.ts  # Message formats
     │   │   │   │   │   │   ├── message-status.enum.ts  # Message statuses
+    │   │   │   │   │   │   ├── message-type.enum.ts  # MessageType
     │   │   │   │   │   │   ├── notification-channel.enum.ts  # Notification channels
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # NotificationChannel
     │   │   │   │   │   │   ├── notification-priority.enum.ts  # Notification priorities
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── notification-status.enum.ts  # Notification statuses
-    │   │   │   │   │   │   ├── platform-alert-severity.enum.ts  # 
+    │   │   │   │   │   │   ├── notification-type.enum.ts  # NotificationType
+    │   │   │   │   │   │   ├── platform-alert-severity.enum.ts
     │   │   │   │   │   │   ├── presence-status.enum.ts  # Presence statuses
+    │   │   │   │   │   │   │   # PresenceStatus
     │   │   │   │   │   │   ├── read-status.enum.ts  # Read statuses
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── spam-action.enum.ts  # 
-    │   │   │   │   │   │   ├── suppression-reason.enum.ts  # 
+    │   │   │   │   │   │   │   # ReadStatus
+    │   │   │   │   │   │   ├── spam-action.enum.ts
+    │   │   │   │   │   │   ├── spam-status.enum.ts  # SpamStatus
+    │   │   │   │   │   │   ├── suppression-reason.enum.ts
     │   │   │   │   │   │   └── thread-status.enum.ts  # Thread statuses
     │   │   │   │   │   ├── contracts/  # Contracts enumerations
+    │   │   │   │   │   │   ├── amendment-status.enum.ts  # AmendmentStatus
     │   │   │   │   │   │   ├── approval-status.enum.ts  # Contract approval statuses
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── budget-alert-type.enum.ts  # Budget alert types
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── cancellation-reason.enum.ts  # 
+    │   │   │   │   │   │   ├── cancellation-reason.enum.ts
     │   │   │   │   │   │   ├── clause-type.enum.ts  # Clause types
     │   │   │   │   │   │   ├── compliance-status.enum.ts  # Compliance statuses
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── contract-status.enum.ts  # Contract statuses
+    │   │   │   │   │   │   │   # ContractStatus
     │   │   │   │   │   │   ├── contract-type.enum.ts  # Contract types
     │   │   │   │   │   │   ├── deliverable-status.enum.ts  # Deliverable statuses
+    │   │   │   │   │   │   │   # DeliverableStatus
     │   │   │   │   │   │   ├── dispute-resolution.enum.ts  # Dispute resolutions
     │   │   │   │   │   │   ├── dispute-status.enum.ts  # Dispute statuses
+    │   │   │   │   │   │   │   # DisputeStatus
     │   │   │   │   │   │   ├── escrow-status.enum.ts  # Escrow statuses
     │   │   │   │   │   │   ├── hold-reason.enum.ts  # Hold reasons
-    │   │   │   │   │   │   ├── kpi-type.enum.ts  # 
+    │   │   │   │   │   │   ├── index.ts
+    │   │   │   │   │   │   ├── kpi-type.enum.ts
     │   │   │   │   │   │   ├── milestone-status.enum.ts  # Milestone statuses
+    │   │   │   │   │   │   │   # MilestoneStatus
+    │   │   │   │   │   │   ├── nda-status.enum.ts  # NDAStatus
     │   │   │   │   │   │   ├── pause-reason.enum.ts  # Pause reasons
+    │   │   │   │   │   │   ├── payment-schedule-type.enum.ts  # PaymentScheduleType
     │   │   │   │   │   │   ├── payment-term.enum.ts  # Payment terms
     │   │   │   │   │   │   ├── renewal-status.enum.ts  # Renewal statuses
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── risk-level.enum.ts  # 
+    │   │   │   │   │   │   │   # RenewalStatus
+    │   │   │   │   │   │   ├── risk-level.enum.ts
+    │   │   │   │   │   │   ├── signature-status.enum.ts  # SignatureStatus
     │   │   │   │   │   │   ├── sla-breach-type.enum.ts  # SLA breach types
-    │   │   │   │   │   │   ├── sla-metric.enum.ts  # 
-    │   │   │   │   │   │   ├── task-priority.enum.ts  # 
-    │   │   │   │   │   │   ├── task-status.enum.ts  # 
+    │   │   │   │   │   │   ├── sla-metric.enum.ts
+    │   │   │   │   │   │   ├── task-priority.enum.ts
+    │   │   │   │   │   │   ├── task-status.enum.ts
     │   │   │   │   │   │   ├── termination-reason.enum.ts  # Termination reasons
+    │   │   │   │   │   │   │   # TerminationReason
     │   │   │   │   │   │   ├── termination-type.enum.ts  # Termination types
     │   │   │   │   │   │   ├── timesheet-status.enum.ts  # Timesheet statuses
-    │   │   │   │   │   │   ├── work-diary-activity-type.enum.ts  # 
-    │   │   │   │   │   │   └── work-diary-status.enum.ts  # Work diary statuses
+    │   │   │   │   │   │   │   # TimesheetStatus
+    │   │   │   │   │   │   ├── work-diary-activity-type.enum.ts
+    │   │   │   │   │   │   ├── work-diary-status.enum.ts  # Work diary statuses
+    │   │   │   │   │   │   └── work-type.enum.ts  # WorkType
     │   │   │   │   │   ├── financial/  # Financial enumerations
     │   │   │   │   │   │   ├── bank-verification-status.enum.ts  # Bank verification statuses
     │   │   │   │   │   │   ├── bonus-type.enum.ts  # Bonus types
     │   │   │   │   │   │   ├── chargeback-reason.enum.ts  # Chargeback reasons
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── chargeback-status.enum.ts  # Chargeback statuses
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── commission-type.enum.ts  # 
+    │   │   │   │   │   │   │   # ChargebackStatus
+    │   │   │   │   │   │   ├── commission-type.enum.ts
     │   │   │   │   │   │   ├── currency-code.enum.ts  # Currency codes
     │   │   │   │   │   │   ├── dispute-reason.enum.ts  # Dispute reasons
     │   │   │   │   │   │   ├── dispute-status.enum.ts  # Dispute statuses
     │   │   │   │   │   │   ├── escrow-status.enum.ts  # Escrow statuses
     │   │   │   │   │   │   ├── fee-type.enum.ts  # Fee types
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── fraud-alert-type.enum.ts  # Fraud alert types
-    │   │   │   │   │   │   ├── fraud-risk-level.enum.ts  # 
+    │   │   │   │   │   │   ├── fraud-indicator.enum.ts  # FraudIndicator
+    │   │   │   │   │   │   ├── fraud-risk-level.enum.ts
     │   │   │   │   │   │   ├── gateway-type.enum.ts  # Gateway types
-    │   │   │   │   │   │   ├── hold-reason.enum.ts  # 
+    │   │   │   │   │   │   │   # GatewayType
+    │   │   │   │   │   │   ├── hold-reason.enum.ts
+    │   │   │   │   │   │   ├── index.ts
     │   │   │   │   │   │   ├── insurance-claim-status.enum.ts  # Insurance claim statuses
+    │   │   │   │   │   │   │   # InsuranceClaimStatus
     │   │   │   │   │   │   ├── invoice-status.enum.ts  # Invoice statuses
-    │   │   │   │   │   │   ├── ledger-entry-type.enum.ts  # 
+    │   │   │   │   │   │   │   # InvoiceStatus
+    │   │   │   │   │   │   ├── ledger-entry-type.enum.ts
     │   │   │   │   │   │   ├── payment-method-type.enum.ts  # Payment method types
+    │   │   │   │   │   │   │   # PaymentMethodType
     │   │   │   │   │   │   ├── payment-status.enum.ts  # Payment statuses
+    │   │   │   │   │   │   │   # PaymentStatus
     │   │   │   │   │   │   ├── payout-status.enum.ts  # Payout statuses
+    │   │   │   │   │   │   │   # PayoutStatus
     │   │   │   │   │   │   ├── reconciliation-status.enum.ts  # Reconciliation statuses
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── refund-reason.enum.ts  # Refund reasons
     │   │   │   │   │   │   ├── refund-status.enum.ts  # Refund statuses
+    │   │   │   │   │   │   │   # RefundStatus
     │   │   │   │   │   │   ├── reminder-type.enum.ts  # Reminder types
+    │   │   │   │   │   │   │   # ReminderType
     │   │   │   │   │   │   ├── risk-level.enum.ts  # Risk levels
+    │   │   │   │   │   │   │   # RiskLevel
     │   │   │   │   │   │   ├── tax-form-type.enum.ts  # Tax form types
+    │   │   │   │   │   │   │   # TaxFormType
     │   │   │   │   │   │   ├── transaction-status.enum.ts  # Transaction statuses
     │   │   │   │   │   │   ├── transaction-type.enum.ts  # Transaction types
+    │   │   │   │   │   │   │   # TransactionType
     │   │   │   │   │   │   ├── wallet-status.enum.ts  # Wallet statuses
-    │   │   │   │   │   │   └── withdrawal-status.enum.ts  # 
+    │   │   │   │   │   │   └── withdrawal-status.enum.ts
     │   │   │   │   │   ├── jobs/  # Jobs enumerations
     │   │   │   │   │   │   ├── application-status.enum.ts  # Application statuses
-    │   │   │   │   │   │   ├── boost-level.enum.ts  # 
+    │   │   │   │   │   │   ├── boost-level.enum.ts
     │   │   │   │   │   │   ├── boost-status.enum.ts  # Boost statuses
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── budget-type.enum.ts  # Budget types
+    │   │   │   │   │   │   │   # BudgetType
     │   │   │   │   │   │   ├── compliance-status.enum.ts  # Compliance statuses
+    │   │   │   │   │   │   ├── contract-transition-status.enum.ts  # ContractTransitionStatus
     │   │   │   │   │   │   ├── dispute-reason.enum.ts  # Dispute reasons
-    │   │   │   │   │   │   ├── draft-status.enum.ts  # 
+    │   │   │   │   │   │   ├── draft-status.enum.ts
+    │   │   │   │   │   │   ├── duration-type.enum.ts  # DurationType
     │   │   │   │   │   │   ├── employment-type.enum.ts  # Employment types
     │   │   │   │   │   │   ├── experience-level.enum.ts  # Experience levels
-    │   │   │   │   │   │   ├── expiry-reason.enum.ts  # 
+    │   │   │   │   │   │   │   # ExperienceLevel
+    │   │   │   │   │   │   ├── expiry-reason.enum.ts
     │   │   │   │   │   │   ├── flag-reason.enum.ts  # Flag reasons
+    │   │   │   │   │   │   ├── fraud-score-level.enum.ts  # FraudScoreLevel
     │   │   │   │   │   │   ├── fraud-signal-type.enum.ts  # Fraud signal types
+    │   │   │   │   │   │   ├── index.ts
+    │   │   │   │   │   │   ├── invitation-status.enum.ts  # InvitationStatus
     │   │   │   │   │   │   ├── invite-status.enum.ts  # Invite statuses
     │   │   │   │   │   │   ├── job-duration.enum.ts  # Job durations
     │   │   │   │   │   │   ├── job-status.enum.ts  # Job statuses
+    │   │   │   │   │   │   │   # JobStatus
     │   │   │   │   │   │   ├── job-type.enum.ts  # Job types
-    │   │   │   │   │   │   ├── match-score-range.enum.ts  # 
+    │   │   │   │   │   │   │   # JobType
+    │   │   │   │   │   │   ├── lifecycle-stage.enum.ts  # LifecycleStage
+    │   │   │   │   │   │   ├── match-score-range.enum.ts
+    │   │   │   │   │   │   ├── moderation-state.enum.ts  # ModerationState
     │   │   │   │   │   │   ├── package-type.enum.ts  # Package types
     │   │   │   │   │   │   ├── payment-type.enum.ts  # Payment types
     │   │   │   │   │   │   ├── posting-status.enum.ts  # Posting statuses
     │   │   │   │   │   │   ├── promotion-type.enum.ts  # Promotion types
     │   │   │   │   │   │   ├── question-type.enum.ts  # Question types
     │   │   │   │   │   │   ├── screening-answer-type.enum.ts  # Screening answer types
-    │   │   │   │   │   │   ├── screening-question-type.enum.ts  # 
-    │   │   │   │   │   │   ├── visibility-level.enum.ts  # 
+    │   │   │   │   │   │   ├── screening-question-type.enum.ts
+    │   │   │   │   │   │   ├── sourcing-mode.enum.ts  # SourcingMode
+    │   │   │   │   │   │   ├── visibility-level.enum.ts
+    │   │   │   │   │   │   ├── visibility-status.enum.ts  # VisibilityStatus
     │   │   │   │   │   │   └── visibility.enum.ts  # Visibility types
     │   │   │   │   │   ├── proposals/  # Proposals enumerations
+    │   │   │   │   │   │   ├── archive-reason.enum.ts  # ArchiveReason
     │   │   │   │   │   │   ├── auction-status.enum.ts  # Auction statuses
+    │   │   │   │   │   │   │   # AuctionStatus
     │   │   │   │   │   │   ├── bid-status.enum.ts  # Bid statuses
-    │   │   │   │   │   │   ├── bid-type.enum.ts  # 
+    │   │   │   │   │   │   │   # BidStatus
+    │   │   │   │   │   │   ├── bid-strategy-type.enum.ts  # BidStrategyType
+    │   │   │   │   │   │   ├── bid-type.enum.ts
     │   │   │   │   │   │   ├── boost-status.enum.ts  # Boost statuses
+    │   │   │   │   │   │   ├── boost-type.enum.ts  # BoostType
     │   │   │   │   │   │   ├── compliance-status.enum.ts  # Compliance statuses
+    │   │   │   │   │   │   │   # ComplianceStatus
     │   │   │   │   │   │   ├── connect-refund-reason.enum.ts  # Connect refund reasons
+    │   │   │   │   │   │   ├── engagement-level.enum.ts  # EngagementLevel
     │   │   │   │   │   │   ├── engagement-type.enum.ts  # Engagement types
-    │   │   │   │   │   │   ├── feedback-rating.enum.ts  # 
+    │   │   │   │   │   │   ├── feedback-rating.enum.ts
     │   │   │   │   │   │   ├── flag-reason.enum.ts  # Flag reasons
-    │   │   │   │   │   │   ├── interview-outcome.enum.ts  # 
+    │   │   │   │   │   │   │   # FlagReason
+    │   │   │   │   │   │   ├── index.ts
+    │   │   │   │   │   │   ├── interview-outcome.enum.ts
     │   │   │   │   │   │   ├── interview-status.enum.ts  # Interview statuses
+    │   │   │   │   │   │   │   # InterviewStatus
+    │   │   │   │   │   │   ├── invitation-status.enum.ts  # InvitationStatus
     │   │   │   │   │   │   ├── negotiation-status.enum.ts  # Negotiation statuses
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # NegotiationStatus
     │   │   │   │   │   │   ├── pipeline-stage.enum.ts  # Pipeline stages
+    │   │   │   │   │   │   │   # PipelineStage
     │   │   │   │   │   │   ├── proposal-status.enum.ts  # Proposal statuses
+    │   │   │   │   │   │   │   # ProposalStatus
     │   │   │   │   │   │   ├── risk-level.enum.ts  # Risk levels
+    │   │   │   │   │   │   │   # RiskLevel
     │   │   │   │   │   │   ├── shortlist-status.enum.ts  # Shortlist statuses
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── similarity-match-type.enum.ts  # SimilarityMatchType
+    │   │   │   │   │   │   ├── spam-score-level.enum.ts  # SpamScoreLevel
     │   │   │   │   │   │   ├── spam-type.enum.ts  # Spam types
-    │   │   │   │   │   │   ├── tag-type.enum.ts  # 
+    │   │   │   │   │   │   ├── tag-type.enum.ts
     │   │   │   │   │   │   ├── urgency-level.enum.ts  # Urgency levels
     │   │   │   │   │   │   └── withdrawal-reason.enum.ts  # Withdrawal reasons
+    │   │   │   │   │   │       # WithdrawalReason
     │   │   │   │   │   ├── reviews/  # Reviews enumerations
     │   │   │   │   │   │   ├── appeal-status.enum.ts  # Appeal statuses
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── badge-category.enum.ts  # 
-    │   │   │   │   │   │   ├── badge-tier.enum.ts  # 
+    │   │   │   │   │   │   │   # AppealStatus
+    │   │   │   │   │   │   ├── badge-category.enum.ts
+    │   │   │   │   │   │   ├── badge-tier.enum.ts
     │   │   │   │   │   │   ├── badge-type.enum.ts  # Badge types
+    │   │   │   │   │   │   │   # BadgeType
+    │   │   │   │   │   │   ├── blind-status.enum.ts  # BlindStatus
     │   │   │   │   │   │   ├── compliance-action-type.enum.ts  # Compliance action types
+    │   │   │   │   │   │   ├── compliance-action.enum.ts  # ComplianceAction
     │   │   │   │   │   │   ├── double-blind-status.enum.ts  # Double-blind statuses
+    │   │   │   │   │   │   ├── draft-status.enum.ts  # DraftStatus
     │   │   │   │   │   │   ├── eligibility-status.enum.ts  # Eligibility statuses
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── evidence-type.enum.ts  # EvidenceType
     │   │   │   │   │   │   ├── flag-reason.enum.ts  # Flag reasons
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # FlagReason
+    │   │   │   │   │   │   ├── index.ts
     │   │   │   │   │   │   ├── moderation-action.enum.ts  # Moderation actions
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # ModerationAction
     │   │   │   │   │   │   ├── moderation-status.enum.ts  # Moderation statuses
     │   │   │   │   │   │   ├── rating-dimension.enum.ts  # Rating dimensions
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── rating-type.enum.ts  # RatingType
     │   │   │   │   │   │   ├── redaction-type.enum.ts  # Redaction types
     │   │   │   │   │   │   ├── reminder-type.enum.ts  # Reminder types
-    │   │   │   │   │   │   ├── reputation-tier.enum.ts  # 
+    │   │   │   │   │   │   │   # ReminderType
+    │   │   │   │   │   │   ├── reputation-tier.enum.ts  # ReputationTier
+    │   │   │   │   │   │   ├── response-status.enum.ts  # ResponseStatus
     │   │   │   │   │   │   ├── review-status.enum.ts  # Review statuses
+    │   │   │   │   │   │   │   # ReviewStatus
     │   │   │   │   │   │   ├── vote-type.enum.ts  # Vote types
-    │   │   │   │   │   │   └── window-status.enum.ts  # 
+    │   │   │   │   │   │   └── window-status.enum.ts
     │   │   │   │   │   ├── search/  # Search enumerations
     │   │   │   │   │   │   ├── alert-frequency.enum.ts  # Alert frequencies
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── boost-factor.enum.ts  # 
+    │   │   │   │   │   │   ├── boost-factor.enum.ts
     │   │   │   │   │   │   ├── boost-type.enum.ts  # Boost types
     │   │   │   │   │   │   ├── cluster-status.enum.ts  # Cluster statuses
     │   │   │   │   │   │   ├── experiment-status.enum.ts  # Experiment statuses
     │   │   │   │   │   │   ├── facet-type.enum.ts  # Facet types
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # FacetType
     │   │   │   │   │   │   ├── filter-operator.enum.ts  # Filter operators
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── hygiene-job-type.enum.ts  # Hygiene job types
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── hygiene-task-type.enum.ts  # HygieneTaskType
     │   │   │   │   │   │   ├── index-status.enum.ts  # Index statuses
+    │   │   │   │   │   │   ├── index-type.enum.ts  # IndexType
+    │   │   │   │   │   │   ├── index.ts
     │   │   │   │   │   │   ├── language-code.enum.ts  # Language codes
     │   │   │   │   │   │   ├── ml-model-type.enum.ts  # ML model types
     │   │   │   │   │   │   ├── performance-metric.enum.ts  # Performance metrics
     │   │   │   │   │   │   ├── query-log-type.enum.ts  # Query log types
     │   │   │   │   │   │   ├── ranking-factor.enum.ts  # Ranking factors
-    │   │   │   │   │   │   ├── ranking-signal.enum.ts  # 
-    │   │   │   │   │   │   ├── rewrite-type.enum.ts  # 
+    │   │   │   │   │   │   │   # RankingFactor
+    │   │   │   │   │   │   ├── ranking-signal.enum.ts
+    │   │   │   │   │   │   ├── rewrite-type.enum.ts
     │   │   │   │   │   │   ├── safety-filter-type.enum.ts  # Safety filter types
+    │   │   │   │   │   │   ├── safety-level.enum.ts  # SafetyLevel
     │   │   │   │   │   │   ├── search-type.enum.ts  # Search types
+    │   │   │   │   │   │   │   # SearchType
     │   │   │   │   │   │   └── sort-order.enum.ts  # Sort orders
     │   │   │   │   │   ├── storage/  # Storage enumerations
     │   │   │   │   │   │   ├── access-level.enum.ts  # Access level enumeration
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # AccessLevel
     │   │   │   │   │   │   ├── compression-type.enum.ts  # Compression types
     │   │   │   │   │   │   ├── data-zone.enum.ts  # Data zones
     │   │   │   │   │   │   ├── encryption-algorithm.enum.ts  # Encryption algorithms
     │   │   │   │   │   │   ├── file-status.enum.ts  # File status enumeration
+    │   │   │   │   │   │   ├── file-type.enum.ts  # FileType
+    │   │   │   │   │   │   ├── index.ts
     │   │   │   │   │   │   ├── job-status.enum.ts  # Processing job statuses
     │   │   │   │   │   │   ├── job-type.enum.ts  # Processing job types
     │   │   │   │   │   │   ├── legal-hold-status.enum.ts  # Legal hold statuses
@@ -26651,127 +26956,157 @@ fe/
     │   │   │   │   │   │   ├── lock-type.enum.ts  # Lock types
     │   │   │   │   │   │   ├── media-format.enum.ts  # Media formats
     │   │   │   │   │   │   ├── mime-type.enum.ts  # MIME type enumeration
+    │   │   │   │   │   │   │   # MimeType
     │   │   │   │   │   │   ├── ocr-language.enum.ts  # OCR languages
     │   │   │   │   │   │   ├── permission-type.enum.ts  # Permission types
     │   │   │   │   │   │   ├── quarantine-reason.enum.ts  # Quarantine reasons
-    │   │   │   │   │   │   ├── quota-type.enum.ts  # 
+    │   │   │   │   │   │   ├── quota-type.enum.ts
     │   │   │   │   │   │   ├── replication-status.enum.ts  # Replication statuses
     │   │   │   │   │   │   ├── scan-status.enum.ts  # Scan statuses
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── scan-verdict.enum.ts  # 
+    │   │   │   │   │   │   │   # ScanStatus
+    │   │   │   │   │   │   ├── scan-verdict.enum.ts
     │   │   │   │   │   │   ├── share-permission.enum.ts  # Share permissions
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── storage-class.enum.ts  # Storage classes
     │   │   │   │   │   │   ├── storage-tier.enum.ts  # Storage tiers
     │   │   │   │   │   │   ├── sync-status.enum.ts  # Sync statuses
     │   │   │   │   │   │   ├── transform-preset.enum.ts  # Transform presets
-    │   │   │   │   │   │   ├── upload-session-status.enum.ts  # 
+    │   │   │   │   │   │   ├── upload-session-status.enum.ts
     │   │   │   │   │   │   ├── upload-status.enum.ts  # Upload status enumeration
+    │   │   │   │   │   │   │   # UploadStatus
     │   │   │   │   │   │   ├── version-action.enum.ts  # Version actions
     │   │   │   │   │   │   ├── virus-scan-status.enum.ts  # Virus scan status enumeration
     │   │   │   │   │   │   └── watermark-position.enum.ts  # Watermark positions
     │   │   │   │   │   ├── subscriptions/  # Subscriptions enumerations
     │   │   │   │   │   │   ├── addon-type.enum.ts  # Add-on type enumeration
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── allowance-type.enum.ts  # 
+    │   │   │   │   │   │   │   # AddonType
+    │   │   │   │   │   │   ├── allowance-type.enum.ts
     │   │   │   │   │   │   ├── billing-cycle.enum.ts  # Billing cycle enumeration
     │   │   │   │   │   │   ├── cancellation-reason.enum.ts  # Cancellation reasons
     │   │   │   │   │   │   ├── change-request-status.enum.ts  # Change request statuses
-    │   │   │   │   │   │   ├── coupon-type.enum.ts  # 
-    │   │   │   │   │   │   ├── credit-type.enum.ts  # 
+    │   │   │   │   │   │   ├── connect-transaction-type.enum.ts  # ConnectTransactionType
+    │   │   │   │   │   │   ├── coupon-type.enum.ts
+    │   │   │   │   │   │   ├── credit-type.enum.ts
     │   │   │   │   │   │   ├── dunning-action-type.enum.ts  # Dunning action types
-    │   │   │   │   │   │   ├── dunning-stage.enum.ts  # 
+    │   │   │   │   │   │   ├── dunning-stage.enum.ts
     │   │   │   │   │   │   ├── dunning-status.enum.ts  # Dunning status enumeration
-    │   │   │   │   │   │   ├── entitlement-status.enum.ts  # 
+    │   │   │   │   │   │   │   # DunningStatus
+    │   │   │   │   │   │   ├── entitlement-status.enum.ts
     │   │   │   │   │   │   ├── entitlement-type.enum.ts  # Entitlement types
+    │   │   │   │   │   │   │   # EntitlementType
     │   │   │   │   │   │   ├── feature-type.enum.ts  # Feature types
-    │   │   │   │   │   │   ├── grant-type.enum.ts  # 
+    │   │   │   │   │   │   ├── grant-type.enum.ts
+    │   │   │   │   │   │   ├── index.ts
     │   │   │   │   │   │   ├── invoice-status.enum.ts  # Invoice statuses
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # InvoiceStatus
     │   │   │   │   │   │   ├── meter-type.enum.ts  # Meter types
     │   │   │   │   │   │   ├── payment-attempt-status.enum.ts  # Payment attempt status enumeration
+    │   │   │   │   │   │   ├── payment-status.enum.ts  # PaymentStatus
     │   │   │   │   │   │   ├── plan-type.enum.ts  # Plan type enumeration
-    │   │   │   │   │   │   ├── proration-mode.enum.ts  # 
+    │   │   │   │   │   │   │   # PlanType
+    │   │   │   │   │   │   ├── pricing-model.enum.ts  # PricingModel
+    │   │   │   │   │   │   ├── proration-mode.enum.ts
     │   │   │   │   │   │   ├── seat-status.enum.ts  # Seat statuses
     │   │   │   │   │   │   ├── subscription-status.enum.ts  # Subscription status enumeration
+    │   │   │   │   │   │   │   # SubscriptionStatus
     │   │   │   │   │   │   ├── tax-type.enum.ts  # Tax types
+    │   │   │   │   │   │   ├── toggle-status.enum.ts  # ToggleStatus
     │   │   │   │   │   │   ├── trial-status.enum.ts  # Trial statuses
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # TrialStatus
     │   │   │   │   │   │   ├── usage-event-type.enum.ts  # Usage event types
-    │   │   │   │   │   │   └── usage-metric.enum.ts  # 
+    │   │   │   │   │   │   ├── usage-metric.enum.ts
+    │   │   │   │   │   │   └── usage-type.enum.ts  # UsageType
     │   │   │   │   │   ├── users/  # Users enumerations
     │   │   │   │   │   │   ├── account-status.enum.ts  # Account status enumeration
     │   │   │   │   │   │   ├── achievement-type.enum.ts  # Achievement types
     │   │   │   │   │   │   ├── activity-type.enum.ts  # Activity types
+    │   │   │   │   │   │   ├── appeal-status.enum.ts  # AppealStatus
+    │   │   │   │   │   │   ├── auth-method.enum.ts  # AuthMethod
     │   │   │   │   │   │   ├── availability-status.enum.ts  # Availability status enumeration
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # AvailabilityStatus
     │   │   │   │   │   │   ├── badge-type.enum.ts  # Badge type enumeration
+    │   │   │   │   │   │   ├── ban-reason.enum.ts  # BanReason
     │   │   │   │   │   │   ├── bio-section.enum.ts  # Bio sections
     │   │   │   │   │   │   ├── capability-type.enum.ts  # Capability types
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── certification-status.enum.ts  # Certification statuses
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── compliance-status.enum.ts  # Compliance statuses
     │   │   │   │   │   │   ├── connection-status.enum.ts  # Connection statuses
+    │   │   │   │   │   │   │   # ConnectionStatus
     │   │   │   │   │   │   ├── consent-type.enum.ts  # Consent types
     │   │   │   │   │   │   ├── device-type.enum.ts  # Device types
+    │   │   │   │   │   │   │   # DeviceType
     │   │   │   │   │   │   ├── endorsement-status.enum.ts  # Endorsement statuses
     │   │   │   │   │   │   ├── export-format.enum.ts  # Export formats
     │   │   │   │   │   │   ├── export-status.enum.ts  # Export statuses
+    │   │   │   │   │   │   ├── flag-reason.enum.ts  # FlagReason
     │   │   │   │   │   │   ├── goal-status.enum.ts  # Goal statuses
     │   │   │   │   │   │   ├── identity-document-type.enum.ts  # Identity document types
+    │   │   │   │   │   │   ├── index.ts
     │   │   │   │   │   │   ├── kyc-status.enum.ts  # KYC statuses
     │   │   │   │   │   │   ├── language-proficiency.enum.ts  # Language proficiency enumeration
-    │   │   │   │   │   │   ├── metric-type.enum.ts  # 
+    │   │   │   │   │   │   ├── metric-type.enum.ts
     │   │   │   │   │   │   ├── notification-channel.enum.ts  # Notification channels
     │   │   │   │   │   │   ├── onboarding-status.enum.ts  # Onboarding statuses
-    │   │   │   │   │   │   ├── organization-type.enum.ts  # 
-    │   │   │   │   │   │   ├── portfolio-visibility.enum.ts  # 
+    │   │   │   │   │   │   ├── organization-type.enum.ts
+    │   │   │   │   │   │   ├── portfolio-visibility.enum.ts
     │   │   │   │   │   │   ├── privacy-level.enum.ts  # Privacy levels
+    │   │   │   │   │   │   ├── proficiency-level.enum.ts  # ProficiencyLevel
     │   │   │   │   │   │   ├── profile-completion-status.enum.ts  # Profile completion statuses
     │   │   │   │   │   │   ├── referral-status.enum.ts  # Referral status enumeration
+    │   │   │   │   │   │   │   # ReferralStatus
     │   │   │   │   │   │   ├── relationship-type.enum.ts  # Relationship types
     │   │   │   │   │   │   ├── reputation-tier.enum.ts  # Reputation tiers
+    │   │   │   │   │   │   │   # ReputationTier
     │   │   │   │   │   │   ├── scoring-factor.enum.ts  # Scoring factors
     │   │   │   │   │   │   ├── security-question-type.enum.ts  # Security question types
     │   │   │   │   │   │   ├── session-status.enum.ts  # Session statuses
     │   │   │   │   │   │   ├── skill-level.enum.ts  # Skill levels
     │   │   │   │   │   │   ├── skill-proficiency.enum.ts  # Skill proficiency enumeration
-    │   │   │   │   │   │   ├── skill-verification-status.enum.ts  # 
+    │   │   │   │   │   │   ├── skill-verification-status.enum.ts
     │   │   │   │   │   │   ├── specialization-level.enum.ts  # Specialization levels
     │   │   │   │   │   │   ├── suspend-reason.enum.ts  # Suspension reasons
+    │   │   │   │   │   │   ├── suspension-reason.enum.ts  # SuspensionReason
     │   │   │   │   │   │   ├── tax-form-type.enum.ts  # Tax form types
     │   │   │   │   │   │   ├── team-role.enum.ts  # Team roles
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── trust-level.enum.ts  # Trust level enumeration
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── two-factor-method.enum.ts  # Two-factor methods
+    │   │   │   │   │   │   ├── user-status.enum.ts  # UserStatus
     │   │   │   │   │   │   ├── user-type.enum.ts  # User type enumeration
+    │   │   │   │   │   │   │   # UserType
+    │   │   │   │   │   │   ├── verification-level.enum.ts  # VerificationLevel
     │   │   │   │   │   │   ├── verification-method.enum.ts  # Verification methods
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── verification-status.enum.ts  # Verification status enumeration
-    │   │   │   │   │   │   └── video-status.enum.ts  # Video statuses
+    │   │   │   │   │   │   │   # VerificationStatus
+    │   │   │   │   │   │   ├── video-status.enum.ts  # Video statuses
+    │   │   │   │   │   │   └── warning-severity.enum.ts  # WarningSeverity
     │   │   │   │   │   └── │
     │   │   │   │   ├── mappers/  # DTO ↔ Domain transformation functions
     │   │   │   │   │   # DTO ↔ Domain transformation (MISSING MAPPERS BELOW)
+    │   │   │   │   │   # ✅ NEW - Transform between DTOs and Domain types
     │   │   │   │   │   ├── admin/  # Admin mappers
     │   │   │   │   │   │   ├── activity-log.mapper.ts  # ActivityLog DTO ↔ Domain
     │   │   │   │   │   │   ├── admin-user.mapper.ts  # AdminUser DTO ↔ Domain
+    │   │   │   │   │   │   │   # AdminUserDTO ↔ AdminUser
     │   │   │   │   │   │   ├── announcement.mapper.ts  # Announcement DTO ↔ Domain
     │   │   │   │   │   │   ├── audit-entry.mapper.ts  # AuditEntry DTO ↔ Domain
     │   │   │   │   │   │   ├── change-request.mapper.ts  # ChangeRequest DTO ↔ Domain
     │   │   │   │   │   │   ├── compliance-context.mapper.ts  # ComplianceContext DTO ↔ Domain
     │   │   │   │   │   │   ├── experiment.mapper.ts  # Experiment DTO ↔ Domain
+    │   │   │   │   │   │   │   # ExperimentDTO ↔ Experiment
     │   │   │   │   │   │   ├── feature-flag.mapper.ts  # FeatureFlag DTO ↔ Domain
+    │   │   │   │   │   │   │   # FeatureFlagDTO ↔ FeatureFlag
     │   │   │   │   │   │   ├── impersonation.mapper.ts  # Impersonation DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── legal-hold.mapper.ts  # LegalHold DTO ↔ Domain
     │   │   │   │   │   │   ├── moderation-item.mapper.ts  # ModerationItem DTO ↔ Domain
+    │   │   │   │   │   │   ├── moderation.mapper.ts  # ModerationQueueDTO ↔ ModerationQueue
+    │   │   │   │   │   │   ├── platform-config.mapper.ts  # ConfigDTO ↔ PlatformConfig
     │   │   │   │   │   │   ├── policy-document.mapper.ts  # PolicyDocument DTO ↔ Domain
     │   │   │   │   │   │   ├── privacy-request.mapper.ts  # PrivacyRequest DTO ↔ Domain
     │   │   │   │   │   │   ├── sanctions-screening.mapper.ts  # SanctionsScreening DTO ↔ Domain
+    │   │   │   │   │   │   ├── sanctions.mapper.ts  # SanctionsDTO ↔ SanctionsCheck
     │   │   │   │   │   │   ├── session.mapper.ts  # Session DTO ↔ Domain
     │   │   │   │   │   │   ├── support-ticket.mapper.ts  # SupportTicket DTO ↔ Domain
+    │   │   │   │   │   │   │   # SupportTicketDTO ↔ SupportTicket
     │   │   │   │   │   │   ├── system-metric.mapper.ts  # SystemMetric DTO ↔ Domain
     │   │   │   │   │   │   └── system-setting.mapper.ts  # SystemSetting DTO ↔ Domain
     │   │   │   │   │   ├── communications/  # Communications mappers
@@ -26781,22 +27116,26 @@ fe/
     │   │   │   │   │   │   ├── call.mapper.ts  # Call DTO ↔ Domain
     │   │   │   │   │   │   ├── collaboration.mapper.ts  # Collaboration DTO ↔ Domain
     │   │   │   │   │   │   ├── conversation.mapper.ts  # Conversation DTO ↔ Domain
+    │   │   │   │   │   │   │   # ConversationDTO ↔ Conversation
     │   │   │   │   │   │   ├── delivery-log.mapper.ts  # DeliveryLog DTO ↔ Domain
     │   │   │   │   │   │   ├── delivery.mapper.ts  # Delivery DTO ↔ Domain
     │   │   │   │   │   │   ├── digest.mapper.ts  # Digest DTO ↔ Domain
     │   │   │   │   │   │   ├── draft.mapper.ts  # Draft DTO ↔ Domain
     │   │   │   │   │   │   ├── email-bridge.mapper.ts  # EmailBridge DTO ↔ Domain
     │   │   │   │   │   │   ├── email.mapper.ts  # Email DTO ↔ Domain
+    │   │   │   │   │   │   │   # EmailDTO ↔ Email
     │   │   │   │   │   │   ├── encryption.mapper.ts  # Encryption DTO ↔ Domain
     │   │   │   │   │   │   ├── in-app-notification.mapper.ts  # InAppNotification DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── interview.mapper.ts  # Interview DTO ↔ Domain
     │   │   │   │   │   │   ├── mail-tracking.mapper.ts  # MailTracking DTO ↔ Domain
     │   │   │   │   │   │   ├── message.mapper.ts  # Message DTO ↔ Domain
+    │   │   │   │   │   │   │   # MessageDTO ↔ Message
     │   │   │   │   │   │   ├── moderation.mapper.ts  # Moderation DTO ↔ Domain
     │   │   │   │   │   │   ├── notification-queue.mapper.ts  # NotificationQueue DTO ↔ Domain
     │   │   │   │   │   │   ├── notification-template.mapper.ts  # NotificationTemplate DTO ↔ Domain
     │   │   │   │   │   │   ├── notification.mapper.ts  # Notification DTO ↔ Domain
+    │   │   │   │   │   │   │   # NotificationDTO ↔ Notification
     │   │   │   │   │   │   ├── pin.mapper.ts  # Pin DTO ↔ Domain
     │   │   │   │   │   │   ├── platform-alert.mapper.ts  # PlatformAlert DTO ↔ Domain
     │   │   │   │   │   │   ├── push-device.mapper.ts  # PushDevice DTO ↔ Domain
@@ -26812,100 +27151,154 @@ fe/
     │   │   │   │   │   ├── contracts/  # Contracts mappers
     │   │   │   │   │   │   ├── agency-contract.mapper.ts  # AgencyContract DTO ↔ Domain
     │   │   │   │   │   │   ├── amendment.mapper.ts  # Amendment DTO ↔ Domain
+    │   │   │   │   │   │   │   # AmendmentDTO ↔ ContractAmendment
     │   │   │   │   │   │   ├── approval.mapper.ts  # Approval DTO ↔ Domain
     │   │   │   │   │   │   ├── audit-log.mapper.ts  # AuditLog DTO ↔ Domain
     │   │   │   │   │   │   ├── budget.mapper.ts  # Budget DTO ↔ Domain
     │   │   │   │   │   │   ├── cancellation.mapper.ts  # Cancellation DTO ↔ Domain
     │   │   │   │   │   │   ├── compliance.mapper.ts  # Compliance DTO ↔ Domain
     │   │   │   │   │   │   ├── contract.mapper.ts  # Contract DTO ↔ Domain
+    │   │   │   │   │   │   │   # ContractDTO ↔ Contract
     │   │   │   │   │   │   ├── deliverable.mapper.ts  # Deliverable DTO ↔ Domain
+    │   │   │   │   │   │   │   # DeliverableDTO ↔ Deliverable
     │   │   │   │   │   │   ├── dispute.mapper.ts  # Dispute DTO ↔ Domain
+    │   │   │   │   │   │   │   # DisputeDTO ↔ Dispute
     │   │   │   │   │   │   ├── escrow.mapper.ts  # Escrow DTO ↔ Domain
     │   │   │   │   │   │   ├── feedback.mapper.ts  # Feedback DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── ip-rights.mapper.ts  # IPRightsDTO ↔ IPRights
     │   │   │   │   │   │   ├── milestone.mapper.ts  # Milestone DTO ↔ Domain
+    │   │   │   │   │   │   │   # MilestoneDTO ↔ Milestone
+    │   │   │   │   │   │   ├── nda.mapper.ts  # NDADTO ↔ NDA
     │   │   │   │   │   │   ├── performance-kpi.mapper.ts  # PerformanceKPI DTO ↔ Domain
+    │   │   │   │   │   │   ├── performance.mapper.ts  # PerformanceDTO ↔ PerformanceKPI
     │   │   │   │   │   │   ├── renewal.mapper.ts  # Renewal DTO ↔ Domain
+    │   │   │   │   │   │   │   # RenewalDTO ↔ ContractRenewal
     │   │   │   │   │   │   ├── risk-assessment.mapper.ts  # RiskAssessment DTO ↔ Domain
     │   │   │   │   │   │   ├── signature.mapper.ts  # Signature DTO ↔ Domain
+    │   │   │   │   │   │   │   # SignatureDTO ↔ ContractSignature
     │   │   │   │   │   │   ├── sla.mapper.ts  # SLA DTO ↔ Domain
+    │   │   │   │   │   │   │   # SLADTO ↔ SLA
+    │   │   │   │   │   │   ├── termination.mapper.ts  # TerminationDTO ↔ ContractTermination
     │   │   │   │   │   │   ├── timesheet.mapper.ts  # Timesheet DTO ↔ Domain
+    │   │   │   │   │   │   │   # TimesheetDTO ↔ Timesheet
     │   │   │   │   │   │   ├── version.mapper.ts  # Version DTO ↔ Domain
     │   │   │   │   │   │   ├── work-diary.mapper.ts  # WorkDiary DTO ↔ Domain
+    │   │   │   │   │   │   │   # WorkDiaryDTO ↔ WorkDiary
     │   │   │   │   │   │   ├── workroom-note.mapper.ts  # WorkroomNote DTO ↔ Domain
     │   │   │   │   │   │   ├── workroom-task.mapper.ts  # WorkroomTask DTO ↔ Domain
     │   │   │   │   │   │   └── workspace.mapper.ts  # Workspace DTO ↔ Domain
     │   │   │   │   │   ├── financial/  # Financial mappers
     │   │   │   │   │   │   ├── bank-account.mapper.ts  # BankAccount DTO ↔ Domain
     │   │   │   │   │   │   ├── billing-address.mapper.ts  # BillingAddress DTO ↔ Domain
+    │   │   │   │   │   │   ├── bonus.mapper.ts  # BonusDTO ↔ Bonus
     │   │   │   │   │   │   ├── budget.mapper.ts  # Budget DTO ↔ Domain
     │   │   │   │   │   │   ├── chargeback.mapper.ts  # Chargeback DTO ↔ Domain
+    │   │   │   │   │   │   │   # ChargebackDTO ↔ Chargeback
     │   │   │   │   │   │   ├── commission.mapper.ts  # Commission DTO ↔ Domain
+    │   │   │   │   │   │   ├── connects.mapper.ts  # ConnectsDTO ↔ ConnectsPurchase
     │   │   │   │   │   │   ├── currency-conversion.mapper.ts  # CurrencyConversion DTO ↔ Domain
     │   │   │   │   │   │   ├── dispute.mapper.ts  # Dispute DTO ↔ Domain
     │   │   │   │   │   │   ├── escrow.mapper.ts  # Escrow DTO ↔ Domain
+    │   │   │   │   │   │   │   # EscrowDTO ↔ EscrowAccount
     │   │   │   │   │   │   ├── fee.mapper.ts  # Fee DTO ↔ Domain
+    │   │   │   │   │   │   │   # FeeDTO ↔ PlatformFee
     │   │   │   │   │   │   ├── fraud-detection.mapper.ts  # FraudDetection DTO ↔ Domain
     │   │   │   │   │   │   ├── hold.mapper.ts  # Hold DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── insurance.mapper.ts  # InsuranceDTO ↔ InsurancePolicy
     │   │   │   │   │   │   ├── invoice.mapper.ts  # Invoice DTO ↔ Domain
+    │   │   │   │   │   │   │   # InvoiceDTO ↔ Invoice
     │   │   │   │   │   │   ├── ledger.mapper.ts  # Ledger DTO ↔ Domain
     │   │   │   │   │   │   ├── payment-method.mapper.ts  # PaymentMethod DTO ↔ Domain
+    │   │   │   │   │   │   │   # PaymentMethodDTO ↔ PaymentMethod
     │   │   │   │   │   │   ├── payment.mapper.ts  # Payment DTO ↔ Domain
+    │   │   │   │   │   │   │   # PaymentDTO ↔ Payment
     │   │   │   │   │   │   ├── payout.mapper.ts  # Payout DTO ↔ Domain
+    │   │   │   │   │   │   │   # PayoutDTO ↔ Payout
+    │   │   │   │   │   │   ├── payroll.mapper.ts  # PayrollDTO ↔ PayrollRun
+    │   │   │   │   │   │   ├── promo.mapper.ts  # PromoDTO ↔ PromotionalCredit
     │   │   │   │   │   │   ├── reconciliation.mapper.ts  # Reconciliation DTO ↔ Domain
     │   │   │   │   │   │   ├── recurring-payment.mapper.ts  # RecurringPayment DTO ↔ Domain
     │   │   │   │   │   │   ├── refund.mapper.ts  # Refund DTO ↔ Domain
+    │   │   │   │   │   │   │   # RefundDTO ↔ Refund
+    │   │   │   │   │   │   ├── risk.mapper.ts  # RiskAssessmentDTO ↔ RiskAssessment
     │   │   │   │   │   │   ├── tax.mapper.ts  # Tax DTO ↔ Domain
+    │   │   │   │   │   │   │   # TaxDTO ↔ TaxProfile
     │   │   │   │   │   │   ├── transaction.mapper.ts  # Transaction DTO ↔ Domain
+    │   │   │   │   │   │   │   # TransactionDTO ↔ Transaction
     │   │   │   │   │   │   ├── wallet.mapper.ts  # Wallet DTO ↔ Domain
+    │   │   │   │   │   │   │   # WalletDTO ↔ Wallet
     │   │   │   │   │   │   └── withdrawal.mapper.ts  # Withdrawal DTO ↔ Domain
     │   │   │   │   │   ├── jobs/  # Jobs mappers
     │   │   │   │   │   │   ├── analytics.mapper.ts  # Analytics DTO ↔ Domain
+    │   │   │   │   │   │   │   # JobAnalyticsDTO ↔ JobAnalytics
     │   │   │   │   │   │   ├── application.mapper.ts  # Application DTO ↔ Domain
+    │   │   │   │   │   │   ├── attachment.mapper.ts  # AttachmentDTO ↔ JobAttachment
     │   │   │   │   │   │   ├── boost.mapper.ts  # Boost DTO ↔ Domain
     │   │   │   │   │   │   ├── budget.mapper.ts  # Budget DTO ↔ Domain
+    │   │   │   │   │   │   │   # BudgetDTO ↔ BudgetControls
     │   │   │   │   │   │   ├── category-taxonomy.mapper.ts  # CategoryTaxonomy DTO ↔ Domain
+    │   │   │   │   │   │   ├── category.mapper.ts  # CategoryDTO ↔ Category
+    │   │   │   │   │   │   ├── collaboration.mapper.ts  # CollaborationDTO ↔ TeamCollaboration
     │   │   │   │   │   │   ├── draft.mapper.ts  # Draft DTO ↔ Domain
+    │   │   │   │   │   │   ├── duplicate.mapper.ts  # DuplicateDTO ↔ DuplicateJob
     │   │   │   │   │   │   ├── expiry.mapper.ts  # Expiry DTO ↔ Domain
     │   │   │   │   │   │   ├── feedback.mapper.ts  # Feedback DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── invitation.mapper.ts  # InvitationDTO ↔ Invitation
     │   │   │   │   │   │   ├── invite.mapper.ts  # Invite DTO ↔ Domain
     │   │   │   │   │   │   ├── job.mapper.ts  # Job DTO ↔ Domain
+    │   │   │   │   │   │   │   # JobDTO ↔ Job
     │   │   │   │   │   │   ├── match.mapper.ts  # Match DTO ↔ Domain
+    │   │   │   │   │   │   ├── promotion.mapper.ts  # PromotionDTO ↔ JobPromotion
     │   │   │   │   │   │   ├── recommendation.mapper.ts  # Recommendation DTO ↔ Domain
     │   │   │   │   │   │   ├── repost.mapper.ts  # Repost DTO ↔ Domain
     │   │   │   │   │   │   ├── requirement.mapper.ts  # Requirement DTO ↔ Domain
     │   │   │   │   │   │   ├── saved-search.mapper.ts  # SavedSearch DTO ↔ Domain
     │   │   │   │   │   │   ├── screening-question.mapper.ts  # ScreeningQuestion DTO ↔ Domain
+    │   │   │   │   │   │   ├── screening.mapper.ts  # ScreeningDTO ↔ Screening
+    │   │   │   │   │   │   ├── skill.mapper.ts  # SkillDTO ↔ Skill
     │   │   │   │   │   │   ├── snapshot.mapper.ts  # Snapshot DTO ↔ Domain
+    │   │   │   │   │   │   ├── sourcing.mapper.ts  # SourcingDTO ↔ Sourcing
     │   │   │   │   │   │   ├── statistics.mapper.ts  # Statistics DTO ↔ Domain
     │   │   │   │   │   │   ├── template.mapper.ts  # Template DTO ↔ Domain
     │   │   │   │   │   │   ├── visibility.mapper.ts  # Visibility DTO ↔ Domain
     │   │   │   │   │   │   └── workspace.mapper.ts  # Workspace DTO ↔ Domain
     │   │   │   │   │   ├── proposals/  # Proposals mappers
+    │   │   │   │   │   │   ├── attachment.mapper.ts  # AttachmentDTO ↔ ProposalAttachment
     │   │   │   │   │   │   ├── bid.mapper.ts  # Bid DTO ↔ Domain
+    │   │   │   │   │   │   │   # BidDTO ↔ Bid
     │   │   │   │   │   │   ├── comparison.mapper.ts  # Comparison DTO ↔ Domain
     │   │   │   │   │   │   ├── conversation-tracking.mapper.ts  # ConversationTracking DTO ↔ Domain
     │   │   │   │   │   │   ├── cover-letter-template.mapper.ts  # CoverLetterTemplate DTO ↔ Domain
+    │   │   │   │   │   │   ├── cover-letter.mapper.ts  # CoverLetterDTO ↔ CoverLetter
     │   │   │   │   │   │   ├── draft.mapper.ts  # Draft DTO ↔ Domain
     │   │   │   │   │   │   ├── feedback.mapper.ts  # Feedback DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── interview.mapper.ts  # Interview DTO ↔ Domain
+    │   │   │   │   │   │   │   # InterviewDTO ↔ Interview
+    │   │   │   │   │   │   ├── milestone.mapper.ts  # MilestoneDTO ↔ ProposalMilestone
     │   │   │   │   │   │   ├── negotiation.mapper.ts  # Negotiation DTO ↔ Domain
+    │   │   │   │   │   │   │   # NegotiationDTO ↔ Negotiation
+    │   │   │   │   │   │   ├── performance.mapper.ts  # PerformanceDTO ↔ ProposalPerformance
     │   │   │   │   │   │   ├── portfolio-item.mapper.ts  # PortfolioItem DTO ↔ Domain
     │   │   │   │   │   │   ├── proposal.mapper.ts  # Proposal DTO ↔ Domain
+    │   │   │   │   │   │   │   # ProposalDTO ↔ Proposal
     │   │   │   │   │   │   ├── question-answer.mapper.ts  # QuestionAnswer DTO ↔ Domain
+    │   │   │   │   │   │   ├── rate-card.mapper.ts  # RateCardDTO ↔ RateCard
     │   │   │   │   │   │   ├── recommendation.mapper.ts  # Recommendation DTO ↔ Domain
     │   │   │   │   │   │   ├── shortlist.mapper.ts  # Shortlist DTO ↔ Domain
     │   │   │   │   │   │   ├── statistics.mapper.ts  # Statistics DTO ↔ Domain
     │   │   │   │   │   │   ├── tag.mapper.ts  # Tag DTO ↔ Domain
     │   │   │   │   │   │   ├── template.mapper.ts  # Template DTO ↔ Domain
+    │   │   │   │   │   │   │   # TemplateDTO ↔ ProposalTemplate
     │   │   │   │   │   │   └── version.mapper.ts  # Version DTO ↔ Domain
     │   │   │   │   │   ├── reviews/  # Reviews mappers
     │   │   │   │   │   │   ├── appeal.mapper.ts  # Appeal DTO ↔ Domain
     │   │   │   │   │   │   ├── badge-eligibility.mapper.ts  # BadgeEligibility DTO ↔ Domain
     │   │   │   │   │   │   ├── badge.mapper.ts  # Badge DTO ↔ Domain
+    │   │   │   │   │   │   │   # BadgeDTO ↔ Badge
     │   │   │   │   │   │   ├── compliance.mapper.ts  # Compliance DTO ↔ Domain
     │   │   │   │   │   │   ├── double-blind-window.mapper.ts  # DoubleBlindWindow DTO ↔ Domain
     │   │   │   │   │   │   ├── evidence.mapper.ts  # Evidence DTO ↔ Domain
@@ -26915,9 +27308,13 @@ fe/
     │   │   │   │   │   │   ├── private-feedback.mapper.ts  # PrivateFeedback DTO ↔ Domain
     │   │   │   │   │   │   ├── rating-dimension.mapper.ts  # RatingDimension DTO ↔ Domain
     │   │   │   │   │   │   ├── rating.mapper.ts  # Rating DTO ↔ Domain
+    │   │   │   │   │   │   │   # RatingDTO ↔ Rating
     │   │   │   │   │   │   ├── reputation.mapper.ts  # Reputation DTO ↔ Domain
+    │   │   │   │   │   │   │   # ReputationDTO ↔ Reputation
     │   │   │   │   │   │   ├── response.mapper.ts  # Response DTO ↔ Domain
+    │   │   │   │   │   │   │   # ResponseDTO ↔ ReviewResponse
     │   │   │   │   │   │   ├── review.mapper.ts  # Review DTO ↔ Domain
+    │   │   │   │   │   │   │   # ReviewDTO ↔ Review
     │   │   │   │   │   │   ├── statistics.mapper.ts  # Statistics DTO ↔ Domain
     │   │   │   │   │   │   └── window.mapper.ts  # Window DTO ↔ Domain
     │   │   │   │   │   ├── search/  # Search mappers
@@ -26925,8 +27322,10 @@ fe/
     │   │   │   │   │   │   ├── analytics.mapper.ts  # Analytics DTO ↔ Domain
     │   │   │   │   │   │   ├── boost.mapper.ts  # Boost DTO ↔ Domain
     │   │   │   │   │   │   ├── facet.mapper.ts  # Facet DTO ↔ Domain
+    │   │   │   │   │   │   │   # FacetDTO ↔ Facet
     │   │   │   │   │   │   ├── filter.mapper.ts  # Filter DTO ↔ Domain
     │   │   │   │   │   │   ├── hygiene.mapper.ts  # Hygiene DTO ↔ Domain
+    │   │   │   │   │   │   ├── index-result.mapper.ts  # IndexResultDTO ↔ IndexResult
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── personalization.mapper.ts  # Personalization DTO ↔ Domain
     │   │   │   │   │   │   ├── query-log.mapper.ts  # QueryLog DTO ↔ Domain
@@ -26935,12 +27334,15 @@ fe/
     │   │   │   │   │   │   ├── ranking.mapper.ts  # Ranking DTO ↔ Domain
     │   │   │   │   │   │   ├── result.mapper.ts  # Result DTO ↔ Domain
     │   │   │   │   │   │   ├── saved-query.mapper.ts  # SavedQuery DTO ↔ Domain
+    │   │   │   │   │   │   ├── search-result.mapper.ts  # SearchResultDTO ↔ SearchResult
     │   │   │   │   │   │   └── synonym.mapper.ts  # Synonym DTO ↔ Domain
     │   │   │   │   │   ├── storage/  # Storage mappers
     │   │   │   │   │   │   ├── access-control.mapper.ts  # AccessControl DTO ↔ Domain
     │   │   │   │   │   │   ├── access.mapper.ts  # Access DTO ↔ Domain
     │   │   │   │   │   │   ├── file.mapper.ts  # File DTO ↔ Domain
+    │   │   │   │   │   │   │   # FileDTO ↔ FileMetadata
     │   │   │   │   │   │   ├── folder.mapper.ts  # Folder DTO ↔ Domain
+    │   │   │   │   │   │   │   # FolderDTO ↔ Folder
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── quota.mapper.ts  # Quota DTO ↔ Domain
     │   │   │   │   │   │   ├── scan.mapper.ts  # Scan DTO ↔ Domain
@@ -26954,11 +27356,13 @@ fe/
     │   │   │   │   │   │   ├── billing-profile.mapper.ts  # BillingProfile DTO ↔ Domain
     │   │   │   │   │   │   ├── connect-balance.mapper.ts  # ConnectBalance DTO ↔ Domain
     │   │   │   │   │   │   ├── connect-transaction.mapper.ts  # ConnectTransaction DTO ↔ Domain
+    │   │   │   │   │   │   ├── connect.mapper.ts  # ConnectDTO ↔ ConnectBalance
     │   │   │   │   │   │   ├── coupon.mapper.ts  # Coupon DTO ↔ Domain
     │   │   │   │   │   │   ├── credit.mapper.ts  # Credit DTO ↔ Domain
     │   │   │   │   │   │   ├── discount.mapper.ts  # Discount DTO ↔ Domain
     │   │   │   │   │   │   ├── dunning.mapper.ts  # Dunning DTO ↔ Domain
     │   │   │   │   │   │   ├── entitlement.mapper.ts  # Entitlement DTO ↔ Domain
+    │   │   │   │   │   │   │   # EntitlementDTO ↔ Entitlement
     │   │   │   │   │   │   ├── grant.mapper.ts  # Grant DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── invoice-item.mapper.ts  # InvoiceItem DTO ↔ Domain
@@ -26966,324 +27370,499 @@ fe/
     │   │   │   │   │   │   ├── payment-history.mapper.ts  # PaymentHistory DTO ↔ Domain
     │   │   │   │   │   │   ├── plan-comparison.mapper.ts  # PlanComparison DTO ↔ Domain
     │   │   │   │   │   │   ├── plan.mapper.ts  # Plan DTO ↔ Domain
+    │   │   │   │   │   │   │   # PlanDTO ↔ Plan
     │   │   │   │   │   │   ├── proration.mapper.ts  # Proration DTO ↔ Domain
     │   │   │   │   │   │   ├── subscription.mapper.ts  # Subscription DTO ↔ Domain
+    │   │   │   │   │   │   │   # SubscriptionDTO ↔ Subscription
     │   │   │   │   │   │   ├── trial.mapper.ts  # Trial DTO ↔ Domain
     │   │   │   │   │   │   ├── upgrade-path.mapper.ts  # UpgradePath DTO ↔ Domain
     │   │   │   │   │   │   ├── usage-tracking.mapper.ts  # UsageTracking DTO ↔ Domain
     │   │   │   │   │   │   └── usage.mapper.ts  # Usage DTO ↔ Domain
+    │   │   │   │   │   │       # UsageDTO ↔ Usage
     │   │   │   │   │   ├── users/  # Users mappers
     │   │   │   │   │   │   ├── availability.mapper.ts  # Availability DTO ↔ Domain
+    │   │   │   │   │   │   │   # AvailabilityDTO ↔ Availability
     │   │   │   │   │   │   ├── capability.mapper.ts  # Capability DTO ↔ Domain
     │   │   │   │   │   │   ├── certification.mapper.ts  # Certification DTO ↔ Domain
+    │   │   │   │   │   │   │   # CertificationDTO ↔ Certification
     │   │   │   │   │   │   ├── education.mapper.ts  # Education DTO ↔ Domain
+    │   │   │   │   │   │   │   # EducationDTO ↔ Education
     │   │   │   │   │   │   ├── experience.mapper.ts  # Experience DTO ↔ Domain
+    │   │   │   │   │   │   │   # ExperienceDTO ↔ Experience
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── metric.mapper.ts  # Metric DTO ↔ Domain
     │   │   │   │   │   │   ├── organization.mapper.ts  # Organization DTO ↔ Domain
     │   │   │   │   │   │   ├── portfolio.mapper.ts  # Portfolio DTO ↔ Domain
+    │   │   │   │   │   │   │   # PortfolioDTO ↔ PortfolioItem
     │   │   │   │   │   │   ├── profile.mapper.ts  # Profile DTO ↔ Domain
+    │   │   │   │   │   │   │   # ProfileDTO ↔ UserProfile
+    │   │   │   │   │   │   ├── reputation.mapper.ts  # ReputationDTO ↔ Reputation
     │   │   │   │   │   │   ├── skill.mapper.ts  # Skill DTO ↔ Domain
+    │   │   │   │   │   │   │   # SkillDTO ↔ UserSkill
     │   │   │   │   │   │   ├── team.mapper.ts  # Team DTO ↔ Domain
     │   │   │   │   │   │   ├── trust-score.mapper.ts  # TrustScore DTO ↔ Domain
     │   │   │   │   │   │   ├── user.mapper.ts  # User DTO ↔ Domain
+    │   │   │   │   │   │   │   # UserDTO ↔ User
     │   │   │   │   │   │   └── verification.mapper.ts  # Verification DTO ↔ Domain
+    │   │   │   │   │   │       # VerificationDTO ↔ Verification
     │   │   │   │   │   └── │
     │   │   │   │   ├── models/  # API DTOs (request/response shapes)
     │   │   │   │   │   # API DTOs (MISSING DTOs BELOW)
     │   │   │   │   │   ├── admin/  # Admin backend API DTOs
-    │   │   │   │   │   │   ├── activity-log-dto.ts  # 
+    │   │   │   │   │   │   ├── activity-log-dto.ts  # AdminActivityLogDTO
     │   │   │   │   │   │   ├── admin-role-dto.ts  # Admin role DTO
     │   │   │   │   │   │   ├── admin-user-dto.ts  # Admin user DTO
     │   │   │   │   │   │   ├── announcement-dto.ts  # Announcement DTO
+    │   │   │   │   │   │   ├── appeal-dto.ts  # AppealDTO
+    │   │   │   │   │   │   ├── audit-dto.ts  # AuditTrailDTO
     │   │   │   │   │   │   ├── audit-entry-dto.ts  # Audit entry DTO
-    │   │   │   │   │   │   ├── change-request-dto.ts  # 
-    │   │   │   │   │   │   ├── compliance-context-dto.ts  # 
+    │   │   │   │   │   │   ├── break-glass-dto.ts  # BreakGlassAccessDTO
+    │   │   │   │   │   │   ├── broadcast-dto.ts  # BroadcastDTO
+    │   │   │   │   │   │   ├── bulk-operation-dto.ts  # BulkOperationDTO
+    │   │   │   │   │   │   ├── canned-response-dto.ts  # CannedResponseDTO
+    │   │   │   │   │   │   ├── case-dto.ts  # CaseDTO
+    │   │   │   │   │   │   ├── change-request-dto.ts  # ChangeRequestDTO
+    │   │   │   │   │   │   ├── compliance-check-dto.ts  # ComplianceCheckDTO
+    │   │   │   │   │   │   ├── compliance-context-dto.ts
+    │   │   │   │   │   │   ├── content-policy-dto.ts  # ContentPolicyDTO
     │   │   │   │   │   │   ├── experiment-dto.ts  # Experiment DTO
+    │   │   │   │   │   │   │   # ExperimentDTO
     │   │   │   │   │   │   ├── feature-flag-dto.ts  # Feature flag DTO
-    │   │   │   │   │   │   ├── impersonation-dto.ts  # 
+    │   │   │   │   │   │   ├── hold-dto.ts  # UserHoldDTO
+    │   │   │   │   │   │   ├── impersonation-dto.ts
+    │   │   │   │   │   │   ├── incident-dto.ts  # IncidentDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
-    │   │   │   │   │   │   ├── legal-hold-dto.ts  # 
+    │   │   │   │   │   │   ├── integration-dto.ts  # IntegrationDTO
+    │   │   │   │   │   │   ├── knowledge-base-dto.ts  # KBArticleDTO
+    │   │   │   │   │   │   ├── legal-hold-dto.ts  # LegalHoldDTO
+    │   │   │   │   │   │   ├── moderation-action-dto.ts  # ModerationActionDTO
     │   │   │   │   │   │   ├── moderation-item-dto.ts  # Moderation item DTO
+    │   │   │   │   │   │   ├── permission-dto.ts  # PermissionDTO
+    │   │   │   │   │   │   ├── pii-access-dto.ts  # PIIAccessLogDTO
+    │   │   │   │   │   │   ├── platform-settings-dto.ts  # PlatformSettingsDTO
+    │   │   │   │   │   │   ├── policy-doc-dto.ts  # PolicyDocumentDTO
     │   │   │   │   │   │   ├── policy-document-dto.ts  # Policy document DTO
-    │   │   │   │   │   │   ├── privacy-request-dto.ts  # 
-    │   │   │   │   │   │   ├── sanctions-screening-dto.ts  # 
-    │   │   │   │   │   │   ├── session-dto.ts  # 
+    │   │   │   │   │   │   ├── privacy-request-dto.ts  # PrivacyRequestDTO
+    │   │   │   │   │   │   ├── sanctions-dto.ts  # SanctionsCheckDTO
+    │   │   │   │   │   │   ├── sanctions-screening-dto.ts
+    │   │   │   │   │   │   ├── session-dto.ts  # AdminSessionDTO
     │   │   │   │   │   │   ├── support-ticket-dto.ts  # Support ticket DTO
     │   │   │   │   │   │   ├── system-metric-dto.ts  # System metric DTO
-    │   │   │   │   │   │   └── system-setting-dto.ts  # System setting DTO
+    │   │   │   │   │   │   ├── system-setting-dto.ts  # System setting DTO
+    │   │   │   │   │   │   ├── throttle-policy-dto.ts  # ThrottlePolicyDTO
+    │   │   │   │   │   │   └── watchlist-dto.ts  # WatchlistEntryDTO
     │   │   │   │   │   ├── communications/  # Communications backend API DTOs
-    │   │   │   │   │   │   ├── blocklist-dto.ts  # 
-    │   │   │   │   │   │   ├── bookmark-dto.ts  # 
-    │   │   │   │   │   │   ├── calendar-invite-dto.ts  # 
-    │   │   │   │   │   │   ├── call-dto.ts  # 
+    │   │   │   │   │   │   ├── analytics-dto.ts  # CommunicationAnalyticsDTO
+    │   │   │   │   │   │   ├── attachment-dto.ts  # MessageAttachmentDTO
+    │   │   │   │   │   │   ├── blocklist-dto.ts  # BlocklistDTO
+    │   │   │   │   │   │   ├── bookmark-dto.ts  # BookmarkDTO
+    │   │   │   │   │   │   ├── calendar-invite-dto.ts  # CalendarInviteDTO
+    │   │   │   │   │   │   ├── call-dto.ts  # CallDTO
+    │   │   │   │   │   │   ├── collaboration-dto.ts  # CollaborationDTO
     │   │   │   │   │   │   ├── collaboration-session-dto.ts  # Collaboration session DTO
     │   │   │   │   │   │   ├── conversation-dto.ts  # Conversation DTO
-    │   │   │   │   │   │   ├── delivery-dto.ts  # 
-    │   │   │   │   │   │   ├── delivery-log-dto.ts  # 
-    │   │   │   │   │   │   ├── digest-dto.ts  # 
-    │   │   │   │   │   │   ├── draft-dto.ts  # 
-    │   │   │   │   │   │   ├── email-bridge-dto.ts  # 
+    │   │   │   │   │   │   ├── delivery-dto.ts  # DeliveryStatusDTO
+    │   │   │   │   │   │   ├── delivery-log-dto.ts  # DeliveryLogDTO
+    │   │   │   │   │   │   ├── digest-dto.ts  # DigestDTO
+    │   │   │   │   │   │   ├── draft-dto.ts  # MessageDraftDTO
+    │   │   │   │   │   │   ├── email-bridge-dto.ts  # EmailBridgeDTO
     │   │   │   │   │   │   ├── email-dto.ts  # Email notification DTO
-    │   │   │   │   │   │   ├── encryption-dto.ts  # 
-    │   │   │   │   │   │   ├── in-app-notification-dto.ts  # 
+    │   │   │   │   │   │   ├── encryption-dto.ts  # EncryptionKeyDTO
+    │   │   │   │   │   │   ├── export-dto.ts  # ConversationExportDTO
+    │   │   │   │   │   │   ├── in-app-notification-dto.ts
     │   │   │   │   │   │   ├── index.ts  # Barrel export
-    │   │   │   │   │   │   ├── interview-dto.ts  # 
-    │   │   │   │   │   │   ├── mail-tracking-dto.ts  # 
+    │   │   │   │   │   │   ├── interview-dto.ts  # InterviewDTO
+    │   │   │   │   │   │   ├── mail-tracking-dto.ts  # MailTrackingDTO
+    │   │   │   │   │   │   ├── mention-dto.ts  # MentionDTO
     │   │   │   │   │   │   ├── message-dto.ts  # Message DTO
-    │   │   │   │   │   │   ├── moderation-dto.ts  # 
+    │   │   │   │   │   │   ├── moderation-dto.ts  # MessageModerationDTO
     │   │   │   │   │   │   ├── notification-dto.ts  # Notification DTO
-    │   │   │   │   │   │   ├── notification-queue-dto.ts  # 
-    │   │   │   │   │   │   ├── notification-template-dto.ts  # 
-    │   │   │   │   │   │   ├── pin-dto.ts  # 
-    │   │   │   │   │   │   ├── platform-alert-dto.ts  # 
-    │   │   │   │   │   │   ├── push-device-dto.ts  # 
+    │   │   │   │   │   │   ├── notification-queue-dto.ts  # NotificationQueueDTO
+    │   │   │   │   │   │   ├── notification-template-dto.ts
+    │   │   │   │   │   │   ├── pin-dto.ts  # PinnedMessageDTO
+    │   │   │   │   │   │   ├── platform-alert-dto.ts  # PlatformAlertDTO
+    │   │   │   │   │   │   ├── presence-dto.ts  # PresenceDTO
+    │   │   │   │   │   │   ├── push-device-dto.ts  # PushDeviceDTO
     │   │   │   │   │   │   ├── push-notification-dto.ts  # Push notification DTO
-    │   │   │   │   │   │   ├── read-state-dto.ts  # 
-    │   │   │   │   │   │   ├── spam-detection-dto.ts  # 
-    │   │   │   │   │   │   ├── suppression-dto.ts  # 
-    │   │   │   │   │   │   ├── system-message-dto.ts  # 
-    │   │   │   │   │   │   ├── thread-dto.ts  # 
-    │   │   │   │   │   │   ├── unsubscribe-dto.ts  # 
-    │   │   │   │   │   │   ├── url-safety-dto.ts  # 
-    │   │   │   │   │   │   └── webhook-delivery-dto.ts  # Webhook delivery DTO
+    │   │   │   │   │   │   ├── quota-dto.ts  # MessageQuotaDTO
+    │   │   │   │   │   │   ├── read-state-dto.ts  # ReadStateDTO
+    │   │   │   │   │   │   ├── search-dto.ts  # MessageSearchDTO
+    │   │   │   │   │   │   ├── spam-detection-dto.ts  # SpamDetectionDTO
+    │   │   │   │   │   │   ├── suppression-dto.ts  # SuppressionListDTO
+    │   │   │   │   │   │   ├── system-message-dto.ts  # SystemMessageDTO
+    │   │   │   │   │   │   ├── thread-dto.ts  # ThreadDTO
+    │   │   │   │   │   │   ├── unsubscribe-dto.ts  # UnsubscribeRegistryDTO
+    │   │   │   │   │   │   ├── url-safety-dto.ts  # URLSafetyCheckDTO
+    │   │   │   │   │   │   ├── webhook-delivery-dto.ts  # Webhook delivery DTO
+    │   │   │   │   │   │   └── webhook-dto.ts  # WebhookDTO
     │   │   │   │   │   ├── contracts/  # Contracts backend API DTOs
-    │   │   │   │   │   │   ├── agency-contract-dto.ts  # 
+    │   │   │   │   │   │   ├── activity-dto.ts  # ContractActivityDTO
+    │   │   │   │   │   │   ├── agency-contract-dto.ts  # AgencyContractDTO
     │   │   │   │   │   │   ├── amendment-dto.ts  # Amendment DTO
-    │   │   │   │   │   │   ├── approval-dto.ts  # 
-    │   │   │   │   │   │   ├── audit-log-dto.ts  # 
-    │   │   │   │   │   │   ├── budget-dto.ts  # 
-    │   │   │   │   │   │   ├── cancellation-dto.ts  # 
-    │   │   │   │   │   │   ├── compliance-dto.ts  # 
+    │   │   │   │   │   │   ├── approval-dto.ts
+    │   │   │   │   │   │   ├── audit-log-dto.ts
+    │   │   │   │   │   │   ├── budget-dto.ts  # ContractBudgetDTO
+    │   │   │   │   │   │   ├── cancellation-dto.ts
+    │   │   │   │   │   │   ├── compliance-dto.ts  # ContractComplianceDTO
     │   │   │   │   │   │   ├── contract-dto.ts  # Contract DTO
+    │   │   │   │   │   │   ├── contract-terms-dto.ts  # ContractTermsDTO
     │   │   │   │   │   │   ├── deliverable-dto.ts  # Deliverable DTO
+    │   │   │   │   │   │   ├── direct-contract-dto.ts  # DirectContractDTO
     │   │   │   │   │   │   ├── dispute-dto.ts  # Dispute DTO
     │   │   │   │   │   │   ├── escrow-dto.ts  # Escrow DTO
-    │   │   │   │   │   │   ├── feedback-dto.ts  # 
+    │   │   │   │   │   │   ├── feedback-dto.ts  # ContractFeedbackDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── legal-review-dto.ts  # LegalReviewDTO
     │   │   │   │   │   │   ├── milestone-dto.ts  # Milestone DTO
-    │   │   │   │   │   │   ├── performance-kpi-dto.ts  # 
-    │   │   │   │   │   │   ├── renewal-dto.ts  # 
-    │   │   │   │   │   │   ├── risk-assessment-dto.ts  # 
+    │   │   │   │   │   │   ├── negotiation-dto.ts  # NegotiationDTO
+    │   │   │   │   │   │   ├── performance-kpi-dto.ts
+    │   │   │   │   │   │   ├── rate-adjustment-dto.ts  # RateAdjustmentDTO
+    │   │   │   │   │   │   ├── renewal-dto.ts
+    │   │   │   │   │   │   ├── report-dto.ts  # ContractReportDTO
+    │   │   │   │   │   │   ├── risk-assessment-dto.ts
+    │   │   │   │   │   │   ├── security-clearance-dto.ts  # SecurityClearanceDTO
     │   │   │   │   │   │   ├── signature-dto.ts  # Signature DTO
-    │   │   │   │   │   │   ├── sla-dto.ts  # 
+    │   │   │   │   │   │   ├── sla-dto.ts
     │   │   │   │   │   │   ├── timesheet-dto.ts  # Timesheet DTO
-    │   │   │   │   │   │   ├── version-dto.ts  # 
-    │   │   │   │   │   │   ├── work-diary-dto.ts  # 
-    │   │   │   │   │   │   ├── workroom-note-dto.ts  # 
-    │   │   │   │   │   │   ├── workroom-task-dto.ts  # 
-    │   │   │   │   │   │   └── workspace-dto.ts  # 
+    │   │   │   │   │   │   ├── version-dto.ts
+    │   │   │   │   │   │   ├── work-diary-dto.ts
+    │   │   │   │   │   │   ├── work-scope-dto.ts  # WorkScopeDTO
+    │   │   │   │   │   │   ├── workroom-dto.ts  # WorkroomDTO
+    │   │   │   │   │   │   ├── workroom-note-dto.ts
+    │   │   │   │   │   │   ├── workroom-task-dto.ts
+    │   │   │   │   │   │   └── workspace-dto.ts
     │   │   │   │   │   ├── financial/  # Financial backend API DTOs
+    │   │   │   │   │   │   ├── analytics-dto.ts  # FinancialAnalyticsDTO
     │   │   │   │   │   │   ├── bank-account-dto.ts  # Bank account DTO
-    │   │   │   │   │   │   ├── billing-address-dto.ts  # 
-    │   │   │   │   │   │   ├── budget-dto.ts  # 
+    │   │   │   │   │   │   │   # BankAccountDTO
+    │   │   │   │   │   │   ├── bank-verification-dto.ts  # BankVerificationDTO
+    │   │   │   │   │   │   ├── billing-address-dto.ts
+    │   │   │   │   │   │   ├── budget-dto.ts
     │   │   │   │   │   │   ├── chargeback-dto.ts  # Chargeback DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── commission-dto.ts  # 
-    │   │   │   │   │   │   ├── currency-conversion-dto.ts  # 
+    │   │   │   │   │   │   ├── commission-dto.ts
+    │   │   │   │   │   │   ├── coupon-dto.ts  # CouponDTO, CouponRedemptionDTO
+    │   │   │   │   │   │   ├── currency-conversion-dto.ts
+    │   │   │   │   │   │   ├── currency-preference-dto.ts  # CurrencyPreferenceDTO
     │   │   │   │   │   │   ├── dispute-dto.ts  # Payment dispute DTO
     │   │   │   │   │   │   ├── escrow-dto.ts  # Escrow DTO
+    │   │   │   │   │   │   ├── expense-dto.ts  # ExpenseReimbursementDTO
     │   │   │   │   │   │   ├── fee-dto.ts  # Fee DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── fraud-detection-dto.ts  # 
-    │   │   │   │   │   │   ├── hold-dto.ts  # 
+    │   │   │   │   │   │   ├── forex-dto.ts  # ExchangeRateDTO, CurrencyConversionDTO
+    │   │   │   │   │   │   ├── fraud-alert-dto.ts  # FraudAlertDTO
+    │   │   │   │   │   │   ├── fraud-detection-dto.ts
+    │   │   │   │   │   │   ├── gateway-dto.ts  # GatewayConfigDTO, GatewayWebhookDTO
+    │   │   │   │   │   │   ├── hold-dto.ts
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── insurance-claim-dto.ts  # InsuranceClaimDTO
+    │   │   │   │   │   │   ├── international-payment-dto.ts  # InternationalPaymentDTO
     │   │   │   │   │   │   ├── invoice-dto.ts  # Invoice DTO
-    │   │   │   │   │   │   ├── ledger-dto.ts  # 
+    │   │   │   │   │   │   ├── ledger-dto.ts
     │   │   │   │   │   │   ├── payment-dto.ts  # Payment DTO
     │   │   │   │   │   │   ├── payment-method-dto.ts  # Payment method DTO
+    │   │   │   │   │   │   ├── payment-schedule-dto.ts  # PaymentScheduleDTO
     │   │   │   │   │   │   ├── payout-dto.ts  # Payout DTO
-    │   │   │   │   │   │   ├── reconciliation-dto.ts  # 
-    │   │   │   │   │   │   ├── recurring-payment-dto.ts  # 
+    │   │   │   │   │   │   ├── reconciliation-dto.ts  # ReconciliationReportDTO
+    │   │   │   │   │   │   ├── recurring-payment-dto.ts
     │   │   │   │   │   │   ├── refund-dto.ts  # Refund DTO
+    │   │   │   │   │   │   ├── reminder-dto.ts  # PaymentReminderDTO
+    │   │   │   │   │   │   ├── subscription-billing-dto.ts  # SubscriptionBillingDTO
     │   │   │   │   │   │   ├── tax-dto.ts  # Tax DTO
+    │   │   │   │   │   │   ├── tax-form-dto.ts  # TaxFormDTO
     │   │   │   │   │   │   ├── transaction-dto.ts  # Transaction DTO
     │   │   │   │   │   │   ├── wallet-dto.ts  # Wallet DTO
-    │   │   │   │   │   │   └── withdrawal-dto.ts  # 
+    │   │   │   │   │   │   ├── withdrawal-dto.ts
+    │   │   │   │   │   │   └── withdrawal-limit-dto.ts  # WithdrawalLimitDTO
     │   │   │   │   │   ├── jobs/  # Jobs backend API DTOs
-    │   │   │   │   │   │   ├── analytics-dto.ts  # 
+    │   │   │   │   │   │   ├── ai-suggest-dto.ts  # AISuggestionDTO
+    │   │   │   │   │   │   ├── analytics-dto.ts
     │   │   │   │   │   │   ├── application-dto.ts  # Job application DTO
-    │   │   │   │   │   │   ├── boost-dto.ts  # 
-    │   │   │   │   │   │   ├── budget-dto.ts  # 
-    │   │   │   │   │   │   ├── category-taxonomy-dto.ts  # 
-    │   │   │   │   │   │   ├── draft-dto.ts  # 
-    │   │   │   │   │   │   ├── expiry-dto.ts  # 
-    │   │   │   │   │   │   ├── feedback-dto.ts  # 
+    │   │   │   │   │   │   ├── boost-dto.ts
+    │   │   │   │   │   │   ├── budget-dto.ts
+    │   │   │   │   │   │   ├── bulk-ops-dto.ts  # BulkOperationDTO
+    │   │   │   │   │   │   ├── category-taxonomy-dto.ts
+    │   │   │   │   │   │   ├── contract-transition-dto.ts  # ContractTransitionDTO
+    │   │   │   │   │   │   ├── custom-fields-dto.ts  # CustomFieldDTO
+    │   │   │   │   │   │   ├── draft-dto.ts
+    │   │   │   │   │   │   ├── eligibility-dto.ts  # JobEligibilityDTO
+    │   │   │   │   │   │   ├── esg-dto.ts  # ESGAttributesDTO
+    │   │   │   │   │   │   ├── expiry-dto.ts
+    │   │   │   │   │   │   ├── feedback-dto.ts
+    │   │   │   │   │   │   ├── fraud-dto.ts  # FraudSignalDTO
+    │   │   │   │   │   │   ├── geo-dto.ts  # GeoLocationDTO
+    │   │   │   │   │   │   ├── health-dto.ts  # HealthCheckpointDTO
+    │   │   │   │   │   │   ├── hiring-options-dto.ts  # HiringOptionsDTO
+    │   │   │   │   │   │   ├── inclusivity-dto.ts  # InclusivityFlagsDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── invite-dto.ts  # Job invite DTO
     │   │   │   │   │   │   ├── job-dto.ts  # Job DTO
-    │   │   │   │   │   │   ├── match-dto.ts  # 
-    │   │   │   │   │   │   ├── recommendation-dto.ts  # 
-    │   │   │   │   │   │   ├── repost-dto.ts  # 
+    │   │   │   │   │   │   ├── lifecycle-dto.ts  # JobLifecycleDTO
+    │   │   │   │   │   │   ├── localization-dto.ts  # JobLocalizationDTO
+    │   │   │   │   │   │   ├── match-dto.ts
+    │   │   │   │   │   │   ├── moderation-dto.ts  # JobModerationDTO
+    │   │   │   │   │   │   ├── recommendation-dto.ts
+    │   │   │   │   │   │   ├── repost-dto.ts
     │   │   │   │   │   │   ├── requirement-dto.ts  # Job requirement DTO
-    │   │   │   │   │   │   ├── saved-search-dto.ts  # 
-    │   │   │   │   │   │   ├── screening-question-dto.ts  # 
-    │   │   │   │   │   │   ├── snapshot-dto.ts  # 
-    │   │   │   │   │   │   ├── statistics-dto.ts  # 
+    │   │   │   │   │   │   ├── saved-search-dto.ts
+    │   │   │   │   │   │   ├── screening-question-dto.ts
+    │   │   │   │   │   │   ├── sharing-dto.ts  # ShareLinkDTO
+    │   │   │   │   │   │   ├── snapshot-dto.ts
+    │   │   │   │   │   │   ├── statistics-dto.ts
     │   │   │   │   │   │   ├── template-dto.ts  # Job template DTO
-    │   │   │   │   │   │   ├── visibility-dto.ts  # 
-    │   │   │   │   │   │   └── workspace-dto.ts  # 
+    │   │   │   │   │   │   ├── upsell-dto.ts  # UpsellSuggestionDTO
+    │   │   │   │   │   │   ├── visibility-dto.ts  # JobVisibilityDTO
+    │   │   │   │   │   │   ├── webhook-dto.ts  # WebhookSubscriptionDTO
+    │   │   │   │   │   │   └── workspace-dto.ts
     │   │   │   │   │   ├── proposals/  # Proposals backend API DTOs
+    │   │   │   │   │   │   ├── ai-assist-dto.ts  # AIAssistDTO
+    │   │   │   │   │   │   ├── archive-dto.ts  # ProposalArchiveDTO
+    │   │   │   │   │   │   ├── auction-dto.ts  # AuctionDTO
     │   │   │   │   │   │   ├── bid-dto.ts  # Bid DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── comparison-dto.ts  # 
-    │   │   │   │   │   │   ├── conversation-tracking-dto.ts  # 
-    │   │   │   │   │   │   ├── cover-letter-template-dto.ts  # 
-    │   │   │   │   │   │   ├── draft-dto.ts  # 
-    │   │   │   │   │   │   ├── feedback-dto.ts  # 
+    │   │   │   │   │   │   ├── bid-notification-dto.ts  # BidNotificationDTO
+    │   │   │   │   │   │   ├── bid-strategy-dto.ts  # BidStrategyDTO
+    │   │   │   │   │   │   ├── boost-dto.ts  # ProposalBoostDTO
+    │   │   │   │   │   │   ├── collaboration-dto.ts  # TeamProposalDTO
+    │   │   │   │   │   │   ├── comparison-dto.ts
+    │   │   │   │   │   │   ├── compliance-dto.ts  # ProposalComplianceDTO
+    │   │   │   │   │   │   ├── connect-refund-dto.ts  # ConnectRefundDTO
+    │   │   │   │   │   │   ├── context-dto.ts  # ProposalContextDTO
+    │   │   │   │   │   │   ├── conversation-dto.ts  # ProposalConversationDTO
+    │   │   │   │   │   │   ├── conversation-tracking-dto.ts
+    │   │   │   │   │   │   ├── cover-letter-template-dto.ts
+    │   │   │   │   │   │   ├── draft-dto.ts
+    │   │   │   │   │   │   ├── engagement-dto.ts  # ProposalEngagementDTO
+    │   │   │   │   │   │   ├── expiration-dto.ts  # ProposalExpirationDTO
+    │   │   │   │   │   │   ├── feedback-dto.ts  # ProposalFeedbackDTO
+    │   │   │   │   │   │   ├── flag-dto.ts  # ProposalFlagDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── interview-dto.ts  # Interview DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── invite-dto.ts  # InvitationDTO
     │   │   │   │   │   │   ├── negotiation-dto.ts  # Negotiation DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── portfolio-item-dto.ts  # 
+    │   │   │   │   │   │   ├── pipeline-dto.ts  # ProposalPipelineDTO
+    │   │   │   │   │   │   ├── portfolio-item-dto.ts
+    │   │   │   │   │   │   ├── portfolio-link-dto.ts  # PortfolioLinkDTO
     │   │   │   │   │   │   ├── proposal-dto.ts  # Proposal DTO
-    │   │   │   │   │   │   ├── question-answer-dto.ts  # 
-    │   │   │   │   │   │   ├── recommendation-dto.ts  # 
+    │   │   │   │   │   │   ├── question-answer-dto.ts  # QuestionAnswerDTO
+    │   │   │   │   │   │   ├── recommendation-dto.ts  # ProposalRecommendationDTO
+    │   │   │   │   │   │   ├── recycling-dto.ts  # ProposalRecyclingDTO
+    │   │   │   │   │   │   ├── reference-dto.ts  # ProposalReferenceDTO
+    │   │   │   │   │   │   ├── revision-dto.ts  # ProposalRevisionDTO
+    │   │   │   │   │   │   ├── risk-assessment-dto.ts  # ProposalRiskAssessmentDTO
     │   │   │   │   │   │   ├── shortlist-dto.ts  # Shortlist DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── statistics-dto.ts  # 
-    │   │   │   │   │   │   ├── tag-dto.ts  # 
+    │   │   │   │   │   │   │   # ShortlistDTO
+    │   │   │   │   │   │   ├── similarity-dto.ts  # ProposalSimilarityDTO
+    │   │   │   │   │   │   ├── skill-match-dto.ts  # SkillMatchDTO
+    │   │   │   │   │   │   ├── spam-detection-dto.ts  # SpamDetectionDTO
+    │   │   │   │   │   │   ├── statistics-dto.ts
+    │   │   │   │   │   │   ├── tag-dto.ts
     │   │   │   │   │   │   ├── template-dto.ts  # Proposal template DTO
-    │   │   │   │   │   │   └── version-dto.ts  # 
+    │   │   │   │   │   │   ├── urgency-dto.ts  # ProposalUrgencyDTO
+    │   │   │   │   │   │   ├── version-dto.ts
+    │   │   │   │   │   │   ├── video-intro-dto.ts  # VideoIntroductionDTO
+    │   │   │   │   │   │   └── withdrawal-dto.ts  # ProposalWithdrawalDTO
     │   │   │   │   │   ├── reviews/  # Reviews backend API DTOs
     │   │   │   │   │   │   ├── appeal-dto.ts  # Appeal DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # ReviewAppealDTO
+    │   │   │   │   │   │   ├── audit-trail-dto.ts  # AuditTrailDTO
     │   │   │   │   │   │   ├── badge-dto.ts  # Badge DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── badge-eligibility-dto.ts  # 
-    │   │   │   │   │   │   ├── compliance-dto.ts  # 
-    │   │   │   │   │   │   ├── double-blind-window-dto.ts  # 
-    │   │   │   │   │   │   ├── evidence-dto.ts  # 
-    │   │   │   │   │   │   ├── flag-dto.ts  # 
+    │   │   │   │   │   │   ├── badge-eligibility-dto.ts
+    │   │   │   │   │   │   ├── compliance-dto.ts  # ReviewComplianceDTO
+    │   │   │   │   │   │   ├── double-blind-dto.ts  # DoubleBlindWindowDTO
+    │   │   │   │   │   │   ├── double-blind-window-dto.ts
+    │   │   │   │   │   │   ├── eligibility-dto.ts  # ReviewEligibilityDTO
+    │   │   │   │   │   │   ├── evidence-dto.ts  # EvidenceDTO
+    │   │   │   │   │   │   ├── featured-dto.ts  # FeaturedReviewDTO
+    │   │   │   │   │   │   ├── flag-dto.ts
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── moderation-dto.ts  # Moderation DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── private-feedback-dto.ts  # 
-    │   │   │   │   │   │   ├── rating-dimension-dto.ts  # 
+    │   │   │   │   │   │   │   # ReviewModerationDTO
+    │   │   │   │   │   │   ├── private-feedback-dto.ts  # PrivateFeedbackDTO
+    │   │   │   │   │   │   ├── rating-criteria-dto.ts  # RatingCriteriaDTO
+    │   │   │   │   │   │   ├── rating-dimension-dto.ts
     │   │   │   │   │   │   ├── rating-dto.ts  # Rating DTO
+    │   │   │   │   │   │   ├── redaction-dto.ts  # RedactionDTO
+    │   │   │   │   │   │   ├── reminder-dto.ts  # ReviewReminderDTO
     │   │   │   │   │   │   ├── reputation-dto.ts  # Reputation DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── response-dto.ts  # 
+    │   │   │   │   │   │   ├── response-dto.ts
+    │   │   │   │   │   │   ├── review-draft-dto.ts  # ReviewDraftDTO
     │   │   │   │   │   │   ├── review-dto.ts  # Review DTO
-    │   │   │   │   │   │   ├── statistics-dto.ts  # 
-    │   │   │   │   │   │   └── window-dto.ts  # 
+    │   │   │   │   │   │   ├── review-flag-dto.ts  # ReviewFlagDTO
+    │   │   │   │   │   │   ├── statistics-dto.ts
+    │   │   │   │   │   │   ├── stats-dto.ts  # ReviewStatsDTO
+    │   │   │   │   │   │   ├── user-badge-dto.ts  # UserBadgeDTO
+    │   │   │   │   │   │   └── window-dto.ts
     │   │   │   │   │   ├── search/  # Search backend API DTOs
     │   │   │   │   │   │   ├── alert-dto.ts  # Search alert DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── analytics-dto.ts  # 
-    │   │   │   │   │   │   ├── boost-dto.ts  # 
+    │   │   │   │   │   │   ├── analytics-dto.ts  # SearchAnalyticsDTO
+    │   │   │   │   │   │   ├── boost-dto.ts
     │   │   │   │   │   │   ├── facet-dto.ts  # Search facet DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # FacetDTO
     │   │   │   │   │   │   ├── filter-dto.ts  # Search filter DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── hygiene-dto.ts  # 
+    │   │   │   │   │   │   │   # SearchFilterDTO
+    │   │   │   │   │   │   ├── hygiene-dto.ts  # HygieneTaskDTO
+    │   │   │   │   │   │   ├── index-dto.ts  # SearchIndexDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
-    │   │   │   │   │   │   ├── personalization-dto.ts  # 
+    │   │   │   │   │   │   ├── personalization-dto.ts
     │   │   │   │   │   │   ├── query-dto.ts  # Search query DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── query-log-dto.ts  # 
-    │   │   │   │   │   │   ├── query-rewrite-dto.ts  # 
-    │   │   │   │   │   │   ├── ranking-dto.ts  # 
+    │   │   │   │   │   │   │   # SearchQueryDTO
+    │   │   │   │   │   │   ├── query-log-dto.ts
+    │   │   │   │   │   │   ├── query-rewrite-dto.ts
+    │   │   │   │   │   │   ├── ranking-dto.ts  # RankingAlgorithmDTO
     │   │   │   │   │   │   ├── result-dto.ts  # Search result DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── safety-dto.ts  # SafetyFilterDTO
     │   │   │   │   │   │   ├── saved-query-dto.ts  # Saved query DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   └── synonym-dto.ts  # 
+    │   │   │   │   │   │   ├── suggestion-dto.ts  # SearchSuggestionDTO
+    │   │   │   │   │   │   ├── synonym-dto.ts
+    │   │   │   │   │   │   └── taxonomy-dto.ts  # TaxonomyDTO
     │   │   │   │   │   ├── storage/  # Storage backend API DTOs
-    │   │   │   │   │   │   ├── access-control-dto.ts  # 
+    │   │   │   │   │   │   ├── access-control-dto.ts  # AccessControlDTO
     │   │   │   │   │   │   ├── access-dto.ts  # File access DTO
+    │   │   │   │   │   │   ├── download-dto.ts  # DownloadDTO
     │   │   │   │   │   │   ├── file-dto.ts  # File DTO
+    │   │   │   │   │   │   ├── file-metadata-dto.ts  # FileMetadataDTO
     │   │   │   │   │   │   ├── folder-dto.ts  # Folder DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # FolderDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── quota-dto.ts  # Quota DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   │   # StorageQuotaDTO
     │   │   │   │   │   │   ├── scan-dto.ts  # File scan DTO
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── share-link-dto.ts  # Share link DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── thumbnail-dto.ts  # 
+    │   │   │   │   │   │   ├── thumbnail-dto.ts
+    │   │   │   │   │   │   ├── upload-dto.ts  # UploadDTO
     │   │   │   │   │   │   ├── upload-session-dto.ts  # Upload session DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   └── version-dto.ts  # 
+    │   │   │   │   │   │   ├── version-dto.ts  # FileVersionDTO
+    │   │   │   │   │   │   └── virus-scan-dto.ts  # VirusScanDTO
     │   │   │   │   │   ├── subscriptions/  # Subscriptions backend API DTOs
     │   │   │   │   │   │   ├── addon-dto.ts  # Add-on DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── allowance-dto.ts  # 
-    │   │   │   │   │   │   ├── billing-profile-dto.ts  # 
-    │   │   │   │   │   │   ├── connect-balance-dto.ts  # 
-    │   │   │   │   │   │   ├── connect-transaction-dto.ts  # 
-    │   │   │   │   │   │   ├── coupon-dto.ts  # 
-    │   │   │   │   │   │   ├── credit-dto.ts  # 
-    │   │   │   │   │   │   ├── discount-dto.ts  # 
-    │   │   │   │   │   │   ├── dunning-dto.ts  # 
+    │   │   │   │   │   │   │   # AddonDTO
+    │   │   │   │   │   │   ├── allowance-dto.ts  # AllowanceDTO
+    │   │   │   │   │   │   ├── billing-history-dto.ts  # BillingHistoryDTO
+    │   │   │   │   │   │   ├── billing-profile-dto.ts  # BillingProfileDTO
+    │   │   │   │   │   │   ├── connect-balance-dto.ts
+    │   │   │   │   │   │   ├── connect-package-dto.ts  # ConnectPackageDTO
+    │   │   │   │   │   │   ├── connect-transaction-dto.ts  # ConnectTransactionDTO
+    │   │   │   │   │   │   ├── coupon-dto.ts
+    │   │   │   │   │   │   ├── credit-dto.ts
+    │   │   │   │   │   │   ├── credit-note-dto.ts  # CreditNoteDTO
+    │   │   │   │   │   │   ├── discount-dto.ts
+    │   │   │   │   │   │   ├── dunning-dto.ts  # DunningCaseDTO
     │   │   │   │   │   │   ├── entitlement-dto.ts  # Entitlement DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── grant-dto.ts  # 
+    │   │   │   │   │   │   ├── entitlement-grant-dto.ts  # EntitlementGrantDTO
+    │   │   │   │   │   │   ├── feature-toggle-dto.ts  # FeatureToggleDTO
+    │   │   │   │   │   │   ├── grant-dto.ts
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── invoice-dto.ts  # Invoice DTO
-    │   │   │   │   │   │   │   # 
-    │   │   │   │   │   │   ├── invoice-item-dto.ts  # 
-    │   │   │   │   │   │   ├── payment-history-dto.ts  # 
-    │   │   │   │   │   │   ├── plan-comparison-dto.ts  # 
+    │   │   │   │   │   │   │   # InvoiceDTO
+    │   │   │   │   │   │   ├── invoice-item-dto.ts
+    │   │   │   │   │   │   ├── payment-attempt-dto.ts  # PaymentAttemptDTO
+    │   │   │   │   │   │   ├── payment-history-dto.ts
+    │   │   │   │   │   │   ├── payment-webhook-dto.ts  # PaymentWebhookDTO
+    │   │   │   │   │   │   ├── plan-comparison-dto.ts
     │   │   │   │   │   │   ├── plan-dto.ts  # Plan DTO
-    │   │   │   │   │   │   ├── proration-dto.ts  # 
+    │   │   │   │   │   │   ├── plan-pricing-dto.ts  # PlanPricingDTO
+    │   │   │   │   │   │   ├── plan-version-dto.ts  # PlanVersionDTO
+    │   │   │   │   │   │   ├── promotion-dto.ts  # PromotionDTO
+    │   │   │   │   │   │   ├── proration-dto.ts
+    │   │   │   │   │   │   ├── seat-billing-dto.ts  # SeatBillingDTO
+    │   │   │   │   │   │   ├── subscription-change-dto.ts  # SubscriptionChangeDTO
     │   │   │   │   │   │   ├── subscription-dto.ts  # Subscription DTO
-    │   │   │   │   │   │   ├── trial-dto.ts  # 
-    │   │   │   │   │   │   ├── upgrade-path-dto.ts  # 
+    │   │   │   │   │   │   ├── tax-class-dto.ts  # TaxClassDTO
+    │   │   │   │   │   │   ├── trial-dto.ts  # TrialDTO
+    │   │   │   │   │   │   ├── upgrade-path-dto.ts
     │   │   │   │   │   │   ├── usage-dto.ts  # Usage DTO
-    │   │   │   │   │   │   └── usage-tracking-dto.ts  # 
+    │   │   │   │   │   │   ├── usage-event-dto.ts  # UsageEventDTO
+    │   │   │   │   │   │   └── usage-tracking-dto.ts
     │   │   │   │   │   ├── users/  # Users backend API DTOs
+    │   │   │   │   │   │   ├── account-recovery-dto.ts  # AccountRecoveryDTO
+    │   │   │   │   │   │   ├── account-settings-dto.ts  # AccountSettingsDTO
+    │   │   │   │   │   │   ├── appeal-dto.ts  # UserAppealDTO
     │   │   │   │   │   │   ├── availability-dto.ts  # Availability DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── availability-schedule-dto.ts  # AvailabilityScheduleDTO
+    │   │   │   │   │   │   ├── ban-dto.ts  # BanDTO
+    │   │   │   │   │   │   ├── blocked-users-dto.ts  # BlockedUserDTO
     │   │   │   │   │   │   ├── capability-dto.ts  # Capability DTO
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── certification-dto.ts  # Certification DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── compliance-dto.ts  # UserComplianceDTO
+    │   │   │   │   │   │   ├── device-dto.ts  # DeviceDTO
+    │   │   │   │   │   │   ├── earning-goals-dto.ts  # EarningGoalsDTO
     │   │   │   │   │   │   ├── education-dto.ts  # Education DTO
-    │   │   │   │   │   │   │   # 
     │   │   │   │   │   │   ├── experience-dto.ts  # Experience DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── flag-dto.ts  # UserFlagDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── learning-path-dto.ts  # LearningPathDTO
+    │   │   │   │   │   │   ├── login-history-dto.ts  # LoginHistoryDTO
+    │   │   │   │   │   │   ├── mentorship-dto.ts  # MentorshipDTO
     │   │   │   │   │   │   ├── metric-dto.ts  # Metric DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── notification-preferences-dto.ts  # NotificationPreferencesDTO
     │   │   │   │   │   │   ├── organization-dto.ts  # Organization DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── password-reset-dto.ts  # PasswordResetDTO
     │   │   │   │   │   │   ├── portfolio-dto.ts  # Portfolio DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── privacy-settings-dto.ts  # PrivacySettingsDTO
+    │   │   │   │   │   │   ├── professional-network-dto.ts  # ConnectionDTO
     │   │   │   │   │   │   ├── profile-dto.ts  # Profile DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── rate-card-dto.ts  # UserRateCardDTO
+    │   │   │   │   │   │   ├── referral-dto.ts  # ReferralDTO
+    │   │   │   │   │   │   ├── saved-items-dto.ts  # SavedItemDTO
+    │   │   │   │   │   │   ├── security-dto.ts  # SecuritySettingsDTO
+    │   │   │   │   │   │   ├── service-catalog-dto.ts  # ServiceCatalogDTO
+    │   │   │   │   │   │   ├── session-dto.ts  # UserSessionDTO
     │   │   │   │   │   │   ├── skill-dto.ts  # Skill DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── specialization-dto.ts  # SpecializationDTO
+    │   │   │   │   │   │   ├── suspension-dto.ts  # SuspensionDTO
     │   │   │   │   │   │   ├── team-dto.ts  # Team DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── time-zone-dto.ts  # TimeZonePreferenceDTO
     │   │   │   │   │   │   ├── trust-score-dto.ts  # Trust score DTO
-    │   │   │   │   │   │   │   # 
+    │   │   │   │   │   │   ├── two-factor-auth-dto.ts  # TwoFactorAuthDTO
     │   │   │   │   │   │   ├── user-dto.ts  # User DTO
-    │   │   │   │   │   │   └── verification-dto.ts  # Verification DTO
-    │   │   │   │   │   │       # 
+    │   │   │   │   │   │   ├── user-group-dto.ts  # UserGroupDTO
+    │   │   │   │   │   │   ├── verification-dto.ts  # Verification DTO
+    │   │   │   │   │   │   ├── warning-dto.ts  # WarningDTO
+    │   │   │   │   │   │   └── workload-capacity-dto.ts  # WorkloadCapacityDTO
     │   │   │   │   │   └── │
     │   │   │   │   ├── state/  # State management types (MISSING STATE SLICES BELOW)
     │   │   │   │   │   ├── slices/  # State slice types
     │   │   │   │   │   │   ├── admin.state.ts  # AdminState, AdminAction
+    │   │   │   │   │   │   │   # AdminState, AdminAction (activity logs, moderation, tickets, config)
     │   │   │   │   │   │   ├── communications.state.ts  # CommunicationsState, CommunicationsAction
+    │   │   │   │   │   │   │   # CommunicationsState, CommunicationsAction (updated with all entities)
+    │   │   │   │   │   │   ├── contracts.state.ts  # ContractsState, ContractsAction (updated with all entities)
+    │   │   │   │   │   │   ├── financial.state.ts  # FinancialState, FinancialAction (updated with all entities)
+    │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── jobs.state.ts  # JobsState, JobsAction (updated with all entities)
+    │   │   │   │   │   │   ├── proposals.state.ts  # ProposalsState, ProposalsAction (updated with all entities)
+    │   │   │   │   │   │   ├── reviews.state.ts  # ReviewsState, ReviewsAction (updated with all entities)
     │   │   │   │   │   │   ├── search.state.ts  # SearchState, SearchAction
     │   │   │   │   │   │   ├── storage.state.ts  # StorageState, StorageAction
-    │   │   │   │   │   │   └── subscriptions.state.ts  # SubscriptionsState, SubscriptionsAction
+    │   │   │   │   │   │   ├── subscriptions.state.ts  # SubscriptionsState, SubscriptionsAction
+    │   │   │   │   │   │   │   # SubscriptionsState, SubscriptionsAction (updated with all entities)
+    │   │   │   │   │   │   ├── ui.state.ts  # UIState, UIAction (modals, sidebars, toasts, loading states)
+    │   │   │   │   │   │   ├── users.state.ts  # UsersState, UsersAction (updated with all entities)
+    │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── stores/  # Store-specific types (Zustand/Jotai)
+    │   │   │   │   │   │   # Zustand/Jotai store types
     │   │   │   │   │   │   ├── admin.store.ts  # AdminStore interface
     │   │   │   │   │   │   ├── communications.store.ts  # CommunicationsStore interface
+    │   │   │   │   │   │   ├── contracts.store.ts  # ContractsStore interface
+    │   │   │   │   │   │   ├── financial.store.ts  # FinancialStore interface
+    │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── jobs.store.ts  # JobsStore interface
+    │   │   │   │   │   │   ├── proposals.store.ts  # ProposalsStore interface
+    │   │   │   │   │   │   ├── reviews.store.ts  # ReviewsStore interface
     │   │   │   │   │   │   ├── search.store.ts  # SearchStore interface
     │   │   │   │   │   │   ├── storage.store.ts  # StorageStore interface
-    │   │   │   │   │   │   └── subscriptions.store.ts  # SubscriptionsStore interface
+    │   │   │   │   │   │   ├── subscriptions.store.ts  # SubscriptionsStore interface
+    │   │   │   │   │   │   └── users.store.ts  # UsersStore interface
     │   │   │   │   │   ├── actions.ts  # Global action type definitions
+    │   │   │   │   │   │   # Generic action types, action creators
     │   │   │   │   │   ├── index.ts  # Main state exports
     │   │   │   │   │   ├── middleware.ts  # Middleware types
     │   │   │   │   │   ├── reducers.ts  # Reducer types
+    │   │   │   │   │   │   # Generic reducer types
     │   │   │   │   │   ├── root.state.ts  # Complete RootState with all slices
+    │   │   │   │   │   │   # RootState interface (updated with all slices)
     │   │   │   │   │   ├── selectors.ts  # Selector types
+    │   │   │   │   │   │   # Generic selector types
     │   │   │   │   │   ├── thunks.ts  # Async action types
+    │   │   │   │   │   │   # Async thunk types
     │   │   │   │   │   └── │
     │   │   │   │   └── │
     │   │   │   ├── utils/
