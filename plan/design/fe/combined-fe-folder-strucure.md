@@ -25387,78 +25387,114 @@ fe/
     │   │   │   │   │   # Business logic types (MISSING DOMAINS BELOW)
     │   │   │   │   │   ├── admin/  # Admin domain types
     │   │   │   │   │   │   # Admin domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Admin domain types (MOSTLY MISSING)
     │   │   │   │   │   │   ├── activity-log.ts  # Admin activity logging
     │   │   │   │   │   │   │   # AdminActivityLog, ActivityType, ActionCategory
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── admin-activity-log.ts  # Activity logging types
     │   │   │   │   │   │   │   # Activity log entity
     │   │   │   │   │   │   ├── admin-api-key.ts  # Admin API keys
     │   │   │   │   │   │   ├── admin-bulk-action.ts  # Bulk actions
     │   │   │   │   │   │   ├── admin-mfa.ts  # Admin MFA entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── admin-permission.ts  # Admin permission entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── admin-role.ts  # Admin role and permission types
     │   │   │   │   │   │   │   # Admin role entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── admin-session.ts  # Session management types
     │   │   │   │   │   │   │   # Admin session entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── admin-user-role.ts  # User roles
     │   │   │   │   │   │   ├── admin-user.ts  # Admin user entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── alert-notification.ts  # Alert notification entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── alert-rule.ts  # Alert rule entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── alert-trigger.ts  # Alert trigger entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── announcement.ts  # Platform-wide announcement types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── api-key.ts  # API key entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── appeal.ts  # Appeal, AppealStatus, AppealDecision
     │   │   │   │   │   │   ├── approval-request.ts  # Approval requests
     │   │   │   │   │   │   ├── approval-workflow.ts  # Approval workflows
     │   │   │   │   │   │   ├── audit-entry.ts  # Audit entries
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── audit-export.ts  # Audit export entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── audit-trail.ts  # Audit logging types
     │   │   │   │   │   │   ├── audit.ts  # AuditTrail, AuditEntry, AuditAction
     │   │   │   │   │   │   ├── auto-flag-rule.ts  # Auto-flag rule entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Auto-flagging rules for moderation
     │   │   │   │   │   │   ├── ban-rule.ts  # Ban rules
     │   │   │   │   │   │   ├── break-glass-access.ts  # Break-glass access entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── break-glass-request.ts  # Break-glass requests
     │   │   │   │   │   │   ├── break-glass.ts  # BreakGlassAccess, AccessApproval
     │   │   │   │   │   │   ├── broadcast.ts  # Broadcast, BroadcastType, BroadcastStatus
     │   │   │   │   │   │   ├── bulk-operation-item.ts  # Bulk operation item entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── bulk-operation.ts  # BulkOperation, BulkOperationType, BulkStatus
     │   │   │   │   │   │   ├── canned-response.ts  # Canned responses
     │   │   │   │   │   │   │   # CannedResponse, ResponseCategory
     │   │   │   │   │   │   │   # Canned response entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── case-priority.ts  # Case priorities
     │   │   │   │   │   │   ├── case.ts  # Case, CaseType, CaseStatus, CasePriority
     │   │   │   │   │   │   ├── change-approval.ts  # Change approval entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── change-request.ts  # Change requests
     │   │   │   │   │   │   │   # Change approval workflows
     │   │   │   │   │   │   │   # ChangeRequest, ChangeApproval
     │   │   │   │   │   │   │   # Change request entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── compliance-check.ts  # ComplianceCheck, ComplianceStatus
     │   │   │   │   │   │   ├── compliance-context.ts  # GDPR/CCPA compliance tracking
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── compliance-doc.ts  # Compliance documents
     │   │   │   │   │   │   ├── compliance-policy.ts  # Compliance policies
     │   │   │   │   │   │   ├── config-change.ts  # Config change history
     │   │   │   │   │   │   ├── config-history.ts  # Config history entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── content-action.ts  # Content actions (remove, hide, flag)
     │   │   │   │   │   │   │   # Content action entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Admin actions on content (remove, hide, approve, reject)
     │   │   │   │   │   │   ├── content-policy.ts  # ContentPolicy, PolicyViolation
     │   │   │   │   │   │   ├── data-export.ts  # Data exports
     │   │   │   │   │   │   ├── data-masking-policy.ts  # Data masking policy entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
+    │   │   │   │   │   │   ├── dispute-case.ts  # ⚠️ MISSING - Admin dispute resolution cases
+    │   │   │   │   │   │   ├── dispute-evidence.ts  # ⚠️ MISSING - Evidence for dispute cases
     │   │   │   │   │   │   ├── dsar-request.ts  # DSAR requests
     │   │   │   │   │   │   ├── experiment.ts  # A/B testing experiment types
     │   │   │   │   │   │   │   # Experiment, ExperimentVariant, ExperimentResults
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── export-job.ts  # Export jobs
+    │   │   │   │   │   │   ├── faq-category.ts  # ⚠️ MISSING - FAQ categories
+    │   │   │   │   │   │   ├── faq.ts  # ⚠️ MISSING - FAQ management
     │   │   │   │   │   │   ├── feature-flag.ts  # Feature flag types
     │   │   │   │   │   │   │   # Feature flag entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── feedback-category.ts  # Feedback categories
     │   │   │   │   │   │   ├── feedback.ts  # Admin feedback
     │   │   │   │   │   │   ├── financial-hold.ts  # Financial hold entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── flag.ts  # Content flags
     │   │   │   │   │   │   ├── fraud-case.ts  # Fraud case entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Fraud investigation cases
+    │   │   │   │   │   │   ├── fraud-rule.ts  # ⚠️ MISSING - Fraud detection rules
     │   │   │   │   │   │   ├── gdpr-request.ts  # GDPR request entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── goodwill-credit.ts  # Goodwill credits
     │   │   │   │   │   │   ├── hold-case.ts  # Financial holds
     │   │   │   │   │   │   ├── hold.ts  # UserHold, HoldReason, HoldDuration
     │   │   │   │   │   │   ├── impersonation.ts  # Admin impersonation sessions
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── incident-response.ts  # Incident response entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Security incident response
     │   │   │   │   │   │   ├── incident-timeline.ts  # Incident timeline
     │   │   │   │   │   │   ├── incident.ts  # System incidents
     │   │   │   │   │   │   │   # Incident, IncidentSeverity, IncidentResponse
@@ -25469,43 +25505,59 @@ fe/
     │   │   │   │   │   │   ├── kb-article-version.ts  # KB article versions
     │   │   │   │   │   │   ├── kb-article.ts  # Knowledge base articles
     │   │   │   │   │   │   │   # Knowledge base article entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── kb-category.ts  # KB categories
     │   │   │   │   │   │   │   # KB category entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── kb-version.ts  # KB version entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── knowledge-base.ts  # KBArticle, KBCategory, KBVersion
     │   │   │   │   │   │   ├── legal-hold.ts  # Legal holds
     │   │   │   │   │   │   │   # Legal data preservation
     │   │   │   │   │   │   │   # LegalHold, HoldReason
     │   │   │   │   │   │   │   # Legal hold entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── maintenance-window.ts  # Maintenance windows
     │   │   │   │   │   │   ├── maintenance.ts  # Maintenance mode types
     │   │   │   │   │   │   ├── metric-definition.ts  # Metric definition entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── metric-value.ts  # Metric value entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── metrics.ts  # System metrics and analytics types
     │   │   │   │   │   │   ├── moderation-action.ts  # Moderation actions
     │   │   │   │   │   │   │   # ModerationAction, ActionType, ActionSeverity
     │   │   │   │   │   │   │   # Moderation action entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── moderation-case.ts  # Moderation cases
     │   │   │   │   │   │   ├── moderation-item.ts  # Moderation items
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── moderation-queue.ts  # Moderation queue item types
     │   │   │   │   │   │   │   # Moderation queue entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── moderation-rule.ts  # Moderation rules
     │   │   │   │   │   │   │   # Moderation rule entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── permission-grant.ts  # Permission grants
     │   │   │   │   │   │   ├── permission.ts  # Permissions
     │   │   │   │   │   │   │   # Permission, PermissionGroup
     │   │   │   │   │   │   ├── pii-access-log.ts  # PII access log entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── pii-access.ts  # PIIAccessLog, PIIAccessRequest
+    │   │   │   │   │   │   ├── platform-config.ts  # ✅ EXISTS
     │   │   │   │   │   │   ├── platform-settings.ts  # PlatformSettings, SystemConfig
     │   │   │   │   │   │   ├── policy-acceptance.ts  # Policy acceptance entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── policy-doc.ts  # Policy document types
     │   │   │   │   │   │   │   # PolicyDocument, PolicyVersion
     │   │   │   │   │   │   ├── policy-document.ts  # Policy document entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── policy-version.ts  # Policy versions
     │   │   │   │   │   │   │   # Policy version entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── privacy-request.ts  # DSAR/GDPR requests
     │   │   │   │   │   │   │   # PrivacyRequest, DSARType, DSARStatus
     │   │   │   │   │   │   │   # Privacy request entity
+    │   │   │   │   │   │   ├── quota-override.ts  # ⚠️ MISSING - User quota overrides
     │   │   │   │   │   │   ├── rate-limit-override.ts  # Rate limit override entity
     │   │   │   │   │   │   ├── rate-limit.ts  # Rate limiting configuration types
     │   │   │   │   │   │   ├── refund-case.ts  # Refund cases
@@ -25514,6 +25566,7 @@ fe/
     │   │   │   │   │   │   ├── report-template.ts  # Report template entity
     │   │   │   │   │   │   ├── report.ts  # Admin reports
     │   │   │   │   │   │   ├── risk-incident.ts  # Risk incident entity
+    │   │   │   │   │   │   ├── sanction-check.ts  # ✅ EXISTS
     │   │   │   │   │   │   ├── sanction-screening.ts  # Sanctions screening
     │   │   │   │   │   │   ├── sanctions-screening.ts  # Sanctions/AML checks
     │   │   │   │   │   │   │   # Sanctions screening entity
@@ -25523,38 +25576,48 @@ fe/
     │   │   │   │   │   │   ├── sla-breach.ts  # SLA breach entity
     │   │   │   │   │   │   ├── sla-policy.ts  # SLA policy entity
     │   │   │   │   │   │   ├── sla-rule.ts  # SLA rules
+    │   │   │   │   │   │   ├── support-attachment.ts  # ⚠️ MISSING - Support ticket attachments
     │   │   │   │   │   │   ├── support-case-note.ts  # Case notes
     │   │   │   │   │   │   ├── support-case.ts  # Support cases
     │   │   │   │   │   │   ├── support-category.ts  # Support categories
+    │   │   │   │   │   │   ├── support-message.ts  # ⚠️ MISSING - Support ticket messages/comments
     │   │   │   │   │   │   ├── support-response.ts  # Support responses
     │   │   │   │   │   │   ├── support-sla.ts  # Support SLAs
     │   │   │   │   │   │   ├── support-ticket-assignment.ts  # Ticket assignment entity
     │   │   │   │   │   │   ├── support-ticket-attachment.ts  # Ticket attachment entity
     │   │   │   │   │   │   ├── support-ticket-history.ts  # Ticket history entity
     │   │   │   │   │   │   ├── support-ticket.ts  # Support ticket types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── system-config.ts  # System configuration
     │   │   │   │   │   │   │   # System config entity
     │   │   │   │   │   │   ├── system-health.ts  # System health monitoring types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── system-settings.ts  # System configuration types
     │   │   │   │   │   │   ├── throttle-config.ts  # Throttle config entity
+    │   │   │   │   │   │   ├── throttle-exception.ts  # ⚠️ MISSING - Rate limiting exceptions
     │   │   │   │   │   │   ├── throttle-policy.ts  # API throttle policy types
     │   │   │   │   │   │   │   # ThrottlePolicy, RateLimit
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Rate limiting policies
     │   │   │   │   │   │   ├── ticket-category.ts  # Ticket category entity
     │   │   │   │   │   │   ├── trust-safety-rule.ts  # Trust & safety rules
     │   │   │   │   │   │   ├── two-person-approval.ts  # Two-person approval entity
     │   │   │   │   │   │   ├── user-action.ts  # User actions (suspend, ban, warn)
     │   │   │   │   │   │   │   # User action entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Admin actions on users (suspend, ban, warn)
     │   │   │   │   │   │   ├── watchlist-check.ts  # Watchlist check entity
     │   │   │   │   │   │   ├── watchlist-entry.ts  # Watchlist entries
     │   │   │   │   │   │   ├── watchlist.ts  # WatchlistEntry, WatchlistType
     │   │   │   │   │   │   ├── webhook-delivery.ts  # Webhook delivery entity
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── webhook-event.ts  # Webhook event entity
     │   │   │   │   │   │   ├── webhook.ts  # Webhook entity
     │   │   │   │   │   │   └── workflow-step.ts  # Workflow steps
     │   │   │   │   │   ├── communications/  # Communications domain types
+    │   │   │   │   │   │   # Communications domain types (MANY MISSING)
     │   │   │   │   │   │   ├── analytics.ts  # CommunicationAnalytics, Metrics
     │   │   │   │   │   │   ├── attachment.ts  # Message attachment types
     │   │   │   │   │   │   │   # MessageAttachment, AttachmentType
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── audit.ts  # Communications audit log types
     │   │   │   │   │   │   ├── blocklist.ts  # User blocking
     │   │   │   │   │   │   │   # Blocklist, BlockedEntity
@@ -25569,8 +25632,10 @@ fe/
     │   │   │   │   │   │   │   # Call, CallParticipant
     │   │   │   │   │   │   │   # Call/video entity
     │   │   │   │   │   │   ├── channel-member.ts  # Channel members
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Channel membership
     │   │   │   │   │   │   ├── channel-subscription.ts  # Channel subscriptions
     │   │   │   │   │   │   ├── channel.ts  # Channel types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── collaboration-cursor.ts  # Collaboration cursors
     │   │   │   │   │   │   ├── collaboration-participant.ts  # Collaboration participants
     │   │   │   │   │   │   ├── collaboration-version.ts  # Document versions
@@ -25578,9 +25643,13 @@ fe/
     │   │   │   │   │   │   │   # Collaboration, SharedDocument
     │   │   │   │   │   │   ├── compliance-action.ts  # Compliance actions
     │   │   │   │   │   │   ├── compliance.ts  # Data retention/GDPR compliance types
+    │   │   │   │   │   │   ├── conversation-archive.ts  # ⚠️ MISSING - Archived conversations
     │   │   │   │   │   │   ├── conversation-export.ts  # Conversation exports
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Conversation exports
+    │   │   │   │   │   │   ├── conversation-participant.ts  # ⚠️ MISSING - Conversation participants
     │   │   │   │   │   │   ├── conversation-stat.ts  # Conversation statistics
     │   │   │   │   │   │   ├── conversation.ts  # Conversation entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── delivery-log.ts  # Delivery log types
     │   │   │   │   │   │   │   # Message delivery tracking
     │   │   │   │   │   │   │   # DeliveryLog, LogEntry
@@ -25604,10 +25673,13 @@ fe/
     │   │   │   │   │   │   │   # EmailBridge, InboundEmail
     │   │   │   │   │   │   │   # Email bridge entity
     │   │   │   │   │   │   ├── email-click.ts  # Email clicks
+    │   │   │   │   │   │   ├── email-layout.ts  # ⚠️ MISSING - Email layouts
     │   │   │   │   │   │   ├── email-notification.ts  # Email notification types
     │   │   │   │   │   │   ├── email-open.ts  # Email opens
     │   │   │   │   │   │   ├── email-template.ts  # Email template types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Email templates
     │   │   │   │   │   │   ├── email.ts  # Email notifications
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── encryption.ts  # E2E encryption keys
     │   │   │   │   │   │   │   # EncryptionKey, EncryptionConfig
     │   │   │   │   │   │   │   # Message encryption entity
@@ -25625,17 +25697,24 @@ fe/
     │   │   │   │   │   │   │   # Email tracking entity
     │   │   │   │   │   │   ├── mention.ts  # @mention types
     │   │   │   │   │   │   │   # Mention, MentionType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User mentions in messages
+    │   │   │   │   │   │   ├── message-draft.ts  # ⚠️ MISSING - Message drafts
     │   │   │   │   │   │   ├── message-edit.ts  # Message edit history
     │   │   │   │   │   │   ├── message-reaction.ts  # Message reactions
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Message reactions/emojis
+    │   │   │   │   │   │   ├── message-search-index.ts  # ⚠️ MISSING - Message search indexing
     │   │   │   │   │   │   ├── message-search.ts  # Message search index
     │   │   │   │   │   │   ├── message-sequence.ts  # Message sequence types
     │   │   │   │   │   │   ├── message.ts  # Message entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── moderation.ts  # Moderation types
     │   │   │   │   │   │   │   # Message moderation
     │   │   │   │   │   │   │   # MessageModeration, ModerationAction
     │   │   │   │   │   │   │   # Message moderation entity
     │   │   │   │   │   │   ├── notification-channel.ts  # Notification channels
+    │   │   │   │   │   │   ├── notification-delivery-log.ts  # ⚠️ MISSING - Notification delivery logs
     │   │   │   │   │   │   ├── notification-preference.ts  # User notification settings
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User notification preferences
     │   │   │   │   │   │   ├── notification-queue.ts  # Notification queue types
     │   │   │   │   │   │   │   # Notification queue management
     │   │   │   │   │   │   │   # NotificationQueue, QueuePriority
@@ -25644,6 +25723,7 @@ fe/
     │   │   │   │   │   │   ├── notification-template.ts  # Notification templates
     │   │   │   │   │   │   │   # Notification template entity
     │   │   │   │   │   │   ├── notification.ts  # Notification entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── participant.ts  # Conversation participant types
     │   │   │   │   │   │   ├── pin.ts  # Pinned messages
     │   │   │   │   │   │   │   # PinnedMessage, PinPriority
@@ -25660,19 +25740,25 @@ fe/
     │   │   │   │   │   │   │   # Push device registry entity
     │   │   │   │   │   │   ├── push-notification.ts  # Push notification types
     │   │   │   │   │   │   ├── push-subscription.ts  # Push subscription types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Push notification subscriptions
+    │   │   │   │   │   │   ├── quota-usage.ts  # ⚠️ MISSING - Quota usage tracking
     │   │   │   │   │   │   ├── quota.ts  # MessageQuota, QuotaLimit
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Communication quotas
     │   │   │   │   │   │   ├── rate-limit.ts  # Message rate limiting types
     │   │   │   │   │   │   ├── reaction.ts  # Message reaction types
     │   │   │   │   │   │   ├── read-receipt.ts  # Read receipt types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Message read receipts
     │   │   │   │   │   │   ├── read-state.ts  # Read state tracking
     │   │   │   │   │   │   │   # Message read/unread state
     │   │   │   │   │   │   │   # ReadState, ReadReceipt
     │   │   │   │   │   │   │   # Message read state entity
     │   │   │   │   │   │   ├── retention-policy.ts  # Retention policies
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Data retention policies
     │   │   │   │   │   │   ├── search.ts  # Message search types
     │   │   │   │   │   │   │   # MessageSearch, SearchIndex
     │   │   │   │   │   │   ├── sms-notification.ts  # SMS notification types
     │   │   │   │   │   │   ├── sms.ts  # SMS notifications
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── spam-detection.ts  # Spam filtering
     │   │   │   │   │   │   │   # SpamDetection, SpamRule
     │   │   │   │   │   │   │   # Spam detection entity
@@ -25685,12 +25771,15 @@ fe/
     │   │   │   │   │   │   │   # SystemMessage, MessageTemplate
     │   │   │   │   │   │   │   # System message entity
     │   │   │   │   │   │   ├── template.ts  # Message template types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── thread-follower.ts  # Thread followers
     │   │   │   │   │   │   ├── thread-stat.ts  # Thread statistics
     │   │   │   │   │   │   ├── thread.ts  # Message thread types
     │   │   │   │   │   │   │   # Conversation threads
     │   │   │   │   │   │   │   # Thread, ThreadParticipant
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── typing-indicator.ts  # Typing indicator types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Real-time typing indicators
     │   │   │   │   │   │   ├── unsubscribe.ts  # Unsubscribe types
     │   │   │   │   │   │   │   # Unsubscribe management
     │   │   │   │   │   │   │   # UnsubscribeRegistry, UnsubscribeType
@@ -25705,6 +25794,7 @@ fe/
     │   │   │   │   │   │   └── websocket.ts  # WebSocket connection types
     │   │   │   │   │   ├── contracts/  # Contracts domain types
     │   │   │   │   │   │   # Contracts domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Contracts domain types (MANY MISSING)
     │   │   │   │   │   │   ├── activity-level.ts  # Activity tracking types
     │   │   │   │   │   │   ├── activity-log.ts  # Milestone/contract activity logs
     │   │   │   │   │   │   ├── activity.ts  # ContractActivity, ActivityType
@@ -25714,9 +25804,13 @@ fe/
     │   │   │   │   │   │   │   # AgencyContract, AgencyMember, BillingSplit
     │   │   │   │   │   │   │   # Agency contract entity
     │   │   │   │   │   │   ├── amendment.ts  # Contract amendment types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── analytics.ts  # Contract analytics
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract analytics
+    │   │   │   │   │   │   ├── approval-workflow.ts  # ⚠️ MISSING - Approval workflows
     │   │   │   │   │   │   ├── approval.ts  # Contract approval workflow types
     │   │   │   │   │   │   │   # Contract approval workflow
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract approvals
     │   │   │   │   │   │   ├── archive.ts  # Archived contracts
     │   │   │   │   │   │   ├── attachment.ts  # Contract attachments
     │   │   │   │   │   │   ├── audit-log.ts  # Contract audit logs
@@ -25725,17 +25819,23 @@ fe/
     │   │   │   │   │   │   ├── billing-cycle.ts  # Billing cycles
     │   │   │   │   │   │   ├── bonus.ts  # Bonus clause types
     │   │   │   │   │   │   ├── budget-adjustment.ts  # Budget adjustment entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Budget adjustments
     │   │   │   │   │   │   ├── budget-tracking.ts  # Budget tracking
     │   │   │   │   │   │   ├── budget.ts  # Contract budget tracking types
     │   │   │   │   │   │   │   # Contract budget tracking
     │   │   │   │   │   │   │   # ContractBudget, BudgetAlert
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract budgets
     │   │   │   │   │   │   ├── cancellation.ts  # Contract cancellation
     │   │   │   │   │   │   ├── change-order.ts  # Change order types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── clause.ts  # Contract clause types
+    │   │   │   │   │   │   ├── client-feedback.ts  # ⚠️ MISSING - Client feedback on contracts
+    │   │   │   │   │   │   ├── collaboration-tool.ts  # ⚠️ MISSING - Collaboration tools
     │   │   │   │   │   │   ├── compliance-check.ts  # Compliance checks
     │   │   │   │   │   │   ├── compliance.ts  # Contract compliance tracking types
     │   │   │   │   │   │   │   # Contract compliance checks
     │   │   │   │   │   │   │   # ContractCompliance, AuditLog
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── contract-amendment.ts  # Amendment entity
     │   │   │   │   │   │   ├── contract-analytics.ts  # Analytics entity
     │   │   │   │   │   │   ├── contract-approval.ts  # Multi-tier approvals
@@ -25757,47 +25857,72 @@ fe/
     │   │   │   │   │   │   ├── contract-workroom.ts  # Workroom entity
     │   │   │   │   │   │   ├── contract-workspace.ts  # Workspace entity
     │   │   │   │   │   │   ├── contract.ts  # Contract entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
     │   │   │   │   │   │   ├── deliverable.ts  # Deliverable types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── direct-contract.ts  # DirectContract, InvitationToken
     │   │   │   │   │   │   ├── dispute-evidence.ts  # Dispute evidence
     │   │   │   │   │   │   │   # Dispute evidence entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Dispute evidence
     │   │   │   │   │   │   ├── dispute-message.ts  # Dispute message entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Dispute messages
     │   │   │   │   │   │   ├── dispute-resolution.ts  # Dispute resolutions
     │   │   │   │   │   │   ├── dispute.ts  # Contract dispute types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── early-termination.ts  # Early termination terms
     │   │   │   │   │   │   ├── escalation.ts  # Dispute escalations
     │   │   │   │   │   │   ├── escrow-transaction.ts  # Escrow transaction entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow transactions
     │   │   │   │   │   │   ├── escrow.ts  # Contract escrow types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow management
     │   │   │   │   │   │   ├── expense.ts  # Expense tracking types
     │   │   │   │   │   │   ├── external-reference.ts  # External system references
     │   │   │   │   │   │   ├── feedback.ts  # Contract feedback types
     │   │   │   │   │   │   │   # Post-contract feedback
     │   │   │   │   │   │   │   # ContractFeedback, FeedbackType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract feedback
     │   │   │   │   │   │   ├── financial-hold.ts  # Financial hold entity
     │   │   │   │   │   │   ├── hold.ts  # Financial hold types
     │   │   │   │   │   │   ├── index.ts  # Barrel export for contracts domain
     │   │   │   │   │   │   ├── insurance-claim.ts  # Insurance claim entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Insurance claims
     │   │   │   │   │   │   ├── insurance.ts  # Insurance coverage types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract insurance
     │   │   │   │   │   │   ├── invitation.ts  # Contract invitation types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Direct contract invitations
+    │   │   │   │   │   │   ├── invoice-line-item.ts  # ⚠️ MISSING - Invoice line items
+    │   │   │   │   │   │   ├── invoice-payment.ts  # ⚠️ MISSING - Invoice payments
+    │   │   │   │   │   │   ├── invoice.ts  # ✅ EXISTS
     │   │   │   │   │   │   ├── kpi.ts  # Performance KPIs
     │   │   │   │   │   │   ├── legal-review.ts  # Legal reviews
     │   │   │   │   │   │   │   # LegalReview, ReviewStatus
     │   │   │   │   │   │   ├── liability.ts  # Liability clause types
     │   │   │   │   │   │   ├── milestone.ts  # Milestone entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
+    │   │   │   │   │   │   ├── nda-breach.ts  # ⚠️ MISSING - NDA breaches
+    │   │   │   │   │   │   ├── nda.ts  # ⚠️ MISSING - Non-disclosure agreements
+    │   │   │   │   │   │   ├── negotiation-offer.ts  # ⚠️ MISSING - Negotiation offers
     │   │   │   │   │   │   ├── negotiation.ts  # Negotiation, NegotiationOffer
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract negotiations
     │   │   │   │   │   │   ├── notification.ts  # Contract notifications
     │   │   │   │   │   │   ├── participant.ts  # Contract participants
     │   │   │   │   │   │   ├── pause-history.ts  # Pause history
+    │   │   │   │   │   │   ├── payment-schedule.ts  # ⚠️ MISSING - Payment schedules
     │   │   │   │   │   │   ├── payment-terms.ts  # Payment terms
     │   │   │   │   │   │   ├── penalty.ts  # Penalty clause types
     │   │   │   │   │   │   ├── performance-kpi.ts  # Contract KPIs
     │   │   │   │   │   │   │   # Performance KPI entity
     │   │   │   │   │   │   ├── rate-adjustment.ts  # RateAdjustment, AdjustmentReason
     │   │   │   │   │   │   ├── rate-card.ts  # Rate card types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Rate cards
     │   │   │   │   │   │   ├── recurring-contract.ts  # Recurring contract entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Recurring contracts
     │   │   │   │   │   │   ├── recurring-schedule.ts  # Recurring schedules
     │   │   │   │   │   │   ├── recurring.ts  # Recurring contract types
     │   │   │   │   │   │   ├── reminder.ts  # Contract reminder types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract reminders
+    │   │   │   │   │   │   ├── renegotiation.ts  # ⚠️ MISSING - Contract renegotiations
+    │   │   │   │   │   │   ├── renewal-history.ts  # ⚠️ MISSING - Contract renewal history
     │   │   │   │   │   │   ├── renewal.ts  # Auto-renewal types
     │   │   │   │   │   │   │   # Contract renewal
     │   │   │   │   │   │   ├── report.ts  # ContractReport, ReportType
@@ -25809,22 +25934,35 @@ fe/
     │   │   │   │   │   │   ├── search.ts  # Contract search index types
     │   │   │   │   │   │   ├── security-clearance.ts  # SecurityClearance, ClearanceLevel
     │   │   │   │   │   │   ├── signature.ts  # Digital signature types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - E-signatures
     │   │   │   │   │   │   ├── sla-breach.ts  # SLA breaches
+    │   │   │   │   │   │   │   # ⚠️ MISSING - SLA breaches
+    │   │   │   │   │   │   ├── sla-metric.ts  # ⚠️ MISSING - SLA metrics
+    │   │   │   │   │   │   ├── sla-performance-record.ts  # ⚠️ MISSING - SLA performance records
     │   │   │   │   │   │   ├── sla.ts  # Service level agreement types
     │   │   │   │   │   │   │   # Service level agreements
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Service level agreements
     │   │   │   │   │   │   ├── sow.ts  # Statement of work types
     │   │   │   │   │   │   ├── statement-of-work.ts  # SOW entity
+    │   │   │   │   │   │   ├── task.ts  # ⚠️ MISSING - Contract tasks
     │   │   │   │   │   │   ├── template-version.ts  # Template versions
     │   │   │   │   │   │   ├── template.ts  # Contract template types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract templates
     │   │   │   │   │   │   ├── termination-checklist.ts  # Termination checklists
     │   │   │   │   │   │   ├── termination.ts  # Contract termination types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract terminations
     │   │   │   │   │   │   ├── time-entry.ts  # Time entry types
     │   │   │   │   │   │   │   # Time entry entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Time entries
     │   │   │   │   │   │   ├── time-tracking-rule.ts  # Time tracking rules
     │   │   │   │   │   │   ├── timesheet-approval.ts  # Timesheet approvals
     │   │   │   │   │   │   ├── timesheet.ts  # Timesheet types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Timesheets
     │   │   │   │   │   │   ├── version.ts  # Contract versioning
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract versions
+    │   │   │   │   │   │   ├── work-diary-daily-summary.ts  # ⚠️ MISSING - Work diary summaries
     │   │   │   │   │   │   ├── work-diary-entry.ts  # Work diary entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Work diary entries
     │   │   │   │   │   │   ├── work-diary-summary.ts  # Daily summary entity
     │   │   │   │   │   │   ├── work-diary.ts  # Work diary entry types
     │   │   │   │   │   │   │   # Daily work logs
@@ -25835,39 +25973,56 @@ fe/
     │   │   │   │   │   │   │   # Workroom task entity
     │   │   │   │   │   │   ├── workroom.ts  # Workroom, WorkroomTask, WorkroomNote
     │   │   │   │   │   │   ├── workspace-comment.ts  # Workspace comment entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Workspace comments
     │   │   │   │   │   │   ├── workspace-document.ts  # Workspace document entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Workspace documents
     │   │   │   │   │   │   └── workspace.ts  # Workspace types
     │   │   │   │   │   │       # Contract workspace/workroom
+    │   │   │   │   │   │       # ⚠️ MISSING - Collaboration workspaces
     │   │   │   │   │   ├── financial/  # Financial domain types
     │   │   │   │   │   │   # Financial domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Financial domain types (COMPREHENSIVE MISSING)
+    │   │   │   │   │   │   ├── account-freeze.ts  # ⚠️ MISSING - Account freeze records
+    │   │   │   │   │   │   ├── account-limit.ts  # ⚠️ MISSING - Account limits
     │   │   │   │   │   │   ├── allowance.ts  # Allowance tracking
     │   │   │   │   │   │   ├── analytics.ts  # Financial analytics types
     │   │   │   │   │   │   │   # FinancialAnalytics, PlatformMetrics
     │   │   │   │   │   │   ├── balance-snapshot.ts  # Balance snapshot types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Balance snapshots
     │   │   │   │   │   │   ├── bank-account.ts  # Bank account types
     │   │   │   │   │   │   │   # BankAccount, AccountType
     │   │   │   │   │   │   │   # Bank account entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Bank accounts
     │   │   │   │   │   │   ├── bank-verification.ts  # Bank account verification types
     │   │   │   │   │   │   │   # BankVerification, VerificationStatus
     │   │   │   │   │   │   ├── billing-address.ts  # Billing address management
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Billing addresses
     │   │   │   │   │   │   ├── bonus.ts  # Bonus payment types
     │   │   │   │   │   │   ├── budget.ts  # Budget tracking
     │   │   │   │   │   │   ├── chargeback.ts  # Chargeback types
     │   │   │   │   │   │   │   # Chargeback handling
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Chargebacks
     │   │   │   │   │   │   ├── commission.ts  # Commission calculations
     │   │   │   │   │   │   ├── connects.ts  # Connects purchase types
     │   │   │   │   │   │   ├── coupon.ts  # Coupon, CouponRedemption
     │   │   │   │   │   │   ├── currency-conversion.ts  # Forex types
     │   │   │   │   │   │   │   # Multi-currency conversions
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Currency conversions
+    │   │   │   │   │   │   ├── currency-exchange-rate.ts  # ⚠️ MISSING - Exchange rates
     │   │   │   │   │   │   ├── currency-preference.ts  # Currency preference types
     │   │   │   │   │   │   │   # CurrencyPreference, RateLock
     │   │   │   │   │   │   │   # Currency preference entity
     │   │   │   │   │   │   ├── currency.ts  # Currency entity types
+    │   │   │   │   │   │   ├── dispute-evidence.ts  # ⚠️ MISSING - Dispute evidence
     │   │   │   │   │   │   ├── dispute.ts  # Payment dispute types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment disputes
+    │   │   │   │   │   │   ├── earning.ts  # ⚠️ MISSING - Earnings
     │   │   │   │   │   │   ├── escrow-account.ts  # Escrow accounts
     │   │   │   │   │   │   ├── escrow-hold.ts  # Escrow holds
     │   │   │   │   │   │   ├── escrow-release.ts  # Escrow releases
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow releases
     │   │   │   │   │   │   ├── escrow.ts  # Escrow account types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow accounts
     │   │   │   │   │   │   ├── exchange-rate.ts  # Exchange rate types
     │   │   │   │   │   │   ├── expense-reimbursement.ts  # Expense reimbursements
     │   │   │   │   │   │   ├── expense.ts  # Expense reimbursement types
@@ -25875,9 +26030,11 @@ fe/
     │   │   │   │   │   │   ├── fee-migration.ts  # Fee migration entity
     │   │   │   │   │   │   ├── fee-rule.ts  # Fee rules & overrides
     │   │   │   │   │   │   │   # Fee rule entity
+    │   │   │   │   │   │   ├── fee-schedule.ts  # ⚠️ MISSING - Fee schedules
     │   │   │   │   │   │   ├── fee-transaction.ts  # Fee transactions
     │   │   │   │   │   │   ├── fee-version.ts  # Fee versioning types
     │   │   │   │   │   │   │   # Fee version entity
+    │   │   │   │   │   │   ├── fee-waiver.ts  # ⚠️ MISSING - Fee waivers
     │   │   │   │   │   │   ├── fee.ts  # Fee structure types
     │   │   │   │   │   │   │   # Fee structures
     │   │   │   │   │   │   ├── forex-rate.ts  # Exchange rates
@@ -25892,6 +26049,7 @@ fe/
     │   │   │   │   │   │   ├── gateway.ts  # Payment gateway configuration types
     │   │   │   │   │   │   │   # GatewayConfig, GatewayWebhook
     │   │   │   │   │   │   ├── hold.ts  # Payment holds
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment holds
     │   │   │   │   │   │   ├── index.ts  # Barrel export for financial domain
     │   │   │   │   │   │   ├── insurance-claim.ts  # Insurance claims
     │   │   │   │   │   │   │   # InsuranceClaim, ClaimStatus
@@ -25907,7 +26065,9 @@ fe/
     │   │   │   │   │   │   ├── intl-compliance-check.ts  # International compliance checks
     │   │   │   │   │   │   ├── intl-compliance.ts  # International compliance check entity
     │   │   │   │   │   │   ├── invoice-line-item.ts  # Invoice line items
+    │   │   │   │   │   │   ├── invoice-reminder.ts  # ⚠️ MISSING - Invoice reminders
     │   │   │   │   │   │   ├── invoice.ts  # Invoice entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── ledger.ts  # Immutable ledger types
     │   │   │   │   │   │   │   # Financial ledger entries
     │   │   │   │   │   │   ├── local-payout-route.ts  # Local payout routes
@@ -25917,11 +26077,17 @@ fe/
     │   │   │   │   │   │   ├── payment-attempt.ts  # Payment attempts
     │   │   │   │   │   │   ├── payment-dispute.ts  # Payment dispute types
     │   │   │   │   │   │   ├── payment-method.ts  # Payment method types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment methods
     │   │   │   │   │   │   ├── payment-schedule.ts  # Payment schedule types
     │   │   │   │   │   │   │   # PaymentSchedule, ScheduleType
+    │   │   │   │   │   │   ├── payment-verification.ts  # ⚠️ MISSING - Payment verification
     │   │   │   │   │   │   ├── payment.ts  # Payment entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── payout-batch.ts  # Payout batches
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payout batches
+    │   │   │   │   │   │   ├── payout-method.ts  # ⚠️ MISSING - Payout methods
     │   │   │   │   │   │   ├── payout.ts  # Payout types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payouts
     │   │   │   │   │   │   ├── payroll-line-item.ts  # Payroll line items
     │   │   │   │   │   │   │   # Payroll line item entity
     │   │   │   │   │   │   ├── payroll-run.ts  # Payroll runs
@@ -25930,18 +26096,22 @@ fe/
     │   │   │   │   │   │   │   # Payroll withholding entity
     │   │   │   │   │   │   ├── payroll.ts  # Payroll processing types
     │   │   │   │   │   │   ├── platform-fee.ts  # Platform fees
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Platform fees
     │   │   │   │   │   │   ├── promo-credit.ts  # Promotional credits
     │   │   │   │   │   │   ├── promo.ts  # Promotional credit types
     │   │   │   │   │   │   ├── protection-plan.ts  # Protection plan types
     │   │   │   │   │   │   ├── rate-lock.ts  # Currency rate lock types
     │   │   │   │   │   │   │   # Exchange rate lock entity
     │   │   │   │   │   │   ├── reconciliation-discrepancy.ts  # Reconciliation discrepancies
+    │   │   │   │   │   │   ├── reconciliation-item.ts  # ⚠️ MISSING - Reconciliation items
     │   │   │   │   │   │   ├── reconciliation-report.ts  # Reconciliation reports
     │   │   │   │   │   │   ├── reconciliation.ts  # Financial reconciliation types
     │   │   │   │   │   │   │   # Payment reconciliation
     │   │   │   │   │   │   │   # ReconciliationReport, Discrepancy
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment reconciliation
     │   │   │   │   │   │   ├── recurring-payment.ts  # Recurring payment setup
     │   │   │   │   │   │   ├── refund.ts  # Refund types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Refunds
     │   │   │   │   │   │   ├── reminder-escalation.ts  # Payment reminder escalations
     │   │   │   │   │   │   │   # Reminder escalation entity
     │   │   │   │   │   │   ├── reminder-template.ts  # Reminder templates
@@ -25950,87 +26120,126 @@ fe/
     │   │   │   │   │   │   │   # PaymentReminder, ReminderTemplate
     │   │   │   │   │   │   │   # Payment reminder entity
     │   │   │   │   │   │   ├── reserve.ts  # Reserve types
+    │   │   │   │   │   │   ├── revenue.ts  # ⚠️ MISSING - Revenue records
     │   │   │   │   │   │   ├── risk-assessment.ts  # Risk assessment types
     │   │   │   │   │   │   ├── risk.ts  # Risk assessment types
     │   │   │   │   │   │   ├── settlement.ts  # Settlement types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Settlements
+    │   │   │   │   │   │   ├── split-config.ts  # ⚠️ MISSING - Payment splits
+    │   │   │   │   │   │   ├── statement.ts  # ⚠️ MISSING - Financial statements
     │   │   │   │   │   │   ├── subscription-billing.ts  # Subscription billing types
     │   │   │   │   │   │   │   # SubscriptionBilling, BillingCycle
     │   │   │   │   │   │   ├── subscription-invoice.ts  # Subscription invoices (financial side)
     │   │   │   │   │   │   ├── tax-document.ts  # Tax documents
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Tax documents (1099, W9)
+    │   │   │   │   │   │   ├── tax-exemption.ts  # ⚠️ MISSING - Tax exemptions
     │   │   │   │   │   │   ├── tax-form.ts  # Tax form types (1099, W9)
     │   │   │   │   │   │   │   # TaxForm, TaxFormType
     │   │   │   │   │   │   │   # Tax form entity
     │   │   │   │   │   │   ├── tax-profile.ts  # Tax profiles
+    │   │   │   │   │   │   ├── tax-rate.ts  # ⚠️ MISSING - Tax rates
     │   │   │   │   │   │   ├── tax-withholding.ts  # Tax withholdings
     │   │   │   │   │   │   ├── tax.ts  # Tax calculation types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Tax records
     │   │   │   │   │   │   ├── transaction-event.ts  # Transaction events
+    │   │   │   │   │   │   ├── transaction-fee.ts  # ⚠️ MISSING - Transaction fees
     │   │   │   │   │   │   ├── transaction.ts  # Transaction entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS
+    │   │   │   │   │   │   ├── transfer.ts  # ⚠️ MISSING - Transfers
+    │   │   │   │   │   │   ├── verification.ts  # ⚠️ MISSING - Financial verification
     │   │   │   │   │   │   ├── wallet.ts  # Digital wallet types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── withdrawal-limit.ts  # Withdrawal limit types
     │   │   │   │   │   │   │   # WithdrawalLimit, LimitType
     │   │   │   │   │   │   └── withdrawal.ts  # Withdrawal processing
+    │   │   │   │   │   │       # ⚠️ MISSING - Withdrawals
     │   │   │   │   │   ├── jobs/  # Jobs domain types
     │   │   │   │   │   │   # Jobs domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Jobs domain types (MANY MISSING)
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── ai-optimization.ts  # AI optimizations entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - AI optimizations
     │   │   │   │   │   │   ├── ai-suggest.ts  # AISuggestion, AIOptimization
     │   │   │   │   │   │   ├── ai-suggestion.ts  # AI job suggestions entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - AI suggestions
     │   │   │   │   │   │   ├── analytics.ts  # Job analytics types
     │   │   │   │   │   │   │   # Job analytics
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job analytics
+    │   │   │   │   │   │   ├── applicant.ts  # ⚠️ MISSING - Job applicants
     │   │   │   │   │   │   ├── application.ts  # Job application types
     │   │   │   │   │   │   ├── archive.ts  # Archived job types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job archives
     │   │   │   │   │   │   ├── attachment.ts  # Job attachment types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job attachments
     │   │   │   │   │   │   ├── boost.ts  # Job boosting types
     │   │   │   │   │   │   │   # Job boost/promotion
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job boosts
+    │   │   │   │   │   │   ├── budget-control.ts  # ⚠️ MISSING - Budget controls
     │   │   │   │   │   │   ├── budget.ts  # Budget control types
     │   │   │   │   │   │   │   # Job budget management
     │   │   │   │   │   │   ├── bulk-operation.ts  # Bulk operation types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Bulk operations
     │   │   │   │   │   │   ├── bulk-ops.ts  # Bulk operations
     │   │   │   │   │   │   │   # BulkOperation, BulkJobAction
     │   │   │   │   │   │   ├── category-taxonomy.ts  # Category hierarchy
     │   │   │   │   │   │   ├── category.ts  # Job category types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job categories
     │   │   │   │   │   │   ├── client-preference.ts  # Client preferences
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Client preferences
     │   │   │   │   │   │   ├── collaboration.ts  # Job collaboration
     │   │   │   │   │   │   ├── comparison.ts  # Job comparisons
     │   │   │   │   │   │   ├── compliance.ts  # Job compliance
     │   │   │   │   │   │   ├── contract-transition.ts  # Job to contract types
     │   │   │   │   │   │   │   # ContractTransition, TransitionStatus
     │   │   │   │   │   │   │   # Job to contract transition entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job to contract transitions
     │   │   │   │   │   │   ├── custom-field.ts  # Custom field types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Custom fields
     │   │   │   │   │   │   ├── custom-fields.ts  # CustomField, FieldType
     │   │   │   │   │   │   ├── dispute.ts  # Job disputes
     │   │   │   │   │   │   ├── draft.ts  # Job drafts
     │   │   │   │   │   │   ├── duplicate-cluster.ts  # Duplicate cluster entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Duplicate clusters
     │   │   │   │   │   │   ├── duplicate-key.ts  # Duplicate detection entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Duplicate detection keys
     │   │   │   │   │   │   ├── duplicate-match.ts  # Duplicate match entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Duplicate matches
     │   │   │   │   │   │   ├── duplicate.ts  # Duplicate detection types
     │   │   │   │   │   │   ├── eligibility.ts  # Eligibility types
     │   │   │   │   │   │   │   # JobEligibility, EligibilityRules
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Eligibility rules
     │   │   │   │   │   │   ├── esg.ts  # ESG attribute types
     │   │   │   │   │   │   │   # ESGAttributes, SustainabilityScore
+    │   │   │   │   │   │   │   # ⚠️ MISSING - ESG attributes
     │   │   │   │   │   │   ├── event-log.ts  # Job event logs
     │   │   │   │   │   │   ├── expiration.ts  # Job expiration types
     │   │   │   │   │   │   ├── expiry.ts  # Job expiration handling
     │   │   │   │   │   │   ├── external-posting.ts  # External postings
     │   │   │   │   │   │   ├── favorite.ts  # Favorite jobs
     │   │   │   │   │   │   ├── feature.ts  # Featured jobs
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job features
     │   │   │   │   │   │   ├── feedback.ts  # Client feedback on applicants
     │   │   │   │   │   │   ├── flag.ts  # Job flags
     │   │   │   │   │   │   ├── fraud-signal.ts  # Fraud detection signal types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Fraud signals
     │   │   │   │   │   │   ├── fraud.ts  # Fraud signal types
     │   │   │   │   │   │   │   # FraudSignal, FraudScore
     │   │   │   │   │   │   ├── geo.ts  # GeoLocation, GeoFencing
     │   │   │   │   │   │   ├── health-checkpoint.ts  # Health checkpoint types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Health checkpoints
     │   │   │   │   │   │   ├── health.ts  # HealthCheckpoint, HealthStatus
     │   │   │   │   │   │   ├── hiring-option.ts  # Hiring option types
     │   │   │   │   │   │   │   # Multi-hire, repost options entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Hiring options
     │   │   │   │   │   │   ├── hiring-options.ts  # HiringOptions, MultiHire, Repost
     │   │   │   │   │   │   ├── history.ts  # Job history
     │   │   │   │   │   │   ├── inclusivity-flag.ts  # Inclusivity features entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Inclusivity flags
     │   │   │   │   │   │   ├── inclusivity.ts  # Inclusivity flag types
     │   │   │   │   │   │   │   # InclusivityFlags, AccessibilityFeatures
     │   │   │   │   │   │   ├── index.ts  # Barrel export for jobs domain
     │   │   │   │   │   │   ├── invitation.ts  # Freelancer invitation types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Freelancer invitations
     │   │   │   │   │   │   ├── invite.ts  # Freelancer invite types
     │   │   │   │   │   │   ├── job-alert.ts  # Job alerts
     │   │   │   │   │   │   ├── job-draft.ts  # Job draft types
@@ -26039,69 +26248,93 @@ fe/
     │   │   │   │   │   │   ├── job-performance.ts  # Performance metrics
     │   │   │   │   │   │   ├── job-post.ts  # Job posting types
     │   │   │   │   │   │   ├── job-preference.ts  # Job preferences
+    │   │   │   │   │   │   ├── job-skill.ts  # ⚠️ MISSING - Job skills
     │   │   │   │   │   │   ├── job-stat.ts  # Job statistics
     │   │   │   │   │   │   ├── job.ts  # Job entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
     │   │   │   │   │   │   ├── lifecycle.ts  # JobLifecycle, LifecycleStage
     │   │   │   │   │   │   ├── localization.ts  # Multi-language localization types
     │   │   │   │   │   │   │   # JobLocalization, Translation
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Multi-language support
     │   │   │   │   │   │   ├── match.ts  # Job-freelancer matching
     │   │   │   │   │   │   ├── milestone.ts  # Job milestones
+    │   │   │   │   │   │   ├── moderation-state.ts  # ⚠️ MISSING - Moderation states
     │   │   │   │   │   │   ├── moderation.ts  # Job moderation types
     │   │   │   │   │   │   │   # JobModeration, ModerationState
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job moderation
     │   │   │   │   │   │   ├── notification.ts  # Job notification types
     │   │   │   │   │   │   ├── offer.ts  # Job offer types
     │   │   │   │   │   │   ├── package.ts  # Job packages
     │   │   │   │   │   │   ├── payment-schedule.ts  # Payment terms types
+    │   │   │   │   │   │   ├── performance-metric.ts  # ⚠️ MISSING - Performance metrics
     │   │   │   │   │   │   ├── pipeline.ts  # Job pipeline
     │   │   │   │   │   │   ├── posting-package.ts  # Posting package types
     │   │   │   │   │   │   ├── preference.ts  # Client preference types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job preferences
     │   │   │   │   │   │   ├── promotion.ts  # Job promotion types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job promotions
+    │   │   │   │   │   │   ├── quality-score.ts  # ⚠️ MISSING - Quality scores
     │   │   │   │   │   │   ├── question.ts  # Screening question types
     │   │   │   │   │   │   ├── recommendation.ts  # AI suggestion types
     │   │   │   │   │   │   │   # Job recommendations
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job recommendations
     │   │   │   │   │   │   ├── recycling.ts  # Job recycling
     │   │   │   │   │   │   ├── referral.ts  # Job referrals
     │   │   │   │   │   │   ├── report.ts  # Job reports
     │   │   │   │   │   │   ├── repost.ts  # Job reposting
     │   │   │   │   │   │   ├── requirement.ts  # Job requirement types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job requirements
     │   │   │   │   │   │   ├── response-time.ts  # Response time tracking
     │   │   │   │   │   │   ├── saved-search.ts  # Saved job searches
     │   │   │   │   │   │   ├── screening-answer.ts  # Screening answers
     │   │   │   │   │   │   ├── screening-question.ts  # Screening questions
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Screening questions
     │   │   │   │   │   │   ├── screening.ts  # Screening types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Screening configuration
     │   │   │   │   │   │   ├── screenshot.ts  # Job screenshots
     │   │   │   │   │   │   ├── search-index.ts  # Search indexing
     │   │   │   │   │   │   ├── share.ts  # Job sharing
     │   │   │   │   │   │   ├── sharing.ts  # Job share link types
     │   │   │   │   │   │   │   # ShareLink, ShareAnalytics
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Share links
     │   │   │   │   │   │   ├── shortlist.ts  # Job shortlists
     │   │   │   │   │   │   ├── skill-requirement.ts  # Skill requirements
     │   │   │   │   │   │   ├── skill.ts  # Required skill types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Skills taxonomy
     │   │   │   │   │   │   ├── snapshot.ts  # Job version snapshots
     │   │   │   │   │   │   ├── sourcing.ts  # Sourcing types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Sourcing configuration
     │   │   │   │   │   │   ├── statistics.ts  # Job statistics
     │   │   │   │   │   │   ├── stats.ts  # Job stats types
     │   │   │   │   │   │   ├── status-history.ts  # Status history
     │   │   │   │   │   │   ├── subcategory.ts  # Job subcategory types
     │   │   │   │   │   │   ├── subscription.ts  # Job subscriptions
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job subscriptions
     │   │   │   │   │   │   ├── tag.ts  # Job tags
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job tags
     │   │   │   │   │   │   ├── template-version.ts  # Template versions
     │   │   │   │   │   │   ├── template.ts  # Job template types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job templates
     │   │   │   │   │   │   ├── translation.ts  # Job translations
+    │   │   │   │   │   │   ├── upsell-suggestion.ts  # ⚠️ MISSING - Upsell suggestions
     │   │   │   │   │   │   ├── upsell.ts  # Upsell suggestion types
     │   │   │   │   │   │   │   # UpsellSuggestion, UpsellType
     │   │   │   │   │   │   ├── version.ts  # Job versions
     │   │   │   │   │   │   ├── versioning.ts  # Job version history types
     │   │   │   │   │   │   ├── view.ts  # Job view tracking types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Job views
     │   │   │   │   │   │   ├── visibility.ts  # Job visibility setting types
     │   │   │   │   │   │   │   # Job visibility controls
     │   │   │   │   │   │   │   # JobVisibility, VisibilityRules
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Visibility settings
     │   │   │   │   │   │   ├── watch.ts  # Job watchers
     │   │   │   │   │   │   ├── webhook.ts  # Webhook types
     │   │   │   │   │   │   │   # WebhookSubscription, WebhookEvent
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Webhooks
     │   │   │   │   │   │   └── workspace.ts  # Job workspace
     │   │   │   │   │   ├── proposals/  # Proposals domain types
     │   │   │   │   │   │   # Proposals domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Proposals domain types (MANY MISSING)
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── ai-assist.ts  # AI suggestions
     │   │   │   │   │   │   │   # AIAssist, AISuggestion, AIOptimization
@@ -26109,67 +26342,86 @@ fe/
     │   │   │   │   │   │   ├── ai-suggestion.ts  # AI suggestions
     │   │   │   │   │   │   ├── analytics.ts  # Proposal analytics types
     │   │   │   │   │   │   ├── anomaly.ts  # Bid anomaly detection
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Bid anomaly detection
     │   │   │   │   │   │   ├── archive.ts  # Archive tracking
     │   │   │   │   │   │   │   # ProposalArchive, ArchiveReason
     │   │   │   │   │   │   ├── archived.ts  # Archived proposal types
     │   │   │   │   │   │   ├── attachment.ts  # Proposal attachment types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal attachments
     │   │   │   │   │   │   ├── auction.ts  # Auction mechanics
     │   │   │   │   │   │   │   # Auction, BidHistory
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Auctions
     │   │   │   │   │   │   ├── audit.ts  # Proposal audit types
     │   │   │   │   │   │   ├── bid-anomaly.ts  # Bid anomaly detection entity
     │   │   │   │   │   │   ├── bid-history.ts  # Bid history
     │   │   │   │   │   │   ├── bid-notification.ts  # Bid notifications
     │   │   │   │   │   │   │   # BidNotification, NotificationPreference
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Bid notifications
     │   │   │   │   │   │   ├── bid-strategy.ts  # Auto-bidding
     │   │   │   │   │   │   │   # BidStrategy, StrategyType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Bid strategies
     │   │   │   │   │   │   ├── bid.ts  # Bid entity types
     │   │   │   │   │   │   │   # Proposal bids
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Bids
     │   │   │   │   │   │   ├── boost.ts  # Proposal boost types
     │   │   │   │   │   │   │   # ProposalBoost, BoostType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal boosts
     │   │   │   │   │   │   ├── collaboration.ts  # Team proposals
     │   │   │   │   │   │   │   # TeamProposal, TeamMember
     │   │   │   │   │   │   ├── comparison.ts  # Comparison types
     │   │   │   │   │   │   │   # Proposal comparison
     │   │   │   │   │   │   ├── compliance.ts  # Compliance checks
     │   │   │   │   │   │   │   # ProposalCompliance, ComplianceCheck
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance checks
     │   │   │   │   │   │   ├── connect-refund.ts  # Connect refunds
     │   │   │   │   │   │   │   # ConnectRefund, RefundReason
     │   │   │   │   │   │   │   # Connect refund entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect refunds
     │   │   │   │   │   │   ├── connect.ts  # Connects usage
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Connects usage
     │   │   │   │   │   │   ├── context.ts  # Context enrichment
     │   │   │   │   │   │   │   # ProposalContext, ContextData
     │   │   │   │   │   │   ├── contract-gen.ts  # Contract generation types
     │   │   │   │   │   │   ├── conversation-tracking.ts  # Proposal messaging tracking
     │   │   │   │   │   │   ├── conversation.ts  # Proposal conversations
     │   │   │   │   │   │   │   # ProposalConversation, ConversationThread
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal conversations
     │   │   │   │   │   │   ├── cover-letter-template.ts  # Cover letter templates
     │   │   │   │   │   │   ├── cover-letter.ts  # Cover letter types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Cover letters
     │   │   │   │   │   │   ├── draft.ts  # Proposal drafts
     │   │   │   │   │   │   ├── eligibility.ts  # Eligibility types
     │   │   │   │   │   │   ├── engagement.ts  # Engagement tracking
     │   │   │   │   │   │   │   # ProposalEngagement, InterestSignal, FollowUp
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Engagement tracking
     │   │   │   │   │   │   ├── expiration.ts  # Expiration tracking
     │   │   │   │   │   │   │   # ProposalExpiration, ExpiryRules
     │   │   │   │   │   │   ├── favorite.ts  # Favorite types
     │   │   │   │   │   │   ├── feedback.ts  # Proposal feedback types
     │   │   │   │   │   │   │   # Client feedback on proposals
     │   │   │   │   │   │   │   # ProposalFeedback, FeedbackType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal feedback
     │   │   │   │   │   │   ├── flag.ts  # Flagging system
     │   │   │   │   │   │   │   # ProposalFlag, FlagReason
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Flagged proposals
     │   │   │   │   │   │   ├── follow-up.ts  # Follow-up types
     │   │   │   │   │   │   ├── history.ts  # Proposal history
     │   │   │   │   │   │   ├── index.ts  # Barrel export for proposals domain
     │   │   │   │   │   │   ├── interview.ts  # Interview types
     │   │   │   │   │   │   │   # Interview scheduling from proposals
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Interviews
     │   │   │   │   │   │   ├── invitation.ts  # Direct invitations
     │   │   │   │   │   │   ├── invite.ts  # Invitation, InviteStatus
     │   │   │   │   │   │   ├── milestone-proposal.ts  # Milestone-based proposal types
     │   │   │   │   │   │   ├── milestone.ts  # Proposal milestone types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal milestones
     │   │   │   │   │   │   ├── negotiation.ts  # Negotiation types
     │   │   │   │   │   │   │   # Proposal negotiation
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Negotiations
     │   │   │   │   │   │   ├── notification.ts  # Proposal notification
     │   │   │   │   │   │   ├── offer.ts  # Offer types
     │   │   │   │   │   │   ├── performance.ts  # Analytics
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Performance metrics
     │   │   │   │   │   │   ├── pipeline-stage.ts  # Pipeline stages
     │   │   │   │   │   │   ├── pipeline.ts  # Pipeline stages
     │   │   │   │   │   │   │   # ProposalPipeline, PipelineStage
@@ -26177,6 +26429,7 @@ fe/
     │   │   │   │   │   │   │   # Portfolio attachments
     │   │   │   │   │   │   ├── portfolio-link.ts  # PortfolioLink, SelectionCriteria
     │   │   │   │   │   │   ├── portfolio.ts  # Portfolio showcase
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Portfolio items
     │   │   │   │   │   │   ├── proposal-ai-optimization.ts  # AI optimizations entity
     │   │   │   │   │   │   ├── proposal-ai-suggestion.ts  # AI suggestions entity
     │   │   │   │   │   │   ├── proposal-context.ts  # Contextual data entity
@@ -26192,12 +26445,15 @@ fe/
     │   │   │   │   │   │   ├── proposal-urgency.ts  # Urgency tracking entity
     │   │   │   │   │   │   ├── proposal-withdrawal.ts  # Withdrawal entity
     │   │   │   │   │   │   ├── proposal.ts  # Proposal entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
     │   │   │   │   │   │   ├── question-answer.ts  # Q&A responses
     │   │   │   │   │   │   │   # Screening question answers
     │   │   │   │   │   │   │   # QuestionAnswer, AnswerValidation
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Q&A
     │   │   │   │   │   │   ├── questions-answers.ts  # Q&A types
     │   │   │   │   │   │   ├── quote.ts  # Quote types
     │   │   │   │   │   │   ├── rate-card.ts  # Rate card types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Rate cards
     │   │   │   │   │   │   ├── recommendation.ts  # AI recommendation
     │   │   │   │   │   │   │   # Proposal recommendations
     │   │   │   │   │   │   │   # ProposalRecommendation, RecommendationType
@@ -26212,16 +26468,20 @@ fe/
     │   │   │   │   │   │   ├── shortlist.ts  # Shortlist types
     │   │   │   │   │   │   │   # Client shortlisting
     │   │   │   │   │   │   │   # Shortlist, ShortlistReason
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Shortlisted proposals
     │   │   │   │   │   │   ├── similarity.ts  # Deduplication types
     │   │   │   │   │   │   │   # ProposalSimilarity, Fingerprint, Clustering
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Similarity detection
     │   │   │   │   │   │   ├── skill-match.ts  # Skill matching
     │   │   │   │   │   │   │   # SkillMatch, MatchScore
     │   │   │   │   │   │   ├── spam-detection.ts  # Spam detection
     │   │   │   │   │   │   │   # SpamDetection, SpamIndicator
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Spam detection
     │   │   │   │   │   │   ├── statistics.ts  # Proposal statistics
     │   │   │   │   │   │   ├── tag.ts  # Proposal tags
     │   │   │   │   │   │   ├── team-proposal.ts  # Team collaboration entity
     │   │   │   │   │   │   ├── template.ts  # Proposal template types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal templates
     │   │   │   │   │   │   ├── urgency.ts  # Urgency tracking
     │   │   │   │   │   │   │   # ProposalUrgency, UrgencyLevel
     │   │   │   │   │   │   ├── version.ts  # Proposal versioning
@@ -26233,45 +26493,63 @@ fe/
     │   │   │   │   │   │   └── withdrawn.ts  # Withdrawn proposal types
     │   │   │   │   │   ├── reviews/  # Reviews domain types
     │   │   │   │   │   │   # Reviews domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Reviews domain types (COMPREHENSIVE MISSING)
     │   │   │   │   │   │   ├── appeal-evidence.ts  # Appeal evidence
     │   │   │   │   │   │   ├── appeal.ts  # Review appeal types
     │   │   │   │   │   │   │   # Review appeals
     │   │   │   │   │   │   │   # ReviewAppeal, AppealStatus
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review appeals
     │   │   │   │   │   │   ├── audit-trail.ts  # Audit trail
     │   │   │   │   │   │   │   # AuditTrail, AuditEntry
+    │   │   │   │   │   │   ├── badge-assignment.ts  # ⚠️ MISSING - Badge assignments
+    │   │   │   │   │   │   ├── badge-criteria.ts  # ⚠️ MISSING - Badge criteria
     │   │   │   │   │   │   ├── badge-eligibility.ts  # Badge eligibility checks
     │   │   │   │   │   │   │   # Badge eligibility tracking
     │   │   │   │   │   │   ├── badge.ts  # Badge entity types
     │   │   │   │   │   │   │   # Achievement badges
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review badges
     │   │   │   │   │   │   ├── compliance-action.ts  # Compliance actions
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance actions
     │   │   │   │   │   │   ├── compliance.ts  # Compliance tracking
     │   │   │   │   │   │   │   # Review compliance
     │   │   │   │   │   │   │   # ReviewCompliance, ComplianceAction
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance tracking
     │   │   │   │   │   │   ├── criteria-version.ts  # Criteria versioning
     │   │   │   │   │   │   ├── criteria.ts  # Rating criteria types
     │   │   │   │   │   │   ├── double-blind-window.ts  # Double-blind windows
     │   │   │   │   │   │   │   # Double-blind review window
     │   │   │   │   │   │   ├── double-blind.ts  # Double-blind review types
     │   │   │   │   │   │   │   # DoubleBlindWindow, BlindStatus
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Double-blind reviews
     │   │   │   │   │   │   ├── draft.ts  # Review draft types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review drafts
     │   │   │   │   │   │   ├── eligibility-policy.ts  # Eligibility policies
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Eligibility policies
     │   │   │   │   │   │   ├── eligibility.ts  # Review eligibility types
     │   │   │   │   │   │   │   # ReviewEligibility, EligibilityPolicy
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review eligibility
     │   │   │   │   │   │   ├── evidence.ts  # Appeal evidence
     │   │   │   │   │   │   │   # Review evidence attachments
     │   │   │   │   │   │   │   # Evidence, EvidenceType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review evidence
     │   │   │   │   │   │   ├── featured-review.ts  # Featured review entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Featured reviews
     │   │   │   │   │   │   ├── featured.ts  # Featured review types
     │   │   │   │   │   │   │   # FeaturedReview, FeaturedCriteria
     │   │   │   │   │   │   ├── feedback.ts  # Private feedback types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Private feedback
     │   │   │   │   │   │   ├── flag.ts  # Review flag types
     │   │   │   │   │   │   │   # Review flagging
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review flags
     │   │   │   │   │   │   ├── helpful-vote.ts  # Helpful vote types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Helpful votes
     │   │   │   │   │   │   ├── index.ts  # Barrel export for reviews domain
     │   │   │   │   │   │   ├── moderation-history.ts  # Moderation history
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Moderation history
     │   │   │   │   │   │   ├── moderation.ts  # Review moderation types
     │   │   │   │   │   │   │   # Review moderation
     │   │   │   │   │   │   │   # ReviewModeration, ModerationAction
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Moderation
     │   │   │   │   │   │   ├── private-feedback.ts  # Private feedback
     │   │   │   │   │   │   │   # Private client-only feedback
     │   │   │   │   │   │   │   # PrivateFeedback, FeedbackChannel
@@ -26279,19 +26557,26 @@ fe/
     │   │   │   │   │   │   ├── rating-aggregate.ts  # Rating aggregates
     │   │   │   │   │   │   ├── rating-criteria.ts  # Rating dimensions
     │   │   │   │   │   │   │   # RatingCriteria, CriteriaWeight
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Rating criteria
     │   │   │   │   │   │   ├── rating-dimension.ts  # Multi-dimensional ratings
     │   │   │   │   │   │   ├── rating.ts  # Rating entity types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Ratings
     │   │   │   │   │   │   ├── redaction-policy.ts  # Redaction policies
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Redaction policies
     │   │   │   │   │   │   ├── redaction.ts  # PII redaction
     │   │   │   │   │   │   │   # Redaction, RedactionPolicy
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Redactions
     │   │   │   │   │   │   ├── reminder.ts  # Review reminder types
     │   │   │   │   │   │   │   # ReviewReminder, ReminderType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review reminders
     │   │   │   │   │   │   ├── reputation-history.ts  # Reputation history
     │   │   │   │   │   │   ├── reputation-rule.ts  # Top-rated rules
     │   │   │   │   │   │   ├── reputation.ts  # Reputation score types
     │   │   │   │   │   │   │   # Reputation scoring
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Reputation scores
     │   │   │   │   │   │   ├── response.ts  # Review response types
     │   │   │   │   │   │   │   # Freelancer responses to reviews
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review responses
     │   │   │   │   │   │   ├── review-appeal.ts  # Appeal entity
     │   │   │   │   │   │   ├── review-badge.ts  # Badge entity
     │   │   │   │   │   │   ├── review-blind.ts  # Blind review entity
@@ -26317,64 +26602,81 @@ fe/
     │   │   │   │   │   │   ├── review-stats.ts  # Statistics entity
     │   │   │   │   │   │   ├── review-window.ts  # Window entity
     │   │   │   │   │   │   ├── review.ts  # Review entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
     │   │   │   │   │   │   ├── statistics.ts  # Review statistics
     │   │   │   │   │   │   ├── stats.ts  # Review statistics
     │   │   │   │   │   │   │   # ReviewStats, StatsAggregation
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Review statistics
     │   │   │   │   │   │   ├── user-badge.ts  # User badge assignment types
     │   │   │   │   │   │   │   # UserBadge, BadgeEligibility
     │   │   │   │   │   │   └── window.ts  # Review window management
     │   │   │   │   │   ├── search/  # Search domain types
     │   │   │   │   │   │   # Search domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Search domain types (MANY MISSING)
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── aggregation.ts  # Search aggregation types
     │   │   │   │   │   │   ├── alert.ts  # Search alert types
     │   │   │   │   │   │   │   # Search alerts
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search alerts
     │   │   │   │   │   │   ├── analytics-aggregation.ts  # Analytics aggregation entity
     │   │   │   │   │   │   ├── analytics-event.ts  # Analytics events
     │   │   │   │   │   │   ├── analytics.ts  # Search analytics types
     │   │   │   │   │   │   │   # Search analytics
     │   │   │   │   │   │   │   # SearchAnalytics, QueryMetrics
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search analytics
     │   │   │   │   │   │   ├── auto-complete.ts  # Auto-complete types
     │   │   │   │   │   │   ├── backfill-job.ts  # Backfill jobs
     │   │   │   │   │   │   ├── backfill.ts  # Backfill job types
     │   │   │   │   │   │   ├── boost-rule.ts  # Boost rules
     │   │   │   │   │   │   ├── boost.ts  # Search boost types
     │   │   │   │   │   │   │   # Search result boosting
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search boosts
+    │   │   │   │   │   │   ├── cache.ts  # ⚠️ MISSING - Search cache
+    │   │   │   │   │   │   ├── cluster-membership.ts  # ⚠️ MISSING - Cluster memberships
     │   │   │   │   │   │   ├── cluster.ts  # Search clusters
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Document clusters
     │   │   │   │   │   │   ├── compliance-log.ts  # Compliance logs
     │   │   │   │   │   │   ├── compliance-pii-masking.ts  # PII masking entity
     │   │   │   │   │   │   ├── compliance.ts  # Compliance types
     │   │   │   │   │   │   ├── custom-dictionary.ts  # Custom dictionaries
     │   │   │   │   │   │   ├── embedding.ts  # Vector embeddings
     │   │   │   │   │   │   ├── experiment.ts  # Search experiments
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search experiments
     │   │   │   │   │   │   ├── explainability.ts  # Explainability types
     │   │   │   │   │   │   ├── facet-config.ts  # Facet configurations
     │   │   │   │   │   │   ├── facet-value.ts  # Facet value entity
     │   │   │   │   │   │   ├── facet.ts  # Search facet types
     │   │   │   │   │   │   │   # Search facets
     │   │   │   │   │   │   │   # Facet, FacetBanding
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search facets
     │   │   │   │   │   │   ├── feed-interaction.ts  # Feed interaction entity
     │   │   │   │   │   │   ├── feed.ts  # Feed types
     │   │   │   │   │   │   ├── feedback.ts  # Search feedback
     │   │   │   │   │   │   ├── filter.ts  # Search filter types
     │   │   │   │   │   │   │   # Search filters
     │   │   │   │   │   │   │   # SearchFilter, FilterCriteria
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search filters
     │   │   │   │   │   │   ├── geo-config.ts  # Geo configurations
     │   │   │   │   │   │   ├── geo-location.ts  # Geo locations
     │   │   │   │   │   │   ├── geo.ts  # Geo search types
     │   │   │   │   │   │   ├── highlight.ts  # Search highlight types
     │   │   │   │   │   │   ├── hygiene-duplicate.ts  # Duplicate detection entity
     │   │   │   │   │   │   ├── hygiene-job.ts  # Hygiene jobs
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Index hygiene jobs
+    │   │   │   │   │   │   ├── hygiene-task.ts  # ⚠️ MISSING - Hygiene tasks
     │   │   │   │   │   │   ├── hygiene.ts  # Data hygiene types
     │   │   │   │   │   │   │   # Search index hygiene
     │   │   │   │   │   │   │   # HygieneTask, Deduplication
+    │   │   │   │   │   │   ├── index-build.ts  # ⚠️ MISSING - Index builds
     │   │   │   │   │   │   ├── index-config.ts  # Index configurations
     │   │   │   │   │   │   ├── index-lifecycle-execution.ts  # Index lifecycle execution entity
     │   │   │   │   │   │   ├── index-lifecycle.ts  # Index lifecycle types
     │   │   │   │   │   │   ├── index-mapping.ts  # Index mappings
+    │   │   │   │   │   │   ├── index-segment.ts  # ⚠️ MISSING - Index segments
     │   │   │   │   │   │   ├── index-shard.ts  # Index shards
     │   │   │   │   │   │   ├── index.ts  # Barrel export for search domain
     │   │   │   │   │   │   │   # SearchIndex, IndexConfig
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search indexes
     │   │   │   │   │   │   ├── ingest-pipeline.ts  # Ingest pipelines
     │   │   │   │   │   │   ├── language-config.ts  # Language configs
     │   │   │   │   │   │   ├── ltr-feature.ts  # LTR feature entity
@@ -26382,11 +26684,13 @@ fe/
     │   │   │   │   │   │   ├── ltr.ts  # Learning to rank types
     │   │   │   │   │   │   ├── matching.ts  # Matching types
     │   │   │   │   │   │   ├── ml-model.ts  # ML models
+    │   │   │   │   │   │   │   # ⚠️ MISSING - ML models
     │   │   │   │   │   │   ├── multi-language-detection.ts  # Language detection entity
     │   │   │   │   │   │   ├── multi-language.ts  # Multi-language types
     │   │   │   │   │   │   ├── normalization-rule.ts  # Normalization rules
     │   │   │   │   │   │   ├── performance-alert.ts  # Performance alerts
     │   │   │   │   │   │   │   # Performance alert entity
+    │   │   │   │   │   │   ├── performance-metric.ts  # ⚠️ MISSING - Performance metrics
     │   │   │   │   │   │   ├── performance.ts  # Performance metrics
     │   │   │   │   │   │   ├── personalization.ts  # Personalized search types
     │   │   │   │   │   │   │   # Personalized search
@@ -26397,31 +26701,37 @@ fe/
     │   │   │   │   │   │   ├── promotion.ts  # Promotion types
     │   │   │   │   │   │   ├── query-log.ts  # Query logs
     │   │   │   │   │   │   │   # Search query logging
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Query logs
     │   │   │   │   │   │   ├── query-rewrite-application.ts  # Query rewrite application entity
     │   │   │   │   │   │   ├── query-rewrite.ts  # Query rewrite types
     │   │   │   │   │   │   │   # Query rewriting rules
     │   │   │   │   │   │   ├── query.ts  # Search query types
     │   │   │   │   │   │   │   # Search query structure
     │   │   │   │   │   │   │   # SearchQuery, QueryParser
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search queries
     │   │   │   │   │   │   ├── ranking-profile.ts  # Ranking profiles
     │   │   │   │   │   │   ├── ranking.ts  # Result ranking
     │   │   │   │   │   │   │   # Search ranking
     │   │   │   │   │   │   │   # RankingAlgorithm, RankingFactor
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Ranking configuration
     │   │   │   │   │   │   ├── recommendation-interaction.ts  # Recommendation interaction entity
     │   │   │   │   │   │   ├── recommendation-model.ts  # Recommendation model entity
     │   │   │   │   │   │   ├── recommendation.ts  # Search-based recommendation types
     │   │   │   │   │   │   ├── relevance-tuning.ts  # Relevance tuning
     │   │   │   │   │   │   ├── result.ts  # Search result types
     │   │   │   │   │   │   │   # Search result structure
+    │   │   │   │   │   │   ├── rewrite-rule.ts  # ⚠️ MISSING - Query rewrites
     │   │   │   │   │   │   ├── safety-filter-application.ts  # Safety filter application entity
     │   │   │   │   │   │   ├── safety-filter.ts  # Safety filter types
     │   │   │   │   │   │   ├── safety.ts  # SafetyFilter, ContentModeration
     │   │   │   │   │   │   ├── saved-query.ts  # Saved searches
     │   │   │   │   │   │   ├── saved-search-execution.ts  # Saved search execution entity
     │   │   │   │   │   │   ├── saved-search.ts  # Saved search types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Saved searches
     │   │   │   │   │   │   ├── saved_query.ts  # Saved query types
     │   │   │   │   │   │   ├── schema-version.ts  # Schema versions
     │   │   │   │   │   │   ├── schema.ts  # Search schemas
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search schemas
     │   │   │   │   │   │   ├── search-index-job.ts  # Search index job entity
     │   │   │   │   │   │   ├── search-index-user.ts  # Search index user entity
     │   │   │   │   │   │   ├── search-index.ts  # Search index types
@@ -26431,43 +26741,67 @@ fe/
     │   │   │   │   │   │   ├── segment.ts  # Index segments
     │   │   │   │   │   │   ├── similarity.ts  # Similarity types
     │   │   │   │   │   │   ├── snapshot.ts  # Index snapshots
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Index snapshots
     │   │   │   │   │   │   ├── sort.ts  # Sort option types
     │   │   │   │   │   │   ├── spell-check.ts  # Spell check types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Spell checking
     │   │   │   │   │   │   ├── speller-correction.ts  # Spelling correction entity
     │   │   │   │   │   │   ├── speller-suggestion.ts  # Spelling suggestion entity
     │   │   │   │   │   │   ├── speller.ts  # Speller types
     │   │   │   │   │   │   ├── stop-word.ts  # Stop words
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Stop words
     │   │   │   │   │   │   ├── stopword.ts  # Stopword types
     │   │   │   │   │   │   ├── suggestion-tracking.ts  # Suggestion tracking entity
     │   │   │   │   │   │   ├── suggestion.ts  # Search suggestion types
     │   │   │   │   │   │   │   # SearchSuggestion, AutoComplete
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Search suggestions
     │   │   │   │   │   │   ├── synonym.ts  # Synonym types
     │   │   │   │   │   │   │   # Search synonyms
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Synonyms
     │   │   │   │   │   │   ├── taxonomy-synonym.ts  # Taxonomy synonym entity
     │   │   │   │   │   │   ├── taxonomy.ts  # Taxonomy types
     │   │   │   │   │   │   │   # Taxonomy, Category, Synonym
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Taxonomy
     │   │   │   │   │   │   ├── trending.ts  # Trending types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Trending searches
     │   │   │   │   │   │   ├── user-preference-signal.ts  # Preference signal entity
     │   │   │   │   │   │   └── user-preference.ts  # User preference types
+    │   │   │   │   │   │       # ⚠️ MISSING - User preferences
     │   │   │   │   │   ├── storage/  # Storage domain types
     │   │   │   │   │   │   # Storage domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Storage domain types (COMPREHENSIVE MISSING)
     │   │   │   │   │   │   ├── access-control.ts  # Access control
     │   │   │   │   │   │   │   # File access control
     │   │   │   │   │   │   │   # AccessControl, Permission
     │   │   │   │   │   │   ├── access-grant.ts  # Access grants
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Access grants
     │   │   │   │   │   │   ├── access-log.ts  # Access log types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Access logs
     │   │   │   │   │   │   ├── access.ts  # Access control types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Access control
     │   │   │   │   │   │   ├── annotation.ts  # File annotations
+    │   │   │   │   │   │   │   # ⚠️ MISSING - File annotations
     │   │   │   │   │   │   ├── artifact.ts  # Processing artifact types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Processing artifacts
     │   │   │   │   │   │   ├── audit.ts  # Storage audit log types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Storage audit logs
     │   │   │   │   │   │   ├── batch-operation.ts  # Batch operation types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Batch operations
+    │   │   │   │   │   │   ├── blob.ts  # ⚠️ MISSING - Binary blobs
     │   │   │   │   │   │   ├── cdn-config.ts  # CDN configuration
+    │   │   │   │   │   │   │   # ⚠️ MISSING - CDN configuration
     │   │   │   │   │   │   ├── cdn.ts  # CDN configuration types
     │   │   │   │   │   │   ├── checksum.ts  # Checksum types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Checksums
     │   │   │   │   │   │   ├── chunk.ts  # Chunk upload types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Chunk uploads
     │   │   │   │   │   │   ├── collaboration.ts  # File collaboration
+    │   │   │   │   │   │   │   # ⚠️ MISSING - File collaboration
     │   │   │   │   │   │   ├── comment.ts  # File comments
+    │   │   │   │   │   │   │   # ⚠️ MISSING - File comments
     │   │   │   │   │   │   ├── compliance-policy.ts  # Compliance policies
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance policies
+    │   │   │   │   │   │   ├── compliance-result.ts  # ⚠️ MISSING - Compliance results
     │   │   │   │   │   │   ├── compliance.ts  # Compliance tracking types
     │   │   │   │   │   │   ├── compression.ts  # Compression types
     │   │   │   │   │   │   ├── content-type.ts  # Content types
@@ -26475,23 +26809,29 @@ fe/
     │   │   │   │   │   │   │   # Data zone entity
     │   │   │   │   │   │   ├── deduplication.ts  # Deduplication types
     │   │   │   │   │   │   ├── device-sync.ts  # Device sync
+    │   │   │   │   │   │   ├── dlp-match.ts  # ⚠️ MISSING - DLP matches
     │   │   │   │   │   │   ├── download-link.ts  # Download links
     │   │   │   │   │   │   ├── download.ts  # File download types
     │   │   │   │   │   │   │   # Download, DownloadLink
     │   │   │   │   │   │   ├── embedding.ts  # AI embeddings
     │   │   │   │   │   │   ├── encryption-key.ts  # Encryption keys
+    │   │   │   │   │   │   ├── encryption-rotation.ts  # ⚠️ MISSING - Encryption rotation
     │   │   │   │   │   │   ├── encryption.ts  # Encryption types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Encryption
     │   │   │   │   │   │   ├── export.ts  # File exports
     │   │   │   │   │   │   ├── extraction.ts  # Content extraction types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Text extraction
     │   │   │   │   │   │   ├── favorite.ts  # Favorite files
     │   │   │   │   │   │   ├── file-collection.ts  # File collection entity
     │   │   │   │   │   │   ├── file-comment.ts  # File comment entity
     │   │   │   │   │   │   ├── file-encryption.ts  # Encryption entity
+    │   │   │   │   │   │   ├── file-flag.ts  # ⚠️ MISSING - File flags
     │   │   │   │   │   │   ├── file-lifecycle.ts  # Lifecycle policy entity
     │   │   │   │   │   │   ├── file-link.ts  # File links
     │   │   │   │   │   │   │   # Share link entity
     │   │   │   │   │   │   ├── file-lock.ts  # File lock entity
     │   │   │   │   │   │   ├── file-metadata.ts  # FileMetadata, MimeType, FileSize
+    │   │   │   │   │   │   │   # ⚠️ MISSING - File metadata
     │   │   │   │   │   │   ├── file-permission.ts  # File permission entity
     │   │   │   │   │   │   ├── file-share.ts  # File sharing entity
     │   │   │   │   │   │   ├── file-snapshot.ts  # File snapshots
@@ -26499,10 +26839,13 @@ fe/
     │   │   │   │   │   │   ├── file-transfer.ts  # File transfers
     │   │   │   │   │   │   ├── file-version.ts  # File version entity
     │   │   │   │   │   │   ├── file.ts  # File entity types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Files (main entity)
     │   │   │   │   │   │   ├── folder-permission.ts  # Folder permissions
     │   │   │   │   │   │   ├── folder.ts  # Folder entity types
     │   │   │   │   │   │   │   # Folder management
     │   │   │   │   │   │   │   # Folder, FolderStructure
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Folders
+    │   │   │   │   │   │   ├── gc.ts  # ⚠️ MISSING - Garbage collection
     │   │   │   │   │   │   ├── geo-replication.ts  # Geo replication
     │   │   │   │   │   │   ├── import.ts  # File imports
     │   │   │   │   │   │   ├── index.ts  # Barrel export for storage domain
@@ -26512,19 +26855,25 @@ fe/
     │   │   │   │   │   │   ├── job.ts  # Processing jobs
     │   │   │   │   │   │   ├── legal-hold.ts  # Legal hold types
     │   │   │   │   │   │   │   # Legal hold entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Legal holds
     │   │   │   │   │   │   ├── lifecycle-execution.ts  # Lifecycle execution entity
     │   │   │   │   │   │   ├── lifecycle-rule.ts  # Lifecycle rules
     │   │   │   │   │   │   ├── lifecycle.ts  # Lifecycle policy types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Lifecycle policies
     │   │   │   │   │   │   ├── link.ts  # Link types
+    │   │   │   │   │   │   ├── linking-audit.ts  # ⚠️ MISSING - Link audit logs
+    │   │   │   │   │   │   ├── linking.ts  # ⚠️ MISSING - Public links
     │   │   │   │   │   │   ├── lock.ts  # File lock types
     │   │   │   │   │   │   ├── media-metadata.ts  # Media metadata
     │   │   │   │   │   │   ├── media-processing.ts  # Media processing types
     │   │   │   │   │   │   ├── media-transform.ts  # Transform jobs
     │   │   │   │   │   │   │   # Media transformation entity
+    │   │   │   │   │   │   ├── media.ts  # ⚠️ MISSING - Media processing
     │   │   │   │   │   │   ├── metadata-extraction.ts  # Metadata extraction
     │   │   │   │   │   │   ├── metadata.ts  # File metadata types
     │   │   │   │   │   │   ├── mirror.ts  # File mirrors
     │   │   │   │   │   │   ├── multipart-upload.ts  # Multipart upload entity
+    │   │   │   │   │   │   ├── namespace.ts  # ⚠️ MISSING - Namespaces
     │   │   │   │   │   │   ├── notification.ts  # Storage notifications
     │   │   │   │   │   │   ├── ocr-result.ts  # OCR results
     │   │   │   │   │   │   │   # OCR result entity
@@ -26532,17 +26881,22 @@ fe/
     │   │   │   │   │   │   ├── permission-template.ts  # Permission templates
     │   │   │   │   │   │   ├── permission.ts  # Access permissions
     │   │   │   │   │   │   ├── policy-enforcement.ts  # Policy enforcement
+    │   │   │   │   │   │   ├── policy-result.ts  # ⚠️ MISSING - Policy results
     │   │   │   │   │   │   ├── policy.ts  # Storage policy types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Storage policies
     │   │   │   │   │   │   ├── preview.ts  # Preview generation types
     │   │   │   │   │   │   ├── processing-job.ts  # Processing job entity
     │   │   │   │   │   │   ├── public-link.ts  # Public links
     │   │   │   │   │   │   ├── quarantine-log.ts  # Quarantine logs
     │   │   │   │   │   │   ├── quarantine.ts  # Quarantined file types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Quarantine
     │   │   │   │   │   │   ├── quota-override.ts  # Quota overrides
     │   │   │   │   │   │   ├── quota.ts  # Storage quota types
     │   │   │   │   │   │   │   # Storage quota tracking
     │   │   │   │   │   │   │   # StorageQuota, QuotaUsage
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Storage quotas
     │   │   │   │   │   │   ├── recovery-point.ts  # Recovery points
+    │   │   │   │   │   │   ├── reference.ts  # ⚠️ MISSING - File references
     │   │   │   │   │   │   ├── replication-log.ts  # Replication logs
     │   │   │   │   │   │   ├── replication-status.ts  # Replication status entity
     │   │   │   │   │   │   ├── replication.ts  # Replication types
@@ -26550,12 +26904,15 @@ fe/
     │   │   │   │   │   │   ├── retention.ts  # Retention policy types
     │   │   │   │   │   │   ├── scan-queue.ts  # Scan queue entity
     │   │   │   │   │   │   ├── scan-result.ts  # Scan results
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Scan results
     │   │   │   │   │   │   ├── scan.ts  # Virus/malware scan types
     │   │   │   │   │   │   │   # Virus/malware scanning
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Virus scans
     │   │   │   │   │   │   ├── search-index.ts  # File search index types
     │   │   │   │   │   │   ├── share-link.ts  # Share link types
     │   │   │   │   │   │   │   # File sharing links
     │   │   │   │   │   │   ├── share-permission.ts  # Share permissions
+    │   │   │   │   │   │   ├── share.ts  # ⚠️ MISSING - File shares
     │   │   │   │   │   │   ├── sharing.ts  # File sharing types
     │   │   │   │   │   │   ├── snapshot.ts  # Snapshots
     │   │   │   │   │   │   ├── storage-class.ts  # Storage classes
@@ -26578,6 +26935,7 @@ fe/
     │   │   │   │   │   │   ├── upload-session.ts  # Resumable upload session types
     │   │   │   │   │   │   │   # Multi-part upload sessions
     │   │   │   │   │   │   │   # Upload session entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Upload sessions
     │   │   │   │   │   │   ├── upload.ts  # File upload types
     │   │   │   │   │   │   │   # Upload, UploadProgress, UploadStatus
     │   │   │   │   │   │   ├── usage-log.ts  # Usage log entity
@@ -26585,6 +26943,7 @@ fe/
     │   │   │   │   │   │   ├── version.ts  # File version types
     │   │   │   │   │   │   │   # File versioning
     │   │   │   │   │   │   │   # FileVersion, VersionHistory
+    │   │   │   │   │   │   │   # ⚠️ MISSING - File versions
     │   │   │   │   │   │   ├── virus-definition.ts  # Virus definitions
     │   │   │   │   │   │   ├── virus-scan.ts  # Virus scan types
     │   │   │   │   │   │   │   # VirusScan, ScanResult
@@ -26594,61 +26953,78 @@ fe/
     │   │   │   │   │   │   └── webhook.ts  # Storage webhook types
     │   │   │   │   │   ├── subscriptions/  # Subscriptions domain types
     │   │   │   │   │   │   # Subscriptions domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Subscriptions domain types (MANY MISSING)
     │   │   │   │   │   │   ├── addon.ts  # Add-on types
     │   │   │   │   │   │   │   # Subscription add-ons
     │   │   │   │   │   │   │   # Addon, AddonType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Add-ons
     │   │   │   │   │   │   ├── allowance-transaction.ts  # Allowance transactions
     │   │   │   │   │   │   │   # Allowance transaction entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Allowance transactions
     │   │   │   │   │   │   ├── allowance.ts  # Allowance types
     │   │   │   │   │   │   │   # Monthly allowances (connects, bids)
     │   │   │   │   │   │   │   # Allowance, AllowanceTransaction
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Allowances
     │   │   │   │   │   │   ├── analytics.ts  # Subscription analytics types
     │   │   │   │   │   │   ├── billing-cycle.ts  # Billing cycle types
     │   │   │   │   │   │   ├── billing-history.ts  # Billing history types
     │   │   │   │   │   │   │   # BillingHistory, HistoryEntry
     │   │   │   │   │   │   │   # Billing history entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Billing history
     │   │   │   │   │   │   ├── billing-profile.ts  # Billing profile types
     │   │   │   │   │   │   │   # Billing information
     │   │   │   │   │   │   │   # BillingProfile, ProfileDetails
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Billing profiles
     │   │   │   │   │   │   ├── cancellation-reason.ts  # Cancellation reasons
     │   │   │   │   │   │   ├── cancellation.ts  # Cancellation types
     │   │   │   │   │   │   ├── change-request.ts  # Subscription change request types
     │   │   │   │   │   │   ├── connect-balance.ts  # Connects system types
     │   │   │   │   │   │   │   # Connect balance tracking
     │   │   │   │   │   │   │   # Connect balance entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect balances
     │   │   │   │   │   │   ├── connect-package.ts  # Connect packages
     │   │   │   │   │   │   │   # ConnectPackage, PackageType
     │   │   │   │   │   │   │   # Connect package entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect packages
     │   │   │   │   │   │   ├── connect-transaction.ts  # Connect transactions
     │   │   │   │   │   │   │   # Connect usage transactions
     │   │   │   │   │   │   │   # ConnectTransaction, TransactionType
     │   │   │   │   │   │   │   # Connect transaction entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect transactions
     │   │   │   │   │   │   ├── connect.ts  # Connect balance types
     │   │   │   │   │   │   ├── coupon.ts  # Promotional coupons
     │   │   │   │   │   │   ├── credit-application.ts  # Credit applications
     │   │   │   │   │   │   │   # Credit application entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Credit applications
     │   │   │   │   │   │   ├── credit-note.ts  # Credit note types
     │   │   │   │   │   │   │   # CreditNote, CreditApplication
     │   │   │   │   │   │   │   # Credit note entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Credit notes
     │   │   │   │   │   │   ├── credit.ts  # Account credits
     │   │   │   │   │   │   ├── discount.ts  # Discount/coupon types
     │   │   │   │   │   │   │   # Discounts
     │   │   │   │   │   │   ├── dunning-action.ts  # Dunning actions
     │   │   │   │   │   │   │   # Dunning action entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Dunning actions
     │   │   │   │   │   │   ├── dunning-case.ts  # Dunning case entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Dunning cases
     │   │   │   │   │   │   ├── dunning-schedule.ts  # Dunning schedules
     │   │   │   │   │   │   │   # Dunning schedule entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Dunning schedules
     │   │   │   │   │   │   ├── dunning.ts  # Dunning process types
     │   │   │   │   │   │   │   # Failed payment recovery
     │   │   │   │   │   │   │   # DunningCase, DunningAction
     │   │   │   │   │   │   ├── entitlement-grant.ts  # Entitlement grants
     │   │   │   │   │   │   │   # EntitlementGrant, GrantType
     │   │   │   │   │   │   │   # Entitlement grant entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Entitlement grants
     │   │   │   │   │   │   ├── entitlement.ts  # Entitlement types
     │   │   │   │   │   │   │   # Feature entitlements
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Entitlements
     │   │   │   │   │   │   ├── feature-toggle.ts  # Feature toggle types
     │   │   │   │   │   │   │   # FeatureToggle, ToggleRule
     │   │   │   │   │   │   │   # Feature toggle entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Feature toggles
     │   │   │   │   │   │   ├── feature-usage.ts  # Feature usage
     │   │   │   │   │   │   ├── feature.ts  # Feature entitlement types
     │   │   │   │   │   │   ├── grant.ts  # Bonus grants
@@ -26656,17 +27032,21 @@ fe/
     │   │   │   │   │   │   ├── invoice-item.ts  # Line items
     │   │   │   │   │   │   ├── invoice-line-item.ts  # Invoice line items
     │   │   │   │   │   │   │   # Invoice line item entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Invoice line items
     │   │   │   │   │   │   ├── invoice.ts  # Subscription invoice types
     │   │   │   │   │   │   │   # Billing invoices
     │   │   │   │   │   │   │   # Invoice, InvoiceLineItem
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Subscription invoices
     │   │   │   │   │   │   ├── meter.ts  # Usage meters
     │   │   │   │   │   │   ├── payment-attempt.ts  # Payment attempt types
     │   │   │   │   │   │   │   # PaymentAttempt, AttemptStatus
     │   │   │   │   │   │   │   # Payment attempt entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment attempts
     │   │   │   │   │   │   ├── payment-history.ts  # Payment history
     │   │   │   │   │   │   ├── payment-webhook.ts  # Payment webhooks
     │   │   │   │   │   │   │   # PaymentWebhook, WebhookEvent
     │   │   │   │   │   │   │   # Payment webhook entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment webhooks
     │   │   │   │   │   │   ├── payment.ts  # Subscription payment types
     │   │   │   │   │   │   ├── plan-comparison.ts  # Plan comparison
     │   │   │   │   │   │   ├── plan-feature.ts  # Plan features
@@ -26674,46 +27054,61 @@ fe/
     │   │   │   │   │   │   ├── plan-pricing.ts  # Pricing tiers
     │   │   │   │   │   │   │   # PlanPricing, PricingTier
     │   │   │   │   │   │   │   # Plan pricing entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Plan pricing
     │   │   │   │   │   │   ├── plan-version.ts  # Plan versioning
     │   │   │   │   │   │   │   # PlanVersion, VersionHistory
     │   │   │   │   │   │   │   # Plan version entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Plan versions
     │   │   │   │   │   │   ├── plan.ts  # Subscription plan types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Plans
     │   │   │   │   │   │   ├── pricing.ts  # Pricing types
     │   │   │   │   │   │   ├── promotion-redemption.ts  # Promotion redemptions
     │   │   │   │   │   │   │   # Promotion redemption entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Promotion redemptions
     │   │   │   │   │   │   ├── promotion.ts  # Promotion types
     │   │   │   │   │   │   │   # Promotion, PromotionRedemption
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Promotions
     │   │   │   │   │   │   ├── proration.ts  # Proration types
     │   │   │   │   │   │   │   # Proration calculations
     │   │   │   │   │   │   ├── renewal.ts  # Renewal types
     │   │   │   │   │   │   ├── seat-assignment.ts  # Seat assignments
     │   │   │   │   │   │   │   # Seat assignment entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Seat assignments
     │   │   │   │   │   │   ├── seat-billing.ts  # Seat billing types
     │   │   │   │   │   │   │   # SeatBilling, SeatAssignment
     │   │   │   │   │   │   │   # Seat billing entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Seat billing
+    │   │   │   │   │   │   ├── seat-overage-history.ts  # ⚠️ MISSING - Seat overage history
     │   │   │   │   │   │   ├── seat-overage.ts  # Seat overage history
     │   │   │   │   │   │   │   # Seat overage entity
     │   │   │   │   │   │   ├── seat.ts  # Seat billing types
     │   │   │   │   │   │   ├── subscription-addon.ts  # Subscription addons
     │   │   │   │   │   │   │   # Subscription addon entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Subscription add-ons
     │   │   │   │   │   │   ├── subscription-change-request.ts  # Change request entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Change requests
     │   │   │   │   │   │   ├── subscription-change.ts  # Subscription changes
     │   │   │   │   │   │   │   # SubscriptionChange, ChangeRequest
     │   │   │   │   │   │   ├── subscription.ts  # Subscription types
+    │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
     │   │   │   │   │   │   ├── tax-binding.ts  # Tax bindings
     │   │   │   │   │   │   ├── tax-class.ts  # Tax class types
     │   │   │   │   │   │   │   # TaxClass, TaxBinding
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Tax classes
     │   │   │   │   │   │   ├── tier.ts  # Plan tier types
     │   │   │   │   │   │   ├── trial.ts  # Trial period types
     │   │   │   │   │   │   │   # Free trial tracking
     │   │   │   │   │   │   │   # Trial, TrialStatus
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Trials
     │   │   │   │   │   │   ├── upgrade-path.ts  # Upgrade/downgrade paths
     │   │   │   │   │   │   ├── upgrade.ts  # Upgrade/downgrade types
     │   │   │   │   │   │   ├── usage-counter.ts  # Usage counters
     │   │   │   │   │   │   │   # Usage counter entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Usage counters
     │   │   │   │   │   │   ├── usage-event.ts  # Usage events
     │   │   │   │   │   │   │   # UsageEvent, EventType
     │   │   │   │   │   │   │   # Usage event entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Usage events
     │   │   │   │   │   │   ├── usage-tracking.ts  # Feature usage tracking
     │   │   │   │   │   │   ├── usage.ts  # Usage tracking types
     │   │   │   │   │   │   ├── user-entitlement-grant.ts  # User entitlement grant entity
@@ -26721,13 +27116,16 @@ fe/
     │   │   │   │   │   │   └── user-tax-binding.ts  # User tax binding entity
     │   │   │   │   │   ├── users/  # Users domain types
     │   │   │   │   │   │   # Users domain types (MISSING ENTITIES)
+    │   │   │   │   │   │   # Users domain types (MANY MISSING)
     │   │   │   │   │   │   ├── account-recovery.ts  # AccountRecovery, RecoveryMethod
     │   │   │   │   │   │   │   # Account recovery entity
     │   │   │   │   │   │   ├── account-settings.ts  # AccountSettings, SettingsGroup
     │   │   │   │   │   │   ├── achievement.ts  # Achievement types
     │   │   │   │   │   │   │   # Achievement entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Achievements
     │   │   │   │   │   │   ├── activity-feed.ts  # Activity feed entity
     │   │   │   │   │   │   ├── activity.ts  # User activity types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Activity logs
     │   │   │   │   │   │   ├── address.ts  # User addresses
     │   │   │   │   │   │   ├── agency.ts  # Agency types
     │   │   │   │   │   │   ├── analytics.ts  # User analytics types
@@ -26735,20 +27133,25 @@ fe/
     │   │   │   │   │   │   ├── api-key.ts  # API keys
     │   │   │   │   │   │   ├── appeal-submission.ts  # Appeal submission entity
     │   │   │   │   │   │   ├── appeal.ts  # UserAppeal, AppealStatus
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Appeals
     │   │   │   │   │   │   ├── assessment.ts  # Assessment types
     │   │   │   │   │   │   ├── audit-log.ts  # User audit logs
     │   │   │   │   │   │   ├── automation.ts  # Automation rules
     │   │   │   │   │   │   ├── availability-recurring-rule.ts  # Recurring availability rule entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Recurring rules
     │   │   │   │   │   │   ├── availability-rule.ts  # Recurring availability types
     │   │   │   │   │   │   ├── availability-schedule.ts  # AvailabilitySchedule, RecurringRules
     │   │   │   │   │   │   ├── availability.ts  # Availability types
     │   │   │   │   │   │   │   # Freelancer availability
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── background-check.ts  # Background check types
     │   │   │   │   │   │   ├── badge.ts  # User badge types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User badges
     │   │   │   │   │   │   ├── ban-history.ts  # Ban history entity
     │   │   │   │   │   │   ├── ban.ts  # Ban, BanReason, BanDuration
     │   │   │   │   │   │   ├── bio-section.ts  # Bio section entity
     │   │   │   │   │   │   ├── bio.ts  # User bios
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Bio sections
     │   │   │   │   │   │   ├── block.ts  # Blocked user types
     │   │   │   │   │   │   ├── blocked-user.ts  # Blocked users types
     │   │   │   │   │   │   ├── blocked-users.ts  # BlockedUser, BlockReason
@@ -26756,67 +27159,86 @@ fe/
     │   │   │   │   │   │   ├── capability.ts  # User capability types
     │   │   │   │   │   │   │   # User capabilities
     │   │   │   │   │   │   │   # Capability entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Capabilities
     │   │   │   │   │   │   ├── certification-verification.ts  # Certification verification entity
     │   │   │   │   │   │   ├── certification.ts  # Certification types
     │   │   │   │   │   │   │   # Professional certifications
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── channel.ts  # Communication channel types
     │   │   │   │   │   │   ├── client-profile.ts  # Client-specific profile types
     │   │   │   │   │   │   ├── client.ts  # Client-specific types
     │   │   │   │   │   │   ├── communication-channel.ts  # Communication routing
     │   │   │   │   │   │   │   # Communication channel entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Communication channels
+    │   │   │   │   │   │   ├── compliance-report.ts  # ⚠️ MISSING - Compliance reports
     │   │   │   │   │   │   ├── compliance.ts  # Compliance records
     │   │   │   │   │   │   │   # UserCompliance, ComplianceCheck
     │   │   │   │   │   │   ├── connection-request.ts  # Connection requests
     │   │   │   │   │   │   │   # Connection request entity
     │   │   │   │   │   │   ├── connection.ts  # User connection types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User connections
     │   │   │   │   │   │   ├── consent-record.ts  # Consent record entity
     │   │   │   │   │   │   ├── consent.ts  # User consents
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Consent tracking
     │   │   │   │   │   │   ├── contact-info.ts  # Contact information
     │   │   │   │   │   │   ├── credit.ts  # User credits
     │   │   │   │   │   │   ├── data-deletion.ts  # Data deletion entity
     │   │   │   │   │   │   ├── data-export.ts  # Data export entity
     │   │   │   │   │   │   ├── device.ts  # Trusted device types
     │   │   │   │   │   │   │   # Device, DeviceType
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Trusted devices
     │   │   │   │   │   │   ├── earning-goal.ts  # Earning goal types
     │   │   │   │   │   │   │   # Earning goal entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Earning goals
     │   │   │   │   │   │   ├── earning-goals.ts  # EarningGoals, GoalTracking
     │   │   │   │   │   │   ├── earning.ts  # Earnings tracking
     │   │   │   │   │   │   ├── earnings-report.ts  # Earnings reports
     │   │   │   │   │   │   ├── education.ts  # Education types
     │   │   │   │   │   │   │   # Education history
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── email-preference.ts  # Email preferences
     │   │   │   │   │   │   │   # Email preference entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Email preferences
     │   │   │   │   │   │   ├── email-verification.ts  # Email verifications
     │   │   │   │   │   │   ├── employment.ts  # Employment history
     │   │   │   │   │   │   ├── endorsement.ts  # Endorsement types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Endorsements
     │   │   │   │   │   │   ├── experience.ts  # Work experience types
     │   │   │   │   │   │   │   # Work experience
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── export.ts  # Data exports
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Data exports
     │   │   │   │   │   │   ├── favorite.ts  # User favorites
     │   │   │   │   │   │   ├── feed-item.ts  # Feed items
     │   │   │   │   │   │   ├── feedback.ts  # User feedback
     │   │   │   │   │   │   ├── financial-profile.ts  # Financial profile
     │   │   │   │   │   │   ├── flag.ts  # UserFlag, FlagReason
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User flags
     │   │   │   │   │   │   ├── follow.ts  # Follow/connection types
     │   │   │   │   │   │   ├── freelancer-profile.ts  # Freelancer-specific profile types
     │   │   │   │   │   │   ├── freelancer.ts  # Freelancer-specific types
     │   │   │   │   │   │   ├── goal.ts  # User goal types
     │   │   │   │   │   │   ├── hourly-rate.ts  # Hourly rate entity
     │   │   │   │   │   │   ├── id-verification.ts  # ID verification entity
+    │   │   │   │   │   │   ├── identity-document.ts  # ⚠️ MISSING - Identity documents
     │   │   │   │   │   │   ├── identity-verification.ts  # KYC/KYB types
     │   │   │   │   │   │   ├── index.ts  # Barrel export for users domain
     │   │   │   │   │   │   ├── insight.ts  # User insight types
+    │   │   │   │   │   │   ├── integration.ts  # ⚠️ MISSING - Third-party integrations
     │   │   │   │   │   │   ├── interview-setting.ts  # Interview settings
     │   │   │   │   │   │   ├── invite.ts  # User invites
     │   │   │   │   │   │   ├── invoice.ts  # User invoices
     │   │   │   │   │   │   ├── kyc-document.ts  # KYC documents
     │   │   │   │   │   │   │   # KYC document entity
     │   │   │   │   │   │   ├── kyc.ts  # KYC verification
+    │   │   │   │   │   │   │   # ⚠️ MISSING - KYC verification
     │   │   │   │   │   │   ├── language-preference.ts  # Language preferences
     │   │   │   │   │   │   ├── language.ts  # Language proficiency types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Languages
     │   │   │   │   │   │   ├── learning-path.ts  # Learning path types
     │   │   │   │   │   │   │   # LearningPath, CourseProgress
     │   │   │   │   │   │   │   # Learning path entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Learning paths
     │   │   │   │   │   │   ├── login-history.ts  # Login history
     │   │   │   │   │   │   │   # LoginHistory, LoginAttempt
     │   │   │   │   │   │   │   # Login history entity
@@ -26824,21 +27246,29 @@ fe/
     │   │   │   │   │   │   ├── mentorship.ts  # Mentorship types
     │   │   │   │   │   │   │   # Mentorship, MentorshipStatus
     │   │   │   │   │   │   │   # Mentorship entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Mentorships
     │   │   │   │   │   │   ├── metric.ts  # User metric types
     │   │   │   │   │   │   │   # User performance metrics
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User metrics
     │   │   │   │   │   │   ├── mfa-backup-code.ts  # MFA backup code entity
+    │   │   │   │   │   │   ├── moderation-action.ts  # ⚠️ MISSING - Moderation actions
+    │   │   │   │   │   │   ├── network-connection.ts  # ⚠️ MISSING - Network connections
     │   │   │   │   │   │   ├── network-stat.ts  # Network statistics
     │   │   │   │   │   │   ├── newsletter-subscription.ts  # Newsletter subscriptions
     │   │   │   │   │   │   ├── note.ts  # User notes
     │   │   │   │   │   │   ├── notification-preference.ts  # Notification preference types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Notification preferences
     │   │   │   │   │   │   ├── notification-preferences.ts  # NotificationPreferences, Channel
     │   │   │   │   │   │   ├── notification-setting.ts  # Notification prefs
     │   │   │   │   │   │   ├── notification.ts  # Notification types
     │   │   │   │   │   │   ├── oauth-app.ts  # OAuth applications
     │   │   │   │   │   │   ├── onboarding-step.ts  # Onboarding steps
     │   │   │   │   │   │   ├── onboarding.ts  # Onboarding
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Onboarding
+    │   │   │   │   │   │   ├── organization-member.ts  # ⚠️ MISSING - Organization members
     │   │   │   │   │   │   ├── organization.ts  # Organization types
     │   │   │   │   │   │   │   # Organization/company profiles
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Organizations
     │   │   │   │   │   │   ├── password-reset.ts  # Password resets
     │   │   │   │   │   │   │   # PasswordReset, ResetToken
     │   │   │   │   │   │   ├── payment-method.ts  # Payment method types
@@ -26849,93 +27279,125 @@ fe/
     │   │   │   │   │   │   ├── portfolio-project.ts  # Portfolio project entity
     │   │   │   │   │   │   ├── portfolio.ts  # Portfolio types
     │   │   │   │   │   │   │   # Portfolio items
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── preference.ts  # User preference types
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── privacy-setting.ts  # Privacy setting types
     │   │   │   │   │   │   │   # Privacy setting entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Privacy settings
     │   │   │   │   │   │   ├── privacy-settings.ts  # PrivacySettings, VisibilityControl
     │   │   │   │   │   │   ├── privacy.ts  # Privacy setting types
     │   │   │   │   │   │   ├── professional-headline.ts  # Professional headline entity
     │   │   │   │   │   │   ├── professional-network.ts  # Connection, ConnectionRequest
     │   │   │   │   │   │   ├── profile-completeness.ts  # Profile completeness
     │   │   │   │   │   │   ├── profile-completion.ts  # Profile completion
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Profile completion
+    │   │   │   │   │   │   ├── profile-depth.ts  # ⚠️ MISSING - Profile depth metrics
     │   │   │   │   │   │   ├── profile-impression.ts  # Profile impression entity
     │   │   │   │   │   │   ├── profile-view.ts  # Profile views
     │   │   │   │   │   │   │   # Profile view entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Profile views
     │   │   │   │   │   │   ├── profile-visibility.ts  # Visibility control types
     │   │   │   │   │   │   │   # Profile visibility entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Visibility settings
     │   │   │   │   │   │   ├── profile.ts  # User profile types
     │   │   │   │   │   │   │   # User profile
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── project-image.ts  # Project image entity
     │   │   │   │   │   │   ├── rate-card.ts  # UserRateCard, RateType
     │   │   │   │   │   │   ├── rate-history.ts  # Rate history types
     │   │   │   │   │   │   │   # Rate history entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Rate history
     │   │   │   │   │   │   ├── rate.ts  # Rate settings
     │   │   │   │   │   │   ├── recommendation.ts  # User recommendations
     │   │   │   │   │   │   ├── recovery.ts  # Account recovery types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Account recovery
     │   │   │   │   │   │   ├── referral.ts  # Referral types
     │   │   │   │   │   │   │   # Referral, ReferralCode, ReferralReward
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Referrals
     │   │   │   │   │   │   ├── relationship.ts  # User relationships
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Relationships
     │   │   │   │   │   │   ├── report.ts  # User reports
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User reports
     │   │   │   │   │   │   ├── reputation-score.ts  # Reputation score entity
     │   │   │   │   │   │   ├── reputation.ts  # Reputation types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Reputation
     │   │   │   │   │   │   ├── review-stat.ts  # Review statistics
     │   │   │   │   │   │   ├── saved-freelancer.ts  # Saved freelancers
     │   │   │   │   │   │   ├── saved-item.ts  # Saved item types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Saved items
     │   │   │   │   │   │   ├── saved-items.ts  # SavedItem, ItemType
     │   │   │   │   │   │   ├── saved-job.ts  # Saved jobs
     │   │   │   │   │   │   ├── saved-search.ts  # Saved searches
+    │   │   │   │   │   │   ├── scoring-factor.ts  # ⚠️ MISSING - Scoring factors
     │   │   │   │   │   │   ├── scoring.ts  # User scoring
     │   │   │   │   │   │   ├── search-appearance.ts  # Search appearance entity
+    │   │   │   │   │   │   ├── search-history.ts  # ⚠️ MISSING - Search history
     │   │   │   │   │   │   ├── search-preference.ts  # Search preferences
     │   │   │   │   │   │   ├── security-alert.ts  # Security alert entity
     │   │   │   │   │   │   ├── security-event.ts  # Security event types
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Security events
     │   │   │   │   │   │   ├── security-question.ts  # Security questions
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Security questions
     │   │   │   │   │   │   ├── security-setting.ts  # Security settings
     │   │   │   │   │   │   ├── security.ts  # SecuritySettings, TrustedDevice
     │   │   │   │   │   │   ├── service-catalog.ts  # Service catalog types
     │   │   │   │   │   │   │   # ServiceCatalog, ServicePackage
     │   │   │   │   │   │   │   # Service catalog entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Service catalog
     │   │   │   │   │   │   ├── session-device.ts  # Session device entity
     │   │   │   │   │   │   ├── session.ts  # Session types
     │   │   │   │   │   │   │   # UserSession, SessionStatus
+    │   │   │   │   │   │   │   # ⚠️ MISSING - User sessions
     │   │   │   │   │   │   ├── setting.ts  # User setting types
     │   │   │   │   │   │   ├── skill-assessment.ts  # Skill assessments
     │   │   │   │   │   │   ├── skill-category.ts  # Skill categories
     │   │   │   │   │   │   ├── skill-endorsement.ts  # Skill endorsements
     │   │   │   │   │   │   │   # Skill endorsement entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Skill endorsements
     │   │   │   │   │   │   ├── skill-taxonomy.ts  # Skill taxonomy
+    │   │   │   │   │   │   ├── skill-verification.ts  # ⚠️ MISSING - Skill verifications
     │   │   │   │   │   │   ├── skill.ts  # Skill types
     │   │   │   │   │   │   │   # User skills
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── social-connection.ts  # Social connection types
     │   │   │   │   │   │   ├── social-link.ts  # Social links
     │   │   │   │   │   │   ├── specialization.ts  # Specialization types
     │   │   │   │   │   │   │   # Specialization, SpecializationLevel
     │   │   │   │   │   │   │   # Specialization entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Specializations
     │   │   │   │   │   │   ├── spending-limit.ts  # Spending limits
     │   │   │   │   │   │   ├── spending.ts  # Spending tracking
     │   │   │   │   │   │   ├── stat.ts  # User statistics
     │   │   │   │   │   │   ├── suspend-history.ts  # Suspension history
     │   │   │   │   │   │   ├── suspension-history.ts  # Suspension history entity
     │   │   │   │   │   │   ├── suspension.ts  # Suspension, SuspensionReason
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Suspensions
     │   │   │   │   │   │   ├── tag.ts  # User tag types
     │   │   │   │   │   │   ├── tax-info.ts  # Tax information
     │   │   │   │   │   │   ├── tax-profile.ts  # Tax profile entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Tax profiles
     │   │   │   │   │   │   ├── tax.ts  # Tax profile types
     │   │   │   │   │   │   ├── team-invitation.ts  # Team invitation entity
     │   │   │   │   │   │   ├── team-member.ts  # Team members
     │   │   │   │   │   │   │   # Team member entity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Team members
     │   │   │   │   │   │   ├── team.ts  # Team types
     │   │   │   │   │   │   │   # Team management
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Teams
     │   │   │   │   │   │   ├── testimonial.ts  # Testimonials
     │   │   │   │   │   │   ├── time-zone.ts  # TimeZonePreference, TimeZoneOverlap
     │   │   │   │   │   │   ├── timezone-preference.ts  # Timezone preferences
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Timezone preferences
     │   │   │   │   │   │   ├── transaction-history.ts  # Transaction history
+    │   │   │   │   │   │   ├── trust-level.ts  # ⚠️ MISSING - Trust levels
     │   │   │   │   │   │   ├── trust-score.ts  # Trust score types
     │   │   │   │   │   │   │   # Trust/safety scoring
     │   │   │   │   │   │   ├── trust-signal.ts  # Trust signal entity
     │   │   │   │   │   │   ├── trusted-device.ts  # Trusted device entity
     │   │   │   │   │   │   ├── two-factor-auth.ts  # TwoFactorAuth, AuthMethod
     │   │   │   │   │   │   ├── two-factor.ts  # Two-factor auth
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Two-factor auth
     │   │   │   │   │   │   ├── user-badge.ts  # User badge entity
     │   │   │   │   │   │   ├── user-connection.ts  # User connection entity
     │   │   │   │   │   │   ├── user-flag.ts  # User flag entity
@@ -26943,18 +27405,23 @@ fe/
     │   │   │   │   │   │   ├── user-group.ts  # UserGroup, GroupMembership
     │   │   │   │   │   │   ├── user-session.ts  # User session entity
     │   │   │   │   │   │   ├── user.ts  # User entity types
+    │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
     │   │   │   │   │   │   ├── verification-document.ts  # Verification documents
     │   │   │   │   │   │   ├── verification.ts  # Identity verification types
     │   │   │   │   │   │   │   # Identity verification
+    │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── video-intro.ts  # Video introductions
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Video introductions
     │   │   │   │   │   │   ├── view-history.ts  # View history
     │   │   │   │   │   │   ├── warning-history.ts  # Warning history entity
     │   │   │   │   │   │   ├── warning.ts  # Warning, WarningSeverity
+    │   │   │   │   │   │   │   # ⚠️ MISSING - Warnings
     │   │   │   │   │   │   ├── watch.ts  # User watches
     │   │   │   │   │   │   ├── webhook.ts  # User webhook types
     │   │   │   │   │   │   └── workload-capacity.ts  # Workload capacity types
     │   │   │   │   │   │       # WorkloadCapacity, CapacityStatus
     │   │   │   │   │   │       # Workload capacity entity
+    │   │   │   │   │   │       # ⚠️ MISSING - Workload capacity
     │   │   │   │   │   └── │
     │   │   │   │   ├── enums/  # Shared enumeration types
     │   │   │   │   │   # Shared enumerations (MISSING ENUMS BELOW)
@@ -27405,6 +27872,7 @@ fe/
     │   │   │   │   │   # ✅ NEW - Transform between DTOs and Domain types
     │   │   │   │   │   ├── admin/  # Admin mappers
     │   │   │   │   │   │   # Admin mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS
     │   │   │   │   │   │   ├── activity-log.mapper.ts  # ActivityLog DTO ↔ Domain
     │   │   │   │   │   │   ├── admin-activity-log.mapper.ts  # Activity log DTO ↔ Domain
     │   │   │   │   │   │   ├── admin-mfa.mapper.ts  # Admin MFA DTO ↔ Domain
@@ -27421,6 +27889,7 @@ fe/
     │   │   │   │   │   │   ├── audit-entry.mapper.ts  # AuditEntry DTO ↔ Domain
     │   │   │   │   │   │   ├── audit-export.mapper.ts  # Audit export DTO ↔ Domain
     │   │   │   │   │   │   ├── auto-flag-rule.mapper.ts  # Auto-flag rule DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── break-glass-access.mapper.ts  # Break-glass access DTO ↔ Domain
     │   │   │   │   │   │   ├── bulk-operation-item.mapper.ts  # Bulk operation item DTO ↔ Domain
     │   │   │   │   │   │   ├── canned-response.mapper.ts  # Canned response DTO ↔ Domain
@@ -27430,17 +27899,25 @@ fe/
     │   │   │   │   │   │   ├── compliance-context.mapper.ts  # ComplianceContext DTO ↔ Domain
     │   │   │   │   │   │   ├── config-history.mapper.ts  # Config history DTO ↔ Domain
     │   │   │   │   │   │   ├── content-action.mapper.ts  # Content action DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── data-masking-policy.mapper.ts  # Data masking policy DTO ↔ Domain
+    │   │   │   │   │   │   ├── dispute-case.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── dispute-evidence.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── experiment.mapper.ts  # Experiment DTO ↔ Domain
     │   │   │   │   │   │   │   # ExperimentDTO ↔ Experiment
+    │   │   │   │   │   │   ├── faq-category.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── faq.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── feature-flag.mapper.ts  # FeatureFlag DTO ↔ Domain
     │   │   │   │   │   │   │   # FeatureFlagDTO ↔ FeatureFlag
     │   │   │   │   │   │   │   # Feature flag DTO ↔ Domain
     │   │   │   │   │   │   ├── financial-hold.mapper.ts  # Financial hold DTO ↔ Domain
     │   │   │   │   │   │   ├── fraud-case.mapper.ts  # Fraud case DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── fraud-rule.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── gdpr-request.mapper.ts  # GDPR request DTO ↔ Domain
     │   │   │   │   │   │   ├── impersonation.mapper.ts  # Impersonation DTO ↔ Domain
     │   │   │   │   │   │   ├── incident-response.mapper.ts  # Incident response DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── kb-article.mapper.ts  # Knowledge base article DTO ↔ Domain
     │   │   │   │   │   │   ├── kb-category.mapper.ts  # KB category DTO ↔ Domain
@@ -27462,6 +27939,7 @@ fe/
     │   │   │   │   │   │   ├── policy-version.mapper.ts  # Policy version DTO ↔ Domain
     │   │   │   │   │   │   ├── privacy-request.mapper.ts  # PrivacyRequest DTO ↔ Domain
     │   │   │   │   │   │   │   # Privacy request DTO ↔ Domain
+    │   │   │   │   │   │   ├── quota-override.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── rate-limit-override.mapper.ts  # Rate limit override DTO ↔ Domain
     │   │   │   │   │   │   ├── report-execution.mapper.ts  # Report execution DTO ↔ Domain
     │   │   │   │   │   │   ├── report-schedule.mapper.ts  # Report schedule DTO ↔ Domain
@@ -27473,6 +27951,8 @@ fe/
     │   │   │   │   │   │   ├── session.mapper.ts  # Session DTO ↔ Domain
     │   │   │   │   │   │   ├── sla-breach.mapper.ts  # SLA breach DTO ↔ Domain
     │   │   │   │   │   │   ├── sla-policy.mapper.ts  # SLA policy DTO ↔ Domain
+    │   │   │   │   │   │   ├── support-attachment.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── support-message.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── support-ticket-assignment.mapper.ts  # Ticket assignment DTO ↔ Domain
     │   │   │   │   │   │   ├── support-ticket-attachment.mapper.ts  # Ticket attachment DTO ↔ Domain
     │   │   │   │   │   │   ├── support-ticket-history.mapper.ts  # Ticket history DTO ↔ Domain
@@ -27482,20 +27962,28 @@ fe/
     │   │   │   │   │   │   ├── system-metric.mapper.ts  # SystemMetric DTO ↔ Domain
     │   │   │   │   │   │   ├── system-setting.mapper.ts  # SystemSetting DTO ↔ Domain
     │   │   │   │   │   │   ├── throttle-config.mapper.ts  # Throttle config DTO ↔ Domain
+    │   │   │   │   │   │   ├── throttle-exception.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── throttle-policy.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── ticket-category.mapper.ts  # Ticket category DTO ↔ Domain
     │   │   │   │   │   │   ├── two-person-approval.mapper.ts  # Two-person approval DTO ↔ Domain
     │   │   │   │   │   │   ├── user-action.mapper.ts  # User action DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
     │   │   │   │   │   │   ├── watchlist-check.mapper.ts  # Watchlist check DTO ↔ Domain
     │   │   │   │   │   │   ├── webhook-delivery.mapper.ts  # Webhook delivery DTO ↔ Domain
     │   │   │   │   │   │   ├── webhook-event.mapper.ts  # Webhook event DTO ↔ Domain
     │   │   │   │   │   │   └── webhook.mapper.ts  # Webhook DTO ↔ Domain
     │   │   │   │   │   ├── communications/  # Communications mappers
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL COMMUNICATION ENTITIES)
     │   │   │   │   │   │   ├── blocklist.mapper.ts  # Blocklist DTO ↔ Domain
     │   │   │   │   │   │   ├── bookmark.mapper.ts  # Bookmark DTO ↔ Domain
     │   │   │   │   │   │   ├── calendar-invite.mapper.ts  # CalendarInvite DTO ↔ Domain
     │   │   │   │   │   │   │   # Calendar invite DTO ↔ Domain
     │   │   │   │   │   │   ├── call.mapper.ts  # Call DTO ↔ Domain
+    │   │   │   │   │   │   ├── channel-member.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── collaboration.mapper.ts  # Collaboration DTO ↔ Domain
+    │   │   │   │   │   │   ├── conversation-archive.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── conversation-export.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── conversation-participant.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── conversation.mapper.ts  # Conversation DTO ↔ Domain
     │   │   │   │   │   │   │   # ConversationDTO ↔ Conversation
     │   │   │   │   │   │   ├── delivery-log.mapper.ts  # DeliveryLog DTO ↔ Domain
@@ -27505,6 +27993,8 @@ fe/
     │   │   │   │   │   │   ├── draft.mapper.ts  # Draft DTO ↔ Domain
     │   │   │   │   │   │   ├── email-bridge.mapper.ts  # EmailBridge DTO ↔ Domain
     │   │   │   │   │   │   │   # Email bridge DTO ↔ Domain
+    │   │   │   │   │   │   ├── email-layout.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── email-template.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── email.mapper.ts  # Email DTO ↔ Domain
     │   │   │   │   │   │   │   # EmailDTO ↔ Email
     │   │   │   │   │   │   ├── encryption.mapper.ts  # Encryption DTO ↔ Domain
@@ -27514,9 +28004,15 @@ fe/
     │   │   │   │   │   │   ├── interview.mapper.ts  # Interview DTO ↔ Domain
     │   │   │   │   │   │   ├── mail-tracking.mapper.ts  # MailTracking DTO ↔ Domain
     │   │   │   │   │   │   │   # Mail tracking DTO ↔ Domain
+    │   │   │   │   │   │   ├── mention.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── message-draft.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── message-reaction.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── message-search-index.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── message.mapper.ts  # Message DTO ↔ Domain
     │   │   │   │   │   │   │   # MessageDTO ↔ Message
     │   │   │   │   │   │   ├── moderation.mapper.ts  # Moderation DTO ↔ Domain
+    │   │   │   │   │   │   ├── notification-delivery-log.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── notification-preference.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── notification-queue.mapper.ts  # NotificationQueue DTO ↔ Domain
     │   │   │   │   │   │   │   # Notification queue DTO ↔ Domain
     │   │   │   │   │   │   ├── notification-template.mapper.ts  # NotificationTemplate DTO ↔ Domain
@@ -27529,29 +28025,43 @@ fe/
     │   │   │   │   │   │   ├── push-device.mapper.ts  # PushDevice DTO ↔ Domain
     │   │   │   │   │   │   │   # Push device DTO ↔ Domain
     │   │   │   │   │   │   ├── push-notification.mapper.ts  # PushNotification DTO ↔ Domain
+    │   │   │   │   │   │   ├── push-subscription.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── quota-usage.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── quota.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── read-receipt.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── read-state.mapper.ts  # ReadState DTO ↔ Domain
     │   │   │   │   │   │   │   # Read state DTO ↔ Domain
+    │   │   │   │   │   │   ├── retention-policy.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── spam-detection.mapper.ts  # SpamDetection DTO ↔ Domain
     │   │   │   │   │   │   │   # Spam detection DTO ↔ Domain
     │   │   │   │   │   │   ├── suppression.mapper.ts  # Suppression DTO ↔ Domain
     │   │   │   │   │   │   ├── system-message.mapper.ts  # SystemMessage DTO ↔ Domain
     │   │   │   │   │   │   │   # System message DTO ↔ Domain
     │   │   │   │   │   │   ├── thread.mapper.ts  # Thread DTO ↔ Domain
+    │   │   │   │   │   │   ├── typing-indicator.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── unsubscribe.mapper.ts  # Unsubscribe DTO ↔ Domain
     │   │   │   │   │   │   ├── url-safety.mapper.ts  # UrlSafety DTO ↔ Domain
     │   │   │   │   │   │   │   # URL safety DTO ↔ Domain
     │   │   │   │   │   │   └── webhook-delivery.mapper.ts  # WebhookDelivery DTO ↔ Domain
     │   │   │   │   │   ├── contracts/  # Contracts mappers
     │   │   │   │   │   │   # Contracts mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL CONTRACT ENTITIES)
     │   │   │   │   │   │   ├── agency-contract.mapper.ts  # AgencyContract DTO ↔ Domain
     │   │   │   │   │   │   │   # Agency contract DTO ↔ Domain
     │   │   │   │   │   │   ├── amendment.mapper.ts  # Amendment DTO ↔ Domain
     │   │   │   │   │   │   │   # AmendmentDTO ↔ ContractAmendment
+    │   │   │   │   │   │   ├── analytics.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── approval-workflow.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── approval.mapper.ts  # Approval DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── audit-log.mapper.ts  # AuditLog DTO ↔ Domain
     │   │   │   │   │   │   ├── budget-adjustment.mapper.ts  # Budget adjustment DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── budget.mapper.ts  # Budget DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── cancellation.mapper.ts  # Cancellation DTO ↔ Domain
+    │   │   │   │   │   │   ├── client-feedback.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── collaboration-tool.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── compliance.mapper.ts  # Compliance DTO ↔ Domain
     │   │   │   │   │   │   ├── contract-amendment.mapper.ts  # Amendment DTO ↔ Domain
     │   │   │   │   │   │   ├── contract-analytics.mapper.ts  # Analytics DTO ↔ Domain
@@ -27571,37 +28081,70 @@ fe/
     │   │   │   │   │   │   ├── deliverable.mapper.ts  # Deliverable DTO ↔ Domain
     │   │   │   │   │   │   │   # DeliverableDTO ↔ Deliverable
     │   │   │   │   │   │   ├── dispute-evidence.mapper.ts  # Dispute evidence DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── dispute-message.mapper.ts  # Dispute message DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── dispute.mapper.ts  # Dispute DTO ↔ Domain
     │   │   │   │   │   │   │   # DisputeDTO ↔ Dispute
     │   │   │   │   │   │   ├── escrow-transaction.mapper.ts  # Escrow transaction DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── escrow.mapper.ts  # Escrow DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── feedback.mapper.ts  # Feedback DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── financial-hold.mapper.ts  # Financial hold DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── insurance-claim.mapper.ts  # Insurance claim DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── insurance.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invitation.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invoice-line-item.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invoice-payment.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── ip-rights.mapper.ts  # IPRightsDTO ↔ IPRights
     │   │   │   │   │   │   ├── milestone.mapper.ts  # Milestone DTO ↔ Domain
     │   │   │   │   │   │   │   # MilestoneDTO ↔ Milestone
+    │   │   │   │   │   │   ├── nda-breach.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── nda.mapper.ts  # NDADTO ↔ NDA
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── negotiation-offer.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── negotiation.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payment-schedule.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── performance-kpi.mapper.ts  # PerformanceKPI DTO ↔ Domain
     │   │   │   │   │   │   │   # Performance KPI DTO ↔ Domain
     │   │   │   │   │   │   ├── performance.mapper.ts  # PerformanceDTO ↔ PerformanceKPI
+    │   │   │   │   │   │   ├── rate-card.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── recurring-contract.mapper.ts  # Recurring contract DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── reminder.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── renegotiation.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── renewal-history.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── renewal.mapper.ts  # Renewal DTO ↔ Domain
     │   │   │   │   │   │   │   # RenewalDTO ↔ ContractRenewal
     │   │   │   │   │   │   ├── risk-assessment.mapper.ts  # RiskAssessment DTO ↔ Domain
     │   │   │   │   │   │   ├── signature.mapper.ts  # Signature DTO ↔ Domain
     │   │   │   │   │   │   │   # SignatureDTO ↔ ContractSignature
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-breach.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-metric.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-performance-record.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── sla.mapper.ts  # SLA DTO ↔ Domain
     │   │   │   │   │   │   │   # SLADTO ↔ SLA
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── statement-of-work.mapper.ts  # SOW DTO ↔ Domain
+    │   │   │   │   │   │   ├── task.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── template.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── termination.mapper.ts  # TerminationDTO ↔ ContractTermination
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── time-entry.mapper.ts  # Time entry DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── timesheet.mapper.ts  # Timesheet DTO ↔ Domain
     │   │   │   │   │   │   │   # TimesheetDTO ↔ Timesheet
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── version.mapper.ts  # Version DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── work-diary-daily-summary.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── work-diary-entry.mapper.ts  # Work diary DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── work-diary-summary.mapper.ts  # Daily summary DTO ↔ Domain
     │   │   │   │   │   │   ├── work-diary.mapper.ts  # WorkDiary DTO ↔ Domain
     │   │   │   │   │   │   │   # WorkDiaryDTO ↔ WorkDiary
@@ -27610,31 +28153,51 @@ fe/
     │   │   │   │   │   │   ├── workroom-task.mapper.ts  # WorkroomTask DTO ↔ Domain
     │   │   │   │   │   │   │   # Workroom task DTO ↔ Domain
     │   │   │   │   │   │   ├── workspace-comment.mapper.ts  # Workspace comment DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── workspace-document.mapper.ts  # Workspace document DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   └── workspace.mapper.ts  # Workspace DTO ↔ Domain
+    │   │   │   │   │   │       # ⚠️ MISSING
     │   │   │   │   │   ├── financial/  # Financial mappers
     │   │   │   │   │   │   # Financial mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL FINANCIAL ENTITIES)
+    │   │   │   │   │   │   ├── account-freeze.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── account-limit.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── balance-snapshot.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── bank-account.mapper.ts  # BankAccount DTO ↔ Domain
     │   │   │   │   │   │   │   # Bank account DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── billing-address.mapper.ts  # BillingAddress DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bonus.mapper.ts  # BonusDTO ↔ Bonus
     │   │   │   │   │   │   ├── budget.mapper.ts  # Budget DTO ↔ Domain
     │   │   │   │   │   │   ├── chargeback.mapper.ts  # Chargeback DTO ↔ Domain
     │   │   │   │   │   │   │   # ChargebackDTO ↔ Chargeback
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── commission.mapper.ts  # Commission DTO ↔ Domain
     │   │   │   │   │   │   ├── connects.mapper.ts  # ConnectsDTO ↔ ConnectsPurchase
     │   │   │   │   │   │   ├── currency-conversion.mapper.ts  # CurrencyConversion DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── currency-exchange-rate.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── currency-preference.mapper.ts  # Currency preference DTO ↔ Domain
+    │   │   │   │   │   │   ├── dispute-evidence.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── dispute.mapper.ts  # Dispute DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── earning.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── escrow-release.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── escrow.mapper.ts  # Escrow DTO ↔ Domain
     │   │   │   │   │   │   │   # EscrowDTO ↔ EscrowAccount
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── fee-migration.mapper.ts  # Fee migration DTO ↔ Domain
     │   │   │   │   │   │   ├── fee-rule.mapper.ts  # Fee rule DTO ↔ Domain
+    │   │   │   │   │   │   ├── fee-schedule.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── fee-version.mapper.ts  # Fee version DTO ↔ Domain
+    │   │   │   │   │   │   ├── fee-waiver.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── fee.mapper.ts  # Fee DTO ↔ Domain
     │   │   │   │   │   │   │   # FeeDTO ↔ PlatformFee
     │   │   │   │   │   │   ├── fraud-detection.mapper.ts  # FraudDetection DTO ↔ Domain
     │   │   │   │   │   │   ├── hold.mapper.ts  # Hold DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── insurance-claim.mapper.ts  # Insurance claim DTO ↔ Domain
     │   │   │   │   │   │   ├── insurance-policy.mapper.ts  # Insurance policy DTO ↔ Domain
@@ -27642,6 +28205,7 @@ fe/
     │   │   │   │   │   │   ├── insurance.mapper.ts  # InsuranceDTO ↔ InsurancePolicy
     │   │   │   │   │   │   ├── international-payment.mapper.ts  # International payment DTO ↔ Domain
     │   │   │   │   │   │   ├── intl-compliance.mapper.ts  # International compliance DTO ↔ Domain
+    │   │   │   │   │   │   ├── invoice-reminder.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── invoice.mapper.ts  # Invoice DTO ↔ Domain
     │   │   │   │   │   │   │   # InvoiceDTO ↔ Invoice
     │   │   │   │   │   │   ├── ledger.mapper.ts  # Ledger DTO ↔ Domain
@@ -27649,32 +28213,53 @@ fe/
     │   │   │   │   │   │   ├── pay-period.mapper.ts  # Pay period DTO ↔ Domain
     │   │   │   │   │   │   ├── payment-method.mapper.ts  # PaymentMethod DTO ↔ Domain
     │   │   │   │   │   │   │   # PaymentMethodDTO ↔ PaymentMethod
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payment-verification.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment.mapper.ts  # Payment DTO ↔ Domain
     │   │   │   │   │   │   │   # PaymentDTO ↔ Payment
+    │   │   │   │   │   │   ├── payout-batch.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payout-method.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── payout.mapper.ts  # Payout DTO ↔ Domain
     │   │   │   │   │   │   │   # PayoutDTO ↔ Payout
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payroll-line-item.mapper.ts  # Payroll line item DTO ↔ Domain
     │   │   │   │   │   │   ├── payroll-run.mapper.ts  # Payroll run DTO ↔ Domain
     │   │   │   │   │   │   ├── payroll-withholding.mapper.ts  # Payroll withholding DTO ↔ Domain
     │   │   │   │   │   │   ├── payroll.mapper.ts  # PayrollDTO ↔ PayrollRun
+    │   │   │   │   │   │   ├── platform-fee.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── promo.mapper.ts  # PromoDTO ↔ PromotionalCredit
     │   │   │   │   │   │   ├── rate-lock.mapper.ts  # Rate lock DTO ↔ Domain
+    │   │   │   │   │   │   ├── reconciliation-item.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── reconciliation.mapper.ts  # Reconciliation DTO ↔ Domain
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── recurring-payment.mapper.ts  # RecurringPayment DTO ↔ Domain
     │   │   │   │   │   │   ├── refund.mapper.ts  # Refund DTO ↔ Domain
     │   │   │   │   │   │   │   # RefundDTO ↔ Refund
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── reminder-escalation.mapper.ts  # Reminder escalation DTO ↔ Domain
     │   │   │   │   │   │   ├── reminder-template.mapper.ts  # Reminder template DTO ↔ Domain
     │   │   │   │   │   │   ├── reminder.mapper.ts  # Reminder DTO ↔ Domain
+    │   │   │   │   │   │   ├── revenue.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── risk.mapper.ts  # RiskAssessmentDTO ↔ RiskAssessment
+    │   │   │   │   │   │   ├── settlement.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── split-config.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── statement.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── tax-document.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── tax-exemption.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── tax-form.mapper.ts  # Tax form DTO ↔ Domain
+    │   │   │   │   │   │   ├── tax-rate.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── tax.mapper.ts  # Tax DTO ↔ Domain
     │   │   │   │   │   │   │   # TaxDTO ↔ TaxProfile
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── transaction-fee.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── transaction.mapper.ts  # Transaction DTO ↔ Domain
     │   │   │   │   │   │   │   # TransactionDTO ↔ Transaction
+    │   │   │   │   │   │   ├── transfer.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── verification.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── wallet.mapper.ts  # Wallet DTO ↔ Domain
     │   │   │   │   │   │   │   # WalletDTO ↔ Wallet
     │   │   │   │   │   │   └── withdrawal.mapper.ts  # Withdrawal DTO ↔ Domain
+    │   │   │   │   │   │       # ⚠️ MISSING
     │   │   │   │   │   ├── jobs/  # Jobs mappers
     │   │   │   │   │   │   # Jobs mappers (MISSING MAPPERS)
     │   │   │   │   │   │   ├── ai-optimization.mapper.ts  # AI optimization DTO ↔ Domain
@@ -28039,6 +28624,7 @@ fe/
     │   │   │   │   │   # API DTOs (MISSING MODELS BELOW)
     │   │   │   │   │   ├── admin/  # Admin backend API DTOs
     │   │   │   │   │   │   # Admin-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs - ALL THE SAME AS DOMAINS BUT WITH DTO SUFFIX
     │   │   │   │   │   │   ├── activity-log-dto.ts  # AdminActivityLogDTO
     │   │   │   │   │   │   ├── admin-activity-log.dto.ts  # Activity log DTO
     │   │   │   │   │   │   ├── admin-mfa.dto.ts  # Admin MFA DTO
@@ -28056,6 +28642,7 @@ fe/
     │   │   │   │   │   │   ├── audit-dto.ts  # AuditTrailDTO
     │   │   │   │   │   │   ├── audit-entry-dto.ts  # Audit entry DTO
     │   │   │   │   │   │   ├── audit-export.dto.ts  # Audit export DTO
+    │   │   │   │   │   │   ├── auto-flag-rule-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── auto-flag-rule.dto.ts  # Auto-flag rule DTO
     │   │   │   │   │   │   ├── break-glass-access.dto.ts  # Break-glass access DTO
     │   │   │   │   │   │   ├── break-glass-dto.ts  # BreakGlassAccessDTO
@@ -28071,19 +28658,27 @@ fe/
     │   │   │   │   │   │   ├── compliance-check-dto.ts  # ComplianceCheckDTO
     │   │   │   │   │   │   ├── compliance-context-dto.ts
     │   │   │   │   │   │   ├── config-history.dto.ts  # Config history DTO
+    │   │   │   │   │   │   ├── content-action-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── content-action.dto.ts  # Content action DTO
     │   │   │   │   │   │   ├── content-policy-dto.ts  # ContentPolicyDTO
     │   │   │   │   │   │   ├── data-masking-policy.dto.ts  # Data masking policy DTO
+    │   │   │   │   │   │   ├── dispute-case-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dispute-evidence-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── experiment-dto.ts  # Experiment DTO
     │   │   │   │   │   │   │   # ExperimentDTO
+    │   │   │   │   │   │   ├── faq-category-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── faq-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── feature-flag-dto.ts  # Feature flag DTO
     │   │   │   │   │   │   ├── feature-flag.dto.ts  # Feature flag DTO
     │   │   │   │   │   │   ├── financial-hold.dto.ts  # Financial hold DTO
+    │   │   │   │   │   │   ├── fraud-case-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── fraud-case.dto.ts  # Fraud case DTO
+    │   │   │   │   │   │   ├── fraud-rule-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── gdpr-request.dto.ts  # GDPR request DTO
     │   │   │   │   │   │   ├── hold-dto.ts  # UserHoldDTO
     │   │   │   │   │   │   ├── impersonation-dto.ts
     │   │   │   │   │   │   ├── incident-dto.ts  # IncidentDTO
+    │   │   │   │   │   │   ├── incident-response-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── incident-response.dto.ts  # Incident response DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── integration-dto.ts  # IntegrationDTO
@@ -28111,6 +28706,7 @@ fe/
     │   │   │   │   │   │   ├── policy-version.dto.ts  # Policy version DTO
     │   │   │   │   │   │   ├── privacy-request-dto.ts  # PrivacyRequestDTO
     │   │   │   │   │   │   ├── privacy-request.dto.ts  # Privacy request DTO
+    │   │   │   │   │   │   ├── quota-override-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── rate-limit-override.dto.ts  # Rate limit override DTO
     │   │   │   │   │   │   ├── report-execution.dto.ts  # Report execution DTO
     │   │   │   │   │   │   ├── report-schedule.dto.ts  # Report schedule DTO
@@ -28122,6 +28718,8 @@ fe/
     │   │   │   │   │   │   ├── session-dto.ts  # AdminSessionDTO
     │   │   │   │   │   │   ├── sla-breach.dto.ts  # SLA breach DTO
     │   │   │   │   │   │   ├── sla-policy.dto.ts  # SLA policy DTO
+    │   │   │   │   │   │   ├── support-attachment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── support-message-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── support-ticket-assignment.dto.ts  # Ticket assignment DTO
     │   │   │   │   │   │   ├── support-ticket-attachment.dto.ts  # Ticket attachment DTO
     │   │   │   │   │   │   ├── support-ticket-dto.ts  # Support ticket DTO
@@ -28130,9 +28728,12 @@ fe/
     │   │   │   │   │   │   ├── system-metric-dto.ts  # System metric DTO
     │   │   │   │   │   │   ├── system-setting-dto.ts  # System setting DTO
     │   │   │   │   │   │   ├── throttle-config.dto.ts  # Throttle config DTO
+    │   │   │   │   │   │   ├── throttle-exception-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── throttle-policy-dto.ts  # ThrottlePolicyDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── ticket-category.dto.ts  # Ticket category DTO
     │   │   │   │   │   │   ├── two-person-approval.dto.ts  # Two-person approval DTO
+    │   │   │   │   │   │   ├── user-action-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── user-action.dto.ts  # User action DTO
     │   │   │   │   │   │   ├── watchlist-check.dto.ts  # Watchlist check DTO
     │   │   │   │   │   │   ├── watchlist-dto.ts  # WatchlistEntryDTO
@@ -28141,6 +28742,7 @@ fe/
     │   │   │   │   │   │   └── webhook.dto.ts  # Webhook DTO
     │   │   │   │   │   ├── communications/  # Communications backend API DTOs
     │   │   │   │   │   │   # Communications-BE DTOs
+    │   │   │   │   │   │   # MISSING DTOs
     │   │   │   │   │   │   ├── analytics-dto.ts  # CommunicationAnalyticsDTO
     │   │   │   │   │   │   ├── attachment-dto.ts  # MessageAttachmentDTO
     │   │   │   │   │   │   ├── blocklist-dto.ts  # BlocklistDTO
@@ -28151,9 +28753,13 @@ fe/
     │   │   │   │   │   │   ├── calendar-invite.dto.ts  # Calendar invite DTO
     │   │   │   │   │   │   ├── call-dto.ts  # CallDTO
     │   │   │   │   │   │   ├── call.dto.ts  # Call DTO
+    │   │   │   │   │   │   ├── channel-member-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── collaboration-dto.ts  # CollaborationDTO
     │   │   │   │   │   │   ├── collaboration-session-dto.ts  # Collaboration session DTO
+    │   │   │   │   │   │   ├── conversation-archive-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── conversation-dto.ts  # Conversation DTO
+    │   │   │   │   │   │   ├── conversation-export-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── conversation-participant-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── delivery-dto.ts  # DeliveryStatusDTO
     │   │   │   │   │   │   ├── delivery-log-dto.ts  # DeliveryLogDTO
     │   │   │   │   │   │   ├── delivery-log.dto.ts  # Delivery log DTO
@@ -28164,6 +28770,8 @@ fe/
     │   │   │   │   │   │   ├── email-bridge-dto.ts  # EmailBridgeDTO
     │   │   │   │   │   │   ├── email-bridge.dto.ts  # Email bridge DTO
     │   │   │   │   │   │   ├── email-dto.ts  # Email notification DTO
+    │   │   │   │   │   │   ├── email-layout-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── email-template-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── encryption-dto.ts  # EncryptionKeyDTO
     │   │   │   │   │   │   ├── encryption.dto.ts  # Encryption DTO
     │   │   │   │   │   │   ├── export-dto.ts  # ConversationExportDTO
@@ -28175,10 +28783,16 @@ fe/
     │   │   │   │   │   │   ├── mail-tracking-dto.ts  # MailTrackingDTO
     │   │   │   │   │   │   ├── mail-tracking.dto.ts  # Mail tracking DTO
     │   │   │   │   │   │   ├── mention-dto.ts  # MentionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── message-draft-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── message-dto.ts  # Message DTO
+    │   │   │   │   │   │   ├── message-reaction-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── message-search-index-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── moderation-dto.ts  # MessageModerationDTO
     │   │   │   │   │   │   ├── moderation.dto.ts  # Moderation DTO
+    │   │   │   │   │   │   ├── notification-delivery-log-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── notification-dto.ts  # Notification DTO
+    │   │   │   │   │   │   ├── notification-preference-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── notification-queue-dto.ts  # NotificationQueueDTO
     │   │   │   │   │   │   ├── notification-queue.dto.ts  # Notification queue DTO
     │   │   │   │   │   │   ├── notification-template-dto.ts
@@ -28191,9 +28805,14 @@ fe/
     │   │   │   │   │   │   ├── push-device-dto.ts  # PushDeviceDTO
     │   │   │   │   │   │   ├── push-device.dto.ts  # Push device DTO
     │   │   │   │   │   │   ├── push-notification-dto.ts  # Push notification DTO
+    │   │   │   │   │   │   ├── push-subscription-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── quota-dto.ts  # MessageQuotaDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── quota-usage-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── read-receipt-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── read-state-dto.ts  # ReadStateDTO
     │   │   │   │   │   │   ├── read-state.dto.ts  # Read state DTO
+    │   │   │   │   │   │   ├── retention-policy-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── search-dto.ts  # MessageSearchDTO
     │   │   │   │   │   │   ├── spam-detection-dto.ts  # SpamDetectionDTO
     │   │   │   │   │   │   ├── spam-detection.dto.ts  # Spam detection DTO
@@ -28202,6 +28821,7 @@ fe/
     │   │   │   │   │   │   ├── system-message-dto.ts  # SystemMessageDTO
     │   │   │   │   │   │   ├── system-message.dto.ts  # System message DTO
     │   │   │   │   │   │   ├── thread-dto.ts  # ThreadDTO
+    │   │   │   │   │   │   ├── typing-indicator-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── unsubscribe-dto.ts  # UnsubscribeRegistryDTO
     │   │   │   │   │   │   ├── unsubscribe.dto.ts  # Unsubscribe DTO
     │   │   │   │   │   │   ├── url-safety-dto.ts  # URLSafetyCheckDTO
@@ -28210,15 +28830,22 @@ fe/
     │   │   │   │   │   │   └── webhook-dto.ts  # WebhookDTO
     │   │   │   │   │   ├── contracts/  # Contracts backend API DTOs
     │   │   │   │   │   │   # Contracts-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL CONTRACT SUB-ENTITIES)
     │   │   │   │   │   │   ├── activity-dto.ts  # ContractActivityDTO
     │   │   │   │   │   │   ├── agency-contract-dto.ts  # AgencyContractDTO
     │   │   │   │   │   │   ├── agency-contract.dto.ts  # Agency contract DTO
     │   │   │   │   │   │   ├── amendment-dto.ts  # Amendment DTO
-    │   │   │   │   │   │   ├── approval-dto.ts
+    │   │   │   │   │   │   ├── analytics-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── approval-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── approval-workflow-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── audit-log-dto.ts
+    │   │   │   │   │   │   ├── budget-adjustment-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── budget-adjustment.dto.ts  # Budget adjustment DTO
     │   │   │   │   │   │   ├── budget-dto.ts  # ContractBudgetDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── cancellation-dto.ts
+    │   │   │   │   │   │   ├── client-feedback-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── collaboration-tool-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── compliance-dto.ts  # ContractComplianceDTO
     │   │   │   │   │   │   ├── contract-amendment.dto.ts  # Amendment DTO
     │   │   │   │   │   │   ├── contract-analytics.dto.ts  # Analytics DTO
@@ -28238,32 +28865,63 @@ fe/
     │   │   │   │   │   │   ├── deliverable-dto.ts  # Deliverable DTO
     │   │   │   │   │   │   ├── direct-contract-dto.ts  # DirectContractDTO
     │   │   │   │   │   │   ├── dispute-dto.ts  # Dispute DTO
+    │   │   │   │   │   │   ├── dispute-evidence-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── dispute-evidence.dto.ts  # Dispute evidence DTO
+    │   │   │   │   │   │   ├── dispute-message-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── dispute-message.dto.ts  # Dispute message DTO
     │   │   │   │   │   │   ├── escrow-dto.ts  # Escrow DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── escrow-transaction-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── escrow-transaction.dto.ts  # Escrow transaction DTO
     │   │   │   │   │   │   ├── feedback-dto.ts  # ContractFeedbackDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── financial-hold.dto.ts  # Financial hold DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── insurance-claim-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── insurance-claim.dto.ts  # Insurance claim DTO
+    │   │   │   │   │   │   ├── insurance-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invitation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invoice-line-item-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invoice-payment-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── legal-review-dto.ts  # LegalReviewDTO
     │   │   │   │   │   │   ├── milestone-dto.ts  # Milestone DTO
+    │   │   │   │   │   │   ├── nda-breach-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── nda-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── negotiation-dto.ts  # NegotiationDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── negotiation-offer-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payment-schedule-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── performance-kpi-dto.ts
     │   │   │   │   │   │   ├── performance-kpi.dto.ts  # Performance KPI DTO
     │   │   │   │   │   │   ├── rate-adjustment-dto.ts  # RateAdjustmentDTO
+    │   │   │   │   │   │   ├── rate-card-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── recurring-contract-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── recurring-contract.dto.ts  # Recurring contract DTO
+    │   │   │   │   │   │   ├── reminder-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── renegotiation-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── renewal-dto.ts
+    │   │   │   │   │   │   ├── renewal-history-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── report-dto.ts  # ContractReportDTO
     │   │   │   │   │   │   ├── risk-assessment-dto.ts
     │   │   │   │   │   │   ├── security-clearance-dto.ts  # SecurityClearanceDTO
     │   │   │   │   │   │   ├── signature-dto.ts  # Signature DTO
-    │   │   │   │   │   │   ├── sla-dto.ts
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-breach-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-metric-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-performance-record-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── statement-of-work.dto.ts  # SOW DTO
+    │   │   │   │   │   │   ├── task-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── template-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── termination-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── time-entry-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── time-entry.dto.ts  # Time entry DTO
     │   │   │   │   │   │   ├── timesheet-dto.ts  # Timesheet DTO
-    │   │   │   │   │   │   ├── version-dto.ts
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── version-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── work-diary-daily-summary-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── work-diary-dto.ts
+    │   │   │   │   │   │   ├── work-diary-entry-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── work-diary-entry.dto.ts  # Work diary DTO
     │   │   │   │   │   │   ├── work-diary-summary.dto.ts  # Daily summary DTO
     │   │   │   │   │   │   ├── work-scope-dto.ts  # WorkScopeDTO
@@ -28272,36 +28930,52 @@ fe/
     │   │   │   │   │   │   ├── workroom-note.dto.ts  # Workroom note DTO
     │   │   │   │   │   │   ├── workroom-task-dto.ts
     │   │   │   │   │   │   ├── workroom-task.dto.ts  # Workroom task DTO
+    │   │   │   │   │   │   ├── workspace-comment-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── workspace-comment.dto.ts  # Workspace comment DTO
+    │   │   │   │   │   │   ├── workspace-document-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── workspace-document.dto.ts  # Workspace document DTO
-    │   │   │   │   │   │   └── workspace-dto.ts
+    │   │   │   │   │   │   └── workspace-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   ├── financial/  # Financial backend API DTOs
     │   │   │   │   │   │   # Financial-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL FINANCIAL ENTITIES)
+    │   │   │   │   │   │   ├── account-freeze-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── account-limit-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── analytics-dto.ts  # FinancialAnalyticsDTO
+    │   │   │   │   │   │   ├── balance-snapshot-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── bank-account-dto.ts  # Bank account DTO
     │   │   │   │   │   │   │   # BankAccountDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bank-account.dto.ts  # Bank account DTO
     │   │   │   │   │   │   ├── bank-verification-dto.ts  # BankVerificationDTO
-    │   │   │   │   │   │   ├── billing-address-dto.ts
+    │   │   │   │   │   │   ├── billing-address-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── budget-dto.ts
     │   │   │   │   │   │   ├── chargeback-dto.ts  # Chargeback DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── commission-dto.ts
     │   │   │   │   │   │   ├── coupon-dto.ts  # CouponDTO, CouponRedemptionDTO
-    │   │   │   │   │   │   ├── currency-conversion-dto.ts
+    │   │   │   │   │   │   ├── currency-conversion-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── currency-exchange-rate-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── currency-preference-dto.ts  # CurrencyPreferenceDTO
     │   │   │   │   │   │   ├── currency-preference.dto.ts  # Currency preference DTO
     │   │   │   │   │   │   ├── dispute-dto.ts  # Payment dispute DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dispute-evidence-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── earning-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── escrow-dto.ts  # Escrow DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── escrow-release-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── expense-dto.ts  # ExpenseReimbursementDTO
     │   │   │   │   │   │   ├── fee-dto.ts  # Fee DTO
     │   │   │   │   │   │   ├── fee-migration.dto.ts  # Fee migration DTO
     │   │   │   │   │   │   ├── fee-rule.dto.ts  # Fee rule DTO
+    │   │   │   │   │   │   ├── fee-schedule-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── fee-version.dto.ts  # Fee version DTO
+    │   │   │   │   │   │   ├── fee-waiver-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── forex-dto.ts  # ExchangeRateDTO, CurrencyConversionDTO
     │   │   │   │   │   │   ├── fraud-alert-dto.ts  # FraudAlertDTO
     │   │   │   │   │   │   ├── fraud-detection-dto.ts
     │   │   │   │   │   │   ├── gateway-dto.ts  # GatewayConfigDTO, GatewayWebhookDTO
-    │   │   │   │   │   │   ├── hold-dto.ts
+    │   │   │   │   │   │   ├── hold-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── insurance-claim-dto.ts  # InsuranceClaimDTO
     │   │   │   │   │   │   ├── insurance-claim.dto.ts  # Insurance claim DTO
@@ -28311,110 +28985,195 @@ fe/
     │   │   │   │   │   │   ├── international-payment.dto.ts  # International payment DTO
     │   │   │   │   │   │   ├── intl-compliance.dto.ts  # International compliance DTO
     │   │   │   │   │   │   ├── invoice-dto.ts  # Invoice DTO
+    │   │   │   │   │   │   ├── invoice-reminder-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── ledger-dto.ts
     │   │   │   │   │   │   ├── local-payout-route.dto.ts  # Local payout route DTO
     │   │   │   │   │   │   ├── pay-period.dto.ts  # Pay period DTO
     │   │   │   │   │   │   ├── payment-dto.ts  # Payment DTO
     │   │   │   │   │   │   ├── payment-method-dto.ts  # Payment method DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment-schedule-dto.ts  # PaymentScheduleDTO
+    │   │   │   │   │   │   ├── payment-verification-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payout-batch-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── payout-dto.ts  # Payout DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payout-method-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── payroll-line-item.dto.ts  # Payroll line item DTO
     │   │   │   │   │   │   ├── payroll-run.dto.ts  # Payroll run DTO
     │   │   │   │   │   │   ├── payroll-withholding.dto.ts  # Payroll withholding DTO
+    │   │   │   │   │   │   ├── platform-fee-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── rate-lock.dto.ts  # Rate lock DTO
     │   │   │   │   │   │   ├── reconciliation-dto.ts  # ReconciliationReportDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── reconciliation-item-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── recurring-payment-dto.ts
     │   │   │   │   │   │   ├── refund-dto.ts  # Refund DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── reminder-dto.ts  # PaymentReminderDTO
     │   │   │   │   │   │   ├── reminder-escalation.dto.ts  # Reminder escalation DTO
     │   │   │   │   │   │   ├── reminder-template.dto.ts  # Reminder template DTO
     │   │   │   │   │   │   ├── reminder.dto.ts  # Reminder DTO
+    │   │   │   │   │   │   ├── revenue-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── settlement-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── split-config-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── statement-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── subscription-billing-dto.ts  # SubscriptionBillingDTO
+    │   │   │   │   │   │   ├── tax-document-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── tax-dto.ts  # Tax DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── tax-exemption-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── tax-form-dto.ts  # TaxFormDTO
     │   │   │   │   │   │   ├── tax-form.dto.ts  # Tax form DTO
+    │   │   │   │   │   │   ├── tax-rate-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── transaction-dto.ts  # Transaction DTO
+    │   │   │   │   │   │   ├── transaction-fee-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── transfer-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── verification-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── wallet-dto.ts  # Wallet DTO
-    │   │   │   │   │   │   ├── withdrawal-dto.ts
+    │   │   │   │   │   │   ├── withdrawal-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   └── withdrawal-limit-dto.ts  # WithdrawalLimitDTO
     │   │   │   │   │   ├── jobs/  # Jobs backend API DTOs
     │   │   │   │   │   │   # Jobs-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL JOB ENTITIES)
+    │   │   │   │   │   │   ├── ai-optimization-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── ai-optimization.dto.ts  # AI optimization DTO
     │   │   │   │   │   │   ├── ai-suggest-dto.ts  # AISuggestionDTO
+    │   │   │   │   │   │   ├── ai-suggestion-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── ai-suggestion.dto.ts  # AI suggestion DTO
-    │   │   │   │   │   │   ├── analytics-dto.ts
+    │   │   │   │   │   │   ├── analytics-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── applicant-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── application-dto.ts  # Job application DTO
-    │   │   │   │   │   │   ├── boost-dto.ts
+    │   │   │   │   │   │   ├── archive-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── attachment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── boost-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── budget-control-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── budget-dto.ts
+    │   │   │   │   │   │   ├── bulk-operation-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── bulk-ops-dto.ts  # BulkOperationDTO
+    │   │   │   │   │   │   ├── category-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── category-taxonomy-dto.ts
+    │   │   │   │   │   │   ├── client-preference-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── contract-transition-dto.ts  # ContractTransitionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── contract-transition.dto.ts  # Contract transition DTO
+    │   │   │   │   │   │   ├── custom-field-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── custom-fields-dto.ts  # CustomFieldDTO
     │   │   │   │   │   │   ├── draft-dto.ts
+    │   │   │   │   │   │   ├── duplicate-cluster-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── duplicate-cluster.dto.ts  # Duplicate cluster DTO
+    │   │   │   │   │   │   ├── duplicate-key-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── duplicate-key.dto.ts  # Duplicate key DTO
+    │   │   │   │   │   │   ├── duplicate-match-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── duplicate-match.dto.ts  # Duplicate match DTO
     │   │   │   │   │   │   ├── eligibility-dto.ts  # JobEligibilityDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── esg-dto.ts  # ESGAttributesDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── expiry-dto.ts
+    │   │   │   │   │   │   ├── feature-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── feedback-dto.ts
     │   │   │   │   │   │   ├── fraud-dto.ts  # FraudSignalDTO
+    │   │   │   │   │   │   ├── fraud-signal-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── geo-dto.ts  # GeoLocationDTO
+    │   │   │   │   │   │   ├── health-checkpoint-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── health-dto.ts  # HealthCheckpointDTO
+    │   │   │   │   │   │   ├── hiring-option-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── hiring-option.dto.ts  # Hiring option DTO
     │   │   │   │   │   │   ├── hiring-options-dto.ts  # HiringOptionsDTO
     │   │   │   │   │   │   ├── inclusivity-dto.ts  # InclusivityFlagsDTO
+    │   │   │   │   │   │   ├── inclusivity-flag-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── inclusivity-flag.dto.ts  # Inclusivity flag DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── invitation-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── invite-dto.ts  # Job invite DTO
     │   │   │   │   │   │   ├── job-dto.ts  # Job DTO
+    │   │   │   │   │   │   ├── job-skill-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── lifecycle-dto.ts  # JobLifecycleDTO
     │   │   │   │   │   │   ├── localization-dto.ts  # JobLocalizationDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── match-dto.ts
     │   │   │   │   │   │   ├── moderation-dto.ts  # JobModerationDTO
-    │   │   │   │   │   │   ├── recommendation-dto.ts
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── moderation-state-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── performance-metric-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── promotion-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── quality-score-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── recommendation-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── repost-dto.ts
     │   │   │   │   │   │   ├── requirement-dto.ts  # Job requirement DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── saved-search-dto.ts
-    │   │   │   │   │   │   ├── screening-question-dto.ts
+    │   │   │   │   │   │   ├── screening-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── screening-question-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── sharing-dto.ts  # ShareLinkDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── skill-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── snapshot-dto.ts
+    │   │   │   │   │   │   ├── sourcing-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── statistics-dto.ts
+    │   │   │   │   │   │   ├── subscription-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── tag-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── template-dto.ts  # Job template DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── upsell-dto.ts  # UpsellSuggestionDTO
+    │   │   │   │   │   │   ├── upsell-suggestion-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── view-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── visibility-dto.ts  # JobVisibilityDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── webhook-dto.ts  # WebhookSubscriptionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   └── workspace-dto.ts
     │   │   │   │   │   ├── proposals/  # Proposals backend API DTOs
     │   │   │   │   │   │   # Proposals-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL PROPOSAL ENTITIES)
     │   │   │   │   │   │   ├── ai-assist-dto.ts  # AIAssistDTO
+    │   │   │   │   │   │   ├── anomaly-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── archive-dto.ts  # ProposalArchiveDTO
+    │   │   │   │   │   │   ├── attachment-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── auction-dto.ts  # AuctionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bid-anomaly.dto.ts  # Bid anomaly DTO
     │   │   │   │   │   │   ├── bid-dto.ts  # Bid DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bid-notification-dto.ts  # BidNotificationDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bid-strategy-dto.ts  # BidStrategyDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── boost-dto.ts  # ProposalBoostDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── collaboration-dto.ts  # TeamProposalDTO
     │   │   │   │   │   │   ├── comparison-dto.ts
     │   │   │   │   │   │   ├── compliance-dto.ts  # ProposalComplianceDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── connect-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-refund-dto.ts  # ConnectRefundDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-refund.dto.ts  # Connect refund DTO
     │   │   │   │   │   │   ├── context-dto.ts  # ProposalContextDTO
     │   │   │   │   │   │   ├── conversation-dto.ts  # ProposalConversationDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── conversation-tracking-dto.ts
+    │   │   │   │   │   │   ├── cover-letter-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── cover-letter-template-dto.ts
     │   │   │   │   │   │   ├── draft-dto.ts
     │   │   │   │   │   │   ├── engagement-dto.ts  # ProposalEngagementDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── expiration-dto.ts  # ProposalExpirationDTO
     │   │   │   │   │   │   ├── feedback-dto.ts  # ProposalFeedbackDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── flag-dto.ts  # ProposalFlagDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── interview-dto.ts  # Interview DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── invite-dto.ts  # InvitationDTO
+    │   │   │   │   │   │   ├── milestone-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── negotiation-dto.ts  # Negotiation DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── performance-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── pipeline-dto.ts  # ProposalPipelineDTO
+    │   │   │   │   │   │   ├── portfolio-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── portfolio-item-dto.ts
     │   │   │   │   │   │   ├── portfolio-link-dto.ts  # PortfolioLinkDTO
     │   │   │   │   │   │   ├── proposal-ai-optimization.dto.ts  # AI optimization DTO
@@ -28433,6 +29192,8 @@ fe/
     │   │   │   │   │   │   ├── proposal-urgency.dto.ts  # Proposal urgency DTO
     │   │   │   │   │   │   ├── proposal-withdrawal.dto.ts  # Proposal withdrawal DTO
     │   │   │   │   │   │   ├── question-answer-dto.ts  # QuestionAnswerDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── rate-card-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── recommendation-dto.ts  # ProposalRecommendationDTO
     │   │   │   │   │   │   ├── recycling-dto.ts  # ProposalRecyclingDTO
     │   │   │   │   │   │   ├── reference-dto.ts  # ProposalReferenceDTO
@@ -28440,13 +29201,17 @@ fe/
     │   │   │   │   │   │   ├── risk-assessment-dto.ts  # ProposalRiskAssessmentDTO
     │   │   │   │   │   │   ├── shortlist-dto.ts  # Shortlist DTO
     │   │   │   │   │   │   │   # ShortlistDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── similarity-dto.ts  # ProposalSimilarityDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── skill-match-dto.ts  # SkillMatchDTO
     │   │   │   │   │   │   ├── spam-detection-dto.ts  # SpamDetectionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── statistics-dto.ts
     │   │   │   │   │   │   ├── tag-dto.ts
     │   │   │   │   │   │   ├── team-proposal.dto.ts  # Team proposal DTO
     │   │   │   │   │   │   ├── template-dto.ts  # Proposal template DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── urgency-dto.ts  # ProposalUrgencyDTO
     │   │   │   │   │   │   ├── version-dto.ts
     │   │   │   │   │   │   ├── video-intro-dto.ts  # VideoIntroductionDTO
@@ -28454,31 +29219,54 @@ fe/
     │   │   │   │   │   │   └── withdrawal-dto.ts  # ProposalWithdrawalDTO
     │   │   │   │   │   ├── reviews/  # Reviews backend API DTOs
     │   │   │   │   │   │   # Reviews-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL REVIEW ENTITIES)
     │   │   │   │   │   │   ├── appeal-dto.ts  # Appeal DTO
     │   │   │   │   │   │   │   # ReviewAppealDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── audit-trail-dto.ts  # AuditTrailDTO
+    │   │   │   │   │   │   ├── badge-assignment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── badge-criteria-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── badge-dto.ts  # Badge DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── badge-eligibility-dto.ts
+    │   │   │   │   │   │   ├── compliance-action-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── compliance-dto.ts  # ReviewComplianceDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── double-blind-dto.ts  # DoubleBlindWindowDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── double-blind-window-dto.ts
+    │   │   │   │   │   │   ├── draft-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── eligibility-dto.ts  # ReviewEligibilityDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── eligibility-policy-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── evidence-dto.ts  # EvidenceDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── featured-dto.ts  # FeaturedReviewDTO
+    │   │   │   │   │   │   ├── featured-review-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── featured-review.dto.ts  # Featured review DTO
-    │   │   │   │   │   │   ├── flag-dto.ts
+    │   │   │   │   │   │   ├── feedback-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── flag-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── helpful-vote-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── moderation-dto.ts  # Moderation DTO
     │   │   │   │   │   │   │   # ReviewModerationDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── moderation-history-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── private-feedback-dto.ts  # PrivateFeedbackDTO
     │   │   │   │   │   │   ├── private-feedback.dto.ts  # Private feedback DTO
     │   │   │   │   │   │   ├── rating-criteria-dto.ts  # RatingCriteriaDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── rating-dimension-dto.ts
     │   │   │   │   │   │   ├── rating-dto.ts  # Rating DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── redaction-dto.ts  # RedactionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── redaction-policy-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── reminder-dto.ts  # ReviewReminderDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── reputation-dto.ts  # Reputation DTO
-    │   │   │   │   │   │   ├── response-dto.ts
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── response-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── review-appeal.dto.ts  # Appeal DTO
     │   │   │   │   │   │   ├── review-badge.dto.ts  # Badge DTO
     │   │   │   │   │   │   ├── review-blind.dto.ts  # Blind review DTO
@@ -28503,90 +29291,158 @@ fe/
     │   │   │   │   │   │   ├── review-window.dto.ts  # Window DTO
     │   │   │   │   │   │   ├── statistics-dto.ts
     │   │   │   │   │   │   ├── stats-dto.ts  # ReviewStatsDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── user-badge-dto.ts  # UserBadgeDTO
     │   │   │   │   │   │   └── window-dto.ts
     │   │   │   │   │   ├── search/  # Search backend API DTOs
     │   │   │   │   │   │   # Search-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL SEARCH ENTITIES)
     │   │   │   │   │   │   ├── alert-dto.ts  # Search alert DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── analytics-aggregation.dto.ts  # Analytics aggregation DTO
     │   │   │   │   │   │   ├── analytics-dto.ts  # SearchAnalyticsDTO
-    │   │   │   │   │   │   ├── boost-dto.ts
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── boost-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── cache-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── cluster-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── cluster-membership-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── compliance-pii-masking.dto.ts  # PII masking DTO
+    │   │   │   │   │   │   ├── experiment-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── facet-dto.ts  # Search facet DTO
     │   │   │   │   │   │   │   # FacetDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── facet-value.dto.ts  # Facet value DTO
     │   │   │   │   │   │   ├── feed-interaction.dto.ts  # Feed interaction DTO
     │   │   │   │   │   │   ├── filter-dto.ts  # Search filter DTO
     │   │   │   │   │   │   │   # SearchFilterDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── hygiene-dto.ts  # HygieneTaskDTO
     │   │   │   │   │   │   ├── hygiene-duplicate.dto.ts  # Duplicate detection DTO
+    │   │   │   │   │   │   ├── hygiene-job-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── hygiene-task-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── index-build-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── index-dto.ts  # SearchIndexDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── index-lifecycle-execution.dto.ts  # Index lifecycle execution DTO
+    │   │   │   │   │   │   ├── index-segment-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── ltr-feature.dto.ts  # LTR feature DTO
     │   │   │   │   │   │   ├── ltr-signal.dto.ts  # LTR signal DTO
+    │   │   │   │   │   │   ├── ml-model-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── multi-language-detection.dto.ts  # Language detection DTO
     │   │   │   │   │   │   ├── performance-alert.dto.ts  # Performance alert DTO
+    │   │   │   │   │   │   ├── performance-metric-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── personalization-dto.ts
     │   │   │   │   │   │   ├── portfolio-index.dto.ts  # Portfolio index DTO
     │   │   │   │   │   │   ├── promotion-tracking.dto.ts  # Promotion tracking DTO
     │   │   │   │   │   │   ├── query-dto.ts  # Search query DTO
     │   │   │   │   │   │   │   # SearchQueryDTO
-    │   │   │   │   │   │   ├── query-log-dto.ts
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── query-log-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── query-rewrite-application.dto.ts  # Query rewrite application DTO
     │   │   │   │   │   │   ├── query-rewrite-dto.ts
     │   │   │   │   │   │   ├── ranking-dto.ts  # RankingAlgorithmDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── recommendation-interaction.dto.ts  # Recommendation interaction DTO
     │   │   │   │   │   │   ├── recommendation-model.dto.ts  # Recommendation model DTO
     │   │   │   │   │   │   ├── result-dto.ts  # Search result DTO
+    │   │   │   │   │   │   ├── rewrite-rule-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── safety-dto.ts  # SafetyFilterDTO
     │   │   │   │   │   │   ├── safety-filter-application.dto.ts  # Safety filter application DTO
     │   │   │   │   │   │   ├── saved-query-dto.ts  # Saved query DTO
+    │   │   │   │   │   │   ├── saved-search-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── saved-search-execution.dto.ts  # Saved search execution DTO
+    │   │   │   │   │   │   ├── schema-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── search-index-job.dto.ts  # Search index job DTO
     │   │   │   │   │   │   ├── search-index-user.dto.ts  # Search index user DTO
     │   │   │   │   │   │   ├── search-query-filter.dto.ts  # Query filter DTO
+    │   │   │   │   │   │   ├── snapshot-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── spell-check-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── speller-correction.dto.ts  # Spelling correction DTO
     │   │   │   │   │   │   ├── speller-suggestion.dto.ts  # Spelling suggestion DTO
+    │   │   │   │   │   │   ├── stop-word-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── suggestion-dto.ts  # SearchSuggestionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── suggestion-tracking.dto.ts  # Suggestion tracking DTO
-    │   │   │   │   │   │   ├── synonym-dto.ts
+    │   │   │   │   │   │   ├── synonym-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── taxonomy-dto.ts  # TaxonomyDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── taxonomy-synonym.dto.ts  # Taxonomy synonym DTO
+    │   │   │   │   │   │   ├── trending-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── user-preference-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   └── user-preference-signal.dto.ts  # Preference signal DTO
     │   │   │   │   │   ├── storage/  # Storage backend API DTOs
     │   │   │   │   │   │   # Storage-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL STORAGE ENTITIES)
     │   │   │   │   │   │   ├── access-control-dto.ts  # AccessControlDTO
     │   │   │   │   │   │   ├── access-dto.ts  # File access DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── access-grant-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── access-log-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── annotation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── artifact-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── audit-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── batch-operation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── blob-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── cdn-config-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── checksum-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── chunk-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── collaboration-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── comment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── compliance-policy-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── compliance-result-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── data-zone.dto.ts  # Data zone DTO
+    │   │   │   │   │   │   ├── dlp-match-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── download-dto.ts  # DownloadDTO
+    │   │   │   │   │   │   ├── encryption-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── encryption-rotation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── extraction-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── file-collection.dto.ts  # File collection DTO
     │   │   │   │   │   │   ├── file-comment.dto.ts  # File comment DTO
     │   │   │   │   │   │   ├── file-dto.ts  # File DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── file-encryption.dto.ts  # Encryption DTO
+    │   │   │   │   │   │   ├── file-flag-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── file-lifecycle.dto.ts  # Lifecycle policy DTO
     │   │   │   │   │   │   ├── file-link.dto.ts  # Share link DTO
     │   │   │   │   │   │   ├── file-lock.dto.ts  # File lock DTO
     │   │   │   │   │   │   ├── file-metadata-dto.ts  # FileMetadataDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── file-permission.dto.ts  # File permission DTO
     │   │   │   │   │   │   ├── file-share.dto.ts  # File sharing DTO
     │   │   │   │   │   │   ├── file-tag.dto.ts  # File tag DTO
     │   │   │   │   │   │   ├── file-version.dto.ts  # File version DTO
     │   │   │   │   │   │   ├── folder-dto.ts  # Folder DTO
     │   │   │   │   │   │   │   # FolderDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── gc-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── job-queue.dto.ts  # Job queue DTO
+    │   │   │   │   │   │   ├── legal-hold-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── legal-hold.dto.ts  # Legal hold DTO
+    │   │   │   │   │   │   ├── lifecycle-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── lifecycle-execution.dto.ts  # Lifecycle execution DTO
+    │   │   │   │   │   │   ├── linking-audit-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── linking-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── media-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── media-transform.dto.ts  # Media transformation DTO
     │   │   │   │   │   │   ├── multipart-upload.dto.ts  # Multipart upload DTO
+    │   │   │   │   │   │   ├── namespace-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── ocr-result.dto.ts  # OCR result DTO
+    │   │   │   │   │   │   ├── policy-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── policy-result-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── processing-job.dto.ts  # Processing job DTO
+    │   │   │   │   │   │   ├── quarantine-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── quota-dto.ts  # Quota DTO
     │   │   │   │   │   │   │   # StorageQuotaDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── reference-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── replication-status.dto.ts  # Replication status DTO
     │   │   │   │   │   │   ├── scan-dto.ts  # File scan DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── scan-queue.dto.ts  # Scan queue DTO
+    │   │   │   │   │   │   ├── scan-result-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── share-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── share-link-dto.ts  # Share link DTO
     │   │   │   │   │   │   ├── storage-quota.dto.ts  # Storage quota DTO
     │   │   │   │   │   │   ├── storage-tier.dto.ts  # Storage tier DTO
@@ -28595,166 +29451,261 @@ fe/
     │   │   │   │   │   │   ├── thumbnail.dto.ts  # Thumbnail DTO
     │   │   │   │   │   │   ├── upload-dto.ts  # UploadDTO
     │   │   │   │   │   │   ├── upload-session-dto.ts  # Upload session DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── upload-session.dto.ts  # Upload session DTO
     │   │   │   │   │   │   ├── usage-log.dto.ts  # Usage log DTO
     │   │   │   │   │   │   ├── version-dto.ts  # FileVersionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── virus-scan-dto.ts  # VirusScanDTO
     │   │   │   │   │   │   ├── virus-scan.dto.ts  # Virus scan DTO
     │   │   │   │   │   │   └── watermark.dto.ts  # Watermark DTO
     │   │   │   │   │   ├── subscriptions/  # Subscriptions backend API DTOs
     │   │   │   │   │   │   # Subscriptions-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL SUBSCRIPTION ENTITIES)
     │   │   │   │   │   │   ├── addon-dto.ts  # Add-on DTO
     │   │   │   │   │   │   │   # AddonDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── allowance-dto.ts  # AllowanceDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── allowance-transaction-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── allowance-transaction.dto.ts  # Allowance transaction DTO
     │   │   │   │   │   │   ├── billing-history-dto.ts  # BillingHistoryDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── billing-history.dto.ts  # Billing history DTO
     │   │   │   │   │   │   ├── billing-profile-dto.ts  # BillingProfileDTO
-    │   │   │   │   │   │   ├── connect-balance-dto.ts
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── connect-balance-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-balance.dto.ts  # Connect balance DTO
     │   │   │   │   │   │   ├── connect-package-dto.ts  # ConnectPackageDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-package.dto.ts  # Connect package DTO
     │   │   │   │   │   │   ├── connect-transaction-dto.ts  # ConnectTransactionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-transaction.dto.ts  # Connect transaction DTO
     │   │   │   │   │   │   ├── coupon-dto.ts
+    │   │   │   │   │   │   ├── credit-application-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── credit-application.dto.ts  # Credit application DTO
     │   │   │   │   │   │   ├── credit-dto.ts
     │   │   │   │   │   │   ├── credit-note-dto.ts  # CreditNoteDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── credit-note.dto.ts  # Credit note DTO
     │   │   │   │   │   │   ├── discount-dto.ts
+    │   │   │   │   │   │   ├── dunning-action-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── dunning-action.dto.ts  # Dunning action DTO
+    │   │   │   │   │   │   ├── dunning-case-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── dunning-case.dto.ts  # Dunning case DTO
     │   │   │   │   │   │   ├── dunning-dto.ts  # DunningCaseDTO
+    │   │   │   │   │   │   ├── dunning-schedule-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── dunning-schedule.dto.ts  # Dunning schedule DTO
     │   │   │   │   │   │   ├── entitlement-dto.ts  # Entitlement DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── entitlement-grant-dto.ts  # EntitlementGrantDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── entitlement-grant.dto.ts  # Entitlement grant DTO
     │   │   │   │   │   │   ├── feature-toggle-dto.ts  # FeatureToggleDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── feature-toggle.dto.ts  # Feature toggle DTO
     │   │   │   │   │   │   ├── grant-dto.ts
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── invoice-dto.ts  # Invoice DTO
     │   │   │   │   │   │   │   # InvoiceDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── invoice-item-dto.ts
+    │   │   │   │   │   │   ├── invoice-line-item-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── invoice-line-item.dto.ts  # Invoice line item DTO
     │   │   │   │   │   │   ├── payment-attempt-dto.ts  # PaymentAttemptDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment-attempt.dto.ts  # Payment attempt DTO
     │   │   │   │   │   │   ├── payment-history-dto.ts
     │   │   │   │   │   │   ├── payment-webhook-dto.ts  # PaymentWebhookDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment-webhook.dto.ts  # Payment webhook DTO
     │   │   │   │   │   │   ├── plan-comparison-dto.ts
     │   │   │   │   │   │   ├── plan-dto.ts  # Plan DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── plan-pricing-dto.ts  # PlanPricingDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── plan-pricing.dto.ts  # Plan pricing DTO
     │   │   │   │   │   │   ├── plan-version-dto.ts  # PlanVersionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── plan-version.dto.ts  # Plan version DTO
     │   │   │   │   │   │   ├── promotion-dto.ts  # PromotionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── promotion-redemption-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── promotion-redemption.dto.ts  # Promotion redemption DTO
     │   │   │   │   │   │   ├── proration-dto.ts
+    │   │   │   │   │   │   ├── seat-assignment-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── seat-assignment.dto.ts  # Seat assignment DTO
     │   │   │   │   │   │   ├── seat-billing-dto.ts  # SeatBillingDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── seat-billing.dto.ts  # Seat billing DTO
+    │   │   │   │   │   │   ├── seat-overage-history-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── seat-overage.dto.ts  # Seat overage DTO
+    │   │   │   │   │   │   ├── subscription-addon-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── subscription-addon.dto.ts  # Subscription addon DTO
     │   │   │   │   │   │   ├── subscription-change-dto.ts  # SubscriptionChangeDTO
+    │   │   │   │   │   │   ├── subscription-change-request-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── subscription-change-request.dto.ts  # Change request DTO
     │   │   │   │   │   │   ├── subscription-dto.ts  # Subscription DTO
     │   │   │   │   │   │   ├── tax-class-dto.ts  # TaxClassDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── trial-dto.ts  # TrialDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── upgrade-path-dto.ts
+    │   │   │   │   │   │   ├── usage-counter-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── usage-counter.dto.ts  # Usage counter DTO
     │   │   │   │   │   │   ├── usage-dto.ts  # Usage DTO
     │   │   │   │   │   │   ├── usage-event-dto.ts  # UsageEventDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── usage-event.dto.ts  # Usage event DTO
     │   │   │   │   │   │   ├── usage-tracking-dto.ts
     │   │   │   │   │   │   ├── user-entitlement-grant.dto.ts  # User entitlement grant DTO
     │   │   │   │   │   │   └── user-tax-binding.dto.ts  # User tax binding DTO
     │   │   │   │   │   ├── users/  # Users backend API DTOs
     │   │   │   │   │   │   # Users-BE DTOs (MISSING DTOs)
+    │   │   │   │   │   │   # MISSING DTOs (ALL USER ENTITIES)
     │   │   │   │   │   │   ├── account-recovery-dto.ts  # AccountRecoveryDTO
     │   │   │   │   │   │   ├── account-recovery.dto.ts  # Account recovery DTO
     │   │   │   │   │   │   ├── account-settings-dto.ts  # AccountSettingsDTO
+    │   │   │   │   │   │   ├── achievement-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── achievement.dto.ts  # Achievement DTO
+    │   │   │   │   │   │   ├── activity-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── activity-feed.dto.ts  # Activity feed DTO
     │   │   │   │   │   │   ├── appeal-dto.ts  # UserAppealDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── appeal-submission.dto.ts  # Appeal submission DTO
     │   │   │   │   │   │   ├── availability-dto.ts  # Availability DTO
+    │   │   │   │   │   │   ├── availability-recurring-rule-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── availability-recurring-rule.dto.ts  # Recurring availability rule DTO
     │   │   │   │   │   │   ├── availability-schedule-dto.ts  # AvailabilityScheduleDTO
+    │   │   │   │   │   │   ├── badge-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── ban-dto.ts  # BanDTO
     │   │   │   │   │   │   ├── ban-history.dto.ts  # Ban history DTO
+    │   │   │   │   │   │   ├── bio-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── bio-section.dto.ts  # Bio section DTO
     │   │   │   │   │   │   ├── blocked-users-dto.ts  # BlockedUserDTO
     │   │   │   │   │   │   ├── capability-dto.ts  # Capability DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── capability.dto.ts  # Capability DTO
     │   │   │   │   │   │   ├── certification-dto.ts  # Certification DTO
     │   │   │   │   │   │   ├── certification-verification.dto.ts  # Certification verification DTO
+    │   │   │   │   │   │   ├── communication-channel-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── communication-channel.dto.ts  # Communication channel DTO
     │   │   │   │   │   │   ├── compliance-dto.ts  # UserComplianceDTO
+    │   │   │   │   │   │   ├── compliance-report-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── connection-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── connection-request.dto.ts  # Connection request DTO
+    │   │   │   │   │   │   ├── consent-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── consent-record.dto.ts  # Consent record DTO
     │   │   │   │   │   │   ├── data-deletion.dto.ts  # Data deletion DTO
     │   │   │   │   │   │   ├── data-export.dto.ts  # Data export DTO
     │   │   │   │   │   │   ├── device-dto.ts  # DeviceDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── earning-goal-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── earning-goal.dto.ts  # Earning goal DTO
     │   │   │   │   │   │   ├── earning-goals-dto.ts  # EarningGoalsDTO
     │   │   │   │   │   │   ├── education-dto.ts  # Education DTO
+    │   │   │   │   │   │   ├── email-preference-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── email-preference.dto.ts  # Email preference DTO
+    │   │   │   │   │   │   ├── endorsement-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── experience-dto.ts  # Experience DTO
+    │   │   │   │   │   │   ├── export-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── flag-dto.ts  # UserFlagDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── hourly-rate.dto.ts  # Hourly rate DTO
     │   │   │   │   │   │   ├── id-verification.dto.ts  # ID verification DTO
+    │   │   │   │   │   │   ├── identity-document-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── integration-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── kyc-document.dto.ts  # KYC document DTO
+    │   │   │   │   │   │   ├── kyc-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── language-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── learning-path-dto.ts  # LearningPathDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── learning-path.dto.ts  # Learning path DTO
     │   │   │   │   │   │   ├── login-history-dto.ts  # LoginHistoryDTO
     │   │   │   │   │   │   ├── login-history.dto.ts  # Login history DTO
     │   │   │   │   │   │   ├── mentorship-dto.ts  # MentorshipDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── mentorship.dto.ts  # Mentorship DTO
     │   │   │   │   │   │   ├── metric-dto.ts  # Metric DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── mfa-backup-code.dto.ts  # MFA backup code DTO
+    │   │   │   │   │   │   ├── moderation-action-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── network-connection-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── notification-preference-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── notification-preferences-dto.ts  # NotificationPreferencesDTO
+    │   │   │   │   │   │   ├── onboarding-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── organization-dto.ts  # Organization DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── organization-member-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── password-reset-dto.ts  # PasswordResetDTO
     │   │   │   │   │   │   ├── portfolio-dto.ts  # Portfolio DTO
     │   │   │   │   │   │   ├── portfolio-project.dto.ts  # Portfolio project DTO
+    │   │   │   │   │   │   ├── privacy-setting-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── privacy-setting.dto.ts  # Privacy setting DTO
     │   │   │   │   │   │   ├── privacy-settings-dto.ts  # PrivacySettingsDTO
     │   │   │   │   │   │   ├── professional-headline.dto.ts  # Professional headline DTO
     │   │   │   │   │   │   ├── professional-network-dto.ts  # ConnectionDTO
+    │   │   │   │   │   │   ├── profile-completion-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── profile-depth-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── profile-dto.ts  # Profile DTO
     │   │   │   │   │   │   ├── profile-impression.dto.ts  # Profile impression DTO
+    │   │   │   │   │   │   ├── profile-view-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── profile-view.dto.ts  # Profile view DTO
+    │   │   │   │   │   │   ├── profile-visibility-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── profile-visibility.dto.ts  # Profile visibility DTO
     │   │   │   │   │   │   ├── project-image.dto.ts  # Project image DTO
     │   │   │   │   │   │   ├── rate-card-dto.ts  # UserRateCardDTO
+    │   │   │   │   │   │   ├── rate-history-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── rate-history.dto.ts  # Rate history DTO
+    │   │   │   │   │   │   ├── recovery-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── referral-dto.ts  # ReferralDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
+    │   │   │   │   │   │   ├── relationship-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── report-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── reputation-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── reputation-score.dto.ts  # Reputation score DTO
+    │   │   │   │   │   │   ├── saved-item-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── saved-items-dto.ts  # SavedItemDTO
+    │   │   │   │   │   │   ├── scoring-factor-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── search-appearance.dto.ts  # Search appearance DTO
+    │   │   │   │   │   │   ├── search-history-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── security-alert.dto.ts  # Security alert DTO
     │   │   │   │   │   │   ├── security-dto.ts  # SecuritySettingsDTO
+    │   │   │   │   │   │   ├── security-event-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── security-question-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── service-catalog-dto.ts  # ServiceCatalogDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── service-catalog.dto.ts  # Service catalog DTO
     │   │   │   │   │   │   ├── session-device.dto.ts  # Session device DTO
     │   │   │   │   │   │   ├── session-dto.ts  # UserSessionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── skill-dto.ts  # Skill DTO
+    │   │   │   │   │   │   ├── skill-endorsement-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── skill-endorsement.dto.ts  # Skill endorsement DTO
+    │   │   │   │   │   │   ├── skill-verification-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── specialization-dto.ts  # SpecializationDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── specialization.dto.ts  # Specialization DTO
     │   │   │   │   │   │   ├── suspension-dto.ts  # SuspensionDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── suspension-history.dto.ts  # Suspension history DTO
+    │   │   │   │   │   │   ├── tax-profile-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── tax-profile.dto.ts  # Tax profile DTO
     │   │   │   │   │   │   ├── team-dto.ts  # Team DTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── team-invitation.dto.ts  # Team invitation DTO
+    │   │   │   │   │   │   ├── team-member-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── team-member.dto.ts  # Team member DTO
     │   │   │   │   │   │   ├── time-zone-dto.ts  # TimeZonePreferenceDTO
+    │   │   │   │   │   │   ├── timezone-preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── trust-level-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── trust-score-dto.ts  # Trust score DTO
     │   │   │   │   │   │   ├── trust-signal.dto.ts  # Trust signal DTO
     │   │   │   │   │   │   ├── trusted-device.dto.ts  # Trusted device DTO
     │   │   │   │   │   │   ├── two-factor-auth-dto.ts  # TwoFactorAuthDTO
+    │   │   │   │   │   │   ├── two-factor-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── user-badge.dto.ts  # User badge DTO
     │   │   │   │   │   │   ├── user-connection.dto.ts  # User connection DTO
     │   │   │   │   │   │   ├── user-dto.ts  # User DTO
@@ -28763,9 +29714,12 @@ fe/
     │   │   │   │   │   │   ├── user-group-dto.ts  # UserGroupDTO
     │   │   │   │   │   │   ├── user-session.dto.ts  # User session DTO
     │   │   │   │   │   │   ├── verification-dto.ts  # Verification DTO
+    │   │   │   │   │   │   ├── video-intro-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── warning-dto.ts  # WarningDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── warning-history.dto.ts  # Warning history DTO
     │   │   │   │   │   │   ├── workload-capacity-dto.ts  # WorkloadCapacityDTO
+    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   └── workload-capacity.dto.ts  # Workload capacity DTO
     │   │   │   │   │   └── │
     │   │   │   │   ├── state/  # State management types (MISSING STATE SLICES BELOW)
