@@ -1489,10 +1489,6 @@ fe/
     │   │   │   │   │   │       │   └── index.tsx  # Sourcing campaigns
     │   │   │   │   │   │       └── pipelines/
     │   │   │   │   │   │           └── index.tsx  # Hiring pipelines
-    │   │   │   │   │   ├── widgets/  # THIS ENTIRE SECTION
-    │   │   │   │   │   │   ├── [id]/
-    │   │   │   │   │   │   │   └── edit.tsx  # Edit widget settings
-    │   │   │   │   │   │   └── index.tsx  # Widget dashboard & configuration
     │   │   │   │   │   ├── work/
     │   │   │   │   │   │   └── quick-actions/
     │   │   │   │   │   │       └── index.tsx  # Home screen quick actions
@@ -2397,9 +2393,6 @@ fe/
     │   │   │   ├── support/
     │   │   │   │   └── tickets/
     │   │   │   │       └── index.tsx  # Support tickets (mobile)
-    │   │   │   ├── widgets/
-    │   │   │   │   ├── quick-actions.tsx  # Quick actions widget
-    │   │   │   │   └── time-tracker.tsx  # Home screen time tracker widget
     │   │   │   ├── +not-found.tsx  # 404 screen
     │   │   │   ├── _layout.tsx  # Root layout
     │   │   │   ├── index.tsx  # App entry point
@@ -2419,16 +2412,9 @@ fe/
     │   │   ├── src/
     │   │   │   ├── components/  # Mobile-specific components
     │   │   │   │   ├── Auth/
-    │   │   │   │   │   ├── BiometricButton.tsx  # Biometric auth button
     │   │   │   │   │   ├── LoginForm.tsx  # Login form component
     │   │   │   │   │   ├── RegisterForm.tsx  # Registration form
     │   │   │   │   │   └── SocialButtons.tsx  # Social login buttons
-    │   │   │   │   ├── Common/
-    │   │   │   │   │   ├── EmptyState.tsx  # Empty state component
-    │   │   │   │   │   ├── ErrorBoundary.tsx  # Error boundary
-    │   │   │   │   │   ├── Loading.tsx  # Loading spinner
-    │   │   │   │   │   ├── OptimizedFlashList.tsx  # Optimized list (FlashList)
-    │   │   │   │   │   └── PullToRefresh.tsx  # Pull to refresh
     │   │   │   │   ├── Contracts/
     │   │   │   │   │   ├── ContractCard.tsx  # Contract card
     │   │   │   │   │   ├── MilestoneItem.tsx  # Milestone list item
@@ -2447,15 +2433,6 @@ fe/
     │   │   │   │   │   ├── MessageBubble.tsx  # Message bubble
     │   │   │   │   │   ├── MessageComposer.tsx  # Message input
     │   │   │   │   │   └── TypingIndicator.tsx  # Typing indicator
-    │   │   │   │   ├── molecules/
-    │   │   │   │   │   └── Navigation/
-    │   │   │   │   │       ├── Accordion/
-    │   │   │   │   │       │   └── Accordion.native.tsx  # Mobile accordion component
-    │   │   │   │   │       ├── Breadcrumb/
-    │   │   │   │   │       │   └── Breadcrumb.native.tsx  # Mobile breadcrumb navigation component
-    │   │   │   │   │       ├── Drawer/
-    │   │   │   │   │       │   └── Drawer.native.tsx  # Mobile drawer component (BottomSheet pattern)
-    │   │   │   │   │       └── │
     │   │   │   │   ├── Navigation/
     │   │   │   │   │   ├── Header.tsx  # Screen header
     │   │   │   │   │   └── TabBar.tsx  # Custom tab bar
@@ -2469,15 +2446,7 @@ fe/
     │   │   │   │   │   ├── ProposalForm.tsx  # Proposal submission form
     │   │   │   │   │   └── ProposalList.tsx  # Proposal list
     │   │   │   │   ├── QuickActions/
-    │   │   │   │   │   └── README.md  # Home screen quick actions (notes)
-    │   │   │   │   └── UI/
-    │   │   │   │       ├── Avatar.tsx  # Avatar component
-    │   │   │   │       ├── Badge.tsx  # Badge component
-    │   │   │   │       ├── BottomSheet.tsx  # Bottom sheet modal
-    │   │   │   │       ├── Button.tsx  # Button component
-    │   │   │   │       ├── Card.tsx  # Card component
-    │   │   │   │       ├── Input.tsx  # Input component
-    │   │   │   │       └── SearchBar.tsx  # Search bar
+    │   │   │   │       └── README.md  # Home screen quick actions (notes)
     │   │   │   ├── hooks/  # Mobile-specific hooks
     │   │   │   │   ├── use-biometric.ts  # (mobile-specific)
     │   │   │   │   ├── useAppState.ts  # App state (foreground/background)
@@ -2539,13 +2508,6 @@ fe/
     │   │   │   └── src/
     │   │   │       └── components/
     │   │   │           ├── molecules/
-    │   │   │           │   ├── Navigation/
-    │   │   │           │   │   ├── Accordion/
-    │   │   │           │   │   │   └── Accordion.native.tsx  # - React Native collapsible accordion
-    │   │   │           │   │   ├── Breadcrumb/
-    │   │   │           │   │   │   └── Breadcrumb.native.tsx  # - Mobile breadcrumb navigation
-    │   │   │           │   │   └── Drawer/
-    │   │   │           │   │       └── Drawer.native.tsx  # - React Native bottom sheet drawer
     │   │   │           │   └── Overlay/
     │   │   │           │       ├── Popover/
     │   │   │           │       │   └── Popover.native.tsx  # - Mobile popover component
@@ -2559,9 +2521,6 @@ fe/
     │   │   │                   │   └── KanbanBoard.native.tsx  # - Mobile kanban board
     │   │   │                   └── Table/
     │   │   │                       └── Table.native.tsx  # - Mobile responsive table
-    │   │   ├── widgets/
-    │   │   │   ├── quick-actions.tsx  # Quick actions widget
-    │   │   │   └── time-tracker.tsx  # Home screen time tracker widget
     │   │   ├── +not-found.tsx  # 404 screen
     │   │   ├── .env  # Environment variables
     │   │   ├── .eslintrc.json  # ESLint config
@@ -7967,7 +7926,6 @@ fe/
     │   │   │   └── use-work-diary.ts  # Work diary hook
     │   │   ├── typing-indicators/
     │   │   │   └── useTypingIndicator.ts  # Typing hook
-    │   │   ├── ui/
     │   │   ├── users/  # 6 HOOKS - Users domain
     │   │   │   ├── index.ts  # Barrel export
     │   │   │   ├── package.json
@@ -8011,31 +7969,6 @@ fe/
     │   │   │   └── useWorkDiary.ts  # Work diary entries
     │   │   └── │
     │   ├── shared/  # Business logic, hooks, utilities
-    │   │   ├── components/
-    │   │   │   ├── Auth/
-    │   │   │   │   └── BiometricButton/
-    │   │   │   │       ├── BiometricButton.native.tsx  # Biometric auth (native)
-    │   │   │   │       ├── BiometricButton.web.tsx  # Web Authn fallback
-    │   │   │   │       └── │
-    │   │   │   ├── FileUpload/
-    │   │   │   │   ├── DocumentScanner/
-    │   │   │   │   │   └── DocumentScanner.native.tsx  # Document scanner
-    │   │   │   │   ├── ImageCropper/
-    │   │   │   │   │   └── ImageCropper.native.tsx  # Image cropper
-    │   │   │   │   └── │
-    │   │   │   ├── Offline/
-    │   │   │   │   ├── OfflineIndicator/
-    │   │   │   │   │   └── OfflineIndicator.native.tsx  # Offline banner
-    │   │   │   │   ├── SyncStatus/
-    │   │   │   │   │   └── SyncStatus.native.tsx  # Sync progress
-    │   │   │   │   └── │
-    │   │   │   ├── QRCode/
-    │   │   │   │   ├── QRCodeGenerator/
-    │   │   │   │   │   └── QRCodeGenerator.native.tsx  # QR generator
-    │   │   │   │   ├── QRCodeScanner/
-    │   │   │   │   │   └── QRCodeScanner.native.tsx  # QR scanner
-    │   │   │   │   └── │
-    │   │   │   └── │
     │   │   ├── src/
     │   │   │   ├── accessibility/
     │   │   │   │   ├── testing/
@@ -8244,16 +8177,6 @@ fe/
     │   │   │   │   ├── collaboration/
     │   │   │   │   │   ├── api/
     │   │   │   │   │   │   └── collaboration-api.ts  # Collaboration API
-    │   │   │   │   │   ├── components/
-    │   │   │   │   │   │   ├── ActiveUsers/
-    │   │   │   │   │   │   │   ├── ActiveUsers.tsx
-    │   │   │   │   │   │   │   └── ActiveUsers.types.ts
-    │   │   │   │   │   │   ├── CollaboratorCursor/
-    │   │   │   │   │   │   │   ├── CollaboratorCursor.tsx
-    │   │   │   │   │   │   │   └── CollaboratorCursor.types.ts
-    │   │   │   │   │   │   └── PresenceIndicator/
-    │   │   │   │   │   │       ├── PresenceIndicator.tsx
-    │   │   │   │   │   │       └── PresenceIndicator.types.ts
     │   │   │   │   │   ├── providers/
     │   │   │   │   │   │   └── CollaborationProvider.tsx  # Collab context
     │   │   │   │   │   └── types.ts  # Collaboration types
@@ -8339,11 +8262,6 @@ fe/
     │   │   │   │   │   │   ├── badges-api.ts  # Badges API
     │   │   │   │   │   │   ├── gamification-api.ts  # Gamification API
     │   │   │   │   │   │   └── leaderboards-api.ts  # Leaderboards API
-    │   │   │   │   │   ├── components/
-    │   │   │   │   │   │   ├── AchievementToast.tsx  # Achievement notification
-    │   │   │   │   │   │   ├── BadgeCollection.tsx  # Badge collection
-    │   │   │   │   │   │   ├── LeaderboardWidget.tsx  # Leaderboard widget
-    │   │   │   │   │   │   └── PointsDisplay.tsx  # Points display
     │   │   │   │   │   ├── queries/
     │   │   │   │   │   │   ├── gamification-mutations.ts  # Gamification mutations
     │   │   │   │   │   │   └── gamification-queries.ts  # Gamification queries
@@ -8357,15 +8275,6 @@ fe/
     │   │   │   │   │   ├── types.ts  # Geolocation types
     │   │   │   │   │   └── utils.ts  # Geo utilities
     │   │   │   │   ├── i18n/
-    │   │   │   │   │   ├── components/
-    │   │   │   │   │   │   ├── FormattedMessage/
-    │   │   │   │   │   │   │   └── FormattedMessage.tsx
-    │   │   │   │   │   │   ├── LocaleSwitcher/
-    │   │   │   │   │   │   │   ├── LocaleSwitcher.native.tsx
-    │   │   │   │   │   │   │   ├── LocaleSwitcher.tsx
-    │   │   │   │   │   │   │   └── LocaleSwitcher.web.tsx
-    │   │   │   │   │   │   └── TranslationProvider/
-    │   │   │   │   │   │       └── TranslationProvider.tsx
     │   │   │   │   │   ├── tools/
     │   │   │   │   │   │   ├── currency-formatter.ts  # Currency formatting
     │   │   │   │   │   │   ├── missing-keys-detector.ts  # Detect missing keys
@@ -8516,10 +8425,6 @@ fe/
     │   │   │   │   │   │   └── reviews-queries.ts  # BE: reviews-be
     │   │   │   │   │   └── types.ts
     │   │   │   │   ├── safety/
-    │   │   │   │   │   ├── components/
-    │   │   │   │   │   │   ├── BlockConfirmation.tsx  # Block confirmation
-    │   │   │   │   │   │   ├── ReportModal.tsx  # Report modal
-    │   │   │   │   │   │   └── SafetyNotice.tsx  # Safety notice banner
     │   │   │   │   │   └── utils.ts  # Safety utilities
     │   │   │   │   ├── search/  # Search feature
     │   │   │   │   │   ├── api/
@@ -8563,33 +8468,10 @@ fe/
     │   │   │   │   ├── video/
     │   │   │   │   │   ├── api/
     │   │   │   │   │   │   └── video-api.ts  # Video call API
-    │   │   │   │   │   ├── components/
-    │   │   │   │   │   │   ├── ParticipantGrid/
-    │   │   │   │   │   │   │   ├── ParticipantGrid.tsx
-    │   │   │   │   │   │   │   └── ParticipantGrid.types.ts
-    │   │   │   │   │   │   ├── VideoControls/
-    │   │   │   │   │   │   │   ├── VideoControls.tsx
-    │   │   │   │   │   │   │   └── VideoControls.types.ts
-    │   │   │   │   │   │   └── VideoRoom/
-    │   │   │   │   │   │       ├── VideoRoom.native.tsx
-    │   │   │   │   │   │       ├── VideoRoom.tsx
-    │   │   │   │   │   │       ├── VideoRoom.types.ts
-    │   │   │   │   │   │       └── VideoRoom.web.tsx
     │   │   │   │   │   └── types.ts  # Video types
     │   │   │   │   ├── webhooks/
     │   │   │   │   │   ├── api/
     │   │   │   │   │   │   └── webhooks-api.ts  # Webhooks API client
-    │   │   │   │   │   ├── components/
-    │   │   │   │   │   │   ├── EventSelector/
-    │   │   │   │   │   │   │   ├── EventSelector.tsx
-    │   │   │   │   │   │   │   └── EventSelector.types.ts
-    │   │   │   │   │   │   ├── WebhookForm/
-    │   │   │   │   │   │   │   ├── WebhookForm.tsx
-    │   │   │   │   │   │   │   ├── WebhookForm.types.ts
-    │   │   │   │   │   │   │   └── WebhookForm.web.tsx
-    │   │   │   │   │   │   └── WebhookLogs/
-    │   │   │   │   │   │       ├── WebhookLogs.tsx
-    │   │   │   │   │   │       └── WebhookLogs.types.ts
     │   │   │   │   │   ├── queries/
     │   │   │   │   │   │   ├── webhooks-mutations.ts  # Webhook mutations
     │   │   │   │   │   │   └── webhooks-queries.ts  # Webhook queries
@@ -14141,7 +14023,7 @@ fe/
     │   │   │   │   ├── BidHistoryChart.web.tsx
     │   │   │   │   ├── LiveBidFeed.native.tsx
     │   │   │   │   ├── LiveBidFeed.tsx  # Real-time bid feed
-    │   │   │   │   └── LiveBidFeed.web.tsx
+    │   │   │   │   └── LiveBidFeed.web.tsx  
     │   │   │   ├── charts/
     │   │   │   │   ├── EarningsChart.native.tsx
     │   │   │   │   ├── EarningsChart.tsx  # Earnings visualization
@@ -14232,8 +14114,17 @@ fe/
     │   │   │   │   │   ├── LiveBidFeed.native.tsx
     │   │   │   │   │   ├── LiveBidFeed.tsx  # Real-time bid feed
     │   │   │   │   │   └── LiveBidFeed.web.tsx
+    |   │   │   │   ├── Auth/
+    |   │   │   │   │   └── BiometricButton/
+    |   │   │   │   │       ├── BiometricButton.native.tsx  # Biometric auth (native)
+    |   │   │   │   │       ├── BiometricButton.web.tsx  # Web Authn fallback
+    |   │   │   │   │       └── │
     │   │   │   │   ├── Avatar/
+    │   │   │   │   |       └── Avatar.native.tsx  # Avatar component
     │   │   │   │   ├── Badge/
+    |   │   │   │   |       └── Badge.native.tsx  # Badge component
+    │   │   │   │   ├── BottomSheet/
+    │   │   │   │   |       └── BottomSheet.native.tsx  # Bottom sheet modal
     │   │   │   │   ├── Breadcrumb/
     │   │   │   │   ├── Button/
     │   │   │   │   │   ├── Button.native.tsx  # Native-specific overrides
@@ -14259,6 +14150,7 @@ fe/
     │   │   │   │   │   ├── Calendar.types.ts
     │   │   │   │   │   └── Calendar.web.tsx
     │   │   │   │   ├── Card/
+    │   │   │   │   |   └── Card.native.tsx  # Card component
     │   │   │   │   ├── charts/
     │   │   │   │   │   ├── EarningsChart.native.tsx
     │   │   │   │   │   ├── EarningsChart.tsx  # Earnings visualization
@@ -14304,6 +14196,12 @@ fe/
     │   │   │   │   │   ├── MentorCard.native.tsx
     │   │   │   │   │   ├── MentorCard.tsx  # Mentor profile card
     │   │   │   │   │   └── MentorCard.web.tsx
+    │   │   │   │   ├── Common/
+    │   │   │   │   │   ├── EmptyState.native.tsx  # Empty state component
+    │   │   │   │   │   ├── ErrorBoundary.native.tsx  # Error boundary
+    │   │   │   │   │   ├── Loading.native.tsx  # Loading spinner
+    │   │   │   │   │   ├── OptimizedFlashList.native.tsx  # Optimized list (FlashList)
+    │   │   │   │   │   └── PullToRefresh.native.tsx  # Pull to refresh
     │   │   │   │   ├── compliance/
     │   │   │   │   │   ├── DocumentUploader.native.tsx
     │   │   │   │   │   ├── DocumentUploader.tsx  # Compliance doc uploader
@@ -14413,6 +14311,10 @@ fe/
     │   │   │   │   │       ├── Skeleton.types.ts
     │   │   │   │   │       └── Skeleton.web.tsx
     │   │   │   │   ├── FileUpload/
+    |   │   │   │   │   ├── DocumentScanner/
+    |   │   │   │   │   │   └── DocumentScanner.native.tsx  # Document scanner
+    |   │   │   │   │   ├── ImageCropper/
+    |   │   │   │   │   │   └── ImageCropper.native.tsx  # Image cropper
     │   │   │   │   │   ├── ImageUpload/
     │   │   │   │   │   │   ├── ImageCropper.tsx  # Image cropping
     │   │   │   │   │   │   ├── ImageUpload.native.tsx  # Camera/gallery
@@ -14636,6 +14538,12 @@ fe/
     │   │   │   │   │   │   │   └── Tooltip.native.tsx  # Long press; auto-dismiss; a11y; simple text
     │   │   │   │   │   │   └── │
     │   │   │   │   │   └── │
+    |   │   │   │   ├── Offline/
+    |   │   │   │   │   ├── OfflineIndicator/
+    |   │   │   │   │   │   └── OfflineIndicator.native.tsx  # Offline banner
+    |   │   │   │   │   ├── SyncStatus/
+    |   │   │   │   │   │   └── SyncStatus.native.tsx  # Sync progress
+    |   │   │   │   │   └── │
     │   │   │   │   ├── Overlay/
     │   │   │   │   │   ├── Popover/
     │   │   │   │   │   │   └── Popover.native.tsx  # Mobile popover component
@@ -14645,6 +14553,13 @@ fe/
     │   │   │   │   ├── Pagination/
     │   │   │   │   ├── Popover/
     │   │   │   │   ├── Progress/
+    |   │   │   │   ├── QRCode/
+    |   │   │   │   │   ├── QRCodeGenerator/
+    |   │   │   │   │   │   └── QRCodeGenerator.native.tsx  # QR generator
+    |   │   │   │   │   ├── QRCodeScanner/
+    |   │   │   │   │   │   └── QRCodeScanner.native.tsx  # QR scanner
+    |   │   │   │   │   └── │
+    |   │   │   │   └── │
     │   │   │   │   ├── Radio/
     │   │   │   │   ├── Rating/
     │   │   │   │   ├── referrals/  # ENTIRE SECTION
@@ -14654,6 +14569,8 @@ fe/
     │   │   │   │   │   ├── ReferralStats.native.tsx  # Referral stats (native)
     │   │   │   │   │   ├── ReferralStats.tsx  # Referral stats (base)
     │   │   │   │   │   └── ReferralStats.web.tsx  # Referral stats (web)
+    │   │   │   │   ├── Search/
+    |   │   │   │   │       └── SearchBar.native.tsx  # Search bar
     │   │   │   │   ├── Select/
     │   │   │   │   ├── Skeleton/
     │   │   │   │   ├── skills-tests/  # ENTIRE SECTION
@@ -14733,6 +14650,64 @@ fe/
     │   │   │   │   │       ├── TreeView.types.ts
     │   │   │   │   │       └── TreeView.web.tsx
     │   │   │   │   └── │
+    │   │   │   ├── features/  # Features
+    │   │   │   │   ├── collaboration/
+    │   │   │   │   │   ├── components/
+    │   │   │   │   │   │   ├── ActiveUsers/
+    │   │   │   │   │   │   │   ├── ActiveUsers.tsx
+    │   │   │   │   │   │   │   └── ActiveUsers.types.ts
+    │   │   │   │   │   │   ├── CollaboratorCursor/
+    │   │   │   │   │   │   │   ├── CollaboratorCursor.tsx
+    │   │   │   │   │   │   │   └── CollaboratorCursor.types.ts
+    │   │   │   │   │   │   └── PresenceIndicator/
+    │   │   │   │   │   │       ├── PresenceIndicator.tsx
+    │   │   │   │   │   │       └── PresenceIndicator.types.ts
+    │   │   │   │   ├── gamification/
+    │   │   │   │   │   ├── components/
+    │   │   │   │   │   │   ├── AchievementToast.tsx  # Achievement notification
+    │   │   │   │   │   │   ├── BadgeCollection.tsx  # Badge collection
+    │   │   │   │   │   │   ├── LeaderboardWidget.tsx  # Leaderboard widget
+    │   │   │   │   │   │   └── PointsDisplay.tsx  # Points display
+    │   │   │   │   ├── i18n/
+    │   │   │   │   │   ├── components/
+    │   │   │   │   │   │   ├── FormattedMessage/
+    │   │   │   │   │   │   │   └── FormattedMessage.tsx
+    │   │   │   │   │   │   ├── LocaleSwitcher/
+    │   │   │   │   │   │   │   ├── LocaleSwitcher.native.tsx
+    │   │   │   │   │   │   │   ├── LocaleSwitcher.tsx
+    │   │   │   │   │   │   │   └── LocaleSwitcher.web.tsx
+    │   │   │   │   │   │   └── TranslationProvider/
+    │   │   │   │   │   │       └── TranslationProvider.tsx
+    │   │   │   │   ├── safety/
+    │   │   │   │   │   ├── components/
+    │   │   │   │   │   │   ├── BlockConfirmation.tsx  # Block confirmation
+    │   │   │   │   │   │   ├── ReportModal.tsx  # Report modal
+    │   │   │   │   │   │   └── SafetyNotice.tsx  # Safety notice banner
+    │   │   │   │   ├── video/
+    │   │   │   │   │   ├── components/
+    │   │   │   │   │   │   ├── ParticipantGrid/
+    │   │   │   │   │   │   │   ├── ParticipantGrid.tsx
+    │   │   │   │   │   │   │   └── ParticipantGrid.types.ts
+    │   │   │   │   │   │   ├── VideoControls/
+    │   │   │   │   │   │   │   ├── VideoControls.tsx
+    │   │   │   │   │   │   │   └── VideoControls.types.ts
+    │   │   │   │   │   │   └── VideoRoom/
+    │   │   │   │   │   │       ├── VideoRoom.native.tsx
+    │   │   │   │   │   │       ├── VideoRoom.tsx
+    │   │   │   │   │   │       ├── VideoRoom.types.ts
+    │   │   │   │   │   │       └── VideoRoom.web.tsx
+    │   │   │   │   ├── webhooks/
+    │   │   │   │   │   ├── components/
+    │   │   │   │   │   │   ├── EventSelector/
+    │   │   │   │   │   │   │   ├── EventSelector.tsx
+    │   │   │   │   │   │   │   └── EventSelector.types.ts
+    │   │   │   │   │   │   ├── WebhookForm/
+    │   │   │   │   │   │   │   ├── WebhookForm.tsx
+    │   │   │   │   │   │   │   ├── WebhookForm.types.ts
+    │   │   │   │   │   │   │   └── WebhookForm.web.tsx
+    │   │   │   │   │   │   └── WebhookLogs/
+    │   │   │   │   │   │       ├── WebhookLogs.tsx
+    │   │   │   │   │   │       └── WebhookLogs.types.ts
     │   │   │   ├── forms/  # Form components
     │   │   │   │   ├── CodeEditor/
     │   │   │   │   │   ├── CodeEditor.native.tsx
