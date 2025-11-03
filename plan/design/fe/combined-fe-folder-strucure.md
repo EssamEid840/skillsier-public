@@ -25385,9 +25385,11 @@ fe/
     │   │   │   │   ├── domains/  # Business logic types (internal use)
     │   │   │   │   │   # Business logic types (MISSING ENTITIES BELOW)
     │   │   │   │   │   # Business logic types (MISSING DOMAINS BELOW)
+    │   │   │   │   │   # Business domain types (MISSING ITEMS)
     │   │   │   │   │   ├── admin/  # Admin domain types
     │   │   │   │   │   │   # Admin domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Admin domain types (MOSTLY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS
     │   │   │   │   │   │   ├── activity-log.ts  # Admin activity logging
     │   │   │   │   │   │   │   # AdminActivityLog, ActivityType, ActionCategory
     │   │   │   │   │   │   │   # ✅ EXISTS
@@ -25628,6 +25630,7 @@ fe/
     │   │   │   │   │   │   └── workflow-step.ts  # Workflow steps
     │   │   │   │   │   ├── communications/  # Communications domain types
     │   │   │   │   │   │   # Communications domain types (MANY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (40+ domains missing)
     │   │   │   │   │   │   ├── analytics.ts  # CommunicationAnalytics, Metrics
     │   │   │   │   │   │   ├── attachment.ts  # Message attachment types
     │   │   │   │   │   │   │   # MessageAttachment, AttachmentType
@@ -25852,6 +25855,7 @@ fe/
     │   │   │   │   │   ├── contracts/  # Contracts domain types
     │   │   │   │   │   │   # Contracts domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Contracts domain types (MANY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (15+ domains missing)
     │   │   │   │   │   │   ├── activity-level.ts  # Activity tracking types
     │   │   │   │   │   │   ├── activity-log.ts  # Milestone/contract activity logs
     │   │   │   │   │   │   ├── activity.ts  # ContractActivity, ActivityType
@@ -26053,6 +26057,7 @@ fe/
     │   │   │   │   │   ├── financial/  # Financial domain types
     │   │   │   │   │   │   # Financial domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Financial domain types (COMPREHENSIVE MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (25+ domains missing)
     │   │   │   │   │   │   ├── account-freeze.ts  # ⚠️ MISSING - Account freeze records
     │   │   │   │   │   │   ├── account-limit.ts  # ⚠️ MISSING - Account limits
     │   │   │   │   │   │   ├── allowance.ts  # Allowance tracking
@@ -26269,6 +26274,7 @@ fe/
     │   │   │   │   │   ├── jobs/  # Jobs domain types
     │   │   │   │   │   │   # Jobs domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Jobs domain types (MANY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (20+ domains missing)
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── ai-optimization.ts  # AI optimizations entity
     │   │   │   │   │   │   │   # ⚠️ MISSING - AI optimizations
@@ -26470,6 +26476,7 @@ fe/
     │   │   │   │   │   ├── proposals/  # Proposals domain types
     │   │   │   │   │   │   # Proposals domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Proposals domain types (MANY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (30+ domains missing)
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── ai-assist.ts  # AI suggestions
     │   │   │   │   │   │   │   # AIAssist, AISuggestion, AIOptimization
@@ -26668,6 +26675,7 @@ fe/
     │   │   │   │   │   ├── reviews/  # Reviews domain types
     │   │   │   │   │   │   # Reviews domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Reviews domain types (COMPREHENSIVE MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (10+ domains missing)
     │   │   │   │   │   │   ├── appeal-evidence.ts  # Appeal evidence
     │   │   │   │   │   │   ├── appeal.ts  # Review appeal types
     │   │   │   │   │   │   │   # Review appeals
@@ -26801,6 +26809,7 @@ fe/
     │   │   │   │   │   ├── search/  # Search domain types
     │   │   │   │   │   │   # Search domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Search domain types (MANY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (50+ domains missing)
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── aggregation.ts  # Search aggregation types
     │   │   │   │   │   │   ├── alert-subscription.ts  # Search alert subscription domain
@@ -27022,6 +27031,7 @@ fe/
     │   │   │   │   │   ├── storage/  # Storage domain types
     │   │   │   │   │   │   # Storage domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Storage domain types (COMPREHENSIVE MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (30+ domains missing)
     │   │   │   │   │   │   ├── access-control.ts  # Access control
     │   │   │   │   │   │   │   # File access control
     │   │   │   │   │   │   │   # AccessControl, Permission
@@ -27250,6 +27260,7 @@ fe/
     │   │   │   │   │   ├── subscriptions/  # Subscriptions domain types
     │   │   │   │   │   │   # Subscriptions domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Subscriptions domain types (MANY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (10+ domains missing)
     │   │   │   │   │   │   ├── addon.ts  # Add-on types
     │   │   │   │   │   │   │   # Subscription add-ons
     │   │   │   │   │   │   │   # Addon, AddonType
@@ -27437,6 +27448,7 @@ fe/
     │   │   │   │   │   ├── users/  # Users domain types
     │   │   │   │   │   │   # Users domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Users domain types (MANY MISSING)
+    │   │   │   │   │   │   # MISSING DOMAINS (40+ domains missing)
     │   │   │   │   │   │   ├── account-recovery.ts  # AccountRecovery, RecoveryMethod
     │   │   │   │   │   │   │   # Account recovery entity
     │   │   │   │   │   │   │   # Account recovery domain
@@ -27804,7 +27816,9 @@ fe/
     │   │   │   │   │   └── │
     │   │   │   │   ├── enums/  # Shared enumeration types
     │   │   │   │   │   # Shared enumerations (MISSING ENUMS BELOW)
+    │   │   │   │   │   # Shared enumerations (MISSING ITEMS)
     │   │   │   │   │   ├── admin/  # Admin enumerations
+    │   │   │   │   │   │   # MISSING ENUMS
     │   │   │   │   │   │   ├── access-level.enum.ts
     │   │   │   │   │   │   ├── action-category.enum.ts  # ActionCategory
     │   │   │   │   │   │   ├── action-type.enum.ts  # Admin action types
@@ -27855,6 +27869,7 @@ fe/
     │   │   │   │   │   │   ├── shift-status.enum.ts  # Shift statuses
     │   │   │   │   │   │   └── ticket-priority.enum.ts  # Ticket priorities
     │   │   │   │   │   ├── communications/  # Communications enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (40+ enums missing)
     │   │   │   │   │   │   ├── alert-severity.enum.ts  # AlertSeverity
     │   │   │   │   │   │   ├── attachment-type.enum.ts  # Attachment types
     │   │   │   │   │   │   ├── blocklist-reason.enum.ts  # Blocklist reasons
@@ -27915,6 +27930,7 @@ fe/
     │   │   │   │   │   │   ├── unsubscribe-reason.enum.ts  # Unsubscribe reasons
     │   │   │   │   │   │   └── url-safety-verdict.enum.ts  # URL safety verdicts
     │   │   │   │   │   ├── contracts/  # Contracts enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (10+ enums missing)
     │   │   │   │   │   │   ├── agency-contract-type.enum.ts  # Agency contract types
     │   │   │   │   │   │   ├── amendment-status.enum.ts  # AmendmentStatus
     │   │   │   │   │   │   ├── approval-status.enum.ts  # Contract approval statuses
@@ -27964,6 +27980,7 @@ fe/
     │   │   │   │   │   │   ├── workroom-task-status.enum.ts  # Task statuses
     │   │   │   │   │   │   └── workspace-permission.enum.ts  # Workspace permissions
     │   │   │   │   │   ├── financial/  # Financial enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (30+ enums missing)
     │   │   │   │   │   │   ├── bank-account-status.enum.ts  # Bank account statuses
     │   │   │   │   │   │   ├── bank-account-type.enum.ts  # Bank account types
     │   │   │   │   │   │   ├── bank-verification-status.enum.ts  # Bank verification statuses
@@ -28032,6 +28049,7 @@ fe/
     │   │   │   │   │   │   ├── wallet-status.enum.ts  # Wallet statuses
     │   │   │   │   │   │   └── withdrawal-status.enum.ts
     │   │   │   │   │   ├── jobs/  # Jobs enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (15+ enums missing)
     │   │   │   │   │   │   ├── ai-suggestion-type.enum.ts  # AI suggestion types
     │   │   │   │   │   │   ├── application-status.enum.ts  # Application statuses
     │   │   │   │   │   │   ├── boost-level.enum.ts
@@ -28085,6 +28103,7 @@ fe/
     │   │   │   │   │   │   ├── visibility-status.enum.ts  # VisibilityStatus
     │   │   │   │   │   │   └── visibility.enum.ts  # Visibility types
     │   │   │   │   │   ├── proposals/  # Proposals enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (25+ enums missing)
     │   │   │   │   │   │   ├── archive-reason.enum.ts  # ArchiveReason
     │   │   │   │   │   │   ├── auction-status.enum.ts  # Auction statuses
     │   │   │   │   │   │   │   # AuctionStatus
@@ -28146,6 +28165,7 @@ fe/
     │   │   │   │   │   │   └── withdrawal-reason.enum.ts  # Withdrawal reasons
     │   │   │   │   │   │       # WithdrawalReason
     │   │   │   │   │   ├── reviews/  # Reviews enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (8+ enums missing)
     │   │   │   │   │   │   ├── appeal-status.enum.ts  # Appeal statuses
     │   │   │   │   │   │   │   # AppealStatus
     │   │   │   │   │   │   ├── badge-category.enum.ts
@@ -28184,6 +28204,7 @@ fe/
     │   │   │   │   │   │   ├── vote-type.enum.ts  # Vote types
     │   │   │   │   │   │   └── window-status.enum.ts
     │   │   │   │   │   ├── search/  # Search enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (40+ enums missing)
     │   │   │   │   │   │   ├── alert-frequency.enum.ts  # Alert frequencies
     │   │   │   │   │   │   ├── alert-trigger-type.enum.ts  # Alert trigger types
     │   │   │   │   │   │   ├── analytics-aggregation-type.enum.ts  # Aggregation types
@@ -28250,6 +28271,7 @@ fe/
     │   │   │   │   │   │   ├── taxonomy-skill-category.enum.ts  # Skill categories
     │   │   │   │   │   │   └── trending-algorithm.enum.ts  # Trending algorithms
     │   │   │   │   │   ├── storage/  # Storage enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (25+ enums missing)
     │   │   │   │   │   │   ├── access-level.enum.ts  # Access level enumeration
     │   │   │   │   │   │   │   # AccessLevel
     │   │   │   │   │   │   ├── artifact-status.enum.ts  # Artifact statuses
@@ -28311,6 +28333,7 @@ fe/
     │   │   │   │   │   │   ├── virus-scan-status.enum.ts  # Virus scan status enumeration
     │   │   │   │   │   │   └── watermark-position.enum.ts  # Watermark positions
     │   │   │   │   │   ├── subscriptions/  # Subscriptions enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (12+ enums missing)
     │   │   │   │   │   │   ├── addon-type.enum.ts  # Add-on type enumeration
     │   │   │   │   │   │   │   # AddonType
     │   │   │   │   │   │   ├── allowance-transaction-type.enum.ts  # Allowance transaction types
@@ -28361,6 +28384,7 @@ fe/
     │   │   │   │   │   │   ├── usage-type.enum.ts  # UsageType
     │   │   │   │   │   │   └── webhook-status.enum.ts  # Webhook statuses
     │   │   │   │   │   ├── users/  # Users enumerations
+    │   │   │   │   │   │   # MISSING ENUMS (35+ enums missing)
     │   │   │   │   │   │   ├── account-status.enum.ts  # Account status enumeration
     │   │   │   │   │   │   ├── achievement-category.enum.ts  # Achievement categories
     │   │   │   │   │   │   ├── achievement-rarity.enum.ts  # Achievement rarity
@@ -28462,9 +28486,11 @@ fe/
     │   │   │   │   ├── mappers/  # DTO ↔ Domain transformation functions
     │   │   │   │   │   # DTO ↔ Domain transformation (MISSING MAPPERS BELOW)
     │   │   │   │   │   # ✅ NEW - Transform between DTOs and Domain types
+    │   │   │   │   │   # DTO ↔ Domain transformation functions (MISSING ITEMS)
     │   │   │   │   │   ├── admin/  # Admin mappers
     │   │   │   │   │   │   # Admin mappers (MISSING MAPPERS)
     │   │   │   │   │   │   # MISSING MAPPERS
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL ADMIN ENTITIES - 13+ mappers missing)
     │   │   │   │   │   │   ├── activity-log.mapper.ts  # ActivityLog DTO ↔ Domain
     │   │   │   │   │   │   ├── admin-activity-log.mapper.ts  # Activity log DTO ↔ Domain
     │   │   │   │   │   │   ├── admin-mfa.mapper.ts  # Admin MFA DTO ↔ Domain
@@ -28578,6 +28604,7 @@ fe/
     │   │   │   │   │   │   └── webhook.mapper.ts  # Webhook DTO ↔ Domain
     │   │   │   │   │   ├── communications/  # Communications mappers
     │   │   │   │   │   │   # MISSING MAPPERS (ALL COMMUNICATION ENTITIES)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL COMMUNICATIONS ENTITIES - 40+ mappers missing)
     │   │   │   │   │   │   ├── blocked-user.mapper.ts  # Blocked user DTO ↔ Domain
     │   │   │   │   │   │   ├── blocklist.mapper.ts  # Blocklist DTO ↔ Domain
     │   │   │   │   │   │   ├── bookmark.mapper.ts  # Bookmark DTO ↔ Domain
@@ -28667,6 +28694,7 @@ fe/
     │   │   │   │   │   ├── contracts/  # Contracts mappers
     │   │   │   │   │   │   # Contracts mappers (MISSING MAPPERS)
     │   │   │   │   │   │   # MISSING MAPPERS (ALL CONTRACT ENTITIES)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL CONTRACT ENTITIES - 13+ mappers missing)
     │   │   │   │   │   │   ├── agency-contract.mapper.ts  # AgencyContract DTO ↔ Domain
     │   │   │   │   │   │   │   # Agency contract DTO ↔ Domain
     │   │   │   │   │   │   ├── amendment.mapper.ts  # Amendment DTO ↔ Domain
@@ -28785,6 +28813,7 @@ fe/
     │   │   │   │   │   ├── financial/  # Financial mappers
     │   │   │   │   │   │   # Financial mappers (MISSING MAPPERS)
     │   │   │   │   │   │   # MISSING MAPPERS (ALL FINANCIAL ENTITIES)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL FINANCIAL ENTITIES - 40+ mappers missing)
     │   │   │   │   │   │   ├── account-freeze.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── account-limit.mapper.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── balance-snapshot.mapper.ts  # ⚠️ MISSING
@@ -28922,6 +28951,7 @@ fe/
     │   │   │   │   │   │       # ⚠️ MISSING
     │   │   │   │   │   ├── jobs/  # Jobs mappers
     │   │   │   │   │   │   # Jobs mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL JOB ENTITIES - 20+ mappers missing)
     │   │   │   │   │   │   ├── ai-optimization.mapper.ts  # AI optimization DTO ↔ Domain
     │   │   │   │   │   │   ├── ai-suggestion.mapper.ts  # AI suggestion DTO ↔ Domain
     │   │   │   │   │   │   ├── analytics.mapper.ts  # Analytics DTO ↔ Domain
@@ -28980,6 +29010,7 @@ fe/
     │   │   │   │   │   │   └── workspace.mapper.ts  # Workspace DTO ↔ Domain
     │   │   │   │   │   ├── proposals/  # Proposals mappers
     │   │   │   │   │   │   # Proposals mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL PROPOSAL ENTITIES - 30+ mappers missing)
     │   │   │   │   │   │   ├── ai-optimization.mapper.ts  # AI optimization DTO ↔ Domain
     │   │   │   │   │   │   ├── ai-suggestion.mapper.ts  # AI suggestion DTO ↔ Domain
     │   │   │   │   │   │   ├── attachment.mapper.ts  # AttachmentDTO ↔ ProposalAttachment
@@ -29056,6 +29087,7 @@ fe/
     │   │   │   │   │   │   └── video-introduction.mapper.ts  # Video intro DTO ↔ Domain
     │   │   │   │   │   ├── reviews/  # Reviews mappers
     │   │   │   │   │   │   # Reviews mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL REVIEW ENTITIES - 13+ mappers missing)
     │   │   │   │   │   │   ├── appeal.mapper.ts  # Appeal DTO ↔ Domain
     │   │   │   │   │   │   ├── badge-eligibility-check.mapper.ts  # Badge eligibility check DTO ↔ Domain
     │   │   │   │   │   │   ├── badge-eligibility.mapper.ts  # BadgeEligibility DTO ↔ Domain
@@ -29114,6 +29146,7 @@ fe/
     │   │   │   │   │   │   └── window.mapper.ts  # Window DTO ↔ Domain
     │   │   │   │   │   ├── search/  # Search mappers
     │   │   │   │   │   │   # Search mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL SEARCH ENTITIES - 60+ mappers missing)
     │   │   │   │   │   │   ├── alert-subscription.mapper.ts  # Alert subscription DTO ↔ Domain
     │   │   │   │   │   │   ├── alert.mapper.ts  # Alert DTO ↔ Domain
     │   │   │   │   │   │   ├── analytics-aggregation.mapper.ts  # Analytics aggregation DTO ↔ Domain
@@ -29206,6 +29239,7 @@ fe/
     │   │   │   │   │   │       # User preference signal DTO ↔ Domain
     │   │   │   │   │   ├── storage/  # Storage mappers
     │   │   │   │   │   │   # Storage mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL STORAGE ENTITIES - 35+ mappers missing)
     │   │   │   │   │   │   ├── access-control.mapper.ts  # AccessControl DTO ↔ Domain
     │   │   │   │   │   │   ├── access.mapper.ts  # Access DTO ↔ Domain
     │   │   │   │   │   │   ├── artifact-manifest.mapper.ts  # Artifact manifest DTO ↔ Domain
@@ -29275,6 +29309,7 @@ fe/
     │   │   │   │   │   │   └── watermark.mapper.ts  # Watermark DTO ↔ Domain
     │   │   │   │   │   ├── subscriptions/  # Subscriptions mappers
     │   │   │   │   │   │   # Subscriptions mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL SUBSCRIPTION ENTITIES - 22+ mappers missing)
     │   │   │   │   │   │   ├── addon.mapper.ts  # Addon DTO ↔ Domain
     │   │   │   │   │   │   ├── allowance-transaction.mapper.ts  # Allowance transaction DTO ↔ Domain
     │   │   │   │   │   │   ├── allowance.mapper.ts  # Allowance DTO ↔ Domain
@@ -29334,6 +29369,7 @@ fe/
     │   │   │   │   │   │   └── user-tax-binding.mapper.ts  # User tax binding DTO ↔ Domain
     │   │   │   │   │   ├── users/  # Users mappers
     │   │   │   │   │   │   # Users mappers (MISSING MAPPERS)
+    │   │   │   │   │   │   # MISSING MAPPERS (ALL USER ENTITIES - 55+ mappers missing)
     │   │   │   │   │   │   ├── account-recovery.mapper.ts  # Account recovery DTO ↔ Domain
     │   │   │   │   │   │   ├── achievement-definition.mapper.ts  # Achievement definition DTO ↔ Domain
     │   │   │   │   │   │   ├── achievement-unlock.mapper.ts  # Achievement unlock DTO ↔ Domain
@@ -29458,9 +29494,11 @@ fe/
     │   │   │   │   ├── models/  # API DTOs (request/response shapes)
     │   │   │   │   │   # API DTOs (MISSING DTOs BELOW)
     │   │   │   │   │   # API DTOs (MISSING MODELS BELOW)
+    │   │   │   │   │   # API DTOs (MISSING ITEMS)
     │   │   │   │   │   ├── admin/  # Admin backend API DTOs
     │   │   │   │   │   │   # Admin-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs - ALL THE SAME AS DOMAINS BUT WITH DTO SUFFIX
+    │   │   │   │   │   │   # MISSING MODELS
     │   │   │   │   │   │   ├── activity-log-dto.ts  # AdminActivityLogDTO
     │   │   │   │   │   │   ├── admin-activity-log.dto.ts  # Activity log DTO
     │   │   │   │   │   │   ├── admin-mfa.dto.ts  # Admin MFA DTO
@@ -29592,6 +29630,7 @@ fe/
     │   │   │   │   │   ├── communications/  # Communications backend API DTOs
     │   │   │   │   │   │   # Communications-BE DTOs
     │   │   │   │   │   │   # MISSING DTOs
+    │   │   │   │   │   │   # MISSING MODELS (40+ DTOs missing)
     │   │   │   │   │   │   ├── analytics-dto.ts  # CommunicationAnalyticsDTO
     │   │   │   │   │   │   ├── attachment-dto.ts  # MessageAttachmentDTO
     │   │   │   │   │   │   ├── blocked-user-dto.ts  # Blocked user DTO
@@ -29717,6 +29756,7 @@ fe/
     │   │   │   │   │   ├── contracts/  # Contracts backend API DTOs
     │   │   │   │   │   │   # Contracts-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL CONTRACT SUB-ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (15+ DTOs missing)
     │   │   │   │   │   │   ├── activity-dto.ts  # ContractActivityDTO
     │   │   │   │   │   │   ├── agency-contract-dto.ts  # AgencyContractDTO
     │   │   │   │   │   │   │   # Agency contract DTO
@@ -29834,6 +29874,7 @@ fe/
     │   │   │   │   │   ├── financial/  # Financial backend API DTOs
     │   │   │   │   │   │   # Financial-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL FINANCIAL ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (40+ DTOs missing)
     │   │   │   │   │   │   ├── account-freeze-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── account-limit-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── analytics-dto.ts  # FinancialAnalyticsDTO
@@ -29970,6 +30011,7 @@ fe/
     │   │   │   │   │   ├── jobs/  # Jobs backend API DTOs
     │   │   │   │   │   │   # Jobs-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL JOB ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (20+ DTOs missing - see domains/jobs/ for list)
     │   │   │   │   │   │   ├── ai-optimization-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── ai-optimization.dto.ts  # AI optimization DTO
     │   │   │   │   │   │   ├── ai-suggest-dto.ts  # AISuggestionDTO
@@ -30062,6 +30104,7 @@ fe/
     │   │   │   │   │   ├── proposals/  # Proposals backend API DTOs
     │   │   │   │   │   │   # Proposals-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL PROPOSAL ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (30+ DTOs missing - see domains/proposals/ for list)
     │   │   │   │   │   │   ├── ai-assist-dto.ts  # AIAssistDTO
     │   │   │   │   │   │   ├── anomaly-dto.ts  # ⚠️ MISSING
     │   │   │   │   │   │   ├── archive-dto.ts  # ProposalArchiveDTO
@@ -30155,6 +30198,7 @@ fe/
     │   │   │   │   │   ├── reviews/  # Reviews backend API DTOs
     │   │   │   │   │   │   # Reviews-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL REVIEW ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (10+ DTOs missing - see domains/reviews/ for list)
     │   │   │   │   │   │   ├── appeal-dto.ts  # Appeal DTO
     │   │   │   │   │   │   │   # ReviewAppealDTO
     │   │   │   │   │   │   │   # ⚠️ MISSING
@@ -30232,6 +30276,7 @@ fe/
     │   │   │   │   │   ├── search/  # Search backend API DTOs
     │   │   │   │   │   │   # Search-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL SEARCH ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (50+ DTOs missing - see domains/search/ for list)
     │   │   │   │   │   │   ├── alert-dto.ts  # Search alert DTO
     │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── analytics-aggregation.dto.ts  # Analytics aggregation DTO
@@ -30309,6 +30354,7 @@ fe/
     │   │   │   │   │   ├── storage/  # Storage backend API DTOs
     │   │   │   │   │   │   # Storage-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL STORAGE ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (30+ DTOs missing - see domains/storage/ for list)
     │   │   │   │   │   │   ├── access-control-dto.ts  # AccessControlDTO
     │   │   │   │   │   │   ├── access-dto.ts  # File access DTO
     │   │   │   │   │   │   │   # ⚠️ MISSING
@@ -30397,6 +30443,7 @@ fe/
     │   │   │   │   │   ├── subscriptions/  # Subscriptions backend API DTOs
     │   │   │   │   │   │   # Subscriptions-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL SUBSCRIPTION ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (20+ DTOs missing - see domains/subscriptions/ for list)
     │   │   │   │   │   │   ├── addon-dto.ts  # Add-on DTO
     │   │   │   │   │   │   │   # AddonDTO
     │   │   │   │   │   │   │   # ⚠️ MISSING
@@ -30499,6 +30546,7 @@ fe/
     │   │   │   │   │   ├── users/  # Users backend API DTOs
     │   │   │   │   │   │   # Users-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL USER ENTITIES)
+    │   │   │   │   │   │   # MISSING MODELS (40+ DTOs missing - see domains/users/ for list)
     │   │   │   │   │   │   ├── account-recovery-dto.ts  # AccountRecoveryDTO
     │   │   │   │   │   │   ├── account-recovery.dto.ts  # Account recovery DTO
     │   │   │   │   │   │   ├── account-settings-dto.ts  # AccountSettingsDTO
@@ -30658,7 +30706,9 @@ fe/
     │   │   │   │   │   │   └── workload-capacity.dto.ts  # Workload capacity DTO
     │   │   │   │   │   └── │
     │   │   │   │   ├── state/  # State management types (MISSING STATE SLICES BELOW)
+    │   │   │   │   │   # State management types (MISSING ITEMS - COMPLETE STATE STRUCTURE)
     │   │   │   │   │   ├── slices/  # State slice types
+    │   │   │   │   │   │   # State slice types (MISSING COMPLETE SLICE STRUCTURE)
     │   │   │   │   │   │   ├── admin.state.ts  # AdminState, AdminAction
     │   │   │   │   │   │   │   # AdminState, AdminAction (activity logs, moderation, tickets, config)
     │   │   │   │   │   │   │   # AdminState, AdminAction - NEEDS: shift, fraud, risk, sanction state
@@ -30696,6 +30746,7 @@ fe/
     │   │   │   │   │   │   └── │
     │   │   │   │   │   ├── stores/  # Store-specific types (Zustand/Jotai)
     │   │   │   │   │   │   # Zustand/Jotai store types
+    │   │   │   │   │   │   # Store-specific types (Zustand/Jotai) (MISSING COMPLETE STORE STRUCTURE)
     │   │   │   │   │   │   ├── admin.store.ts  # AdminStore interface
     │   │   │   │   │   │   ├── communications.store.ts  # CommunicationsStore interface
     │   │   │   │   │   │   ├── contracts.store.ts  # ContractsStore interface
