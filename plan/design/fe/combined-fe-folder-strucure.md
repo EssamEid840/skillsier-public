@@ -7688,76 +7688,126 @@ fe/
     │   │   │       # - Profile sharing
     │   │   ├── src/
     │   │   │   ├── components/  # Mobile-specific components
+    │   │   │   │   ├── accessibility/
+    │   │   │   │   │   ├── FocusTrap.tsx  # ❌ CREATE Focus trap for modals/dialogs accessibility
+    │   │   │   │   │   │   # - Trap focus within component
+    │   │   │   │   │   │   # - Restore focus on unmount
+    │   │   │   │   │   │   # - Keyboard Esc to close
+    │   │   │   │   │   │   # BE: none (UI utility)
+    │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │   │   │   │   │   ├── ScreenReaderAnnouncer.tsx  # ❌ CREATE Screen reader announcements for dynamic content
+    │   │   │   │   │   │   # - ARIA live regions
+    │   │   │   │   │   │   # - Polite/assertive modes
+    │   │   │   │   │   │   # - Queue announcements
+    │   │   │   │   │   │   # BE: none (accessibility)
+    │   │   │   │   │   └── SkipLink.tsx  # ❌ CREATE Skip to main content link
+    │   │   │   │   │       # - Screen reader friendly
+    │   │   │   │   │       # - Visible on focus
+    │   │   │   │   │       # - Jump to content
+    │   │   │   │   │       # BE: none (accessibility)
+    │   │   │   │   ├── animations/
+    │   │   │   │   │   ├── FadeIn.tsx  # ❌ CREATE Fade in animation wrapper
+    │   │   │   │   │   │   # - Animated opacity
+    │   │   │   │   │   │   # - Duration prop
+    │   │   │   │   │   │   # - Delay support
+    │   │   │   │   │   │   # BE: none (UI animation)
+    │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │   │   │   │   │   ├── ScaleIn.tsx  # ❌ CREATE Scale in animation wrapper
+    │   │   │   │   │   │   # - Animated scale transform
+    │   │   │   │   │   │   # - Spring physics
+    │   │   │   │   │   │   # BE: none (UI animation)
+    │   │   │   │   │   └── SlideIn.tsx  # ❌ CREATE Slide in animation wrapper
+    │   │   │   │   │       # - Slide from direction
+    │   │   │   │   │       # - Animated position
+    │   │   │   │   │       # BE: none (UI animation)
     │   │   │   │   ├── Auth/
     │   │   │   │   │   ├── LoginForm.tsx  # Login form component
     │   │   │   │   │   ├── RegisterForm.tsx  # Registration form
     │   │   │   │   │   └── SocialButtons.tsx  # Social login buttons
     │   │   │   │   ├── BiometricAuth/
-    │   │   │   │   │   ├── BiometricAuth.tsx  # ❌ CREATE - Biometric authentication
+    │   │   │   │   │   ├── BiometricAuth.tsx  # Biometric authentication
     │   │   │   │   │   │   # - TouchID/FaceID on iOS
     │   │   │   │   │   │   # - Fingerprint on Android
     │   │   │   │   │   │   # - Fallback to PIN/password
     │   │   │   │   │   │   # - Secure storage for credentials
     │   │   │   │   │   │   # Props: onSuccess, onError, fallbackEnabled
-    │   │   │   │   │   ├── BiometricAuth.types.ts  # ❌ CREATE - Types
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │   │   │   │   │   ├── BiometricAuth.types.ts  # Types
+    │   │   │   │   │   └── index.ts  # Barrel export
     │   │   │   │   ├── CameraCapture/
-    │   │   │   │   │   ├── CameraCapture.tsx  # ❌ CREATE - Camera capture component
+    │   │   │   │   │   ├── CameraCapture.tsx  # Camera capture component
     │   │   │   │   │   │   # - react-native-camera or expo-camera
     │   │   │   │   │   │   # - Photo/video capture
     │   │   │   │   │   │   # - Flash control
     │   │   │   │   │   │   # - Front/back camera toggle
     │   │   │   │   │   │   # - Gallery access
     │   │   │   │   │   │   # Props: mode, onCapture, aspectRatio
-    │   │   │   │   │   ├── CameraCapture.types.ts  # ❌ CREATE - Types
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │   │   │   │   │   ├── CameraCapture.types.ts  # Types
+    │   │   │   │   │   └── index.ts  # Barrel export
     │   │   │   │   ├── Contracts/
     │   │   │   │   │   ├── ContractCard.tsx  # Contract card
     │   │   │   │   │   ├── DeliverableCard.tsx  # BE: none (typed props), actions wired to mutations
     │   │   │   │   │   │   # Typed UI component
     │   │   │   │   │   ├── MilestoneItem.tsx  # Milestone list item
     │   │   │   │   │   └── TimesheetEntry.tsx  # Timesheet entry
+    │   │   │   │   ├── error-handling/
+    │   │   │   │   │   ├── ApiErrorDisplay.tsx  # ❌ CREATE Display API errors with retry
+    │   │   │   │   │   │   # - Error message formatting
+    │   │   │   │   │   │   # - Retry button
+    │   │   │   │   │   │   # - Error code display
+    │   │   │   │   │   │   # - Support contact link
+    │   │   │   │   │   │   # BE: none (error display)
+    │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │   │   │   │   │   ├── NetworkErrorBanner.tsx  # ❌ CREATE Network error banner
+    │   │   │   │   │   │   # - Offline detection
+    │   │   │   │   │   │   # - Auto-retry on reconnect
+    │   │   │   │   │   │   # - Connection status
+    │   │   │   │   │   │   # BE: none (network status)
+    │   │   │   │   │   └── NotFoundScreen.tsx  # ❌ CREATE 404 not found screen
+    │   │   │   │   │       # - Friendly message
+    │   │   │   │   │       # - Navigation suggestions
+    │   │   │   │   │       # - Go back button
+    │   │   │   │   │       # BE: none (error screen)
     │   │   │   │   ├── Financial/
     │   │   │   │   │   ├── InvoiceCard.tsx  # Invoice card
     │   │   │   │   │   ├── TransactionItem.tsx  # Transaction list item
     │   │   │   │   │   └── WalletCard.tsx  # Wallet balance card
     │   │   │   │   ├── GestureHandler/
     │   │   │   │   │   ├── SwipeableRow/
-    │   │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   │   ├── SwipeableRow.tsx  # ❌ CREATE - Swipeable list row
+    │   │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   │   ├── SwipeableRow.tsx  # Swipeable list row
     │   │   │   │   │   │   │   # - react-native-gesture-handler
     │   │   │   │   │   │   │   # - Left/right swipe actions
     │   │   │   │   │   │   │   # - Delete, archive, etc.
     │   │   │   │   │   │   │   # - Haptic feedback
     │   │   │   │   │   │   │   # Props: leftActions[], rightActions[], onSwipe, children
     │   │   │   │   │   │   │   # Props: leftActions, rightActions, children
-    │   │   │   │   │   │   └── SwipeableRow.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   │   └── SwipeableRow.types.ts  # Types
     │   │   │   │   │   │       # - SwipeAction interface
     │   │   │   │   │   │       # - SwipeableRowProps interface
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │   │   │   │   │   └── index.ts  # Barrel export
     │   │   │   │   ├── HapticFeedback/
-    │   │   │   │   │   ├── HapticFeedback.tsx  # ❌ CREATE - Haptic feedback utility
+    │   │   │   │   │   ├── HapticFeedback.tsx  # Haptic feedback utility
     │   │   │   │   │   │   # - Trigger device vibration
     │   │   │   │   │   │   # - Different haptic patterns
     │   │   │   │   │   │   # - Success, warning, error, selection
     │   │   │   │   │   │   # Props: type, intensity
-    │   │   │   │   │   ├── HapticFeedback.types.ts  # ❌ CREATE - Types
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │   │   │   │   │   ├── HapticFeedback.types.ts  # Types
+    │   │   │   │   │   └── index.ts  # Barrel export
     │   │   │   │   ├── Jobs/
     │   │   │   │   │   ├── JobCard.tsx  # Job card component
     │   │   │   │   │   ├── JobDetail.tsx  # Job detail view
     │   │   │   │   │   ├── JobFilters.tsx  # Job filters bottom sheet
     │   │   │   │   │   └── JobList.tsx  # Job list
     │   │   │   │   ├── LocationPicker/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── LocationPicker.tsx  # ❌ CREATE - Location picker component
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── LocationPicker.tsx  # Location picker component
     │   │   │   │   │   │   # - react-native-maps
     │   │   │   │   │   │   # - Current location button
     │   │   │   │   │   │   # - Search places
     │   │   │   │   │   │   # - Drag marker
     │   │   │   │   │   │   # - Address reverse geocoding
     │   │   │   │   │   │   # Props: initialLocation, onLocationSelect, searchEnabled
-    │   │   │   │   │   └── LocationPicker.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── LocationPicker.types.ts  # Types
     │   │   │   │   ├── Messages/
     │   │   │   │   │   ├── ConversationCard.tsx  # Conversation list item
     │   │   │   │   │   ├── MessageBubble.tsx  # Message bubble
@@ -7767,29 +7817,46 @@ fe/
     │   │   │   │   │   ├── Header.tsx  # Screen header
     │   │   │   │   │   └── TabBar.tsx  # Custom tab bar
     │   │   │   │   ├── NetworkStatus/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── NetworkStatus.tsx  # ❌ CREATE - Network status indicator
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── NetworkStatus.tsx  # Network status indicator
     │   │   │   │   │   │   # - Shows offline banner
     │   │   │   │   │   │   # - Retry button
     │   │   │   │   │   │   # - Connection quality indicator
     │   │   │   │   │   │   # Props: onRetry, showBanner
-    │   │   │   │   │   └── NetworkStatus.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── NetworkStatus.types.ts  # Types
     │   │   │   │   ├── NotificationPermission/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── NotificationPermission.tsx  # ❌ CREATE - Push notification permission
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── NotificationPermission.tsx  # Push notification permission
     │   │   │   │   │   │   # - Request notification permission
     │   │   │   │   │   │   # - Explain benefits
     │   │   │   │   │   │   # - Enable later option
     │   │   │   │   │   │   # - Settings link
     │   │   │   │   │   │   # Props: onPermissionGranted, onPermissionDenied
-    │   │   │   │   │   └── NotificationPermission.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── NotificationPermission.types.ts  # Types
+    │   │   │   │   ├── offline/
+    │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │   │   │   │   │   ├── OfflineIndicator.tsx  # ❌ CREATE Offline mode indicator
+    │   │   │   │   │   │   # - Connection status
+    │   │   │   │   │   │   # - Sync pending count
+    │   │   │   │   │   │   # - Retry sync button
+    │   │   │   │   │   │   # BE: none (offline status)
+    │   │   │   │   │   ├── OfflineQueue.tsx  # ❌ CREATE Offline queue display
+    │   │   │   │   │   │   # - Pending actions list
+    │   │   │   │   │   │   # - Cancel queued action
+    │   │   │   │   │   │   # - Retry failed actions
+    │   │   │   │   │   │   # BE: none (offline queue)
+    │   │   │   │   │   └── SyncStatusBanner.tsx  # ❌ CREATE Sync status banner
+    │   │   │   │   │       # - Syncing indicator
+    │   │   │   │   │       # - Last synced time
+    │   │   │   │   │       # - Sync conflicts alert
+    │   │   │   │   │       # BE: none (sync status)
     │   │   │   │   ├── OfflineBanner/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── OfflineBanner.tsx  # ❌ CREATE - Offline status banner
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── OfflineBanner.tsx  # Offline status banner
     │   │   │   │   │   │   # - Shows when network is offline
     │   │   │   │   │   │   # - NetInfo listener
     │   │   │   │   │   │   # - Animated slide in/out
-    │   │   │   │   │   └── OfflineBanner.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── OfflineBanner.types.ts  # Types
     │   │   │   │   │       # - OfflineBannerProps interface
     │   │   │   │   ├── Profile/
     │   │   │   │   │   ├── ExperienceItem.tsx  # Experience item
@@ -7801,61 +7868,61 @@ fe/
     │   │   │   │   │   ├── ProposalForm.tsx  # Proposal submission form
     │   │   │   │   │   └── ProposalList.tsx  # Proposal list
     │   │   │   │   ├── PullToRefresh/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── PullToRefresh.tsx  # ❌ CREATE - Pull to refresh wrapper
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── PullToRefresh.tsx  # Pull to refresh wrapper
     │   │   │   │   │   │   # - ScrollView with RefreshControl
     │   │   │   │   │   │   # - Custom refresh indicator
     │   │   │   │   │   │   # - Haptic feedback on refresh
     │   │   │   │   │   │   # Props: onRefresh, refreshing, children
-    │   │   │   │   │   │   # ❌ CREATE - Pull-to-refresh wrapper
+    │   │   │   │   │   │   # Pull-to-refresh wrapper
     │   │   │   │   │   │   # - RefreshControl integration
-    │   │   │   │   │   └── PullToRefresh.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── PullToRefresh.types.ts  # Types
     │   │   │   │   │       # - PullToRefreshProps interface
     │   │   │   │   ├── QRScanner/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── QRScanner.tsx  # ❌ CREATE - QR code scanner
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── QRScanner.tsx  # QR code scanner
     │   │   │   │   │   │   # - Camera-based QR scanner
     │   │   │   │   │   │   # - Torch toggle
     │   │   │   │   │   │   # - Gallery QR scan
     │   │   │   │   │   │   # - Overlay with scan area
     │   │   │   │   │   │   # Props: onScan, onError, showTorch
-    │   │   │   │   │   └── QRScanner.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── QRScanner.types.ts  # Types
     │   │   │   │   ├── QuickActions/
     │   │   │   │   │   └── README.md  # Home screen quick actions (notes)
     │   │   │   │   ├── SafeAreaWrapper/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── SafeAreaWrapper.tsx  # ❌ CREATE - Safe area wrapper
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── SafeAreaWrapper.tsx  # Safe area wrapper
     │   │   │   │   │   │   # - react-native-safe-area-context
     │   │   │   │   │   │   # - Handles notch, status bar, home indicator
     │   │   │   │   │   │   # - Configurable edges
     │   │   │   │   │   │   # Props: edges, children
-    │   │   │   │   │   └── SafeAreaWrapper.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── SafeAreaWrapper.types.ts  # Types
     │   │   │   │   ├── ShareSheet/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── ShareSheet.tsx  # ❌ CREATE - Native share sheet
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── ShareSheet.tsx  # Native share sheet
     │   │   │   │   │   │   # - react-native-share
     │   │   │   │   │   │   # - Share text, URLs, files
     │   │   │   │   │   │   # - Native share dialog
     │   │   │   │   │   │   # Props: content, onShare, onError
-    │   │   │   │   │   └── ShareSheet.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── ShareSheet.types.ts  # Types
     │   │   │   │   ├── SplashScreen/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   ├── SplashScreen.tsx  # ❌ CREATE - App splash screen
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   ├── SplashScreen.tsx  # App splash screen
     │   │   │   │   │   │   # - Animated logo
     │   │   │   │   │   │   # - Loading indicator
     │   │   │   │   │   │   # - expo-splash-screen integration
-    │   │   │   │   │   └── SplashScreen.types.ts  # ❌ CREATE - Types
+    │   │   │   │   │   └── SplashScreen.types.ts  # Types
     │   │   │   │   │       # - SplashScreenProps interface
     │   │   │   │   └── VoiceRecorder/
-    │   │   │   │       ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │       ├── VoiceRecorder.tsx  # ❌ CREATE - Voice recorder component
+    │   │   │   │       ├── index.ts  # Barrel export
+    │   │   │   │       ├── VoiceRecorder.tsx  # Voice recorder component
     │   │   │   │       │   # - expo-av or react-native-audio-recorder-player
     │   │   │   │       │   # - Record/pause/stop
     │   │   │   │       │   # - Waveform visualization
     │   │   │   │       │   # - Playback preview
     │   │   │   │       │   # - Duration display
     │   │   │   │       │   # Props: onRecordingComplete, maxDuration
-    │   │   │   │       └── VoiceRecorder.types.ts  # ❌ CREATE - Types
+    │   │   │   │       └── VoiceRecorder.types.ts  # Types
     │   │   │   ├── hooks/  # Mobile-specific hooks
     │   │   │   │   # Mobile-specific hooks only
     │   │   │   │   ├── use-biometric.ts  # (mobile-specific)
@@ -8162,40 +8229,40 @@ fe/
     │   │   │   │                   # GET /v1/developer/webhooks/templates
     │   │   │   ├── services/
     │   │   │   │   ├── biometric/
-    │   │   │   │   │   ├── biometric.service.ts  # ❌ CREATE - Biometric auth service
+    │   │   │   │   │   ├── biometric.service.ts  # Biometric auth service
     │   │   │   │   │   │   # - Check biometric availability
     │   │   │   │   │   │   # - Authenticate with biometrics
     │   │   │   │   │   │   # - Store/retrieve credentials
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │   │   │   │   │   └── index.ts  # Barrel export
     │   │   │   │   ├── camera/
-    │   │   │   │   │   ├── camera.service.ts  # ❌ CREATE - Camera service
+    │   │   │   │   │   ├── camera.service.ts  # Camera service
     │   │   │   │   │   │   # - Request camera permissions
     │   │   │   │   │   │   # - Capture photo/video
     │   │   │   │   │   │   # - Access gallery
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │   │   │   │   │   └── index.ts  # Barrel export
     │   │   │   │   ├── haptics/
-    │   │   │   │   │   ├── haptics.service.ts  # ❌ CREATE - Haptic feedback service
+    │   │   │   │   │   ├── haptics.service.ts  # Haptic feedback service
     │   │   │   │   │   │   # - Trigger haptic patterns
     │   │   │   │   │   │   # - Success, warning, error haptics
     │   │   │   │   │   │   # - Custom vibration patterns
-    │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │   │   │   │   │   └── index.ts  # Barrel export
     │   │   │   │   ├── location/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   └── location.service.ts  # ❌ CREATE - Location service
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   └── location.service.ts  # Location service
     │   │   │   │   │       # - Request location permissions
     │   │   │   │   │       # - Get current location
     │   │   │   │   │       # - Watch position
     │   │   │   │   │       # - Geocoding/reverse geocoding
     │   │   │   │   ├── notifications/
-    │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │   │   └── notification.service.ts  # ❌ CREATE - Push notification service
+    │   │   │   │   │   ├── index.ts  # Barrel export
+    │   │   │   │   │   └── notification.service.ts  # Push notification service
     │   │   │   │   │       # - Request notification permissions
     │   │   │   │   │       # - Register device token
     │   │   │   │   │       # - Handle incoming notifications
     │   │   │   │   │       # - Local notifications
     │   │   │   │   └── storage/
-    │   │   │   │       ├── index.ts  # ❌ CREATE - Barrel export
-    │   │   │   │       └── storage.service.ts  # ❌ CREATE - Storage service
+    │   │   │   │       ├── index.ts  # Barrel export
+    │   │   │   │       └── storage.service.ts  # Storage service
     │   │   │   │           # - Async storage wrapper
     │   │   │   │           # - Secure storage for sensitive data
     │   │   │   │           # - Cache management
@@ -9641,66 +9708,66 @@ fe/
     │       │   │   ├── (authenticated)/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── BulkActions/
-    │       │   │   │   │   │   ├── BulkActionsToolbar.tsx  # ❌ CREATE - Bulk actions toolbar
+    │       │   │   │   │   │   ├── BulkActionsToolbar.tsx  # Bulk actions toolbar
     │       │   │   │   │   │   │   # - Appears when items selected
     │       │   │   │   │   │   │   # - Shows count, actions (delete, export, etc.)
     │       │   │   │   │   │   │   # - Confirm dangerous actions
     │       │   │   │   │   │   │   # Props: selectedCount, actions[], onClear
-    │       │   │   │   │   │   ├── BulkActionsToolbar.types.ts  # ❌ CREATE - Types
-    │       │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── BulkActionsToolbar.types.ts  # Types
+    │       │   │   │   │   │   └── index.ts  # Barrel export
     │       │   │   │   │   ├── ExportButton/
-    │       │   │   │   │   │   ├── ExportButton.tsx  # ❌ CREATE - Export data button
+    │       │   │   │   │   │   ├── ExportButton.tsx  # Export data button
     │       │   │   │   │   │   │   # - Dropdown with export formats (CSV, Excel, PDF)
     │       │   │   │   │   │   │   # - Progress indicator
     │       │   │   │   │   │   │   # - Download link
     │       │   │   │   │   │   │   # Props: data, formats[], onExport
-    │       │   │   │   │   │   ├── ExportButton.types.ts  # ❌ CREATE - Types
-    │       │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── ExportButton.types.ts  # Types
+    │       │   │   │   │   │   └── index.ts  # Barrel export
     │       │   │   │   │   ├── ImportButton/
-    │       │   │   │   │   │   ├── ImportButton.tsx  # ❌ CREATE - Import data button
+    │       │   │   │   │   │   ├── ImportButton.tsx  # Import data button
     │       │   │   │   │   │   │   # - File upload
     │       │   │   │   │   │   │   # - Format validation
     │       │   │   │   │   │   │   # - Preview data
     │       │   │   │   │   │   │   # - Error handling
     │       │   │   │   │   │   │   # Props: onImport, formats[], validateData
-    │       │   │   │   │   │   ├── ImportButton.types.ts  # ❌ CREATE - Types
-    │       │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── ImportButton.types.ts  # Types
+    │       │   │   │   │   │   └── index.ts  # Barrel export
     │       │   │   │   │   ├── QuickFilters/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── QuickFilters.tsx  # ❌ CREATE - Quick filter chips
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   ├── QuickFilters.tsx  # Quick filter chips
     │       │   │   │   │   │   │   # - Pre-defined filter chips
     │       │   │   │   │   │   │   # - Active state
     │       │   │   │   │   │   │   # - Clear all button
     │       │   │   │   │   │   │   # Props: filters[], activeFilters[], onChange
-    │       │   │   │   │   │   └── QuickFilters.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   │   └── QuickFilters.types.ts  # Types
     │       │   │   │   │   ├── SavedFilters/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── SavedFilters.tsx  # ❌ CREATE - Saved filter presets
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   ├── SavedFilters.tsx  # Saved filter presets
     │       │   │   │   │   │   │   # - Save current filters as preset
     │       │   │   │   │   │   │   # - Load saved preset
     │       │   │   │   │   │   │   # - Delete preset
     │       │   │   │   │   │   │   # - Share preset (URL)
     │       │   │   │   │   │   │   # Props: onSave, onLoad, onDelete, presets[]
-    │       │   │   │   │   │   └── SavedFilters.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   │   └── SavedFilters.types.ts  # Types
     │       │   │   │   │   ├── SortMenu/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── SortMenu.tsx  # ❌ CREATE - Sort dropdown menu
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   ├── SortMenu.tsx  # Sort dropdown menu
     │       │   │   │   │   │   │   # - List of sortable columns
     │       │   │   │   │   │   │   # - Ascending/descending toggle
     │       │   │   │   │   │   │   # - Active sort indicator
     │       │   │   │   │   │   │   # Props: sortOptions[], activeSort, onChange
-    │       │   │   │   │   │   └── SortMenu.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   │   └── SortMenu.types.ts  # Types
     │       │   │   │   │   ├── TableToolbar/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── TableToolbar.tsx  # ❌ CREATE - Data table toolbar
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   ├── TableToolbar.tsx  # Data table toolbar
     │       │   │   │   │   │   │   # - Search, filter, sort, view options
     │       │   │   │   │   │   │   # - Bulk actions when items selected
     │       │   │   │   │   │   │   # - Export/import buttons
     │       │   │   │   │   │   │   # - Column visibility toggle
     │       │   │   │   │   │   │   # Props: searchProps, filterProps, sortProps, bulkActionsProps
-    │       │   │   │   │   │   └── TableToolbar.types.ts  # ❌ CREATE - Types
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   └── TableToolbar.types.ts  # Types
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── (dashboard)/
     │       │   │   │   ├── (routes)/
     │       │   │   │   │   ├── analytics/
@@ -10312,47 +10379,47 @@ fe/
     │       │   │   │           ├── admin/
     │       │   │   │           │   └── financial-ops/
     │       │   │   │           │       ├── TransactionFilters/
-    │       │   │   │           │       │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │           │       │   ├── TransactionFilters.tsx  # ❌ CREATE - Advanced transaction filters
+    │       │   │   │           │       │   ├── index.ts  # Barrel export
+    │       │   │   │           │       │   ├── TransactionFilters.tsx  # Advanced transaction filters
     │       │   │   │           │       │   │   # - Date range picker
     │       │   │   │           │       │   │   # - Amount range slider
     │       │   │   │           │       │   │   # - Status/type multi-select
     │       │   │   │           │       │   │   # - User search
     │       │   │   │           │       │   │   # Props: filters, onChange, onReset
-    │       │   │   │           │       │   └── TransactionFilters.types.ts  # ❌ CREATE - Types
+    │       │   │   │           │       │   └── TransactionFilters.types.ts  # Types
     │       │   │   │           │       │       # - TransactionFilters interface
     │       │   │   │           │       └── WalletActivityChart/
-    │       │   │   │           │           ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │           │           ├── WalletActivityChart.tsx  # ❌ CREATE - Wallet activity visualization
+    │       │   │   │           │           ├── index.ts  # Barrel export
+    │       │   │   │           │           ├── WalletActivityChart.tsx  # Wallet activity visualization
     │       │   │   │           │           │   # - Line chart of balance over time
     │       │   │   │           │           │   # - Transaction volume bars
     │       │   │   │           │           │   # - Time range selector
     │       │   │   │           │           │   # Props: walletId, dateRange
-    │       │   │   │           │           └── WalletActivityChart.types.ts  # ❌ CREATE - Types
+    │       │   │   │           │           └── WalletActivityChart.types.ts  # Types
     │       │   │   │           │               # - WalletActivityData interface
     │       │   │   │           ├── contracts/
     │       │   │   │           │   └── components/
     │       │   │   │           │       ├── ContractTimeline/
-    │       │   │   │           │       │   ├── ContractTimeline.tsx  # ❌ CREATE - Contract milestone timeline
+    │       │   │   │           │       │   ├── ContractTimeline.tsx  # Contract milestone timeline
     │       │   │   │           │       │   │   # - Visual timeline of milestones
     │       │   │   │           │       │   │   # - Status indicators
     │       │   │   │           │       │   │   # - Date markers
     │       │   │   │           │       │   │   # Props: milestones, currentMilestone
-    │       │   │   │           │       │   ├── ContractTimeline.types.ts  # ❌ CREATE - Types
-    │       │   │   │           │       │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │           │       │   ├── ContractTimeline.types.ts  # Types
+    │       │   │   │           │       │   └── index.ts  # Barrel export
     │       │   │   │           │       └── DisputeForm/
-    │       │   │   │           │           ├── DisputeForm.tsx  # ❌ CREATE - Dispute creation form
+    │       │   │   │           │           ├── DisputeForm.tsx  # Dispute creation form
     │       │   │   │           │           │   # - Multi-step form
     │       │   │   │           │           │   # - Evidence upload
     │       │   │   │           │           │   # - Category selection
     │       │   │   │           │           │   # Props: contractId, onSubmit
-    │       │   │   │           │           ├── DisputeForm.types.ts  # ❌ CREATE - Types
-    │       │   │   │           │           └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │           │           ├── DisputeForm.types.ts  # Types
+    │       │   │   │           │           └── index.ts  # Barrel export
     │       │   │   │           ├── jobs/
     │       │   │   │           │   └── components/
     │       │   │   │           │       ├── JobFilters/
-    │       │   │   │           │       │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │           │       │   ├── JobFilters.tsx  # ❌ CREATE - Advanced job search filters
+    │       │   │   │           │       │   ├── index.ts  # Barrel export
+    │       │   │   │           │       │   ├── JobFilters.tsx  # Advanced job search filters
     │       │   │   │           │       │   │   # - Skill chips (multi-select)
     │       │   │   │           │       │   │   # - Budget range slider
     │       │   │   │           │       │   │   # - Job type (fixed/hourly)
@@ -10360,71 +10427,71 @@ fe/
     │       │   │   │           │       │   │   # - Location filter
     │       │   │   │           │       │   │   # - Posted date range
     │       │   │   │           │       │   │   # Props: filters, onChange, onReset
-    │       │   │   │           │       │   └── JobFilters.types.ts  # ❌ CREATE - Types
+    │       │   │   │           │       │   └── JobFilters.types.ts  # Types
     │       │   │   │           │       │       # - JobFilters interface
     │       │   │   │           │       ├── SkillsTestResult/
-    │       │   │   │           │       │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │           │       │   ├── SkillsTestResult.tsx  # ❌ CREATE - Skills test results display
+    │       │   │   │           │       │   ├── index.ts  # Barrel export
+    │       │   │   │           │       │   ├── SkillsTestResult.tsx  # Skills test results display
     │       │   │   │           │       │   │   # - Score visualization
     │       │   │   │           │       │   │   # - Question breakdown
     │       │   │   │           │       │   │   # - Percentile ranking
     │       │   │   │           │       │   │   # - Certificate download
     │       │   │   │           │       │   │   # Props: testResult, showDetails
-    │       │   │   │           │       │   └── SkillsTestResult.types.ts  # ❌ CREATE - Types
+    │       │   │   │           │       │   └── SkillsTestResult.types.ts  # Types
     │       │   │   │           │       │       # - TestResult interface
     │       │   │   │           │       └── SubmitProposalWizard/
-    │       │   │   │           │           ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │           │           ├── SubmitProposalWizard.tsx  # ❌ CREATE - Multi-step proposal submission
+    │       │   │   │           │           ├── index.ts  # Barrel export
+    │       │   │   │           │           ├── SubmitProposalWizard.tsx  # Multi-step proposal submission
     │       │   │   │           │           │   # - Stepper navigation
     │       │   │   │           │           │   # - Cover letter
     │       │   │   │           │           │   # - Bid amount & timeline
     │       │   │   │           │           │   # - Attachments
     │       │   │   │           │           │   # - Review step
     │       │   │   │           │           │   # Props: jobId, onSubmit
-    │       │   │   │           │           └── SubmitProposalWizard.types.ts  # ❌ CREATE - Types
+    │       │   │   │           │           └── SubmitProposalWizard.types.ts  # Types
     │       │   │   │           │               # - ProposalFormData interface
     │       │   │   │           └── messaging/
     │       │   │   │               └── components/
     │       │   │   │                   ├── MessageAttachmentPreview/
-    │       │   │   │                   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │                   │   ├── MessageAttachmentPreview.tsx  # ❌ CREATE - Attachment preview in message
+    │       │   │   │                   │   ├── index.ts  # Barrel export
+    │       │   │   │                   │   ├── MessageAttachmentPreview.tsx  # Attachment preview in message
     │       │   │   │                   │   │   # - Thumbnail for images
     │       │   │   │                   │   │   # - Icon for files
     │       │   │   │                   │   │   # - Download button
     │       │   │   │                   │   │   # Props: attachment, onDownload
-    │       │   │   │                   │   └── MessageAttachmentPreview.types.ts  # ❌ CREATE - Types
+    │       │   │   │                   │   └── MessageAttachmentPreview.types.ts  # Types
     │       │   │   │                   │       # - Attachment interface
     │       │   │   │                   ├── TypingIndicator/
-    │       │   │   │                   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │                   │   ├── TypingIndicator.tsx  # ❌ CREATE - "User is typing..." indicator
+    │       │   │   │                   │   ├── index.ts  # Barrel export
+    │       │   │   │                   │   ├── TypingIndicator.tsx  # "User is typing..." indicator
     │       │   │   │                   │   │   # - Animated dots
     │       │   │   │                   │   │   # - User name display
     │       │   │   │                   │   │   # Props: users
-    │       │   │   │                   │   └── TypingIndicator.types.ts  # ❌ CREATE - Types
+    │       │   │   │                   │   └── TypingIndicator.types.ts  # Types
     │       │   │   │                   │       # - TypingIndicatorProps interface
     │       │   │   │                   └── VoiceRecorder/
-    │       │   │   │                       ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │                       ├── VoiceRecorder.tsx  # ❌ CREATE - Voice message recorder
+    │       │   │   │                       ├── index.ts  # Barrel export
+    │       │   │   │                       ├── VoiceRecorder.tsx  # Voice message recorder
     │       │   │   │                       │   # - Record audio button
     │       │   │   │                       │   # - Waveform visualization
     │       │   │   │                       │   # - Play preview
     │       │   │   │                       │   # - Send/cancel actions
     │       │   │   │                       │   # Props: onSend, maxDuration
-    │       │   │   │                       └── VoiceRecorder.types.ts  # ❌ CREATE - Types
+    │       │   │   │                       └── VoiceRecorder.types.ts  # Types
     │       │   │   │                           # - VoiceRecorderProps interface
     │       │   │   ├── (public)/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── CookieConsent/
-    │       │   │   │   │   │   ├── CookieConsent.tsx  # ❌ CREATE - Cookie consent banner
+    │       │   │   │   │   │   ├── CookieConsent.tsx  # Cookie consent banner
     │       │   │   │   │   │   │   # - GDPR-compliant cookie banner
     │       │   │   │   │   │   │   # - Accept/reject/customize buttons
     │       │   │   │   │   │   │   # - Preferences modal
     │       │   │   │   │   │   │   # - Stores consent in localStorage/cookies
     │       │   │   │   │   │   │   # Props: onAccept, onReject, onCustomize
-    │       │   │   │   │   │   ├── CookieConsent.types.ts  # ❌ CREATE - Types
-    │       │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── CookieConsent.types.ts  # Types
+    │       │   │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── [locale]/  # Internationalized routing (en, ar, zh, hi, de, fr, tr, es, ru)
     │       │   │   │   # i18n support
     │       │   │   │   ├── (admin)/
@@ -19601,6 +19668,40 @@ fe/
     │       │   │   │   │   # Root layout
     │       │   │   │   └── page.tsx  # Home page
     │       │   │   ├── api/
+    │       │   │   ├── components/
+    │       │   │   │   ├── performance/
+    │       │   │   │   │   ├── ImageOptimizer.tsx  # ❌ CREATE Next.js Image with lazy load
+    │       │   │   │   │   │   # - WebP/AVIF support
+    │       │   │   │   │   │   # - Responsive images
+    │       │   │   │   │   │   # - Blur placeholder
+    │       │   │   │   │   │   # BE: storage-be (image URLs)
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── LazyLoad.tsx  # ❌ CREATE Lazy load wrapper
+    │       │   │   │   │   │   # - Intersection Observer
+    │       │   │   │   │   │   # - Skeleton fallback
+    │       │   │   │   │   │   # - Progressive loading
+    │       │   │   │   │   │   # BE: none (lazy loading)
+    │       │   │   │   │   └── PreloadLinks.tsx  # ❌ CREATE Preload critical resources
+    │       │   │   │   │       # - DNS prefetch
+    │       │   │   │   │       # - Preconnect
+    │       │   │   │   │       # - Prefetch routes
+    │       │   │   │   │       # BE: none (performance)
+    │       │   │   │   └── seo/
+    │       │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │       ├── JsonLd.tsx  # ❌ CREATE JSON-LD structured data
+    │       │   │   │       │   # - Schema.org markup
+    │       │   │   │       │   # - Job/Person/Organization schemas
+    │       │   │   │       │   # - Rich snippets support
+    │       │   │   │       │   # BE: none (SEO)
+    │       │   │   │       ├── MetaTags.tsx  # ❌ CREATE Dynamic meta tags
+    │       │   │   │       │   # - OG tags
+    │       │   │   │       │   # - Twitter cards
+    │       │   │   │       │   # - Canonical URLs
+    │       │   │   │       │   # BE: none (SEO)
+    │       │   │   │       └── OpenGraph.tsx  # ❌ CREATE Open Graph meta tags
+    │       │   │   │           # - Social media previews
+    │       │   │   │           # - Image optimization
+    │       │   │   │           # BE: none (SEO)
     │       │   │   ├── operations/
     │       │   │   │   └── search-quality/
     │       │   │   │       ├── boosts/
@@ -19738,6 +19839,20 @@ fe/
     │       │   │                   # BE: admin-be/watchlists
     │       │   │                   # GET /v1/admin/watchlists/monitoring
     │       │   │                   # conflict: file also existed
+    │       │   ├── components/
+    │       │   │   └── dev-tools/
+    │       │   │       ├── DevToolsPanel.tsx  # ❌ CREATE Development tools panel
+    │       │   │       │   # - Feature flags toggle
+    │       │   │       │   # - Environment switcher
+    │       │   │       │   # - Cache controls
+    │       │   │       │   # - API mock toggle
+    │       │   │       │   # BE: none (dev tools)
+    │       │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │       └── QueryDevTools.tsx  # ❌ CREATE React Query dev tools wrapper
+    │       │   │           # - Query inspector
+    │       │   │           # - Cache visualizer
+    │       │   │           # - Mutation tracker
+    │       │   │           # BE: none (dev tools)
     │       │   ├── features/
     │       │   │   ├── budget/
     │       │   │   │   └── api/
@@ -20014,16 +20129,16 @@ fe/
     │       │   │               # GET /v1/admin/support/tickets
     │       │   │               # POST /v1/admin/support/tickets/{id}/reply
     │       │   └── middleware/
-    │       │       ├── analytics.ts  # ❌ CREATE - Analytics middleware
+    │       │       ├── analytics.ts  # Analytics middleware
     │       │       │   # - Track page views
     │       │       │   # - Track user events
     │       │       │   # - Integration with GA, Mixpanel, etc.
-    │       │       ├── error-tracking.ts  # ❌ CREATE - Error tracking middleware
+    │       │       ├── error-tracking.ts  # Error tracking middleware
     │       │       │   # - Catch and log errors
     │       │       │   # - Send to Sentry
     │       │       │   # - Error boundary integration
-    │       │       ├── index.ts  # ❌ CREATE - Barrel export
-    │       │       └── rate-limit.ts  # ❌ CREATE - Rate limiting middleware
+    │       │       ├── index.ts  # Barrel export
+    │       │       └── rate-limit.ts  # Rate limiting middleware
     │       │           # - Prevent spam/abuse
     │       │           # - Per-user rate limits
     │       │           # - IP-based limits
@@ -25308,19 +25423,19 @@ fe/
     │   │   │   │   │   # GET /v1/sourcing/talent-pools
     │   │   │   │   └── types.ts
     │   │   │   ├── state/
-    │   │   │   │   ├── admin-support.state.ts  # ❌ CREATE - Support center (tickets, agents, canned responses, SLA timers)
-    │   │   │   │   ├── admin.state.ts  # ❌ CREATE - Admin (audit, policy, holds, sanctions)
-    │   │   │   │   ├── communications.state.ts  # ❌ CREATE - Threads, notifications, presence, digests, sequences
-    │   │   │   │   ├── contracts.state.ts  # ❌ CREATE - Amendments, approvals, disputes, escrow
-    │   │   │   │   ├── financial.state.ts  # ❌ CREATE - Payments, invoices, payouts, wallet, taxes, fees
-    │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export for new slices
-    │   │   │   │   ├── jobs.state.ts  # ❌ CREATE - Drafts, templates, categories/skills, moderation, sourcing
-    │   │   │   │   ├── proposals.state.ts  # ❌ CREATE - Bids, pipelines, recycling, similarity/risk, revisions
-    │   │   │   │   ├── reviews.state.ts  # ❌ CREATE - Reviews (moderation queue, appeals)
-    │   │   │   │   ├── search.state.ts  # ❌ CREATE - Alerts, saved searches, personalization signals
-    │   │   │   │   ├── storage.state.ts  # ❌ CREATE - Storage (files, folders, scans, retention, usage)
-    │   │   │   │   ├── subscriptions.state.ts  # ❌ CREATE - Plans, entitlements, usage
-    │   │   │   │   └── users.state.ts  # ❌ CREATE - Warnings/suspensions, metrics, capacity, video-intro
+    │   │   │   │   ├── admin-support.state.ts  # Support center (tickets, agents, canned responses, SLA timers)
+    │   │   │   │   ├── admin.state.ts  # Admin (audit, policy, holds, sanctions)
+    │   │   │   │   ├── communications.state.ts  # Threads, notifications, presence, digests, sequences
+    │   │   │   │   ├── contracts.state.ts  # Amendments, approvals, disputes, escrow
+    │   │   │   │   ├── financial.state.ts  # Payments, invoices, payouts, wallet, taxes, fees
+    │   │   │   │   ├── index.ts  # Barrel export for new slices
+    │   │   │   │   ├── jobs.state.ts  # Drafts, templates, categories/skills, moderation, sourcing
+    │   │   │   │   ├── proposals.state.ts  # Bids, pipelines, recycling, similarity/risk, revisions
+    │   │   │   │   ├── reviews.state.ts  # Reviews (moderation queue, appeals)
+    │   │   │   │   ├── search.state.ts  # Alerts, saved searches, personalization signals
+    │   │   │   │   ├── storage.state.ts  # Storage (files, folders, scans, retention, usage)
+    │   │   │   │   ├── subscriptions.state.ts  # Plans, entitlements, usage
+    │   │   │   │   └── users.state.ts  # Warnings/suspensions, metrics, capacity, video-intro
     │   │   │   ├── testing/
     │   │   │   │   ├── factories/
     │   │   │   │   │   ├── job-factory.ts  # Job factory
@@ -25446,7 +25561,7 @@ fe/
     │   │   │   │   │   │   ├── api-key.ts  # API key entity
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   # API key management types
-    │   │   │   │   │   │   │   # ❌ CREATE - API keys (scopes, rotation)
+    │   │   │   │   │   │   │   # API keys (scopes, rotation)
     │   │   │   │   │   │   ├── appeal.ts  # Appeal, AppealStatus, AppealDecision
     │   │   │   │   │   │   ├── approval-request.ts  # Approval requests
     │   │   │   │   │   │   ├── approval-workflow.ts  # Approval workflows
@@ -25456,17 +25571,17 @@ fe/
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── audit-trail.ts  # Audit logging types
     │   │   │   │   │   │   │   # Audit trail types
-    │   │   │   │   │   │   │   # ❌ CREATE - Audit events (actor/action/target)
-    │   │   │   │   │   │   │   # ❌ CREATE - Immutable admin events log
+    │   │   │   │   │   │   │   # Audit events (actor/action/target)
+    │   │   │   │   │   │   │   # Immutable admin events log
     │   │   │   │   │   │   │   # BE: admin-be/audit_trail
     │   │   │   │   │   │   ├── audit.ts  # AuditTrail, AuditEntry, AuditAction
     │   │   │   │   │   │   ├── auto-flag-rule.ts  # Auto-flag rule entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Auto-flagging rules for moderation
+    │   │   │   │   │   │   │   # - Auto-flagging rules for moderation
     │   │   │   │   │   │   ├── ban-rule.ts  # Ban rules
     │   │   │   │   │   │   ├── break-glass-access.ts  # Break-glass access entity
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   # Emergency access types
-    │   │   │   │   │   │   │   # ❌ CREATE - Emergency access grants
+    │   │   │   │   │   │   │   # Emergency access grants
     │   │   │   │   │   │   ├── break-glass-request.ts  # Break-glass requests
     │   │   │   │   │   │   ├── break-glass.ts  # BreakGlassAccess, AccessApproval
     │   │   │   │   │   │   ├── broadcast.ts  # Broadcast, BroadcastType, BroadcastStatus
@@ -25474,15 +25589,15 @@ fe/
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── bulk-operation.ts  # BulkOperation, BulkOperationType, BulkStatus
     │   │   │   │   │   │   │   # Bulk operation types
-    │   │   │   │   │   │   │   # ❌ CREATE - Bulk tasks (status/results)
-    │   │   │   │   │   │   │   # ❌ CREATE - Admin bulk action batch
+    │   │   │   │   │   │   │   # Bulk tasks (status/results)
+    │   │   │   │   │   │   │   # Admin bulk action batch
     │   │   │   │   │   │   │   # BE: admin-be/bulk_operation
-    │   │   │   │   │   │   ├── business-verification.ts  # ❌ CREATE - Admin KYB verifications (org-level)
+    │   │   │   │   │   │   ├── business-verification.ts  # Admin KYB verifications (org-level)
     │   │   │   │   │   │   ├── canned-response.ts  # Canned responses
     │   │   │   │   │   │   │   # CannedResponse, ResponseCategory
     │   │   │   │   │   │   │   # Canned response entity
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Saved responses (placeholders, locale)
+    │   │   │   │   │   │   │   # Saved responses (placeholders, locale)
     │   │   │   │   │   │   ├── case-priority.ts  # Case priorities
     │   │   │   │   │   │   ├── case.ts  # Case, CaseType, CaseStatus, CasePriority
     │   │   │   │   │   │   ├── change-approval.ts  # Change approval entity
@@ -25502,8 +25617,8 @@ fe/
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── content-action.ts  # Content actions (remove, hide, flag)
     │   │   │   │   │   │   │   # Content action entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Admin actions on content (remove, hide, approve, reject)
-    │   │   │   │   │   │   │   # ❌ CREATE - Admin action on content
+    │   │   │   │   │   │   │   # - Admin actions on content (remove, hide, approve, reject)
+    │   │   │   │   │   │   │   # Admin action on content
     │   │   │   │   │   │   │   # BE: admin-be/content_action
     │   │   │   │   │   │   ├── content-policy.ts  # ContentPolicy, PolicyViolation
     │   │   │   │   │   │   ├── data-export.ts  # Data exports
@@ -25511,20 +25626,20 @@ fe/
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   # Data masking policy domain
     │   │   │   │   │   │   ├── data-masking.ts  # Data masking types
-    │   │   │   │   │   │   │   # ❌ CREATE - Masking rules
-    │   │   │   │   │   │   ├── dispute-case.ts  # ⚠️ MISSING - Admin dispute resolution cases
-    │   │   │   │   │   │   ├── dispute-evidence.ts  # ⚠️ MISSING - Evidence for dispute cases
+    │   │   │   │   │   │   │   # Masking rules
+    │   │   │   │   │   │   ├── dispute-case.ts  # - Admin dispute resolution cases
+    │   │   │   │   │   │   ├── dispute-evidence.ts  # - Evidence for dispute cases
     │   │   │   │   │   │   ├── dsar-request.ts  # DSAR requests
     │   │   │   │   │   │   ├── dsar.ts  # Data subject access request types
-    │   │   │   │   │   │   │   # ❌ CREATE - Data subject requests
+    │   │   │   │   │   │   │   # Data subject requests
     │   │   │   │   │   │   ├── experiment.ts  # A/B testing experiment types
     │   │   │   │   │   │   │   # Experiment, ExperimentVariant, ExperimentResults
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Experiments/feature flags
+    │   │   │   │   │   │   │   # Experiments/feature flags
     │   │   │   │   │   │   ├── export-job.ts  # Export jobs
-    │   │   │   │   │   │   ├── faq-category.ts  # ⚠️ MISSING - FAQ categories
-    │   │   │   │   │   │   ├── faq.ts  # ⚠️ MISSING - FAQ management
-    │   │   │   │   │   │   │   # ❌ CREATE - Knowledge base article
+    │   │   │   │   │   │   ├── faq-category.ts  # - FAQ categories
+    │   │   │   │   │   │   ├── faq.ts  # - FAQ management
+    │   │   │   │   │   │   │   # Knowledge base article
     │   │   │   │   │   │   ├── feature-flag.ts  # Feature flag types
     │   │   │   │   │   │   │   # Feature flag entity
     │   │   │   │   │   │   │   # ✅ EXISTS
@@ -25534,46 +25649,46 @@ fe/
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── flag.ts  # Content flags
     │   │   │   │   │   │   ├── fraud-case.ts  # Fraud case entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Fraud investigation cases
+    │   │   │   │   │   │   │   # - Fraud investigation cases
     │   │   │   │   │   │   ├── fraud-detection.ts  # Fraud detection types
-    │   │   │   │   │   │   │   # ❌ CREATE - Fraud signals/cases
+    │   │   │   │   │   │   │   # Fraud signals/cases
     │   │   │   │   │   │   ├── fraud-pattern.ts  # Fraud detection pattern domain
-    │   │   │   │   │   │   ├── fraud-rule.ts  # ⚠️ MISSING - Fraud detection rules
+    │   │   │   │   │   │   ├── fraud-rule.ts  # - Fraud detection rules
     │   │   │   │   │   │   ├── fraud-signal.ts  # Fraud signal domain
     │   │   │   │   │   │   ├── gdpr-request.ts  # GDPR request entity
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── goodwill-credit.ts  # Goodwill credits
-    │   │   │   │   │   │   │   # ❌ CREATE - Goodwill credits (ledger_ref)
+    │   │   │   │   │   │   │   # Goodwill credits (ledger_ref)
     │   │   │   │   │   │   ├── health-check.ts  # System health check domain
     │   │   │   │   │   │   ├── hold-case.ts  # Financial holds
     │   │   │   │   │   │   ├── hold.ts  # UserHold, HoldReason, HoldDuration
     │   │   │   │   │   │   │   # Data hold types
-    │   │   │   │   │   │   │   # ❌ CREATE - Generic hold (e.g., payment/compliance)
-    │   │   │   │   │   │   │   # ❌ CREATE - Legal/processing hold
+    │   │   │   │   │   │   │   # Generic hold (e.g., payment/compliance)
+    │   │   │   │   │   │   │   # Legal/processing hold
     │   │   │   │   │   │   │   # BE: admin-be/hold
     │   │   │   │   │   │   ├── impersonation.ts  # Admin impersonation sessions
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── incident-response.ts  # Incident response entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Security incident response
+    │   │   │   │   │   │   │   # - Security incident response
     │   │   │   │   │   │   ├── incident-timeline.ts  # Incident timeline
     │   │   │   │   │   │   ├── incident.ts  # System incidents
     │   │   │   │   │   │   │   # Incident, IncidentSeverity, IncidentResponse
     │   │   │   │   │   │   │   # Security incident types
-    │   │   │   │   │   │   │   # ❌ CREATE - Incidents/postmortems
-    │   │   │   │   │   │   │   # ❌ CREATE - Security/compliance incident
+    │   │   │   │   │   │   │   # Incidents/postmortems
+    │   │   │   │   │   │   │   # Security/compliance incident
     │   │   │   │   │   │   │   # BE: admin-be/incident
     │   │   │   │   │   │   ├── index.ts  # Barrel export for admin domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE - Barrel exports for admin types
+    │   │   │   │   │   │   │   # Barrel exports for admin types
     │   │   │   │   │   │   ├── integration-health.ts  # Integration health
     │   │   │   │   │   │   ├── integration.ts  # Third-party integrations
     │   │   │   │   │   │   │   # Integration, IntegrationConfig, IntegrationStatus
     │   │   │   │   │   │   │   # Third-party integration types
-    │   │   │   │   │   │   │   # ❌ CREATE - 3rd-party integrations
-    │   │   │   │   │   │   │   # ❌ CREATE - Third-party integration record
+    │   │   │   │   │   │   │   # 3rd-party integrations
+    │   │   │   │   │   │   │   # Third-party integration record
     │   │   │   │   │   │   │   # BE: admin-be/integration
     │   │   │   │   │   │   ├── ip-claim.ts  # IP ownership claim types
-    │   │   │   │   │   │   │   # ❌ CREATE - IP claims/ownership proofs
+    │   │   │   │   │   │   │   # IP claims/ownership proofs
     │   │   │   │   │   │   ├── kb-article-version.ts  # KB article versions
     │   │   │   │   │   │   ├── kb-article.ts  # Knowledge base articles
     │   │   │   │   │   │   │   # Knowledge base article entity
@@ -25590,7 +25705,7 @@ fe/
     │   │   │   │   │   │   │   # Legal hold entity
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   # Legal hold types
-    │   │   │   │   │   │   │   # ❌ CREATE - Legal hold on data
+    │   │   │   │   │   │   │   # Legal hold on data
     │   │   │   │   │   │   ├── legal-notice.ts  # Legal notice domain
     │   │   │   │   │   │   ├── maintenance-window.ts  # Maintenance windows
     │   │   │   │   │   │   ├── maintenance.ts  # Maintenance mode types
@@ -25627,8 +25742,8 @@ fe/
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── policy-doc.ts  # Policy document types
     │   │   │   │   │   │   │   # PolicyDocument, PolicyVersion
-    │   │   │   │   │   │   │   # ❌ CREATE - Policies (ToS, Privacy) versions
-    │   │   │   │   │   │   │   # ❌ CREATE - Versioned policy document
+    │   │   │   │   │   │   │   # Policies (ToS, Privacy) versions
+    │   │   │   │   │   │   │   # Versioned policy document
     │   │   │   │   │   │   │   # BE: admin-be/policy_doc
     │   │   │   │   │   │   ├── policy-document.ts  # Policy document entity
     │   │   │   │   │   │   │   # ✅ EXISTS
@@ -25639,19 +25754,19 @@ fe/
     │   │   │   │   │   │   ├── privacy-request.ts  # DSAR/GDPR requests
     │   │   │   │   │   │   │   # PrivacyRequest, DSARType, DSARStatus
     │   │   │   │   │   │   │   # Privacy request entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Privacy/DSAR request (alias)
-    │   │   │   │   │   │   ├── quota-override.ts  # ⚠️ MISSING - User quota overrides
+    │   │   │   │   │   │   │   # Privacy/DSAR request (alias)
+    │   │   │   │   │   │   ├── quota-override.ts  # - User quota overrides
     │   │   │   │   │   │   ├── rate-limit-override.ts  # Rate limit override entity
     │   │   │   │   │   │   ├── rate-limit.ts  # Rate limiting configuration types
     │   │   │   │   │   │   ├── refund-case.ts  # Refund cases
-    │   │   │   │   │   │   │   # ❌ CREATE - Refund review case
+    │   │   │   │   │   │   │   # Refund review case
     │   │   │   │   │   │   ├── report-execution.ts  # Report execution entity
     │   │   │   │   │   │   ├── report-schedule.ts  # Report schedule entity
     │   │   │   │   │   │   ├── report-template.ts  # Report template entity
     │   │   │   │   │   │   ├── report.ts  # Admin reports
-    │   │   │   │   │   │   ├── reporting.ts  # ❌ CREATE - Admin analytics/report defs
+    │   │   │   │   │   │   ├── reporting.ts  # Admin analytics/report defs
     │   │   │   │   │   │   ├── risk-incident.ts  # Risk incident entity
-    │   │   │   │   │   │   ├── risk-management.ts  # ❌ CREATE - Risk policy + case links
+    │   │   │   │   │   │   ├── risk-management.ts  # Risk policy + case links
     │   │   │   │   │   │   ├── risk-rule.ts  # Risk assessment rule domain
     │   │   │   │   │   │   ├── sanction-check.ts  # ✅ EXISTS
     │   │   │   │   │   │   │   # Sanctions screening domain
@@ -25659,8 +25774,8 @@ fe/
     │   │   │   │   │   │   ├── sanctions-screening.ts  # Sanctions/AML checks
     │   │   │   │   │   │   │   # Sanctions screening entity
     │   │   │   │   │   │   │   # Sanctions screening types
-    │   │   │   │   │   │   │   # ❌ CREATE - Sanctions/PEP screening
-    │   │   │   │   │   │   │   # ❌ CREATE - OFAC/PEP screening result
+    │   │   │   │   │   │   │   # Sanctions/PEP screening
+    │   │   │   │   │   │   │   # OFAC/PEP screening result
     │   │   │   │   │   │   │   # BE: admin-be/sanctions_screening
     │   │   │   │   │   │   ├── sanctions.ts  # SanctionsCheck, SanctionsMatch, SanctionsProvider
     │   │   │   │   │   │   ├── session.ts  # Admin session management
@@ -25668,12 +25783,12 @@ fe/
     │   │   │   │   │   │   ├── sla-breach.ts  # SLA breach entity
     │   │   │   │   │   │   ├── sla-policy.ts  # SLA policy entity
     │   │   │   │   │   │   ├── sla-rule.ts  # SLA rules
-    │   │   │   │   │   │   ├── support-agent.ts  # ❌ CREATE - Agent roster (skills, queues)
-    │   │   │   │   │   │   ├── support-attachment.ts  # ⚠️ MISSING - Support ticket attachments
+    │   │   │   │   │   │   ├── support-agent.ts  # Agent roster (skills, queues)
+    │   │   │   │   │   │   ├── support-attachment.ts  # - Support ticket attachments
     │   │   │   │   │   │   ├── support-case-note.ts  # Case notes
     │   │   │   │   │   │   ├── support-case.ts  # Support cases
     │   │   │   │   │   │   ├── support-category.ts  # Support categories
-    │   │   │   │   │   │   ├── support-message.ts  # ⚠️ MISSING - Support ticket messages/comments
+    │   │   │   │   │   │   ├── support-message.ts  # - Support ticket messages/comments
     │   │   │   │   │   │   ├── support-response.ts  # Support responses
     │   │   │   │   │   │   ├── support-sla.ts  # Support SLAs
     │   │   │   │   │   │   ├── support-ticket-assignment.ts  # Ticket assignment entity
@@ -25681,33 +25796,33 @@ fe/
     │   │   │   │   │   │   ├── support-ticket-history.ts  # Ticket history entity
     │   │   │   │   │   │   ├── support-ticket.ts  # Support ticket types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Support ticket (category, priority, status, SLA)
+    │   │   │   │   │   │   │   # Support ticket (category, priority, status, SLA)
     │   │   │   │   │   │   ├── system-config.ts  # System configuration
     │   │   │   │   │   │   │   # System config entity
-    │   │   │   │   │   │   │   # ❌ CREATE - System-wide toggles/config
+    │   │   │   │   │   │   │   # System-wide toggles/config
     │   │   │   │   │   │   ├── system-health.ts  # System health monitoring types
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── system-settings.ts  # System configuration types
     │   │   │   │   │   │   ├── task-delegation.ts  # Task delegation domain
     │   │   │   │   │   │   ├── throttle-config.ts  # Throttle config entity
-    │   │   │   │   │   │   ├── throttle-exception.ts  # ⚠️ MISSING - Rate limiting exceptions
+    │   │   │   │   │   │   ├── throttle-exception.ts  # - Rate limiting exceptions
     │   │   │   │   │   │   ├── throttle-policy.ts  # API throttle policy types
     │   │   │   │   │   │   │   # ThrottlePolicy, RateLimit
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Rate limiting policies
+    │   │   │   │   │   │   │   # - Rate limiting policies
     │   │   │   │   │   │   │   # Rate limiting policy types
-    │   │   │   │   │   │   │   # ❌ CREATE - Throttle rules
-    │   │   │   │   │   │   │   # ❌ CREATE - Rate limits per actor/route
+    │   │   │   │   │   │   │   # Throttle rules
+    │   │   │   │   │   │   │   # Rate limits per actor/route
     │   │   │   │   │   │   │   # BE: admin-be/throttle_policy
     │   │   │   │   │   │   ├── ticket-category.ts  # Ticket category entity
-    │   │   │   │   │   │   ├── ticket-message.ts  # ❌ CREATE - Ticket conversation message
+    │   │   │   │   │   │   ├── ticket-message.ts  # Ticket conversation message
     │   │   │   │   │   │   ├── trust-safety-rule.ts  # Trust & safety rules
     │   │   │   │   │   │   ├── two-person-approval.ts  # Two-person approval entity
     │   │   │   │   │   │   ├── user-action.ts  # User actions (suspend, ban, warn)
     │   │   │   │   │   │   │   # User action entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Admin actions on users (suspend, ban, warn)
+    │   │   │   │   │   │   │   # - Admin actions on users (suspend, ban, warn)
     │   │   │   │   │   │   │   # User action tracking types
-    │   │   │   │   │   │   │   # ❌ CREATE - Admin-level user actions
-    │   │   │   │   │   │   │   # ❌ CREATE - Admin action on user/resource
+    │   │   │   │   │   │   │   # Admin-level user actions
+    │   │   │   │   │   │   │   # Admin action on user/resource
     │   │   │   │   │   │   │   # BE: admin-be/user_action
     │   │   │   │   │   │   ├── watchlist-check.ts  # Watchlist check entity
     │   │   │   │   │   │   ├── watchlist-entry.ts  # Watchlist entries
@@ -25721,38 +25836,38 @@ fe/
     │   │   │   │   │   │   # Communications domain types (MANY MISSING)
     │   │   │   │   │   │   # MISSING DOMAINS (40+ domains missing)
     │   │   │   │   │   │   ├── analytics.ts  # CommunicationAnalytics, Metrics
-    │   │   │   │   │   │   ├── archive.ts  # ❌ CREATE - Archived conversation metadata
+    │   │   │   │   │   │   ├── archive.ts  # Archived conversation metadata
     │   │   │   │   │   │   ├── attachment.ts  # Message attachment types
     │   │   │   │   │   │   │   # MessageAttachment, AttachmentType
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Linked storage asset
+    │   │   │   │   │   │   │   # Linked storage asset
     │   │   │   │   │   │   │   # BE: communications-be/attachment
     │   │   │   │   │   │   ├── audit.ts  # Communications audit log types
     │   │   │   │   │   │   ├── blocked-user.ts  # User blocking domain
     │   │   │   │   │   │   ├── blocklist.ts  # User blocking
     │   │   │   │   │   │   │   # Blocklist, BlockedEntity
     │   │   │   │   │   │   │   # Blocklist entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Blocked targets (user/thread)
+    │   │   │   │   │   │   │   # Blocked targets (user/thread)
     │   │   │   │   │   │   ├── bookmark.ts  # Message bookmarks
     │   │   │   │   │   │   │   # Bookmark, BookmarkFolder
     │   │   │   │   │   │   │   # Bookmarked message entity
     │   │   │   │   │   │   │   # Message bookmark domain
     │   │   │   │   │   │   │   # Message bookmark types
-    │   │   │   │   │   │   │   # ❌ CREATE - Bookmarked messages/threads
+    │   │   │   │   │   │   │   # Bookmarked messages/threads
     │   │   │   │   │   │   ├── calendar-invite.ts  # Calendar integrations
     │   │   │   │   │   │   │   # CalendarInvite, InviteResponse
     │   │   │   │   │   │   │   # Calendar invite entity
     │   │   │   │   │   │   │   # Calendar invite domain
     │   │   │   │   │   │   │   # Calendar invitation types
-    │   │   │   │   │   │   │   # ❌ CREATE - iCal payload, RSVP
+    │   │   │   │   │   │   │   # iCal payload, RSVP
     │   │   │   │   │   │   ├── call.ts  # Voice/video calls
     │   │   │   │   │   │   │   # Call, CallParticipant
     │   │   │   │   │   │   │   # Call/video entity
     │   │   │   │   │   │   │   # Voice/video call domain
     │   │   │   │   │   │   │   # Voice/video call types
-    │   │   │   │   │   │   │   # ❌ CREATE - Call (voice/video session; participants). BE: communications-be/call
+    │   │   │   │   │   │   │   # Call (voice/video session; participants). BE: communications-be/call
     │   │   │   │   │   │   ├── channel-member.ts  # Channel members
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Channel membership
+    │   │   │   │   │   │   │   # - Channel membership
     │   │   │   │   │   │   ├── channel-subscription.ts  # Channel subscriptions
     │   │   │   │   │   │   ├── channel.ts  # Channel types
     │   │   │   │   │   │   │   # ✅ EXISTS
@@ -25763,32 +25878,32 @@ fe/
     │   │   │   │   │   │   │   # Collaboration participant domain
     │   │   │   │   │   │   ├── collaboration-session.ts  # Collaboration session domain
     │   │   │   │   │   │   │   # Real-time collaboration session types
-    │   │   │   │   │   │   │   # ❌ CREATE - Live collab (whiteboard/call link)
+    │   │   │   │   │   │   │   # Live collab (whiteboard/call link)
     │   │   │   │   │   │   ├── collaboration-version.ts  # Document versions
     │   │   │   │   │   │   ├── collaboration.ts  # Real-time collaboration types
     │   │   │   │   │   │   │   # Collaboration, SharedDocument
     │   │   │   │   │   │   ├── compliance-action.ts  # Compliance actions
     │   │   │   │   │   │   ├── compliance.ts  # Data retention/GDPR compliance types
-    │   │   │   │   │   │   │   # ❌ CREATE - Policy checks & holds on messages
-    │   │   │   │   │   │   ├── conversation-archive.ts  # ⚠️ MISSING - Archived conversations
+    │   │   │   │   │   │   │   # Policy checks & holds on messages
+    │   │   │   │   │   │   ├── conversation-archive.ts  # - Archived conversations
     │   │   │   │   │   │   ├── conversation-export.ts  # Conversation exports
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Conversation exports
-    │   │   │   │   │   │   ├── conversation-participant.ts  # ⚠️ MISSING - Conversation participants
+    │   │   │   │   │   │   │   # - Conversation exports
+    │   │   │   │   │   │   ├── conversation-participant.ts  # - Conversation participants
     │   │   │   │   │   │   │   # Conversation participant domain
-    │   │   │   │   │   │   ├── conversation-settings.ts  # ❌ CREATE - Per-conversation settings
+    │   │   │   │   │   │   ├── conversation-settings.ts  # Per-conversation settings
     │   │   │   │   │   │   ├── conversation-stat.ts  # Conversation statistics
     │   │   │   │   │   │   ├── conversation.ts  # Conversation entity types
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   # Conversation domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Conversation (members, settings). BE: communications-be/conversation
-    │   │   │   │   │   │   ├── dead-letter-queue.ts  # ❌ CREATE - Generic DLQ item (payload_ref, error)
+    │   │   │   │   │   │   │   # Conversation (members, settings). BE: communications-be/conversation
+    │   │   │   │   │   │   ├── dead-letter-queue.ts  # Generic DLQ item (payload_ref, error)
     │   │   │   │   │   │   ├── delivery-log.ts  # Delivery log types
     │   │   │   │   │   │   │   # Message delivery tracking
     │   │   │   │   │   │   │   # DeliveryLog, LogEntry
     │   │   │   │   │   │   │   # Delivery log entity
     │   │   │   │   │   │   │   # Message delivery log domain
     │   │   │   │   │   │   │   # Message delivery log types
-    │   │   │   │   │   │   │   # ❌ CREATE - Transport delivery events
+    │   │   │   │   │   │   │   # Transport delivery events
     │   │   │   │   │   │   ├── delivery.ts  # Message delivery tracking
     │   │   │   │   │   │   │   # Delivery status per recipient
     │   │   │   │   │   │   │   # DeliveryStatus, DeliveryAttempt
@@ -25801,7 +25916,7 @@ fe/
     │   │   │   │   │   │   │   # Email digest aggregation
     │   │   │   │   │   │   │   # Digest, DigestSchedule
     │   │   │   │   │   │   │   # Email digest domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Scheduled digests
+    │   │   │   │   │   │   │   # Scheduled digests
     │   │   │   │   │   │   ├── document-version.ts  # Document version types
     │   │   │   │   │   │   │   # Document version history domain
     │   │   │   │   │   │   ├── draft.ts  # Message drafts
@@ -25809,8 +25924,7 @@ fe/
     │   │   │   │   │   │   │   # Draft message entity
     │   │   │   │   │   │   │   # Message draft domain
     │   │   │   │   │   │   │   # Message draft types
-    │   │   │   │   │   │   │   # ❌ CREATE - Message drafts
-    │   │   │   │   │   │   │   # ❌ CREATE - Unsent message
+    │   │   │   │   │   │   │   # Unsent message
     │   │   │   │   │   │   │   # BE: communications-be/draft
     │   │   │   │   │   │   ├── email-bounce.ts  # Email bounces
     │   │   │   │   │   │   ├── email-bridge-inbound.ts  # Inbound email domain
@@ -25819,18 +25933,18 @@ fe/
     │   │   │   │   │   │   │   # Email bridge entity
     │   │   │   │   │   │   │   # Email bridge domain
     │   │   │   │   │   │   │   # Email integration bridge types
-    │   │   │   │   │   │   │   # ❌ CREATE - Email ↔ thread bridge
+    │   │   │   │   │   │   │   # Email ↔ thread bridge
     │   │   │   │   │   │   ├── email-click.ts  # Email clicks
-    │   │   │   │   │   │   ├── email-layout.ts  # ⚠️ MISSING - Email layouts
+    │   │   │   │   │   │   ├── email-layout.ts  # - Email layouts
     │   │   │   │   │   │   ├── email-notification.ts  # Email notification types
-    │   │   │   │   │   │   │   # ❌ CREATE - Email notification
-    │   │   │   │   │   │   │   # ❌ CREATE - Email specific payload
+    │   │   │   │   │   │   │   # Email notification
+    │   │   │   │   │   │   │   # Email specific payload
     │   │   │   │   │   │   │   # BE: communications-be/email_notification
     │   │   │   │   │   │   ├── email-open.ts  # Email opens
     │   │   │   │   │   │   ├── email-template.ts  # Email template types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Email templates
-    │   │   │   │   │   │   │   # ❌ CREATE - Templated emails (localized, versioned)
-    │   │   │   │   │   │   │   # ❌ CREATE - MJML/handlebars/etc.
+    │   │   │   │   │   │   │   # - Email templates
+    │   │   │   │   │   │   │   # Templated emails (localized, versioned)
+    │   │   │   │   │   │   │   # MJML/handlebars/etc.
     │   │   │   │   │   │   │   # BE: communications-be/email_template
     │   │   │   │   │   │   ├── email.ts  # Email notifications
     │   │   │   │   │   │   │   # ✅ EXISTS
@@ -25843,55 +25957,54 @@ fe/
     │   │   │   │   │   │   ├── export.ts  # ConversationExport, ExportFormat
     │   │   │   │   │   │   │   # Message export domain
     │   │   │   │   │   │   │   # Message export types
-    │   │   │   │   │   │   │   # ❌ CREATE - Conversation exports
+    │   │   │   │   │   │   │   # Conversation exports
     │   │   │   │   │   │   ├── gdpr-request.ts  # GDPR requests
     │   │   │   │   │   │   ├── idempotency.ts  # Idempotency registry types
     │   │   │   │   │   │   │   # Idempotency key types
-    │   │   │   │   │   │   │   # ❌ CREATE - Idempotency keys (message sends)
+    │   │   │   │   │   │   │   # Idempotency keys (message sends)
     │   │   │   │   │   │   ├── in-app-notification.ts  # In-app notification display state
     │   │   │   │   │   │   │   # In-app notification entity
     │   │   │   │   │   │   │   # In-app notification domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export for communications domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── interview-participant.ts  # Interview participant domain
     │   │   │   │   │   │   ├── interview.ts  # Interview scheduling
     │   │   │   │   │   │   │   # Interview, InterviewParticipant
     │   │   │   │   │   │   │   # Interview scheduling entity
     │   │   │   │   │   │   │   # Interview scheduling domain
     │   │   │   │   │   │   │   # Interview scheduling types
-    │   │   │   │   │   │   │   # ❌ CREATE - Interview (scheduling, stages, feedback). BE: communications-be/interview
+    │   │   │   │   │   │   │   # Interview (scheduling, stages, feedback). BE: communications-be/interview
     │   │   │   │   │   │   ├── mail-tracking.ts  # Email provider webhooks
     │   │   │   │   │   │   │   # MailTracking, TrackingEvent
     │   │   │   │   │   │   │   # Email tracking entity
     │   │   │   │   │   │   │   # Email tracking domain
     │   │   │   │   │   │   │   # Email tracking types
-    │   │   │   │   │   │   │   # ❌ CREATE - Open/click/bounce tracking
+    │   │   │   │   │   │   │   # Open/click/bounce tracking
     │   │   │   │   │   │   ├── mention.ts  # @mention types
     │   │   │   │   │   │   │   # Mention, MentionType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - User mentions in messages
+    │   │   │   │   │   │   │   # - User mentions in messages
     │   │   │   │   │   │   │   # Message mention domain
     │   │   │   │   │   │   │   # User mention types
-    │   │   │   │   │   │   │   # ❌ CREATE - @mention (who/where)
-    │   │   │   │   │   │   │   # ❌ CREATE - @mentions
+    │   │   │   │   │   │   │   # @mention (who/where)
+    │   │   │   │   │   │   │   # @mentions
     │   │   │   │   │   │   │   # BE: communications-be/mention
-    │   │   │   │   │   │   ├── message-draft.ts  # ⚠️ MISSING - Message drafts
-    │   │   │   │   │   │   ├── message-edit-history.ts  # ❌ CREATE - Edits audit trail
+    │   │   │   │   │   │   ├── message-draft.ts  # - Message drafts
+    │   │   │   │   │   │   ├── message-edit-history.ts  # Edits audit trail
     │   │   │   │   │   │   │   # BE: communications-be/message_edit_history
     │   │   │   │   │   │   ├── message-edit.ts  # Message edit history
     │   │   │   │   │   │   ├── message-reaction.ts  # Message reactions
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Message reactions/emojis
+    │   │   │   │   │   │   │   # - Message reactions/emojis
     │   │   │   │   │   │   │   # Message reaction types
-    │   │   │   │   │   │   │   # ❌ CREATE - Emoji/like reactions
-    │   │   │   │   │   │   ├── message-search-index.ts  # ⚠️ MISSING - Message search indexing
+    │   │   │   │   │   │   │   # Emoji/like reactions
+    │   │   │   │   │   │   ├── message-search-index.ts  # - Message search indexing
     │   │   │   │   │   │   ├── message-search.ts  # Message search index
     │   │   │   │   │   │   ├── message-sequence.ts  # Message sequence types
-    │   │   │   │   │   │   │   # ❌ CREATE - Sequenced sends (nurture/campaign)
+    │   │   │   │   │   │   │   # Sequenced sends (nurture/campaign)
     │   │   │   │   │   │   ├── message.ts  # Message entity types
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   # Message domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Message (content, edits, deletes, reactions). BE: communications-be/message
-    │   │   │   │   │   │   │   # ❌ CREATE - Chat/message entity
+    │   │   │   │   │   │   │   # Message (content, edits, deletes, reactions). BE: communications-be/message
+    │   │   │   │   │   │   │   # Chat/message entity
     │   │   │   │   │   │   │   # BE: communications-be/message
     │   │   │   │   │   │   ├── moderation-action.ts  # Content moderation action domain
     │   │   │   │   │   │   ├── moderation.ts  # Moderation types
@@ -25899,89 +26012,89 @@ fe/
     │   │   │   │   │   │   │   # MessageModeration, ModerationAction
     │   │   │   │   │   │   │   # Message moderation entity
     │   │   │   │   │   │   │   # Content moderation types
-    │   │   │   │   │   │   │   # ❌ CREATE - Comms moderation case
+    │   │   │   │   │   │   │   # Comms moderation case
     │   │   │   │   │   │   ├── notification-channel.ts  # Notification channels
     │   │   │   │   │   │   │   # Notification channel types
-    │   │   │   │   │   │   │   # ❌ CREATE - Channel settings (email/SMS/push/in-app)
-    │   │   │   │   │   │   ├── notification-delivery-log.ts  # ⚠️ MISSING - Notification delivery logs
-    │   │   │   │   │   │   ├── notification-dlq.ts  # ❌ CREATE - Dead-letter item (reason/failure_count)
+    │   │   │   │   │   │   │   # Channel settings (email/SMS/push/in-app)
+    │   │   │   │   │   │   ├── notification-delivery-log.ts  # - Notification delivery logs
+    │   │   │   │   │   │   ├── notification-dlq.ts  # Dead-letter item (reason/failure_count)
     │   │   │   │   │   │   ├── notification-preference.ts  # User notification settings
-    │   │   │   │   │   │   │   # ⚠️ MISSING - User notification preferences
+    │   │   │   │   │   │   │   # - User notification preferences
     │   │   │   │   │   │   │   # User notification preference types
-    │   │   │   │   │   │   │   # ❌ CREATE - User prefs (topic/channel/quiet hours)
-    │   │   │   │   │   │   │   # ❌ CREATE - Per-user channel prefs
+    │   │   │   │   │   │   │   # User prefs (topic/channel/quiet hours)
+    │   │   │   │   │   │   │   # Per-user channel prefs
     │   │   │   │   │   │   │   # BE: communications-be/notification_preference
     │   │   │   │   │   │   ├── notification-queue.ts  # Notification queue types
     │   │   │   │   │   │   │   # Notification queue management
     │   │   │   │   │   │   │   # NotificationQueue, QueuePriority
     │   │   │   │   │   │   │   # Notification queue entity
     │   │   │   │   │   │   │   # Notification queue domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Queue item (retry/backoff)
+    │   │   │   │   │   │   │   # Queue item (retry/backoff)
     │   │   │   │   │   │   ├── notification-stat.ts  # Notification statistics
     │   │   │   │   │   │   ├── notification-template.ts  # Notification templates
     │   │   │   │   │   │   │   # Notification template entity
     │   │   │   │   │   │   │   # Notification template domain
     │   │   │   │   │   │   │   # Notification template types
-    │   │   │   │   │   │   │   # ❌ CREATE - Template metadata
-    │   │   │   │   │   │   │   # ❌ CREATE - Templated messages
+    │   │   │   │   │   │   │   # Template metadata
+    │   │   │   │   │   │   │   # Templated messages
     │   │   │   │   │   │   │   # BE: communications-be/notification_template
     │   │   │   │   │   │   ├── notification.ts  # Notification entity types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Generic notif entity
+    │   │   │   │   │   │   │   # Generic notif entity
     │   │   │   │   │   │   │   # BE: communications-be/notification
     │   │   │   │   │   │   ├── participant.ts  # Conversation participant types
-    │   │   │   │   │   │   │   # ❌ CREATE - Participant (role, mute, pin, read_marker)
-    │   │   │   │   │   │   │   # ❌ CREATE - Member in a thread
+    │   │   │   │   │   │   │   # Participant (role, mute, pin, read_marker)
+    │   │   │   │   │   │   │   # Member in a thread
     │   │   │   │   │   │   │   # BE: communications-be/participant
     │   │   │   │   │   │   ├── pin.ts  # Pinned messages
     │   │   │   │   │   │   │   # PinnedMessage, PinPriority
     │   │   │   │   │   │   │   # Pinned message entity
     │   │   │   │   │   │   │   # Pinned message domain
     │   │   │   │   │   │   │   # Pinned message types
-    │   │   │   │   │   │   │   # ❌ CREATE - Pinned message/thread
+    │   │   │   │   │   │   │   # Pinned message/thread
     │   │   │   │   │   │   ├── platform-alert-delivery.ts  # Platform alert delivery domain
     │   │   │   │   │   │   ├── platform-alert.ts  # System-wide alerts
     │   │   │   │   │   │   │   # PlatformAlert, AlertDelivery
     │   │   │   │   │   │   │   # Platform alert entity
     │   │   │   │   │   │   │   # Platform-wide alert domain
     │   │   │   │   │   │   │   # Platform alert types
-    │   │   │   │   │   │   │   # ❌ CREATE - Platform-wide alerts
-    │   │   │   │   │   │   │   # ❌ CREATE - System alerts banner
+    │   │   │   │   │   │   │   # Platform-wide alerts
+    │   │   │   │   │   │   │   # System alerts banner
     │   │   │   │   │   │   │   # BE: communications-be/platform_alert
     │   │   │   │   │   │   ├── preference.ts  # User preferences
     │   │   │   │   │   │   ├── presence-history.ts  # Presence history
     │   │   │   │   │   │   ├── presence.ts  # User presence/online status types
     │   │   │   │   │   │   │   # Presence, PresenceStatus
     │   │   │   │   │   │   │   # User presence types
-    │   │   │   │   │   │   │   # ❌ CREATE - Realtime presence (online/away/dnd)
-    │   │   │   │   │   │   │   # ❌ CREATE - Online/away/typing
+    │   │   │   │   │   │   │   # Realtime presence (online/away/dnd)
+    │   │   │   │   │   │   │   # Online/away/typing
     │   │   │   │   │   │   │   # BE: communications-be/presence
     │   │   │   │   │   │   ├── push-device.ts  # Push notification device registry
     │   │   │   │   │   │   │   # PushDevice, DeviceToken
     │   │   │   │   │   │   │   # Push device registry entity
     │   │   │   │   │   │   │   # Push notification device domain
     │   │   │   │   │   │   ├── push-notification.ts  # Push notification types
-    │   │   │   │   │   │   │   # ❌ CREATE - Push payload
+    │   │   │   │   │   │   │   # Push payload
     │   │   │   │   │   │   │   # BE: communications-be/push_notification
     │   │   │   │   │   │   ├── push-subscription.ts  # Push subscription types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Push notification subscriptions
-    │   │   │   │   │   │   │   # ❌ CREATE - Device subscription/token
-    │   │   │   │   │   │   │   # ❌ CREATE - Web push device sub
+    │   │   │   │   │   │   │   # - Push notification subscriptions
+    │   │   │   │   │   │   │   # Device subscription/token
+    │   │   │   │   │   │   │   # Web push device sub
     │   │   │   │   │   │   │   # BE: communications-be/push_subscription
-    │   │   │   │   │   │   ├── quota-usage.ts  # ⚠️ MISSING - Quota usage tracking
+    │   │   │   │   │   │   ├── quota-usage.ts  # - Quota usage tracking
     │   │   │   │   │   │   ├── quota.ts  # MessageQuota, QuotaLimit
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Communication quotas
-    │   │   │   │   │   │   │   # ❌ CREATE - Quotas/limits counters
+    │   │   │   │   │   │   │   # - Communication quotas
+    │   │   │   │   │   │   │   # Quotas/limits counters
     │   │   │   │   │   │   ├── rate-limit.ts  # Message rate limiting types
     │   │   │   │   │   │   │   # Rate limiting types
-    │   │   │   │   │   │   │   # ❌ CREATE - Per-user/app rate limit counters
+    │   │   │   │   │   │   │   # Per-user/app rate limit counters
     │   │   │   │   │   │   ├── reaction.ts  # Message reaction types
-    │   │   │   │   │   │   │   # ❌ CREATE - 👍,❤️,…
+    │   │   │   │   │   │   │   # 👍,❤️,…
     │   │   │   │   │   │   │   # BE: communications-be/reaction
     │   │   │   │   │   │   ├── read-receipt.ts  # Read receipt types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Message read receipts
-    │   │   │   │   │   │   │   # ❌ CREATE - Read receipts
-    │   │   │   │   │   │   │   # ❌ CREATE - Who read when
+    │   │   │   │   │   │   │   # - Message read receipts
+    │   │   │   │   │   │   │   # Read receipts
+    │   │   │   │   │   │   │   # Who read when
     │   │   │   │   │   │   │   # BE: communications-be/read_receipt
     │   │   │   │   │   │   ├── read-state.ts  # Read state tracking
     │   │   │   │   │   │   │   # Message read/unread state
@@ -25989,21 +26102,21 @@ fe/
     │   │   │   │   │   │   │   # Message read state entity
     │   │   │   │   │   │   │   # Message read state domain
     │   │   │   │   │   │   │   # Message read state types
-    │   │   │   │   │   │   │   # ❌ CREATE - Per-user read/unread state
+    │   │   │   │   │   │   │   # Per-user read/unread state
     │   │   │   │   │   │   ├── retention-policy.ts  # Retention policies
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Data retention policies
+    │   │   │   │   │   │   │   # - Data retention policies
     │   │   │   │   │   │   │   # Message retention policy types
-    │   │   │   │   │   │   │   # ❌ CREATE - Message retention rules
-    │   │   │   │   │   │   │   # ❌ CREATE - TTL/anonymize rules
+    │   │   │   │   │   │   │   # Message retention rules
+    │   │   │   │   │   │   │   # TTL/anonymize rules
     │   │   │   │   │   │   │   # BE: communications-be/retention_policy
     │   │   │   │   │   │   ├── scheduled-message.ts  # Scheduled message types
-    │   │   │   │   │   │   │   # ❌ CREATE - Scheduled sends
-    │   │   │   │   │   │   │   # ❌ CREATE - Delayed delivery
+    │   │   │   │   │   │   │   # Scheduled sends
+    │   │   │   │   │   │   │   # Delayed delivery
     │   │   │   │   │   │   │   # BE: communications-be/scheduled_message
     │   │   │   │   │   │   ├── search.ts  # Message search types
     │   │   │   │   │   │   │   # MessageSearch, SearchIndex
     │   │   │   │   │   │   ├── sms-notification.ts  # SMS notification types
-    │   │   │   │   │   │   │   # ❌ CREATE - SMS payload
+    │   │   │   │   │   │   │   # SMS payload
     │   │   │   │   │   │   │   # BE: communications-be/sms_notification
     │   │   │   │   │   │   ├── sms.ts  # SMS notifications
     │   │   │   │   │   │   │   # ✅ EXISTS
@@ -26023,7 +26136,7 @@ fe/
     │   │   │   │   │   │   │   # System message entity
     │   │   │   │   │   │   │   # System message domain
     │   │   │   │   │   │   │   # System message types
-    │   │   │   │   │   │   │   # ❌ CREATE - System-generated message
+    │   │   │   │   │   │   │   # System-generated message
     │   │   │   │   │   │   ├── template.ts  # Message template types
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── thread-follower.ts  # Thread followers
@@ -26033,12 +26146,12 @@ fe/
     │   │   │   │   │   │   │   # Thread, ThreadParticipant
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   │   # Message thread domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Thread (sub-threads, follows). BE: communications-be/thread
-    │   │   │   │   │   │   │   # ❌ CREATE - Conversation container
+    │   │   │   │   │   │   │   # Thread (sub-threads, follows). BE: communications-be/thread
+    │   │   │   │   │   │   │   # Conversation container
     │   │   │   │   │   │   │   # BE: communications-be/thread
     │   │   │   │   │   │   ├── typing-indicator.ts  # Typing indicator types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Real-time typing indicators
-    │   │   │   │   │   │   │   # ❌ CREATE - Typing indicators (user_id, started_at, room)
+    │   │   │   │   │   │   │   # - Real-time typing indicators
+    │   │   │   │   │   │   │   # Typing indicators (user_id, started_at, room)
     │   │   │   │   │   │   ├── unsubscribe.ts  # Unsubscribe types
     │   │   │   │   │   │   │   # Unsubscribe management
     │   │   │   │   │   │   │   # UnsubscribeRegistry, UnsubscribeType
@@ -26050,17 +26163,17 @@ fe/
     │   │   │   │   │   │   │   # URL safety check domain
     │   │   │   │   │   │   ├── usage-metric.ts  # Usage metrics
     │   │   │   │   │   │   ├── webhook-delivery.ts  # Webhook delivery types
-    │   │   │   │   │   │   │   # ❌ CREATE - Delivery attempts
+    │   │   │   │   │   │   │   # Delivery attempts
     │   │   │   │   │   │   │   # BE: communications-be/webhook_delivery
     │   │   │   │   │   │   ├── webhook.ts  # Webhook subscription types
     │   │   │   │   │   │   │   # Webhook, WebhookEvent
     │   │   │   │   │   │   │   # Webhook types
-    │   │   │   │   │   │   │   # ❌ CREATE - Webhook config/event
-    │   │   │   │   │   │   │   # ❌ CREATE - Outbound webhook
+    │   │   │   │   │   │   │   # Webhook config/event
+    │   │   │   │   │   │   │   # Outbound webhook
     │   │   │   │   │   │   │   # BE: communications-be/webhook
     │   │   │   │   │   │   ├── websocket-connection.ts  # WebSocket connection types
-    │   │   │   │   │   │   │   # ❌ CREATE - WS connection/session
-    │   │   │   │   │   │   │   # ❌ CREATE - Live connections
+    │   │   │   │   │   │   │   # WS connection/session
+    │   │   │   │   │   │   │   # Live connections
     │   │   │   │   │   │   │   # BE: communications-be/websocket_connection
     │   │   │   │   │   │   └── websocket.ts  # WebSocket connection types
     │   │   │   │   │   ├── contracts/  # Contracts domain types
@@ -26076,55 +26189,55 @@ fe/
     │   │   │   │   │   │   │   # AgencyContract, AgencyMember, BillingSplit
     │   │   │   │   │   │   │   # Agency contract entity
     │   │   │   │   │   │   │   # Agency contract domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Agency/teaming contract
+    │   │   │   │   │   │   │   # Agency/teaming contract
     │   │   │   │   │   │   ├── amendment.ts  # Contract amendment types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Contract amendment
-    │   │   │   │   │   │   │   # ❌ CREATE - Change requests
+    │   │   │   │   │   │   │   # Contract amendment
+    │   │   │   │   │   │   │   # Change requests
     │   │   │   │   │   │   │   # BE: contracts-be/amendment
     │   │   │   │   │   │   ├── analytics.ts  # Contract analytics
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract analytics
-    │   │   │   │   │   │   │   # ❌ CREATE - Hours, spend, breaches
-    │   │   │   │   │   │   ├── approval-workflow.ts  # ⚠️ MISSING - Approval workflows
+    │   │   │   │   │   │   │   # - Contract analytics
+    │   │   │   │   │   │   │   # Hours, spend, breaches
+    │   │   │   │   │   │   ├── approval-workflow.ts  # - Approval workflows
     │   │   │   │   │   │   ├── approval.ts  # Contract approval workflow types
     │   │   │   │   │   │   │   # Contract approval workflow
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract approvals
-    │   │   │   │   │   │   │   # ❌ CREATE - Approval workflow item
-    │   │   │   │   │   │   │   # ❌ CREATE - Internal approvals
+    │   │   │   │   │   │   │   # - Contract approvals
+    │   │   │   │   │   │   │   # Approval workflow item
+    │   │   │   │   │   │   │   # Internal approvals
     │   │   │   │   │   │   │   # BE: contracts-be/approval
     │   │   │   │   │   │   ├── archive.ts  # Archived contracts
     │   │   │   │   │   │   ├── attachment.ts  # Contract attachments
-    │   │   │   │   │   │   │   # ❌ CREATE - Contract/deliverable files
+    │   │   │   │   │   │   │   # Contract/deliverable files
     │   │   │   │   │   │   ├── audit-log.ts  # Contract audit logs
     │   │   │   │   │   │   │   # Contract audit trail
     │   │   │   │   │   │   ├── audit.ts  # Contract audit types
-    │   │   │   │   │   │   │   # ❌ CREATE - Contract audit trail
+    │   │   │   │   │   │   │   # Contract audit trail
     │   │   │   │   │   │   ├── billing-cycle.ts  # Billing cycles
     │   │   │   │   │   │   ├── bonus.ts  # Bonus clause types
     │   │   │   │   │   │   ├── budget-adjustment.ts  # Budget adjustment entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Budget adjustments
+    │   │   │   │   │   │   │   # - Budget adjustments
     │   │   │   │   │   │   ├── budget-tracking.ts  # Budget tracking
     │   │   │   │   │   │   ├── budget.ts  # Contract budget tracking types
     │   │   │   │   │   │   │   # Contract budget tracking
     │   │   │   │   │   │   │   # ContractBudget, BudgetAlert
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract budgets
-    │   │   │   │   │   │   │   # ❌ CREATE - Contract budget/allocations
-    │   │   │   │   │   │   │   # ❌ CREATE - Budget caps
+    │   │   │   │   │   │   │   # - Contract budgets
+    │   │   │   │   │   │   │   # Contract budget/allocations
+    │   │   │   │   │   │   │   # Budget caps
     │   │   │   │   │   │   │   # BE: contracts-be/budget
     │   │   │   │   │   │   ├── cancellation.ts  # Contract cancellation
     │   │   │   │   │   │   ├── change-order.ts  # Change order types
     │   │   │   │   │   │   │   # ✅ EXISTS
     │   │   │   │   │   │   ├── clause.ts  # Contract clause types
-    │   │   │   │   │   │   ├── client-feedback.ts  # ⚠️ MISSING - Client feedback on contracts
+    │   │   │   │   │   │   ├── client-feedback.ts  # - Client feedback on contracts
     │   │   │   │   │   │   │   # Client feedback types
-    │   │   │   │   │   │   ├── collaboration-tool.ts  # ⚠️ MISSING - Collaboration tools
+    │   │   │   │   │   │   ├── collaboration-tool.ts  # - Collaboration tools
     │   │   │   │   │   │   │   # Collaboration tool types
     │   │   │   │   │   │   ├── compliance-check.ts  # Compliance checks
     │   │   │   │   │   │   ├── compliance.ts  # Contract compliance tracking types
     │   │   │   │   │   │   │   # Contract compliance checks
     │   │   │   │   │   │   │   # ContractCompliance, AuditLog
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Compliance checks (KYC, docs)
+    │   │   │   │   │   │   │   # Compliance checks (KYC, docs)
     │   │   │   │   │   │   ├── contract-amendment.ts  # Amendment entity
     │   │   │   │   │   │   ├── contract-analytics.ts  # Analytics entity
     │   │   │   │   │   │   ├── contract-approval.ts  # Multi-tier approvals
@@ -26149,94 +26262,93 @@ fe/
     │   │   │   │   │   │   │   # Collaboration workspace domain
     │   │   │   │   │   │   ├── contract.ts  # Contract entity types
     │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
-    │   │   │   │   │   │   │   # ❌ CREATE - Core contract
+    │   │   │   │   │   │   │   # Core contract
     │   │   │   │   │   │   │   # BE: contracts-be/contract
     │   │   │   │   │   │   ├── deliverable.ts  # Deliverable types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Deliverable metadata/milestones
-    │   │   │   │   │   │   │   # ❌ CREATE - Milestone/deliverable
+    │   │   │   │   │   │   │   # Deliverable metadata/milestones
+    │   │   │   │   │   │   │   # Milestone/deliverable
     │   │   │   │   │   │   │   # BE: contracts-be/deliverable
     │   │   │   │   │   │   ├── direct-contract.ts  # DirectContract, InvitationToken
-    │   │   │   │   │   │   │   # ❌ CREATE - Direct (off-job) contracts
+    │   │   │   │   │   │   │   # Direct (off-job) contracts
     │   │   │   │   │   │   ├── dispute-evidence.ts  # Dispute evidence
     │   │   │   │   │   │   │   # Dispute evidence entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Dispute evidence
+    │   │   │   │   │   │   │   # - Dispute evidence
     │   │   │   │   │   │   ├── dispute-message.ts  # Dispute message entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Dispute messages
+    │   │   │   │   │   │   │   # - Dispute messages
     │   │   │   │   │   │   ├── dispute-resolution.ts  # Dispute resolutions
     │   │   │   │   │   │   ├── dispute.ts  # Contract dispute types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Dispute case (reason/evidence)
-    │   │   │   │   │   │   │   # ❌ CREATE - Dispute case
+    │   │   │   │   │   │   │   # Dispute case (reason/evidence)
+    │   │   │   │   │   │   │   # Dispute case
     │   │   │   │   │   │   │   # BE: contracts-be/dispute
     │   │   │   │   │   │   ├── early-termination.ts  # Early termination terms
     │   │   │   │   │   │   ├── escalation.ts  # Dispute escalations
     │   │   │   │   │   │   ├── escrow-transaction.ts  # Escrow transaction entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow transactions
+    │   │   │   │   │   │   │   # - Escrow transactions
     │   │   │   │   │   │   ├── escrow.ts  # Contract escrow types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow management
-    │   │   │   │   │   │   │   # ❌ CREATE - Escrow account/holds
-    │   │   │   │   │   │   │   # ❌ CREATE - Funding/holds
+    │   │   │   │   │   │   │   # - Escrow management
+    │   │   │   │   │   │   │   # Escrow account/holds
+    │   │   │   │   │   │   │   # Funding/holds
     │   │   │   │   │   │   │   # BE: contracts-be/escrow
     │   │   │   │   │   │   ├── expense.ts  # Expense tracking types
     │   │   │   │   │   │   ├── external-reference.ts  # External system references
     │   │   │   │   │   │   ├── feedback.ts  # Contract feedback types
     │   │   │   │   │   │   │   # Post-contract feedback
     │   │   │   │   │   │   │   # ContractFeedback, FeedbackType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract feedback
-    │   │   │   │   │   │   │   # ❌ CREATE - Post-engagement feedback
-    │   │   │   │   │   │   │   # ❌ CREATE - Reviews for contract
+    │   │   │   │   │   │   │   # - Contract feedback
+    │   │   │   │   │   │   │   # Post-engagement feedback
+    │   │   │   │   │   │   │   # Reviews for contract
     │   │   │   │   │   │   │   # BE: contracts-be/feedback
     │   │   │   │   │   │   ├── financial-hold.ts  # Financial hold entity
     │   │   │   │   │   │   ├── hold.ts  # Financial hold types
-    │   │   │   │   │   │   │   # ❌ CREATE - Holds (payment/compliance)
+    │   │   │   │   │   │   │   # Holds (payment/compliance)
     │   │   │   │   │   │   ├── index.ts  # Barrel export for contracts domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── insurance-claim.ts  # Insurance claim entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Insurance claims
+    │   │   │   │   │   │   │   # - Insurance claims
     │   │   │   │   │   │   │   # Insurance claim domain
     │   │   │   │   │   │   ├── insurance.ts  # Insurance coverage types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract insurance
-    │   │   │   │   │   │   │   # ❌ CREATE - Insurance certificates/requirements
-    │   │   │   │   │   │   │   # ❌ CREATE - Insurance info
+    │   │   │   │   │   │   │   # - Contract insurance
+    │   │   │   │   │   │   │   # Insurance certificates/requirements
+    │   │   │   │   │   │   │   # Insurance info
     │   │   │   │   │   │   │   # BE: contracts-be/insurance
     │   │   │   │   │   │   ├── invitation.ts  # Contract invitation types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Direct contract invitations
-    │   │   │   │   │   │   │   # ❌ CREATE - Invite to contract/team
-    │   │   │   │   │   │   ├── invoice-line-item.ts  # ⚠️ MISSING - Invoice line items
+    │   │   │   │   │   │   │   # - Direct contract invitations
+    │   │   │   │   │   │   │   # Invite to contract/team
+    │   │   │   │   │   │   ├── invoice-line-item.ts  # - Invoice line items
     │   │   │   │   │   │   │   # Invoice line item types
-    │   │   │   │   │   │   │   # ❌ CREATE - Itemized lines
+    │   │   │   │   │   │   │   # Itemized lines
     │   │   │   │   │   │   │   # BE: contracts-be/invoice_line_item
-    │   │   │   │   │   │   ├── invoice-payment.ts  # ⚠️ MISSING - Invoice payments
+    │   │   │   │   │   │   ├── invoice-payment.ts  # - Invoice payments
     │   │   │   │   │   │   │   # Invoice payment types
     │   │   │   │   │   │   ├── invoice.ts  # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Billing invoice
+    │   │   │   │   │   │   │   # Billing invoice
     │   │   │   │   │   │   │   # BE: contracts-be/invoice
-    │   │   │   │   │   │   ├── kpi-score.ts  # ❌ CREATE - KPI scores per period
+    │   │   │   │   │   │   ├── kpi-score.ts  # KPI scores per period
     │   │   │   │   │   │   ├── kpi.ts  # Performance KPIs
-    │   │   │   │   │   │   │   # ❌ CREATE - Performance KPIs definitions
+    │   │   │   │   │   │   │   # Performance KPIs definitions
     │   │   │   │   │   │   ├── legal-review.ts  # Legal reviews
     │   │   │   │   │   │   │   # LegalReview, ReviewStatus
     │   │   │   │   │   │   ├── liability.ts  # Liability clause types
-    │   │   │   │   │   │   ├── milestone-activity.ts  # ❌ CREATE - Milestone submissions/changes
+    │   │   │   │   │   │   ├── milestone-activity.ts  # Milestone submissions/changes
     │   │   │   │   │   │   ├── milestone.ts  # Milestone entity types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Milestones (amounts, due, approvals)
-    │   │   │   │   │   │   ├── nda-breach.ts  # ⚠️ MISSING - NDA breaches
+    │   │   │   │   │   │   │   # Milestones (amounts, due, approvals)
+    │   │   │   │   │   │   ├── nda-breach.ts  # - NDA breaches
     │   │   │   │   │   │   │   # NDA breach types
-    │   │   │   │   │   │   ├── nda.ts  # ⚠️ MISSING - Non-disclosure agreements
+    │   │   │   │   │   │   ├── nda.ts  # - Non-disclosure agreements
     │   │   │   │   │   │   │   # Non-disclosure agreement types
-    │   │   │   │   │   │   │   # ❌ CREATE - NDA (parties, scope, breaches)
-    │   │   │   │   │   │   ├── negotiation-offer.ts  # ⚠️ MISSING - Negotiation offers
+    │   │   │   │   │   │   │   # NDA (parties, scope, breaches)
+    │   │   │   │   │   │   ├── negotiation-offer.ts  # - Negotiation offers
     │   │   │   │   │   │   │   # Negotiation offer types
     │   │   │   │   │   │   ├── negotiation.ts  # Negotiation, NegotiationOffer
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract negotiations
-    │   │   │   │   │   │   │   # ❌ CREATE - Negotiation rounds/terms
+    │   │   │   │   │   │   │   # - Contract negotiations
+    │   │   │   │   │   │   │   # Negotiation rounds/terms
     │   │   │   │   │   │   ├── notification.ts  # Contract notifications
     │   │   │   │   │   │   ├── participant.ts  # Contract participants
     │   │   │   │   │   │   ├── pause-history.ts  # Pause history
-    │   │   │   │   │   │   ├── payment-schedule.ts  # ⚠️ MISSING - Payment schedules
+    │   │   │   │   │   │   ├── payment-schedule.ts  # - Payment schedules
     │   │   │   │   │   │   │   # Payment schedule types
     │   │   │   │   │   │   ├── payment-terms.ts  # Payment terms
     │   │   │   │   │   │   ├── penalty.ts  # Penalty clause types
@@ -26245,28 +26357,28 @@ fe/
     │   │   │   │   │   │   │   # Performance KPI domain
     │   │   │   │   │   │   ├── rate-adjustment.ts  # RateAdjustment, AdjustmentReason
     │   │   │   │   │   │   ├── rate-card.ts  # Rate card types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Rate cards
-    │   │   │   │   │   │   │   # ❌ CREATE - Rate card (roles/tiers)
-    │   │   │   │   │   │   │   # ❌ CREATE - Pricing matrix
+    │   │   │   │   │   │   │   # - Rate cards
+    │   │   │   │   │   │   │   # Rate card (roles/tiers)
+    │   │   │   │   │   │   │   # Pricing matrix
     │   │   │   │   │   │   │   # BE: contracts-be/rate_card
     │   │   │   │   │   │   ├── recurring-contract.ts  # Recurring contract entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Recurring contracts
+    │   │   │   │   │   │   │   # - Recurring contracts
     │   │   │   │   │   │   │   # Recurring contract domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Recurring/retainer rules
+    │   │   │   │   │   │   │   # Recurring/retainer rules
     │   │   │   │   │   │   ├── recurring-schedule.ts  # Recurring schedules
     │   │   │   │   │   │   ├── recurring.ts  # Recurring contract types
     │   │   │   │   │   │   ├── reminder.ts  # Contract reminder types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract reminders
-    │   │   │   │   │   │   │   # ❌ CREATE - Reminders (submit hours/approve/pay)
-    │   │   │   │   │   │   ├── renegotiation.ts  # ⚠️ MISSING - Contract renegotiations
-    │   │   │   │   │   │   ├── renewal-history.ts  # ⚠️ MISSING - Contract renewal history
+    │   │   │   │   │   │   │   # - Contract reminders
+    │   │   │   │   │   │   │   # Reminders (submit hours/approve/pay)
+    │   │   │   │   │   │   ├── renegotiation.ts  # - Contract renegotiations
+    │   │   │   │   │   │   ├── renewal-history.ts  # - Contract renewal history
     │   │   │   │   │   │   │   # Renewal history domain
     │   │   │   │   │   │   ├── renewal.ts  # Auto-renewal types
     │   │   │   │   │   │   │   # Contract renewal
-    │   │   │   │   │   │   │   # ❌ CREATE - Renewal config/history
-    │   │   │   │   │   │   ├── report-run.ts  # ❌ CREATE - Generated reports (periodic)
+    │   │   │   │   │   │   │   # Renewal config/history
+    │   │   │   │   │   │   ├── report-run.ts  # Generated reports (periodic)
     │   │   │   │   │   │   ├── report.ts  # ContractReport, ReportType
-    │   │   │   │   │   │   │   # ❌ CREATE - Report template reference
+    │   │   │   │   │   │   │   # Report template reference
     │   │   │   │   │   │   ├── revision.ts  # Contract revisions
     │   │   │   │   │   │   ├── risk-assessment.ts  # Contract risk assessments
     │   │   │   │   │   │   │   # Contract risk scoring
@@ -26275,52 +26387,52 @@ fe/
     │   │   │   │   │   │   ├── search.ts  # Contract search index types
     │   │   │   │   │   │   ├── security-clearance.ts  # SecurityClearance, ClearanceLevel
     │   │   │   │   │   │   ├── signature.ts  # Digital signature types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - E-signatures
-    │   │   │   │   │   │   │   # ❌ CREATE - E-sign docs (status, parties)
+    │   │   │   │   │   │   │   # - E-signatures
+    │   │   │   │   │   │   │   # E-sign docs (status, parties)
     │   │   │   │   │   │   ├── sla-breach.ts  # SLA breaches
-    │   │   │   │   │   │   │   # ⚠️ MISSING - SLA breaches
-    │   │   │   │   │   │   ├── sla-metric.ts  # ⚠️ MISSING - SLA metrics
-    │   │   │   │   │   │   ├── sla-performance-record.ts  # ⚠️ MISSING - SLA performance records
+    │   │   │   │   │   │   │   # - SLA breaches
+    │   │   │   │   │   │   ├── sla-metric.ts  # - SLA metrics
+    │   │   │   │   │   │   ├── sla-performance-record.ts  # - SLA performance records
     │   │   │   │   │   │   ├── sla.ts  # Service level agreement types
     │   │   │   │   │   │   │   # Service level agreements
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Service level agreements
+    │   │   │   │   │   │   │   # - Service level agreements
     │   │   │   │   │   │   │   # Service level agreement domain
-    │   │   │   │   │   │   │   # ❌ CREATE - SLA (targets, breaches)
+    │   │   │   │   │   │   │   # SLA (targets, breaches)
     │   │   │   │   │   │   ├── sow.ts  # Statement of work types
-    │   │   │   │   │   │   │   # ❌ CREATE - Statement of Work (scope, versions)
+    │   │   │   │   │   │   │   # Statement of Work (scope, versions)
     │   │   │   │   │   │   ├── statement-of-work.ts  # SOW entity
     │   │   │   │   │   │   │   # SOW domain
-    │   │   │   │   │   │   ├── task.ts  # ⚠️ MISSING - Contract tasks
+    │   │   │   │   │   │   ├── task.ts  # - Contract tasks
     │   │   │   │   │   │   ├── template-version.ts  # Template versions
     │   │   │   │   │   │   ├── template.ts  # Contract template types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract templates
-    │   │   │   │   │   │   │   # ❌ CREATE - Contract templates (variables, versions)
+    │   │   │   │   │   │   │   # - Contract templates
+    │   │   │   │   │   │   │   # Contract templates (variables, versions)
     │   │   │   │   │   │   ├── termination-checklist.ts  # Termination checklists
     │   │   │   │   │   │   ├── termination.ts  # Contract termination types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract terminations
-    │   │   │   │   │   │   │   # ❌ CREATE - Termination record (reason, effective_at)
+    │   │   │   │   │   │   │   # - Contract terminations
+    │   │   │   │   │   │   │   # Termination record (reason, effective_at)
     │   │   │   │   │   │   ├── time-entry.ts  # Time entry types
     │   │   │   │   │   │   │   # Time entry entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Time entries
-    │   │   │   │   │   │   │   # ❌ CREATE - Daily entry (date, hours, billable, diary_refs)
-    │   │   │   │   │   │   │   # ❌ CREATE - Daily/hourly entries
+    │   │   │   │   │   │   │   # - Time entries
+    │   │   │   │   │   │   │   # Daily entry (date, hours, billable, diary_refs)
+    │   │   │   │   │   │   │   # Daily/hourly entries
     │   │   │   │   │   │   │   # BE: contracts-be/time_entry
     │   │   │   │   │   │   ├── time-tracking-rule.ts  # Time tracking rules
     │   │   │   │   │   │   ├── timesheet-approval.ts  # Timesheet approvals
     │   │   │   │   │   │   ├── timesheet.ts  # Timesheet types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Timesheets
-    │   │   │   │   │   │   │   # ❌ CREATE - Weekly timesheet (hours, approvals, payment markers)
-    │   │   │   │   │   │   │   # ❌ CREATE - Weekly timesheet
+    │   │   │   │   │   │   │   # - Timesheets
+    │   │   │   │   │   │   │   # Weekly timesheet (hours, approvals, payment markers)
+    │   │   │   │   │   │   │   # Weekly timesheet
     │   │   │   │   │   │   │   # BE: contracts-be/timesheet
     │   │   │   │   │   │   ├── version.ts  # Contract versioning
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Contract versions
-    │   │   │   │   │   │   ├── work-diary-daily-summary.ts  # ⚠️ MISSING - Work diary summaries
+    │   │   │   │   │   │   │   # - Contract versions
+    │   │   │   │   │   │   ├── work-diary-daily-summary.ts  # - Work diary summaries
     │   │   │   │   │   │   ├── work-diary-entry.ts  # Work diary entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Work diary entries
+    │   │   │   │   │   │   │   # - Work diary entries
     │   │   │   │   │   │   ├── work-diary-summary.ts  # Daily summary entity
     │   │   │   │   │   │   ├── work-diary.ts  # Work diary entry types
     │   │   │   │   │   │   │   # Daily work logs
-    │   │   │   │   │   │   │   # ❌ CREATE - Work diary (screenshots/notes refs)
+    │   │   │   │   │   │   │   # Work diary (screenshots/notes refs)
     │   │   │   │   │   │   ├── work-scope.ts  # WorkScope, Deliverable, Milestone
     │   │   │   │   │   │   ├── workroom-note.ts  # Workroom notes
     │   │   │   │   │   │   │   # Workroom note entity
@@ -26329,127 +26441,126 @@ fe/
     │   │   │   │   │   │   │   # Workroom task entity
     │   │   │   │   │   │   │   # Workroom task domain
     │   │   │   │   │   │   ├── workroom.ts  # Workroom, WorkroomTask, WorkroomNote
-    │   │   │   │   │   │   │   # ❌ CREATE - Workroom metadata (links, participants)
+    │   │   │   │   │   │   │   # Workroom metadata (links, participants)
     │   │   │   │   │   │   ├── workspace-comment.ts  # Workspace comment entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Workspace comments
+    │   │   │   │   │   │   │   # - Workspace comments
     │   │   │   │   │   │   │   # Workspace comment domain
     │   │   │   │   │   │   ├── workspace-document.ts  # Workspace document entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Workspace documents
+    │   │   │   │   │   │   │   # - Workspace documents
     │   │   │   │   │   │   │   # Workspace document domain
     │   │   │   │   │   │   └── workspace.ts  # Workspace types
     │   │   │   │   │   │       # Contract workspace/workroom
-    │   │   │   │   │   │       # ⚠️ MISSING - Collaboration workspaces
-    │   │   │   │   │   │       # ❌ CREATE - Contract workspace (members/roles/resources)
+    │   │   │   │   │   │       # - Collaboration workspaces
+    │   │   │   │   │   │       # Contract workspace (members/roles/resources)
     │   │   │   │   │   ├── financial/  # Financial domain types
     │   │   │   │   │   │   # Financial domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Financial domain types (COMPREHENSIVE MISSING)
     │   │   │   │   │   │   # MISSING DOMAINS (25+ domains missing)
-    │   │   │   │   │   │   ├── account-freeze.ts  # ⚠️ MISSING - Account freeze records
-    │   │   │   │   │   │   ├── account-limit.ts  # ⚠️ MISSING - Account limits
+    │   │   │   │   │   │   ├── account-freeze.ts  # - Account freeze records
+    │   │   │   │   │   │   ├── account-limit.ts  # - Account limits
     │   │   │   │   │   │   ├── allowance.ts  # Allowance tracking
     │   │   │   │   │   │   ├── analytics.ts  # Financial analytics types
     │   │   │   │   │   │   │   # FinancialAnalytics, PlatformMetrics
     │   │   │   │   │   │   ├── balance-snapshot.ts  # Balance snapshot types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Balance snapshots
+    │   │   │   │   │   │   │   # - Balance snapshots
     │   │   │   │   │   │   ├── bank-account.ts  # Bank account types
     │   │   │   │   │   │   │   # BankAccount, AccountType
     │   │   │   │   │   │   │   # Bank account entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Bank accounts
+    │   │   │   │   │   │   │   # - Bank accounts
     │   │   │   │   │   │   │   # Bank account domain
-    │   │   │   │   │   │   │   # ❌ CREATE - External bank acct
+    │   │   │   │   │   │   │   # External bank acct
     │   │   │   │   │   │   │   # BE: financial-be/bank_account
     │   │   │   │   │   │   ├── bank-verification.ts  # Bank account verification types
     │   │   │   │   │   │   │   # BankVerification, VerificationStatus
     │   │   │   │   │   │   │   # Bank verification domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Micro-deposits/KYC
+    │   │   │   │   │   │   │   # Micro-deposits/KYC
     │   │   │   │   │   │   │   # BE: financial-be/bank_verification
-    │   │   │   │   │   │   ├── bank.ts  # ❌ CREATE - Bank accounts & verification
+    │   │   │   │   │   │   ├── bank.ts  # Bank accounts & verification
     │   │   │   │   │   │   ├── batch-payment.ts  # Batch payment types
     │   │   │   │   │   │   ├── billing-address.ts  # Billing address management
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Billing addresses
+    │   │   │   │   │   │   │   # - Billing addresses
     │   │   │   │   │   │   │   # Billing address types
     │   │   │   │   │   │   ├── bonus.ts  # Bonus payment types
     │   │   │   │   │   │   │   # Bonus/reward domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Bonuses/adjustments
+    │   │   │   │   │   │   │   # Bonuses/adjustments
     │   │   │   │   │   │   ├── budget.ts  # Budget tracking
     │   │   │   │   │   │   ├── chargeback.ts  # Chargeback types
     │   │   │   │   │   │   │   # Chargeback handling
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Chargebacks
+    │   │   │   │   │   │   │   # - Chargebacks
     │   │   │   │   │   │   │   # Chargeback domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Chargeback cases (status/evidence)
-    │   │   │   │   │   │   │   # ❌ CREATE - Chargeback case
+    │   │   │   │   │   │   │   # Chargeback cases (status/evidence)
+    │   │   │   │   │   │   │   # Chargeback case
     │   │   │   │   │   │   │   # BE: financial-be/chargeback
     │   │   │   │   │   │   ├── commission.ts  # Commission calculations
     │   │   │   │   │   │   ├── connects-purchase.ts  # Connects purchase domain
     │   │   │   │   │   │   ├── connects.ts  # Connects purchase types
-    │   │   │   │   │   │   │   # ❌ CREATE - Connects purchase/refund/balance impact
+    │   │   │   │   │   │   │   # Connects purchase/refund/balance impact
     │   │   │   │   │   │   ├── coupon-redemption.ts  # Coupon redemption domain
     │   │   │   │   │   │   ├── coupon.ts  # Coupon, CouponRedemption
     │   │   │   │   │   │   │   # Coupon/promo code domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Coupons (code, type, constraints)
+    │   │   │   │   │   │   │   # Coupons (code, type, constraints)
     │   │   │   │   │   │   ├── crypto-payment.ts  # Cryptocurrency payment types
     │   │   │   │   │   │   ├── currency-conversion.ts  # Forex types
     │   │   │   │   │   │   │   # Multi-currency conversions
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Currency conversions
+    │   │   │   │   │   │   │   # - Currency conversions
     │   │   │   │   │   │   │   # Currency conversion domain
-    │   │   │   │   │   │   │   # ❌ CREATE - FX rates
+    │   │   │   │   │   │   │   # FX rates
     │   │   │   │   │   │   │   # BE: financial-be/currency_conversion
-    │   │   │   │   │   │   ├── currency-exchange-rate.ts  # ⚠️ MISSING - Exchange rates
+    │   │   │   │   │   │   ├── currency-exchange-rate.ts  # - Exchange rates
     │   │   │   │   │   │   ├── currency-preference.ts  # Currency preference types
     │   │   │   │   │   │   │   # CurrencyPreference, RateLock
     │   │   │   │   │   │   │   # Currency preference entity
     │   │   │   │   │   │   ├── currency-rate.ts  # Currency exchange rate types
     │   │   │   │   │   │   ├── currency.ts  # Currency entity types
-    │   │   │   │   │   │   │   # ❌ CREATE - Currency meta (code, symbol, decimals)
-    │   │   │   │   │   │   │   # ❌ CREATE - Currency meta
+    │   │   │   │   │   │   │   # Currency meta (code, symbol, decimals)
+    │   │   │   │   │   │   │   # Currency meta
     │   │   │   │   │   │   │   # BE: financial-be/currency
     │   │   │   │   │   │   ├── dispute-case.ts  # Payment dispute case types
-    │   │   │   │   │   │   ├── dispute-evidence.ts  # ⚠️ MISSING - Dispute evidence
+    │   │   │   │   │   │   ├── dispute-evidence.ts  # - Dispute evidence
     │   │   │   │   │   │   ├── dispute.ts  # Payment dispute types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment disputes
-    │   │   │   │   │   │   ├── earning.ts  # ⚠️ MISSING - Earnings
+    │   │   │   │   │   │   │   # - Payment disputes
+    │   │   │   │   │   │   ├── earning.ts  # - Earnings
     │   │   │   │   │   │   ├── earnings-report.ts  # Earnings report types
     │   │   │   │   │   │   ├── escrow-account.ts  # Escrow accounts
-    │   │   │   │   │   │   │   # ❌ CREATE - Escrow bucket
+    │   │   │   │   │   │   │   # Escrow bucket
     │   │   │   │   │   │   │   # BE: financial-be/escrow_account
     │   │   │   │   │   │   ├── escrow-hold.ts  # Escrow holds
     │   │   │   │   │   │   │   # Escrow hold domain
     │   │   │   │   │   │   ├── escrow-ledger.ts  # Escrow ledger types
     │   │   │   │   │   │   ├── escrow-release.ts  # Escrow releases
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow releases
+    │   │   │   │   │   │   │   # - Escrow releases
     │   │   │   │   │   │   │   # Escrow release domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Release request
+    │   │   │   │   │   │   │   # Release request
     │   │   │   │   │   │   │   # BE: financial-be/escrow_release
     │   │   │   │   │   │   ├── escrow.ts  # Escrow account types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Escrow accounts
+    │   │   │   │   │   │   │   # - Escrow accounts
     │   │   │   │   │   │   ├── exchange-rate.ts  # Exchange rate types
     │   │   │   │   │   │   │   # Exchange rate domain
-    │   │   │   │   │   │   │   # ❌ CREATE - FX rates (base/quote, source, as_of)
+    │   │   │   │   │   │   │   # FX rates (base/quote, source, as_of)
     │   │   │   │   │   │   ├── expense-reimbursement.ts  # Expense reimbursements
     │   │   │   │   │   │   │   # Expense reimbursement domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Expense reimbursements
     │   │   │   │   │   │   ├── expense.ts  # Expense reimbursement types
     │   │   │   │   │   │   │   # ExpenseReimbursement, ExpenseType
-    │   │   │   │   │   │   │   # ❌ CREATE - Expense claim (receipt, policy, approval)
+    │   │   │   │   │   │   │   # Expense claim (receipt, policy, approval)
     │   │   │   │   │   │   ├── fee-migration.ts  # Fee migration entity
     │   │   │   │   │   │   ├── fee-rule.ts  # Fee rules & overrides
     │   │   │   │   │   │   │   # Fee rule entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Fee rules/overrides (tiers, promos)
-    │   │   │   │   │   │   │   # ❌ CREATE - Calculation rule
+    │   │   │   │   │   │   │   # Fee rules/overrides (tiers, promos)
+    │   │   │   │   │   │   │   # Calculation rule
     │   │   │   │   │   │   │   # BE: financial-be/fee_rule
-    │   │   │   │   │   │   ├── fee-schedule.ts  # ⚠️ MISSING - Fee schedules
+    │   │   │   │   │   │   ├── fee-schedule.ts  # - Fee schedules
     │   │   │   │   │   │   │   # Fee schedule types
     │   │   │   │   │   │   ├── fee-transaction.ts  # Fee transactions
     │   │   │   │   │   │   │   # Fee transaction domain
-    │   │   │   │   │   │   ├── fee-update.ts  # ❌ CREATE - Fee changes (effective_at, rule_ref)
+    │   │   │   │   │   │   ├── fee-update.ts  # Fee changes (effective_at, rule_ref)
     │   │   │   │   │   │   ├── fee-version.ts  # Fee versioning types
     │   │   │   │   │   │   │   # Fee version entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Rule versioning
+    │   │   │   │   │   │   │   # Rule versioning
     │   │   │   │   │   │   │   # BE: financial-be/fee_version
-    │   │   │   │   │   │   ├── fee-waiver.ts  # ⚠️ MISSING - Fee waivers
+    │   │   │   │   │   │   ├── fee-waiver.ts  # - Fee waivers
     │   │   │   │   │   │   ├── fee.ts  # Fee structure types
     │   │   │   │   │   │   │   # Fee structures
-    │   │   │   │   │   │   │   # ❌ CREATE - Fee instance
+    │   │   │   │   │   │   │   # Fee instance
     │   │   │   │   │   │   │   # BE: financial-be/fee
     │   │   │   │   │   │   ├── financial-analytics.ts  # Financial analytics domain
     │   │   │   │   │   │   ├── forex-rate.ts  # Exchange rates
@@ -26467,12 +26578,11 @@ fe/
     │   │   │   │   │   │   │   # Gateway webhook domain
     │   │   │   │   │   │   ├── gateway.ts  # Payment gateway configuration types
     │   │   │   │   │   │   │   # GatewayConfig, GatewayWebhook
-    │   │   │   │   │   │   │   # ❌ CREATE - Payment gateway account (processor, status)
+    │   │   │   │   │   │   │   # Payment gateway account (processor, status)
     │   │   │   │   │   │   ├── hold.ts  # Payment holds
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment holds
+    │   │   │   │   │   │   │   # - Payment holds
     │   │   │   │   │   │   ├── index.ts  # Barrel export for financial domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── insurance-claim.ts  # Insurance claims
     │   │   │   │   │   │   │   # InsuranceClaim, ClaimStatus
     │   │   │   │   │   │   │   # Insurance claim entity
@@ -26483,20 +26593,20 @@ fe/
     │   │   │   │   │   │   ├── insurance-provider.ts  # Insurance providers
     │   │   │   │   │   │   │   # Insurance provider entity
     │   │   │   │   │   │   ├── insurance.ts  # Payment insurance types
-    │   │   │   │   │   │   │   # ❌ CREATE - Buyer/seller insurance
+    │   │   │   │   │   │   │   # Buyer/seller insurance
     │   │   │   │   │   │   ├── international-payment.ts  # International payment types
     │   │   │   │   │   │   │   # InternationalPayment, ComplianceCheck
     │   │   │   │   │   │   │   # International payment entity
     │   │   │   │   │   │   ├── intl-compliance-check.ts  # International compliance checks
     │   │   │   │   │   │   ├── intl-compliance.ts  # International compliance check entity
-    │   │   │   │   │   │   ├── invoice-item.ts  # ❌ CREATE - Line items (fee, tax, discount, qty)
+    │   │   │   │   │   │   ├── invoice-item.ts  # Line items (fee, tax, discount, qty)
     │   │   │   │   │   │   ├── invoice-line-item.ts  # Invoice line items
     │   │   │   │   │   │   │   # Invoice line item domain
     │   │   │   │   │   │   │   # Invoice line item types
-    │   │   │   │   │   │   ├── invoice-reminder.ts  # ⚠️ MISSING - Invoice reminders
+    │   │   │   │   │   │   ├── invoice-reminder.ts  # - Invoice reminders
     │   │   │   │   │   │   ├── invoice.ts  # Invoice entity types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Invoice (header, totals, status)
+    │   │   │   │   │   │   │   # Invoice (header, totals, status)
     │   │   │   │   │   │   ├── ledger-entry.ts  # Ledger entry domain
     │   │   │   │   │   │   ├── ledger-journal.ts  # Ledger journal domain
     │   │   │   │   │   │   ├── ledger.ts  # Immutable ledger types
@@ -26514,72 +26624,72 @@ fe/
     │   │   │   │   │   │   ├── payment-link.ts  # Payment link types
     │   │   │   │   │   │   ├── payment-method-token.ts  # Payment method token types
     │   │   │   │   │   │   ├── payment-method.ts  # Payment method types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment methods
-    │   │   │   │   │   │   │   # ❌ CREATE - Card/bank method (fingerprint, last4)
-    │   │   │   │   │   │   │   # ❌ CREATE - Card/bank/paypal
+    │   │   │   │   │   │   │   # - Payment methods
+    │   │   │   │   │   │   │   # Card/bank method (fingerprint, last4)
+    │   │   │   │   │   │   │   # Card/bank/paypal
     │   │   │   │   │   │   │   # BE: financial-be/payment_method
     │   │   │   │   │   │   ├── payment-schedule.ts  # Payment schedule types
     │   │   │   │   │   │   │   # PaymentSchedule, ScheduleType
     │   │   │   │   │   │   │   # Payment schedule domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Schedules (weekly, biweekly, net terms)
-    │   │   │   │   │   │   ├── payment-verification.ts  # ⚠️ MISSING - Payment verification
+    │   │   │   │   │   │   │   # Schedules (weekly, biweekly, net terms)
+    │   │   │   │   │   │   ├── payment-verification.ts  # - Payment verification
     │   │   │   │   │   │   ├── payment.ts  # Payment entity types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Payment intent/attempts/captures/refunds
-    │   │   │   │   │   │   │   # ❌ CREATE - Payment attempt
+    │   │   │   │   │   │   │   # Payment intent/attempts/captures/refunds
+    │   │   │   │   │   │   │   # Payment attempt
     │   │   │   │   │   │   │   # BE: financial-be/payment
     │   │   │   │   │   │   ├── payout-batch.ts  # Payout batches
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payout batches
+    │   │   │   │   │   │   │   # - Payout batches
     │   │   │   │   │   │   │   # Payout batch domain
     │   │   │   │   │   │   │   # Payout batch types
-    │   │   │   │   │   │   │   # ❌ CREATE - Batch group (counts, totals, failures)
-    │   │   │   │   │   │   ├── payout-method.ts  # ⚠️ MISSING - Payout methods
+    │   │   │   │   │   │   │   # Batch group (counts, totals, failures)
+    │   │   │   │   │   │   ├── payout-method.ts  # - Payout methods
     │   │   │   │   │   │   ├── payout-schedule.ts  # Payout schedule types
     │   │   │   │   │   │   ├── payout.ts  # Payout types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payouts
-    │   │   │   │   │   │   │   # ❌ CREATE - Payout (destination, status, trace)
-    │   │   │   │   │   │   │   # ❌ CREATE - Outbound payout
+    │   │   │   │   │   │   │   # - Payouts
+    │   │   │   │   │   │   │   # Payout (destination, status, trace)
+    │   │   │   │   │   │   │   # Outbound payout
     │   │   │   │   │   │   │   # BE: financial-be/payout
     │   │   │   │   │   │   ├── payroll-entry.ts  # Payroll entry domain
     │   │   │   │   │   │   ├── payroll-line-item.ts  # Payroll line items
     │   │   │   │   │   │   │   # Payroll line item entity
     │   │   │   │   │   │   ├── payroll-run.ts  # Payroll runs
     │   │   │   │   │   │   │   # Payroll run entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Bulk payouts
+    │   │   │   │   │   │   │   # Bulk payouts
     │   │   │   │   │   │   │   # BE: financial-be/payroll_run
     │   │   │   │   │   │   ├── payroll-withholding.ts  # Payroll withholdings
     │   │   │   │   │   │   │   # Payroll withholding entity
     │   │   │   │   │   │   ├── payroll.ts  # Payroll processing types
     │   │   │   │   │   │   │   # Payroll domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Payroll runs/periods/withholdings
+    │   │   │   │   │   │   │   # Payroll runs/periods/withholdings
     │   │   │   │   │   │   ├── platform-fee.ts  # Platform fees
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Platform fees
+    │   │   │   │   │   │   │   # - Platform fees
     │   │   │   │   │   │   │   # Platform fee domain
     │   │   │   │   │   │   ├── platform-financial-metric.ts  # Platform financial metrics domain
     │   │   │   │   │   │   ├── promo-credit.ts  # Promotional credits
     │   │   │   │   │   │   ├── promo.ts  # Promotional credit types
     │   │   │   │   │   │   ├── promotional-credit.ts  # Promotional credit domain
     │   │   │   │   │   │   ├── protection-plan.ts  # Protection plan types
-    │   │   │   │   │   │   │   # ❌ CREATE - Payment protection plan
+    │   │   │   │   │   │   │   # Payment protection plan
     │   │   │   │   │   │   ├── rate-lock.ts  # Currency rate lock types
     │   │   │   │   │   │   │   # Exchange rate lock entity
     │   │   │   │   │   │   ├── reconciliation-discrepancy.ts  # Reconciliation discrepancies
     │   │   │   │   │   │   │   # Reconciliation discrepancy domain
-    │   │   │   │   │   │   ├── reconciliation-item.ts  # ⚠️ MISSING - Reconciliation items
+    │   │   │   │   │   │   ├── reconciliation-item.ts  # - Reconciliation items
     │   │   │   │   │   │   ├── reconciliation-report.ts  # Reconciliation reports
     │   │   │   │   │   │   │   # Reconciliation report domain
     │   │   │   │   │   │   ├── reconciliation.ts  # Financial reconciliation types
     │   │   │   │   │   │   │   # Payment reconciliation
     │   │   │   │   │   │   │   # ReconciliationReport, Discrepancy
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment reconciliation
+    │   │   │   │   │   │   │   # - Payment reconciliation
     │   │   │   │   │   │   │   # Payment reconciliation types
-    │   │   │   │   │   │   │   # ❌ CREATE - Merchant/bank reconciliation
+    │   │   │   │   │   │   │   # Merchant/bank reconciliation
     │   │   │   │   │   │   ├── recurring-payment.ts  # Recurring payment setup
     │   │   │   │   │   │   ├── refund-policy.ts  # Refund policy types
     │   │   │   │   │   │   ├── refund.ts  # Refund types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Refunds
-    │   │   │   │   │   │   │   # ❌ CREATE - Refund (reason, original_txn, status)
-    │   │   │   │   │   │   │   # ❌ CREATE - Refund record
+    │   │   │   │   │   │   │   # - Refunds
+    │   │   │   │   │   │   │   # Refund (reason, original_txn, status)
+    │   │   │   │   │   │   │   # Refund record
     │   │   │   │   │   │   │   # BE: financial-be/refund
     │   │   │   │   │   │   ├── reminder-escalation.ts  # Payment reminder escalations
     │   │   │   │   │   │   │   # Reminder escalation entity
@@ -26591,15 +26701,15 @@ fe/
     │   │   │   │   │   │   │   # Payment reminder domain
     │   │   │   │   │   │   ├── reserve.ts  # Reserve types
     │   │   │   │   │   │   ├── revenue-share.ts  # Revenue share types
-    │   │   │   │   │   │   ├── revenue.ts  # ⚠️ MISSING - Revenue records
+    │   │   │   │   │   │   ├── revenue.ts  # - Revenue records
     │   │   │   │   │   │   ├── risk-assessment.ts  # Risk assessment types
     │   │   │   │   │   │   │   # Risk assessment domain
     │   │   │   │   │   │   ├── risk.ts  # Risk assessment types
-    │   │   │   │   │   │   │   # ❌ CREATE - Risk assessment (score, factors)
+    │   │   │   │   │   │   │   # Risk assessment (score, factors)
     │   │   │   │   │   │   ├── settlement.ts  # Settlement types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Settlements
-    │   │   │   │   │   │   ├── split-config.ts  # ⚠️ MISSING - Payment splits
-    │   │   │   │   │   │   ├── statement.ts  # ⚠️ MISSING - Financial statements
+    │   │   │   │   │   │   │   # - Settlements
+    │   │   │   │   │   │   ├── split-config.ts  # - Payment splits
+    │   │   │   │   │   │   ├── statement.ts  # - Financial statements
     │   │   │   │   │   │   ├── subscription-billing.ts  # Subscription billing types
     │   │   │   │   │   │   │   # SubscriptionBilling, BillingCycle
     │   │   │   │   │   │   │   # Subscription billing domain
@@ -26607,183 +26717,182 @@ fe/
     │   │   │   │   │   │   │   # Subscription invoice domain
     │   │   │   │   │   │   ├── subscription-payment.ts  # Subscription payment types
     │   │   │   │   │   │   ├── tax-document.ts  # Tax documents
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Tax documents (1099, W9)
+    │   │   │   │   │   │   │   # - Tax documents (1099, W9)
     │   │   │   │   │   │   │   # Tax document domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Issued tax docs (year, totals, file)
-    │   │   │   │   │   │   ├── tax-exemption.ts  # ⚠️ MISSING - Tax exemptions
+    │   │   │   │   │   │   │   # Issued tax docs (year, totals, file)
+    │   │   │   │   │   │   ├── tax-exemption.ts  # - Tax exemptions
     │   │   │   │   │   │   ├── tax-form.ts  # Tax form types (1099, W9)
     │   │   │   │   │   │   │   # TaxForm, TaxFormType
     │   │   │   │   │   │   │   # Tax form entity
     │   │   │   │   │   │   │   # Tax form types
-    │   │   │   │   │   │   │   # ❌ CREATE - W-8/W-9 equivalents (version, status)
-    │   │   │   │   │   │   │   # ❌ CREATE - Submitted forms
+    │   │   │   │   │   │   │   # W-8/W-9 equivalents (version, status)
+    │   │   │   │   │   │   │   # Submitted forms
     │   │   │   │   │   │   │   # BE: financial-be/tax_form
     │   │   │   │   │   │   ├── tax-profile.ts  # Tax profiles
     │   │   │   │   │   │   │   # Tax profile domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Tax profile (country/residency/forms)
-    │   │   │   │   │   │   │   # ❌ CREATE - W-9/W-8BEN data
+    │   │   │   │   │   │   │   # Tax profile (country/residency/forms)
+    │   │   │   │   │   │   │   # W-9/W-8BEN data
     │   │   │   │   │   │   │   # BE: financial-be/tax_profile
-    │   │   │   │   │   │   ├── tax-rate.ts  # ⚠️ MISSING - Tax rates
+    │   │   │   │   │   │   ├── tax-rate.ts  # - Tax rates
     │   │   │   │   │   │   │   # Tax rate types
     │   │   │   │   │   │   ├── tax-withholding.ts  # Tax withholdings
     │   │   │   │   │   │   │   # Tax withholding domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Withholding config/period snapshots
+    │   │   │   │   │   │   │   # Withholding config/period snapshots
     │   │   │   │   │   │   ├── tax.ts  # Tax calculation types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Tax records
+    │   │   │   │   │   │   │   # - Tax records
     │   │   │   │   │   │   ├── transaction-event.ts  # Transaction events
     │   │   │   │   │   │   │   # Transaction event domain
-    │   │   │   │   │   │   ├── transaction-fee.ts  # ⚠️ MISSING - Transaction fees
+    │   │   │   │   │   │   ├── transaction-fee.ts  # - Transaction fees
     │   │   │   │   │   │   │   # Transaction fee types
     │   │   │   │   │   │   ├── transaction.ts  # Transaction entity types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Immutable ledger entry
-    │   │   │   │   │   │   │   # ❌ CREATE - Ledger transaction
+    │   │   │   │   │   │   │   # Immutable ledger entry
+    │   │   │   │   │   │   │   # Ledger transaction
     │   │   │   │   │   │   │   # BE: financial-be/transaction
-    │   │   │   │   │   │   ├── transfer.ts  # ⚠️ MISSING - Transfers
-    │   │   │   │   │   │   ├── verification.ts  # ⚠️ MISSING - Financial verification
+    │   │   │   │   │   │   ├── transfer.ts  # - Transfers
+    │   │   │   │   │   │   ├── verification.ts  # - Financial verification
     │   │   │   │   │   │   ├── wallet-limit.ts  # Wallet limit types
     │   │   │   │   │   │   ├── wallet-transfer.ts  # Wallet transfer types
     │   │   │   │   │   │   ├── wallet.ts  # Digital wallet types
     │   │   │   │   │   │   │   # ✅ EXISTS
-    │   │   │   │   │   │   │   # ❌ CREATE - Wallet (available/pending/reserved, limits)
-    │   │   │   │   │   │   │   # ❌ CREATE - User/org wallet
+    │   │   │   │   │   │   │   # Wallet (available/pending/reserved, limits)
+    │   │   │   │   │   │   │   # User/org wallet
     │   │   │   │   │   │   │   # BE: financial-be/wallet
     │   │   │   │   │   │   ├── wire-transfer.ts  # Wire transfer types
     │   │   │   │   │   │   ├── withdrawal-limit.ts  # Withdrawal limit types
     │   │   │   │   │   │   │   # WithdrawalLimit, LimitType
-    │   │   │   │   │   │   │   # ❌ CREATE - Withdraw limits (period, amount)
+    │   │   │   │   │   │   │   # Withdraw limits (period, amount)
     │   │   │   │   │   │   └── withdrawal.ts  # Withdrawal processing
-    │   │   │   │   │   │       # ⚠️ MISSING - Withdrawals
+    │   │   │   │   │   │       # - Withdrawals
     │   │   │   │   │   ├── jobs/  # Jobs domain types
     │   │   │   │   │   │   # Jobs domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Jobs domain types (MANY MISSING)
     │   │   │   │   │   │   # MISSING DOMAINS (20+ domains missing)
-    │   │   │   │   │   │   ├── ab-experiments.ts  # ❌ CREATE - Experiment bucketing for job flows
+    │   │   │   │   │   │   ├── ab-experiments.ts  # Experiment bucketing for job flows
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
     │   │   │   │   │   │   ├── ai-optimization.ts  # AI optimizations entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - AI optimizations
+    │   │   │   │   │   │   │   # - AI optimizations
     │   │   │   │   │   │   │   # AI job optimization domain
     │   │   │   │   │   │   │   # AI job optimization types
     │   │   │   │   │   │   ├── ai-suggest.ts  # AISuggestion, AIOptimization
     │   │   │   │   │   │   ├── ai-suggestion.ts  # AI job suggestions entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - AI suggestions
+    │   │   │   │   │   │   │   # - AI suggestions
     │   │   │   │   │   │   │   # AI job suggestion domain
     │   │   │   │   │   │   │   # AI suggestion types
-    │   │   │   │   │   │   │   # ❌ CREATE - AI suggestions for job authoring/boost
+    │   │   │   │   │   │   │   # AI suggestions for job authoring/boost
     │   │   │   │   │   │   ├── analytics.ts  # Job analytics types
     │   │   │   │   │   │   │   # Job analytics
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job analytics
-    │   │   │   │   │   │   │   # ❌ CREATE - Views, applies, CTR
+    │   │   │   │   │   │   │   # - Job analytics
+    │   │   │   │   │   │   │   # Views, applies, CTR
     │   │   │   │   │   │   ├── applicant-tracking.ts  # Applicant tracking types
-    │   │   │   │   │   │   ├── applicant.ts  # ⚠️ MISSING - Job applicants
+    │   │   │   │   │   │   ├── applicant.ts  # - Job applicants
     │   │   │   │   │   │   ├── application.ts  # Job application types
     │   │   │   │   │   │   ├── archive.ts  # Archived job types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job archives
-    │   │   │   │   │   │   │   # ❌ CREATE - Archived job metadata
-    │   │   │   │   │   │   │   # ❌ CREATE - Archived posts
+    │   │   │   │   │   │   │   # - Job archives
+    │   │   │   │   │   │   │   # Archived job metadata
+    │   │   │   │   │   │   │   # Archived posts
     │   │   │   │   │   │   │   # BE: jobs-be/archive
     │   │   │   │   │   │   ├── attachment.ts  # Job attachment types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job attachments
-    │   │   │   │   │   │   │   # ❌ CREATE - Job attachments
+    │   │   │   │   │   │   │   # - Job attachments
+    │   │   │   │   │   │   │   # Job attachments
     │   │   │   │   │   │   │   # BE: jobs-be/attachment
     │   │   │   │   │   │   ├── auto-close.ts  # Auto-close job types
     │   │   │   │   │   │   ├── boost.ts  # Job boosting types
     │   │   │   │   │   │   │   # Job boost/promotion
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job boosts
-    │   │   │   │   │   │   ├── budget-control.ts  # ⚠️ MISSING - Budget controls
+    │   │   │   │   │   │   │   # - Job boosts
+    │   │   │   │   │   │   ├── budget-control.ts  # - Budget controls
     │   │   │   │   │   │   │   # Budget control types
     │   │   │   │   │   │   ├── budget.ts  # Budget control types
     │   │   │   │   │   │   │   # Job budget management
     │   │   │   │   │   │   ├── bulk-operation.ts  # Bulk operation types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Bulk operations
-    │   │   │   │   │   │   │   # ❌ CREATE - Bulk edits/imports
+    │   │   │   │   │   │   │   # - Bulk operations
+    │   │   │   │   │   │   │   # Bulk edits/imports
     │   │   │   │   │   │   ├── bulk-ops.ts  # Bulk operations
     │   │   │   │   │   │   │   # BulkOperation, BulkJobAction
-    │   │   │   │   │   │   ├── campaign-tag.ts  # ❌ CREATE - Campaign tagging
+    │   │   │   │   │   │   ├── campaign-tag.ts  # Campaign tagging
     │   │   │   │   │   │   ├── category-taxonomy.ts  # Category hierarchy
     │   │   │   │   │   │   ├── category.ts  # Job category types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job categories
-    │   │   │   │   │   │   │   # ❌ CREATE - Category (taxonomy link)
-    │   │   │   │   │   │   │   # ❌ CREATE - Job category
+    │   │   │   │   │   │   │   # - Job categories
+    │   │   │   │   │   │   │   # Category (taxonomy link)
+    │   │   │   │   │   │   │   # Job category
     │   │   │   │   │   │   │   # BE: jobs-be/category
     │   │   │   │   │   │   ├── client-preference.ts  # Client preferences
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Client preferences
+    │   │   │   │   │   │   │   # - Client preferences
     │   │   │   │   │   │   ├── collaboration.ts  # Job collaboration
     │   │   │   │   │   │   ├── comparison.ts  # Job comparisons
     │   │   │   │   │   │   ├── compliance.ts  # Job compliance
     │   │   │   │   │   │   ├── contract-transition.ts  # Job to contract types
     │   │   │   │   │   │   │   # ContractTransition, TransitionStatus
     │   │   │   │   │   │   │   # Job to contract transition entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job to contract transitions
+    │   │   │   │   │   │   │   # - Job to contract transitions
     │   │   │   │   │   │   │   # Job to contract transition domain
     │   │   │   │   │   │   │   # Contract transition types
     │   │   │   │   │   │   ├── custom-field.ts  # Custom field types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Custom fields
+    │   │   │   │   │   │   │   # - Custom fields
     │   │   │   │   │   │   │   # Custom field domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Custom fields schema + values
+    │   │   │   │   │   │   │   # Custom fields schema + values
     │   │   │   │   │   │   ├── custom-fields.ts  # CustomField, FieldType
     │   │   │   │   │   │   ├── dispute.ts  # Job disputes
     │   │   │   │   │   │   ├── draft.ts  # Job drafts
     │   │   │   │   │   │   ├── duplicate-cluster.ts  # Duplicate cluster entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Duplicate clusters
+    │   │   │   │   │   │   │   # - Duplicate clusters
     │   │   │   │   │   │   │   # Duplicate job cluster domain
     │   │   │   │   │   │   ├── duplicate-detection.ts  # Duplicate job detection types
-    │   │   │   │   │   │   │   # ❌ CREATE - Duplicate job detection signals
+    │   │   │   │   │   │   │   # Duplicate job detection signals
     │   │   │   │   │   │   ├── duplicate-key.ts  # Duplicate detection entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Duplicate detection keys
+    │   │   │   │   │   │   │   # - Duplicate detection keys
     │   │   │   │   │   │   ├── duplicate-match.ts  # Duplicate match entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Duplicate matches
+    │   │   │   │   │   │   │   # - Duplicate matches
     │   │   │   │   │   │   │   # Duplicate match domain
     │   │   │   │   │   │   ├── duplicate.ts  # Duplicate detection types
-    │   │   │   │   │   │   ├── eligibility-rule.ts  # ❌ CREATE - Eligibility rules outputs
-    │   │   │   │   │   │   │   # ❌ CREATE - Who can apply
+    │   │   │   │   │   │   ├── eligibility-rule.ts  # Eligibility rules outputs
+    │   │   │   │   │   │   │   # Who can apply
     │   │   │   │   │   │   │   # BE: jobs-be/eligibility_rule
     │   │   │   │   │   │   ├── eligibility.ts  # Eligibility types
     │   │   │   │   │   │   │   # JobEligibility, EligibilityRules
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Eligibility rules
+    │   │   │   │   │   │   │   # - Eligibility rules
     │   │   │   │   │   │   │   # Job eligibility types
     │   │   │   │   │   │   ├── esg.ts  # ESG attribute types
     │   │   │   │   │   │   │   # ESGAttributes, SustainabilityScore
-    │   │   │   │   │   │   │   # ⚠️ MISSING - ESG attributes
-    │   │   │   │   │   │   │   # ❌ CREATE - ESG/impact labels
+    │   │   │   │   │   │   │   # - ESG attributes
+    │   │   │   │   │   │   │   # ESG/impact labels
     │   │   │   │   │   │   ├── event-log.ts  # Job event logs
     │   │   │   │   │   │   ├── expiration.ts  # Job expiration types
     │   │   │   │   │   │   ├── expiry.ts  # Job expiration handling
     │   │   │   │   │   │   ├── external-posting.ts  # External postings
     │   │   │   │   │   │   ├── favorite.ts  # Favorite jobs
     │   │   │   │   │   │   ├── feature.ts  # Featured jobs
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job features
+    │   │   │   │   │   │   │   # - Job features
     │   │   │   │   │   │   ├── featured-placement.ts  # Featured placement types
     │   │   │   │   │   │   ├── feedback.ts  # Client feedback on applicants
     │   │   │   │   │   │   ├── flag.ts  # Job flags
     │   │   │   │   │   │   ├── fraud-signal.ts  # Fraud detection signal types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Fraud signals
+    │   │   │   │   │   │   │   # - Fraud signals
     │   │   │   │   │   │   ├── fraud.ts  # Fraud signal types
     │   │   │   │   │   │   │   # FraudSignal, FraudScore
     │   │   │   │   │   │   ├── geo.ts  # GeoLocation, GeoFencing
     │   │   │   │   │   │   ├── health-checkpoint.ts  # Health checkpoint types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Health checkpoints
+    │   │   │   │   │   │   │   # - Health checkpoints
     │   │   │   │   │   │   ├── health.ts  # HealthCheckpoint, HealthStatus
     │   │   │   │   │   │   ├── hiring-option.ts  # Hiring option types
     │   │   │   │   │   │   │   # Multi-hire, repost options entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Hiring options
+    │   │   │   │   │   │   │   # - Hiring options
     │   │   │   │   │   │   │   # Hiring options domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Hiring options (team/agency/solo)
+    │   │   │   │   │   │   │   # Hiring options (team/agency/solo)
     │   │   │   │   │   │   ├── hiring-options.ts  # HiringOptions, MultiHire, Repost
-    │   │   │   │   │   │   ├── hiring-team.ts  # ❌ CREATE - Collaborators
+    │   │   │   │   │   │   ├── hiring-team.ts  # Collaborators
     │   │   │   │   │   │   │   # BE: jobs-be/hiring_team
     │   │   │   │   │   │   ├── history.ts  # Job history
     │   │   │   │   │   │   ├── inclusivity-flag.ts  # Inclusivity features entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Inclusivity flags
+    │   │   │   │   │   │   │   # - Inclusivity flags
     │   │   │   │   │   │   │   # Inclusivity flag domain
     │   │   │   │   │   │   │   # Inclusivity flag types
     │   │   │   │   │   │   ├── inclusivity.ts  # Inclusivity flag types
     │   │   │   │   │   │   │   # InclusivityFlags, AccessibilityFeatures
     │   │   │   │   │   │   ├── index.ts  # Barrel export for jobs domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── invitation.ts  # Freelancer invitation types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Freelancer invitations
+    │   │   │   │   │   │   │   # - Freelancer invitations
     │   │   │   │   │   │   ├── invite.ts  # Freelancer invite types
     │   │   │   │   │   │   ├── job-activity.ts  # Job activity types
     │   │   │   │   │   │   ├── job-alert.ts  # Job alerts
@@ -26796,7 +26905,7 @@ fe/
     │   │   │   │   │   │   ├── job-clone.ts  # Job clone types
     │   │   │   │   │   │   ├── job-collaboration.ts  # Job collaboration types
     │   │   │   │   │   │   ├── job-draft.ts  # Job draft types
-    │   │   │   │   │   │   │   # ❌ CREATE - Draft (autosave, checkpoints)
+    │   │   │   │   │   │   │   # Draft (autosave, checkpoints)
     │   │   │   │   │   │   ├── job-expiry.ts  # Job expiry types
     │   │   │   │   │   │   ├── job-geo.ts  # Geo-location
     │   │   │   │   │   │   ├── job-lifecycle.ts  # Job lifecycle types
@@ -26807,154 +26916,154 @@ fe/
     │   │   │   │   │   │   ├── job-performance.ts  # Performance metrics
     │   │   │   │   │   │   ├── job-post.ts  # Job posting types
     │   │   │   │   │   │   ├── job-preference.ts  # Job preferences
-    │   │   │   │   │   │   │   # ❌ CREATE - Client prefs (location, level, rate)
+    │   │   │   │   │   │   │   # Client prefs (location, level, rate)
     │   │   │   │   │   │   ├── job-repost.ts  # Job repost types
-    │   │   │   │   │   │   ├── job-skill.ts  # ⚠️ MISSING - Job skills
+    │   │   │   │   │   │   ├── job-skill.ts  # - Job skills
     │   │   │   │   │   │   │   # Job skill requirement types
     │   │   │   │   │   │   ├── job-stat.ts  # Job statistics
     │   │   │   │   │   │   ├── job-template.ts  # Job template types
-    │   │   │   │   │   │   │   # ❌ CREATE - Reusable templates (versions/skills)
+    │   │   │   │   │   │   │   # Reusable templates (versions/skills)
     │   │   │   │   │   │   ├── job-version.ts  # Job version types
     │   │   │   │   │   │   ├── job.ts  # Job entity types
     │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
-    │   │   │   │   │   │   │   # ❌ CREATE - Job post (title, scope, budget, lifecycle)
-    │   │   │   │   │   │   │   # ❌ CREATE - Job post
+    │   │   │   │   │   │   │   # Job post (title, scope, budget, lifecycle)
+    │   │   │   │   │   │   │   # Job post
     │   │   │   │   │   │   │   # BE: jobs-be/job
-    │   │   │   │   │   │   ├── legal-control.ts  # ❌ CREATE - Legal controls (export restrictions)
+    │   │   │   │   │   │   ├── legal-control.ts  # Legal controls (export restrictions)
     │   │   │   │   │   │   ├── lifecycle.ts  # JobLifecycle, LifecycleStage
     │   │   │   │   │   │   ├── localization.ts  # Multi-language localization types
     │   │   │   │   │   │   │   # JobLocalization, Translation
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Multi-language support
+    │   │   │   │   │   │   │   # - Multi-language support
     │   │   │   │   │   │   │   # Localization domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Localized copies (locale, status)
+    │   │   │   │   │   │   │   # Localized copies (locale, status)
     │   │   │   │   │   │   ├── match.ts  # Job-freelancer matching
     │   │   │   │   │   │   ├── milestone.ts  # Job milestones
-    │   │   │   │   │   │   ├── moderation-flag.ts  # ❌ CREATE - Policy flags
-    │   │   │   │   │   │   │   # ❌ CREATE - Abuse/mod flags
+    │   │   │   │   │   │   ├── moderation-flag.ts  # Policy flags
+    │   │   │   │   │   │   │   # Abuse/mod flags
     │   │   │   │   │   │   │   # BE: jobs-be/moderation_flag
     │   │   │   │   │   │   ├── moderation-history.ts  # Moderation history domain
-    │   │   │   │   │   │   ├── moderation-state.ts  # ⚠️ MISSING - Moderation states
+    │   │   │   │   │   │   ├── moderation-state.ts  # - Moderation states
     │   │   │   │   │   │   │   # Moderation state machine domain
     │   │   │   │   │   │   │   # Moderation state types
     │   │   │   │   │   │   ├── moderation.ts  # Job moderation types
     │   │   │   │   │   │   │   # JobModeration, ModerationState
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job moderation
+    │   │   │   │   │   │   │   # - Job moderation
     │   │   │   │   │   │   ├── notification.ts  # Job notification types
     │   │   │   │   │   │   ├── offer.ts  # Job offer types
     │   │   │   │   │   │   ├── package.ts  # Job packages
     │   │   │   │   │   │   ├── payment-schedule.ts  # Payment terms types
     │   │   │   │   │   │   │   # Payment schedule domain (jobs context)
-    │   │   │   │   │   │   ├── performance-metric.ts  # ⚠️ MISSING - Performance metrics
+    │   │   │   │   │   │   ├── performance-metric.ts  # - Performance metrics
     │   │   │   │   │   │   ├── pipeline.ts  # Job pipeline
     │   │   │   │   │   │   ├── posting-package.ts  # Posting package types
     │   │   │   │   │   │   ├── posting-schedule.ts  # Posting schedule types
     │   │   │   │   │   │   ├── preference.ts  # Client preference types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job preferences
+    │   │   │   │   │   │   │   # - Job preferences
     │   │   │   │   │   │   ├── premium-feature.ts  # Premium feature types
     │   │   │   │   │   │   ├── promotion.ts  # Job promotion types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job promotions
-    │   │   │   │   │   │   │   # ❌ CREATE - Promotions/boosts
-    │   │   │   │   │   │   ├── quality-score.ts  # ⚠️ MISSING - Quality scores
+    │   │   │   │   │   │   │   # - Job promotions
+    │   │   │   │   │   │   │   # Promotions/boosts
+    │   │   │   │   │   │   ├── quality-score.ts  # - Quality scores
     │   │   │   │   │   │   ├── question.ts  # Screening question types
     │   │   │   │   │   │   ├── recommendation.ts  # AI suggestion types
     │   │   │   │   │   │   │   # Job recommendations
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job recommendations
+    │   │   │   │   │   │   │   # - Job recommendations
     │   │   │   │   │   │   ├── recycling.ts  # Job recycling
     │   │   │   │   │   │   ├── referral.ts  # Job referrals
     │   │   │   │   │   │   ├── report.ts  # Job reports
     │   │   │   │   │   │   ├── repost.ts  # Job reposting
     │   │   │   │   │   │   ├── requirement.ts  # Job requirement types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job requirements
-    │   │   │   │   │   │   ├── requirements-matrix.ts  # ❌ CREATE - Requirements vs applicant matching
-    │   │   │   │   │   │   │   # ❌ CREATE - Must/should
+    │   │   │   │   │   │   │   # - Job requirements
+    │   │   │   │   │   │   ├── requirements-matrix.ts  # Requirements vs applicant matching
+    │   │   │   │   │   │   │   # Must/should
     │   │   │   │   │   │   │   # BE: jobs-be/requirements_matrix
     │   │   │   │   │   │   ├── response-time.ts  # Response time tracking
-    │   │   │   │   │   │   ├── retention-rule.ts  # ❌ CREATE - Retention/archival policy
+    │   │   │   │   │   │   ├── retention-rule.ts  # Retention/archival policy
     │   │   │   │   │   │   ├── saved-search.ts  # Saved job searches
     │   │   │   │   │   │   │   # Saved search types
     │   │   │   │   │   │   ├── screening-answer.ts  # Screening answers
     │   │   │   │   │   │   ├── screening-question.ts  # Screening questions
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Screening questions
+    │   │   │   │   │   │   │   # - Screening questions
     │   │   │   │   │   │   │   # Screening question types
-    │   │   │   │   │   │   │   # ❌ CREATE - Screening Qs (required, type)
-    │   │   │   │   │   │   │   # ❌ CREATE - Form questions
+    │   │   │   │   │   │   │   # Screening Qs (required, type)
+    │   │   │   │   │   │   │   # Form questions
     │   │   │   │   │   │   │   # BE: jobs-be/screening_question
     │   │   │   │   │   │   ├── screening-skill-test.ts  # Screening skill test domain
-    │   │   │   │   │   │   ├── screening-test.ts  # ❌ CREATE - Skill tests (provider, result link)
+    │   │   │   │   │   │   ├── screening-test.ts  # Skill tests (provider, result link)
     │   │   │   │   │   │   ├── screening.ts  # Screening types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Screening configuration
-    │   │   │   │   │   │   │   # ❌ CREATE - Screening form
+    │   │   │   │   │   │   │   # - Screening configuration
+    │   │   │   │   │   │   │   # Screening form
     │   │   │   │   │   │   │   # BE: jobs-be/screening
     │   │   │   │   │   │   ├── screenshot.ts  # Job screenshots
     │   │   │   │   │   │   ├── search-index.ts  # Search indexing
-    │   │   │   │   │   │   ├── share-link.ts  # ❌ CREATE - Public share links + click stats
+    │   │   │   │   │   │   ├── share-link.ts  # Public share links + click stats
     │   │   │   │   │   │   ├── share.ts  # Job sharing
     │   │   │   │   │   │   ├── sharing.ts  # Job share link types
     │   │   │   │   │   │   │   # ShareLink, ShareAnalytics
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Share links
-    │   │   │   │   │   │   │   # ❌ CREATE - Sharing/visibility overrides
+    │   │   │   │   │   │   │   # - Share links
+    │   │   │   │   │   │   │   # Sharing/visibility overrides
     │   │   │   │   │   │   ├── shortlist.ts  # Job shortlists
-    │   │   │   │   │   │   │   # ❌ CREATE - Sourcing shortlist pools
+    │   │   │   │   │   │   │   # Sourcing shortlist pools
     │   │   │   │   │   │   ├── skill-requirement.ts  # Skill requirements
     │   │   │   │   │   │   ├── skill.ts  # Required skill types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Skills taxonomy
+    │   │   │   │   │   │   │   # - Skills taxonomy
     │   │   │   │   │   │   │   # Skill types
-    │   │   │   │   │   │   │   # ❌ CREATE - Skill (taxonomy link)
-    │   │   │   │   │   │   │   # ❌ CREATE - Taxonomy skill
+    │   │   │   │   │   │   │   # Skill (taxonomy link)
+    │   │   │   │   │   │   │   # Taxonomy skill
     │   │   │   │   │   │   │   # BE: jobs-be/skill
     │   │   │   │   │   │   ├── snapshot.ts  # Job version snapshots
     │   │   │   │   │   │   ├── sourcing-shortlist.ts  # Sourcing shortlist domain
     │   │   │   │   │   │   ├── sourcing-talent-pool.ts  # Talent pool domain
     │   │   │   │   │   │   ├── sourcing.ts  # Sourcing types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Sourcing configuration
-    │   │   │   │   │   │   │   # ❌ CREATE - Sourcing campaigns
+    │   │   │   │   │   │   │   # - Sourcing configuration
+    │   │   │   │   │   │   │   # Sourcing campaigns
     │   │   │   │   │   │   ├── statistics.ts  # Job statistics
     │   │   │   │   │   │   ├── stats.ts  # Job stats types
     │   │   │   │   │   │   ├── status-history.ts  # Status history
     │   │   │   │   │   │   ├── subcategory.ts  # Job subcategory types
     │   │   │   │   │   │   ├── subscription.ts  # Job subscriptions
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job subscriptions
-    │   │   │   │   │   │   ├── syndication.ts  # ❌ CREATE - Syndication targets & runs
+    │   │   │   │   │   │   │   # - Job subscriptions
+    │   │   │   │   │   │   ├── syndication.ts  # Syndication targets & runs
     │   │   │   │   │   │   ├── tag.ts  # Job tags
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job tags
+    │   │   │   │   │   │   │   # - Job tags
     │   │   │   │   │   │   ├── targeting.ts  # Job targeting types
     │   │   │   │   │   │   ├── template-attachment.ts  # Template attachment domain
     │   │   │   │   │   │   ├── template-skill.ts  # Template skill domain
     │   │   │   │   │   │   ├── template-version.ts  # Template versions
-    │   │   │   │   │   │   │   # ❌ CREATE - Versioned template
+    │   │   │   │   │   │   │   # Versioned template
     │   │   │   │   │   │   │   # BE: jobs-be/template_version
     │   │   │   │   │   │   ├── template.ts  # Job template types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job templates
-    │   │   │   │   │   │   │   # ❌ CREATE - Job template
+    │   │   │   │   │   │   │   # - Job templates
+    │   │   │   │   │   │   │   # Job template
     │   │   │   │   │   │   │   # BE: jobs-be/template
     │   │   │   │   │   │   ├── translation.ts  # Job translations
-    │   │   │   │   │   │   ├── upsell-suggestion.ts  # ⚠️ MISSING - Upsell suggestions
+    │   │   │   │   │   │   ├── upsell-suggestion.ts  # - Upsell suggestions
     │   │   │   │   │   │   │   # Upsell suggestion domain
     │   │   │   │   │   │   ├── upsell.ts  # Upsell suggestion types
     │   │   │   │   │   │   │   # UpsellSuggestion, UpsellType
-    │   │   │   │   │   │   │   # ❌ CREATE - Upsell offers for visibility
+    │   │   │   │   │   │   │   # Upsell offers for visibility
     │   │   │   │   │   │   ├── version.ts  # Job versions
     │   │   │   │   │   │   ├── versioning.ts  # Job version history types
     │   │   │   │   │   │   ├── view.ts  # Job view tracking types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Job views
-    │   │   │   │   │   │   ├── visibility-lifecycle.ts  # ❌ CREATE - Draft→public→archived windows
+    │   │   │   │   │   │   │   # - Job views
+    │   │   │   │   │   │   ├── visibility-lifecycle.ts  # Draft→public→archived windows
     │   │   │   │   │   │   ├── visibility-rule.ts  # Visibility rule types
     │   │   │   │   │   │   ├── visibility.ts  # Job visibility setting types
     │   │   │   │   │   │   │   # Job visibility controls
     │   │   │   │   │   │   │   # JobVisibility, VisibilityRules
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Visibility settings
+    │   │   │   │   │   │   │   # - Visibility settings
     │   │   │   │   │   │   ├── watch.ts  # Job watchers
     │   │   │   │   │   │   ├── webhook.ts  # Webhook types
     │   │   │   │   │   │   │   # WebhookSubscription, WebhookEvent
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Webhooks
-    │   │   │   │   │   │   │   # ❌ CREATE - Outbound job webhooks config/log
+    │   │   │   │   │   │   │   # - Webhooks
+    │   │   │   │   │   │   │   # Outbound job webhooks config/log
     │   │   │   │   │   │   └── workspace.ts  # Job workspace
     │   │   │   │   │   ├── proposals/  # Proposals domain types
     │   │   │   │   │   │   # Proposals domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Proposals domain types (MANY MISSING)
     │   │   │   │   │   │   # MISSING DOMAINS (30+ domains missing)
     │   │   │   │   │   │   ├── ab-test.ts  # A/B testing
-    │   │   │   │   │   │   ├── ab-testing.ts  # ❌ CREATE - A/B tests for proposals
+    │   │   │   │   │   │   ├── ab-testing.ts  # A/B tests for proposals
     │   │   │   │   │   │   ├── ai-assist.ts  # AI suggestions
     │   │   │   │   │   │   │   # AIAssist, AISuggestion, AIOptimization
     │   │   │   │   │   │   ├── ai-optimization.ts  # AI optimizations
@@ -26964,92 +27073,92 @@ fe/
     │   │   │   │   │   │   ├── analytics.ts  # Proposal analytics types
     │   │   │   │   │   │   ├── anomaly-detection.ts  # Anomaly detection types
     │   │   │   │   │   │   ├── anomaly.ts  # Bid anomaly detection
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Bid anomaly detection
+    │   │   │   │   │   │   │   # - Bid anomaly detection
     │   │   │   │   │   │   ├── archive.ts  # Archive tracking
     │   │   │   │   │   │   │   # ProposalArchive, ArchiveReason
-    │   │   │   │   │   │   │   # ❌ CREATE - Archived proposal metadata
+    │   │   │   │   │   │   │   # Archived proposal metadata
     │   │   │   │   │   │   ├── archived.ts  # Archived proposal types
     │   │   │   │   │   │   ├── attachment.ts  # Proposal attachment types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal attachments
-    │   │   │   │   │   │   │   # ❌ CREATE - Attachments
-    │   │   │   │   │   │   │   # ❌ CREATE - Attached files
+    │   │   │   │   │   │   │   # - Proposal attachments
+    │   │   │   │   │   │   │   # Attachments
+    │   │   │   │   │   │   │   # Attached files
     │   │   │   │   │   │   │   # BE: proposals-be/attachment
     │   │   │   │   │   │   ├── auction.ts  # Auction mechanics
     │   │   │   │   │   │   │   # Auction, BidHistory
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Auctions
+    │   │   │   │   │   │   │   # - Auctions
     │   │   │   │   │   │   │   # Auction domain
     │   │   │   │   │   │   │   # Auction types
-    │   │   │   │   │   │   │   # ❌ CREATE - Auction/auto-bid rules
+    │   │   │   │   │   │   │   # Auction/auto-bid rules
     │   │   │   │   │   │   ├── audit.ts  # Proposal audit types
     │   │   │   │   │   │   ├── bid-anomaly.ts  # Bid anomaly detection entity
     │   │   │   │   │   │   │   # Bid anomaly detection domain
     │   │   │   │   │   │   ├── bid-history.ts  # Bid history
     │   │   │   │   │   │   ├── bid-notification.ts  # Bid notifications
     │   │   │   │   │   │   │   # BidNotification, NotificationPreference
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Bid notifications
+    │   │   │   │   │   │   │   # - Bid notifications
     │   │   │   │   │   │   │   # Bid notification domain
     │   │   │   │   │   │   │   # Bid notification types
-    │   │   │   │   │   │   │   # ❌ CREATE - Notifications on bid events
+    │   │   │   │   │   │   │   # Notifications on bid events
     │   │   │   │   │   │   ├── bid-strategy.ts  # Auto-bidding
     │   │   │   │   │   │   │   # BidStrategy, StrategyType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Bid strategies
+    │   │   │   │   │   │   │   # - Bid strategies
     │   │   │   │   │   │   │   # Bidding strategy domain
     │   │   │   │   │   │   │   # Bid strategy types
-    │   │   │   │   │   │   │   # ❌ CREATE - Auto-bid strategies
+    │   │   │   │   │   │   │   # Auto-bid strategies
     │   │   │   │   │   │   ├── bid.ts  # Bid entity types
     │   │   │   │   │   │   │   # Proposal bids
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Bids
+    │   │   │   │   │   │   │   # - Bids
     │   │   │   │   │   │   │   # Bid domain
     │   │   │   │   │   │   │   # Bid types
-    │   │   │   │   │   │   │   # ❌ CREATE - Bid/bid items
+    │   │   │   │   │   │   │   # Bid/bid items
     │   │   │   │   │   │   ├── boost.ts  # Proposal boost types
     │   │   │   │   │   │   │   # ProposalBoost, BoostType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal boosts
-    │   │   │   │   │   │   │   # ❌ CREATE - Boost/spotlight purchases
+    │   │   │   │   │   │   │   # - Proposal boosts
+    │   │   │   │   │   │   │   # Boost/spotlight purchases
     │   │   │   │   │   │   ├── collaboration.ts  # Team proposals
     │   │   │   │   │   │   │   # TeamProposal, TeamMember
-    │   │   │   │   │   │   │   # ❌ CREATE - Multi-user collaboration
+    │   │   │   │   │   │   │   # Multi-user collaboration
     │   │   │   │   │   │   ├── comparison.ts  # Comparison types
     │   │   │   │   │   │   │   # Proposal comparison
     │   │   │   │   │   │   ├── compliance-check.ts  # Compliance check types
     │   │   │   │   │   │   ├── compliance.ts  # Compliance checks
     │   │   │   │   │   │   │   # ProposalCompliance, ComplianceCheck
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance checks
-    │   │   │   │   │   │   │   # ❌ CREATE - Compliance checks/flags
+    │   │   │   │   │   │   │   # - Compliance checks
+    │   │   │   │   │   │   │   # Compliance checks/flags
     │   │   │   │   │   │   ├── connect-refund.ts  # Connect refunds
     │   │   │   │   │   │   │   # ConnectRefund, RefundReason
     │   │   │   │   │   │   │   # Connect refund entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect refunds
+    │   │   │   │   │   │   │   # - Connect refunds
     │   │   │   │   │   │   │   # Connect refund domain
     │   │   │   │   │   │   │   # Connect refund types
-    │   │   │   │   │   │   │   # ❌ CREATE - Connects refund records
-    │   │   │   │   │   │   ├── connect-transaction.ts  # ❌ CREATE - Connects debit/credit for proposals
+    │   │   │   │   │   │   │   # Connects refund records
+    │   │   │   │   │   │   ├── connect-transaction.ts  # Connects debit/credit for proposals
     │   │   │   │   │   │   ├── connect.ts  # Connects usage
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Connects usage
+    │   │   │   │   │   │   │   # - Connects usage
     │   │   │   │   │   │   │   # Connects domain
     │   │   │   │   │   │   │   # Connect usage types
     │   │   │   │   │   │   ├── context.ts  # Context enrichment
     │   │   │   │   │   │   │   # ProposalContext, ContextData
-    │   │   │   │   │   │   │   # ❌ CREATE - Proposal context snapshot
+    │   │   │   │   │   │   │   # Proposal context snapshot
     │   │   │   │   │   │   ├── contract-gen.ts  # Contract generation types
     │   │   │   │   │   │   ├── conversation-tracking.ts  # Proposal messaging tracking
     │   │   │   │   │   │   ├── conversation.ts  # Proposal conversations
     │   │   │   │   │   │   │   # ProposalConversation, ConversationThread
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal conversations
+    │   │   │   │   │   │   │   # - Proposal conversations
     │   │   │   │   │   │   │   # Proposal conversation types
     │   │   │   │   │   │   ├── cover-letter-template.ts  # Cover letter templates
     │   │   │   │   │   │   ├── cover-letter.ts  # Cover letter types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Cover letters
-    │   │   │   │   │   │   │   # ❌ CREATE - Letter content
+    │   │   │   │   │   │   │   # - Cover letters
+    │   │   │   │   │   │   │   # Letter content
     │   │   │   │   │   │   │   # BE: proposals-be/cover_letter
     │   │   │   │   │   │   ├── draft.ts  # Proposal drafts
-    │   │   │   │   │   │   ├── duplicate-cluster.ts  # ❌ CREATE - Duplicate detection cluster
+    │   │   │   │   │   │   ├── duplicate-cluster.ts  # Duplicate detection cluster
     │   │   │   │   │   │   ├── eligibility.ts  # Eligibility types
     │   │   │   │   │   │   ├── engagement-metric.ts  # Engagement metric types
     │   │   │   │   │   │   ├── engagement.ts  # Engagement tracking
     │   │   │   │   │   │   │   # ProposalEngagement, InterestSignal, FollowUp
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Engagement tracking
-    │   │   │   │   │   │   │   # ❌ CREATE - Follow-ups/bump scheduling + caps
+    │   │   │   │   │   │   │   # - Engagement tracking
+    │   │   │   │   │   │   │   # Follow-ups/bump scheduling + caps
     │   │   │   │   │   │   ├── experiment-variant.ts  # A/B test variant domain
     │   │   │   │   │   │   ├── experiment.ts  # A/B testing domain
     │   │   │   │   │   │   ├── expiration.ts  # Expiration tracking
@@ -27059,53 +27168,52 @@ fe/
     │   │   │   │   │   │   ├── feedback.ts  # Proposal feedback types
     │   │   │   │   │   │   │   # Client feedback on proposals
     │   │   │   │   │   │   │   # ProposalFeedback, FeedbackType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal feedback
+    │   │   │   │   │   │   │   # - Proposal feedback
     │   │   │   │   │   │   ├── flag.ts  # Flagging system
     │   │   │   │   │   │   │   # ProposalFlag, FlagReason
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Flagged proposals
+    │   │   │   │   │   │   │   # - Flagged proposals
     │   │   │   │   │   │   │   # Proposal flag domain
     │   │   │   │   │   │   │   # Proposal flag types
     │   │   │   │   │   │   ├── follow-up.ts  # Follow-up types
     │   │   │   │   │   │   ├── history.ts  # Proposal history
     │   │   │   │   │   │   ├── index.ts  # Barrel export for proposals domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── interview-scheduling.ts  # Interview scheduling types
     │   │   │   │   │   │   ├── interview.ts  # Interview types
     │   │   │   │   │   │   │   # Interview scheduling from proposals
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Interviews
+    │   │   │   │   │   │   │   # - Interviews
     │   │   │   │   │   │   ├── invitation.ts  # Direct invitations
     │   │   │   │   │   │   ├── invite.ts  # Invitation, InviteStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - Job invitations
+    │   │   │   │   │   │   │   # Job invitations
     │   │   │   │   │   │   ├── milestone-proposal.ts  # Milestone-based proposal types
     │   │   │   │   │   │   │   # Milestone proposal types
     │   │   │   │   │   │   ├── milestone.ts  # Proposal milestone types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal milestones
+    │   │   │   │   │   │   │   # - Proposal milestones
     │   │   │   │   │   │   ├── negotiation-message.ts  # Negotiation message domain
     │   │   │   │   │   │   ├── negotiation.ts  # Negotiation types
     │   │   │   │   │   │   │   # Proposal negotiation
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Negotiations
+    │   │   │   │   │   │   │   # - Negotiations
     │   │   │   │   │   │   │   # Negotiation domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Negotiation thread (rounds/terms/state)
+    │   │   │   │   │   │   │   # Negotiation thread (rounds/terms/state)
     │   │   │   │   │   │   ├── notification.ts  # Proposal notification
     │   │   │   │   │   │   ├── offer.ts  # Offer types
     │   │   │   │   │   │   ├── performance-analytics.ts  # Performance analytics types
     │   │   │   │   │   │   ├── performance.ts  # Analytics
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Performance metrics
-    │   │   │   │   │   │   │   # ❌ CREATE - Proposal performance KPIs
+    │   │   │   │   │   │   │   # - Performance metrics
+    │   │   │   │   │   │   │   # Proposal performance KPIs
     │   │   │   │   │   │   ├── pipeline-stage.ts  # Pipeline stages
     │   │   │   │   │   │   │   # Pipeline stage domain
     │   │   │   │   │   │   ├── pipeline.ts  # Pipeline stages
     │   │   │   │   │   │   │   # ProposalPipeline, PipelineStage
     │   │   │   │   │   │   │   # Proposal pipeline domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Pipeline stage (kanban)
+    │   │   │   │   │   │   │   # Pipeline stage (kanban)
     │   │   │   │   │   │   ├── portfolio-item.ts  # Portfolio item reference types
     │   │   │   │   │   │   │   # Portfolio attachments
     │   │   │   │   │   │   ├── portfolio-link.ts  # PortfolioLink, SelectionCriteria
-    │   │   │   │   │   │   │   # ❌ CREATE - Linked portfolio item
+    │   │   │   │   │   │   │   # Linked portfolio item
     │   │   │   │   │   │   ├── portfolio-showcase.ts  # Portfolio showcase types
     │   │   │   │   │   │   ├── portfolio.ts  # Portfolio showcase
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Portfolio items
+    │   │   │   │   │   │   │   # - Portfolio items
     │   │   │   │   │   │   ├── proposal-ai-optimization.ts  # AI optimizations entity
     │   │   │   │   │   │   ├── proposal-ai-suggestion.ts  # AI suggestions entity
     │   │   │   │   │   │   ├── proposal-archive.ts  # Proposal archive domain
@@ -27140,81 +27248,81 @@ fe/
     │   │   │   │   │   │   ├── proposal-urgency.ts  # Urgency tracking entity
     │   │   │   │   │   │   │   # Urgency tracking domain
     │   │   │   │   │   │   ├── proposal-version.ts  # Proposal version types
-    │   │   │   │   │   │   │   # ❌ CREATE - Iterations
+    │   │   │   │   │   │   │   # Iterations
     │   │   │   │   │   │   │   # BE: proposals-be/proposal_version
     │   │   │   │   │   │   ├── proposal-withdrawal.ts  # Withdrawal entity
     │   │   │   │   │   │   │   # Withdrawal domain
     │   │   │   │   │   │   ├── proposal.ts  # Proposal entity types
     │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
-    │   │   │   │   │   │   │   # ❌ CREATE - Submission root
+    │   │   │   │   │   │   │   # Submission root
     │   │   │   │   │   │   │   # BE: proposals-be/proposal
     │   │   │   │   │   │   ├── question-answer.ts  # Q&A responses
     │   │   │   │   │   │   │   # Screening question answers
     │   │   │   │   │   │   │   # QuestionAnswer, AnswerValidation
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Q&A
-    │   │   │   │   │   │   │   # ❌ CREATE - Q&A items
+    │   │   │   │   │   │   │   # - Q&A
+    │   │   │   │   │   │   │   # Q&A items
     │   │   │   │   │   │   ├── questions-answers.ts  # Q&A types
     │   │   │   │   │   │   ├── quote.ts  # Quote types
     │   │   │   │   │   │   ├── rate-card-template.ts  # Rate card template types
     │   │   │   │   │   │   ├── rate-card.ts  # Rate card types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Rate cards
+    │   │   │   │   │   │   │   # - Rate cards
     │   │   │   │   │   │   ├── recommendation.ts  # AI recommendation
     │   │   │   │   │   │   │   # Proposal recommendations
     │   │   │   │   │   │   │   # ProposalRecommendation, RecommendationType
-    │   │   │   │   │   │   │   # ❌ CREATE - Recommended proposals
+    │   │   │   │   │   │   │   # Recommended proposals
     │   │   │   │   │   │   ├── recycling.ts  # Proposal reuse types
     │   │   │   │   │   │   │   # ProposalRecycling, RecycleConditions
-    │   │   │   │   │   │   │   # ❌ CREATE - Recycling/auto-close policies
+    │   │   │   │   │   │   │   # Recycling/auto-close policies
     │   │   │   │   │   │   ├── reference.ts  # Reference types
     │   │   │   │   │   │   │   # ProposalReference, ReferenceCheck
-    │   │   │   │   │   │   │   # ❌ CREATE - External references/testimonials
+    │   │   │   │   │   │   │   # External references/testimonials
     │   │   │   │   │   │   ├── revision.ts  # Revision history
     │   │   │   │   │   │   │   # ProposalRevision, RevisionHistory
-    │   │   │   │   │   │   │   # ❌ CREATE - Proposal revisions
+    │   │   │   │   │   │   │   # Proposal revisions
     │   │   │   │   │   │   ├── risk-assessment.ts  # Risk assessment
     │   │   │   │   │   │   │   # ProposalRiskAssessment, RiskFactors
-    │   │   │   │   │   │   │   # ❌ CREATE - Fraud/quality signals aggregate
+    │   │   │   │   │   │   │   # Fraud/quality signals aggregate
     │   │   │   │   │   │   ├── shortlist.ts  # Shortlist types
     │   │   │   │   │   │   │   # Client shortlisting
     │   │   │   │   │   │   │   # Shortlist, ShortlistReason
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Shortlisted proposals
-    │   │   │   │   │   │   │   # ❌ CREATE - Client shortlist inclusion
+    │   │   │   │   │   │   │   # - Shortlisted proposals
+    │   │   │   │   │   │   │   # Client shortlist inclusion
     │   │   │   │   │   │   ├── similarity-detection.ts  # Similarity detection types
     │   │   │   │   │   │   ├── similarity.ts  # Deduplication types
     │   │   │   │   │   │   │   # ProposalSimilarity, Fingerprint, Clustering
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Similarity detection
-    │   │   │   │   │   │   │   # ❌ CREATE - Similarity scores
+    │   │   │   │   │   │   │   # - Similarity detection
+    │   │   │   │   │   │   │   # Similarity scores
     │   │   │   │   │   │   ├── skill-match.ts  # Skill matching
     │   │   │   │   │   │   │   # SkillMatch, MatchScore
-    │   │   │   │   │   │   │   # ❌ CREATE - Skill match matrix
+    │   │   │   │   │   │   │   # Skill match matrix
     │   │   │   │   │   │   ├── spam-detection.ts  # Spam detection
     │   │   │   │   │   │   │   # SpamDetection, SpamIndicator
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Spam detection
+    │   │   │   │   │   │   │   # - Spam detection
     │   │   │   │   │   │   │   # Spam detection domain
     │   │   │   │   │   │   │   # Spam detection types
-    │   │   │   │   │   │   │   # ❌ CREATE - Spam signals/verdict
+    │   │   │   │   │   │   │   # Spam signals/verdict
     │   │   │   │   │   │   ├── statistics.ts  # Proposal statistics
     │   │   │   │   │   │   ├── tag.ts  # Proposal tags
     │   │   │   │   │   │   ├── team-member.ts  # Team member domain
     │   │   │   │   │   │   ├── team-proposal.ts  # Team collaboration entity
     │   │   │   │   │   │   │   # Team proposal domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Team/agency proposals
+    │   │   │   │   │   │   │   # Team/agency proposals
     │   │   │   │   │   │   ├── template.ts  # Proposal template types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Proposal templates
-    │   │   │   │   │   │   │   # ❌ CREATE - Proposal templates
+    │   │   │   │   │   │   │   # - Proposal templates
+    │   │   │   │   │   │   │   # Proposal templates
     │   │   │   │   │   │   ├── urgency.ts  # Urgency tracking
     │   │   │   │   │   │   │   # ProposalUrgency, UrgencyLevel
-    │   │   │   │   │   │   │   # ❌ CREATE - Urgency status
+    │   │   │   │   │   │   │   # Urgency status
     │   │   │   │   │   │   ├── version.ts  # Proposal versioning
     │   │   │   │   │   │   ├── video-intro.ts  # Video intro types
     │   │   │   │   │   │   │   # VideoIntroduction, VideoMetadata
     │   │   │   │   │   │   ├── video-introduction.ts  # Video intro entity
     │   │   │   │   │   │   │   # Video intro domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Proposal-specific video intro
+    │   │   │   │   │   │   │   # Proposal-specific video intro
     │   │   │   │   │   │   ├── withdrawal.ts  # Withdrawal types
     │   │   │   │   │   │   │   # ProposalWithdrawal, WithdrawalReason
     │   │   │   │   │   │   │   # Proposal withdrawal types
-    │   │   │   │   │   │   │   # ❌ CREATE - Withdrawal record
+    │   │   │   │   │   │   │   # Withdrawal record
     │   │   │   │   │   │   └── withdrawn.ts  # Withdrawn proposal types
     │   │   │   │   │   ├── reviews/  # Reviews domain types
     │   │   │   │   │   │   # Reviews domain types (MISSING ENTITIES)
@@ -27224,27 +27332,27 @@ fe/
     │   │   │   │   │   │   ├── appeal.ts  # Review appeal types
     │   │   │   │   │   │   │   # Review appeals
     │   │   │   │   │   │   │   # ReviewAppeal, AppealStatus
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review appeals
-    │   │   │   │   │   │   │   # ❌ CREATE - Appeal of moderation decision
+    │   │   │   │   │   │   │   # - Review appeals
+    │   │   │   │   │   │   │   # Appeal of moderation decision
     │   │   │   │   │   │   ├── audit-trail.ts  # Audit trail
     │   │   │   │   │   │   │   # AuditTrail, AuditEntry
-    │   │   │   │   │   │   │   # ❌ CREATE - Audit log for review changes
-    │   │   │   │   │   │   ├── badge-assignment.ts  # ⚠️ MISSING - Badge assignments
-    │   │   │   │   │   │   ├── badge-criteria.ts  # ⚠️ MISSING - Badge criteria
+    │   │   │   │   │   │   │   # Audit log for review changes
+    │   │   │   │   │   │   ├── badge-assignment.ts  # - Badge assignments
+    │   │   │   │   │   │   ├── badge-criteria.ts  # - Badge criteria
     │   │   │   │   │   │   ├── badge-eligibility-check.ts  # Badge eligibility check domain
     │   │   │   │   │   │   ├── badge-eligibility.ts  # Badge eligibility checks
     │   │   │   │   │   │   │   # Badge eligibility tracking
     │   │   │   │   │   │   ├── badge.ts  # Badge entity types
     │   │   │   │   │   │   │   # Achievement badges
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review badges
+    │   │   │   │   │   │   │   # - Review badges
     │   │   │   │   │   │   │   # Review badge types
-    │   │   │   │   │   │   │   # ❌ CREATE - Badge catalog
+    │   │   │   │   │   │   │   # Badge catalog
     │   │   │   │   │   │   ├── compliance-action.ts  # Compliance actions
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance actions
+    │   │   │   │   │   │   │   # - Compliance actions
     │   │   │   │   │   │   ├── compliance.ts  # Compliance tracking
     │   │   │   │   │   │   │   # Review compliance
     │   │   │   │   │   │   │   # ReviewCompliance, ComplianceAction
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance tracking
+    │   │   │   │   │   │   │   # - Compliance tracking
     │   │   │   │   │   │   │   # Review compliance types
     │   │   │   │   │   │   ├── criteria-version.ts  # Criteria versioning
     │   │   │   │   │   │   ├── criteria.ts  # Rating criteria types
@@ -27252,48 +27360,47 @@ fe/
     │   │   │   │   │   │   │   # Double-blind review window
     │   │   │   │   │   │   ├── double-blind.ts  # Double-blind review types
     │   │   │   │   │   │   │   # DoubleBlindWindow, BlindStatus
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Double-blind reviews
-    │   │   │   │   │   │   │   # ❌ CREATE - Double-blind window settings
+    │   │   │   │   │   │   │   # - Double-blind reviews
+    │   │   │   │   │   │   │   # Double-blind window settings
     │   │   │   │   │   │   ├── draft.ts  # Review draft types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review drafts
+    │   │   │   │   │   │   │   # - Review drafts
     │   │   │   │   │   │   ├── eligibility-policy.ts  # Eligibility policies
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Eligibility policies
+    │   │   │   │   │   │   │   # - Eligibility policies
     │   │   │   │   │   │   │   # Eligibility policy types
     │   │   │   │   │   │   ├── eligibility.ts  # Review eligibility types
     │   │   │   │   │   │   │   # ReviewEligibility, EligibilityPolicy
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review eligibility
+    │   │   │   │   │   │   │   # - Review eligibility
     │   │   │   │   │   │   ├── evidence.ts  # Appeal evidence
     │   │   │   │   │   │   │   # Review evidence attachments
     │   │   │   │   │   │   │   # Evidence, EvidenceType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review evidence
+    │   │   │   │   │   │   │   # - Review evidence
     │   │   │   │   │   │   │   # Review evidence types
     │   │   │   │   │   │   ├── featured-review.ts  # Featured review entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Featured reviews
+    │   │   │   │   │   │   │   # - Featured reviews
     │   │   │   │   │   │   │   # Featured review types
-    │   │   │   │   │   │   │   # ❌ CREATE - Curated highlights
+    │   │   │   │   │   │   │   # Curated highlights
     │   │   │   │   │   │   │   # BE: reviews-be/featured_review
     │   │   │   │   │   │   ├── featured.ts  # Featured review types
     │   │   │   │   │   │   │   # FeaturedReview, FeaturedCriteria
-    │   │   │   │   │   │   │   # ❌ CREATE - Featured review flag & rank
+    │   │   │   │   │   │   │   # Featured review flag & rank
     │   │   │   │   │   │   ├── feedback.ts  # Private feedback types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Private feedback
+    │   │   │   │   │   │   │   # - Private feedback
     │   │   │   │   │   │   ├── flag.ts  # Review flag types
     │   │   │   │   │   │   │   # Review flagging
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review flags
-    │   │   │   │   │   │   │   # ❌ CREATE - Flagged review
+    │   │   │   │   │   │   │   # - Review flags
+    │   │   │   │   │   │   │   # Flagged review
     │   │   │   │   │   │   ├── helpful-vote.ts  # Helpful vote types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Helpful votes
+    │   │   │   │   │   │   │   # - Helpful votes
     │   │   │   │   │   │   ├── index.ts  # Barrel export for reviews domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── moderation-history.ts  # Moderation history
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Moderation history
+    │   │   │   │   │   │   │   # - Moderation history
     │   │   │   │   │   │   │   # Moderation history types
     │   │   │   │   │   │   ├── moderation.ts  # Review moderation types
     │   │   │   │   │   │   │   # Review moderation
     │   │   │   │   │   │   │   # ReviewModeration, ModerationAction
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Moderation
-    │   │   │   │   │   │   │   # ❌ CREATE - Moderation case
+    │   │   │   │   │   │   │   # - Moderation
+    │   │   │   │   │   │   │   # Moderation case
     │   │   │   │   │   │   ├── private-feedback.ts  # Private feedback
     │   │   │   │   │   │   │   # Private client-only feedback
     │   │   │   │   │   │   │   # PrivateFeedback, FeedbackChannel
@@ -27304,28 +27411,28 @@ fe/
     │   │   │   │   │   │   │   # Rating aggregate types
     │   │   │   │   │   │   ├── rating-criteria.ts  # Rating dimensions
     │   │   │   │   │   │   │   # RatingCriteria, CriteriaWeight
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Rating criteria
+    │   │   │   │   │   │   │   # - Rating criteria
     │   │   │   │   │   │   │   # Rating criteria types
-    │   │   │   │   │   │   │   # ❌ CREATE - Criteria catalog
+    │   │   │   │   │   │   │   # Criteria catalog
     │   │   │   │   │   │   ├── rating-criterion.ts  # Rating criterion domain
     │   │   │   │   │   │   ├── rating-dimension.ts  # Multi-dimensional ratings
     │   │   │   │   │   │   ├── rating.ts  # Rating entity types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Ratings
+    │   │   │   │   │   │   │   # - Ratings
     │   │   │   │   │   │   │   # Rating types
-    │   │   │   │   │   │   │   # ❌ CREATE - Rating breakdown
+    │   │   │   │   │   │   │   # Rating breakdown
     │   │   │   │   │   │   ├── redaction-policy.ts  # Redaction policies
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Redaction policies
+    │   │   │   │   │   │   │   # - Redaction policies
     │   │   │   │   │   │   │   # Redaction policy types
-    │   │   │   │   │   │   │   # ❌ CREATE - Redaction policy catalog
+    │   │   │   │   │   │   │   # Redaction policy catalog
     │   │   │   │   │   │   ├── redaction.ts  # PII redaction
     │   │   │   │   │   │   │   # Redaction, RedactionPolicy
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Redactions
+    │   │   │   │   │   │   │   # - Redactions
     │   │   │   │   │   │   │   # Review redaction types
-    │   │   │   │   │   │   │   # ❌ CREATE - Applied redactions
+    │   │   │   │   │   │   │   # Applied redactions
     │   │   │   │   │   │   ├── reminder.ts  # Review reminder types
     │   │   │   │   │   │   │   # ReviewReminder, ReminderType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review reminders
-    │   │   │   │   │   │   │   # ❌ CREATE - Review reminders scheduler
+    │   │   │   │   │   │   │   # - Review reminders
+    │   │   │   │   │   │   │   # Review reminders scheduler
     │   │   │   │   │   │   ├── reputation-history.ts  # Reputation history
     │   │   │   │   │   │   │   # Reputation history domain
     │   │   │   │   │   │   │   # Reputation history types
@@ -27333,16 +27440,16 @@ fe/
     │   │   │   │   │   │   ├── reputation-top-rated-rule.ts  # Top rated rule domain
     │   │   │   │   │   │   ├── reputation.ts  # Reputation score types
     │   │   │   │   │   │   │   # Reputation scoring
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Reputation scores
+    │   │   │   │   │   │   │   # - Reputation scores
     │   │   │   │   │   │   │   # Reputation types
-    │   │   │   │   │   │   │   # ❌ CREATE - Reputation aggregate/history
+    │   │   │   │   │   │   │   # Reputation aggregate/history
     │   │   │   │   │   │   ├── response.ts  # Review response types
     │   │   │   │   │   │   │   # Freelancer responses to reviews
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review responses
-    │   │   │   │   │   │   │   # ❌ CREATE - Owner response
+    │   │   │   │   │   │   │   # - Review responses
+    │   │   │   │   │   │   │   # Owner response
     │   │   │   │   │   │   ├── review-appeal.ts  # Appeal entity
     │   │   │   │   │   │   ├── review-audit-trail.ts  # Audit trail domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Edit history
+    │   │   │   │   │   │   │   # Edit history
     │   │   │   │   │   │   │   # BE: reviews-be/review_audit_trail
     │   │   │   │   │   │   ├── review-badge.ts  # Badge entity
     │   │   │   │   │   │   ├── review-blind.ts  # Blind review entity
@@ -27356,16 +27463,16 @@ fe/
     │   │   │   │   │   │   ├── review-draft.ts  # Review drafts
     │   │   │   │   │   │   │   # ReviewDraft, DraftStatus
     │   │   │   │   │   │   │   # Draft entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Draft review (pre-publish)
+    │   │   │   │   │   │   │   # Draft review (pre-publish)
     │   │   │   │   │   │   ├── review-eligibility-policy.ts  # Eligibility policy domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Policy versions (eligibility)
-    │   │   │   │   │   │   ├── review-eligibility.ts  # ❌ CREATE - Eligibility gate (timebox/spend)
+    │   │   │   │   │   │   │   # Policy versions (eligibility)
+    │   │   │   │   │   │   ├── review-eligibility.ts  # Eligibility gate (timebox/spend)
     │   │   │   │   │   │   ├── review-evidence.ts  # Evidence entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Evidence attachments
+    │   │   │   │   │   │   │   # Evidence attachments
     │   │   │   │   │   │   ├── review-flag.ts  # ReviewFlag, FlagReason
     │   │   │   │   │   │   │   # Flag entity
     │   │   │   │   │   │   ├── review-helpful-vote.ts  # Helpful vote domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Helpful votes
+    │   │   │   │   │   │   │   # Helpful votes
     │   │   │   │   │   │   ├── review-moderation-history.ts  # Moderation history domain
     │   │   │   │   │   │   ├── review-moderation.ts  # Moderation entity
     │   │   │   │   │   │   ├── review-rating.ts  # Review ratings
@@ -27379,23 +27486,23 @@ fe/
     │   │   │   │   │   │   │   # Review statistics domain
     │   │   │   │   │   │   ├── review-stats.ts  # Statistics entity
     │   │   │   │   │   │   │   # Review statistics types
-    │   │   │   │   │   │   │   # ❌ CREATE - Aggregates (avg, counts)
-    │   │   │   │   │   │   │   # ❌ CREATE - Aggregations
+    │   │   │   │   │   │   │   # Aggregates (avg, counts)
+    │   │   │   │   │   │   │   # Aggregations
     │   │   │   │   │   │   │   # BE: reviews-be/review_stats
     │   │   │   │   │   │   ├── review-window.ts  # Window entity
     │   │   │   │   │   │   ├── review.ts  # Review entity types
     │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
-    │   │   │   │   │   │   │   # ❌ CREATE - Review (author, subject, stars)
-    │   │   │   │   │   │   │   # ❌ CREATE - Star/feedback
+    │   │   │   │   │   │   │   # Review (author, subject, stars)
+    │   │   │   │   │   │   │   # Star/feedback
     │   │   │   │   │   │   │   # BE: reviews-be/review
     │   │   │   │   │   │   ├── statistics.ts  # Review statistics
     │   │   │   │   │   │   ├── stats.ts  # Review statistics
     │   │   │   │   │   │   │   # ReviewStats, StatsAggregation
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Review statistics
+    │   │   │   │   │   │   │   # - Review statistics
     │   │   │   │   │   │   ├── user-badge.ts  # User badge assignment types
     │   │   │   │   │   │   │   # UserBadge, BadgeEligibility
     │   │   │   │   │   │   │   # User badge types
-    │   │   │   │   │   │   │   # ❌ CREATE - User↔Badge assignment
+    │   │   │   │   │   │   │   # User↔Badge assignment
     │   │   │   │   │   │   └── window.ts  # Review window management
     │   │   │   │   │   ├── search/  # Search domain types
     │   │   │   │   │   │   # Search domain types (MISSING ENTITIES)
@@ -27406,8 +27513,8 @@ fe/
     │   │   │   │   │   │   ├── alert-subscription.ts  # Search alert subscription domain
     │   │   │   │   │   │   ├── alert.ts  # Search alert types
     │   │   │   │   │   │   │   # Search alerts
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search alerts
-    │   │   │   │   │   │   │   # ❌ CREATE - Saved-search alert + delivery link
+    │   │   │   │   │   │   │   # - Search alerts
+    │   │   │   │   │   │   │   # Saved-search alert + delivery link
     │   │   │   │   │   │   ├── analytics-aggregation.ts  # Analytics aggregation entity
     │   │   │   │   │   │   │   # Analytics aggregation domain
     │   │   │   │   │   │   ├── analytics-dashboard.ts  # Analytics dashboard types
@@ -27416,7 +27523,7 @@ fe/
     │   │   │   │   │   │   ├── analytics.ts  # Search analytics types
     │   │   │   │   │   │   │   # Search analytics
     │   │   │   │   │   │   │   # SearchAnalytics, QueryMetrics
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search analytics
+    │   │   │   │   │   │   │   # - Search analytics
     │   │   │   │   │   │   ├── anomaly.ts  # Search anomaly types
     │   │   │   │   │   │   ├── auto-complete.ts  # Auto-complete types
     │   │   │   │   │   │   ├── autocomplete.ts  # Autocomplete types
@@ -27426,13 +27533,13 @@ fe/
     │   │   │   │   │   │   │   # Boost rule types
     │   │   │   │   │   │   ├── boost.ts  # Search boost types
     │   │   │   │   │   │   │   # Search result boosting
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search boosts
+    │   │   │   │   │   │   │   # - Search boosts
     │   │   │   │   │   │   ├── bulk-index-job.ts  # Bulk indexing job domain
-    │   │   │   │   │   │   ├── cache.ts  # ⚠️ MISSING - Search cache
+    │   │   │   │   │   │   ├── cache.ts  # - Search cache
     │   │   │   │   │   │   ├── click-tracking.ts  # Click tracking types
-    │   │   │   │   │   │   ├── cluster-membership.ts  # ⚠️ MISSING - Cluster memberships
+    │   │   │   │   │   │   ├── cluster-membership.ts  # - Cluster memberships
     │   │   │   │   │   │   ├── cluster.ts  # Search clusters
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Document clusters
+    │   │   │   │   │   │   │   # - Document clusters
     │   │   │   │   │   │   ├── compliance-action.ts  # Compliance action domain
     │   │   │   │   │   │   ├── compliance-erasure.ts  # Data erasure domain
     │   │   │   │   │   │   ├── compliance-export.ts  # Data export domain
@@ -27447,7 +27554,7 @@ fe/
     │   │   │   │   │   │   ├── embedding.ts  # Vector embeddings
     │   │   │   │   │   │   ├── experiment-variant.ts  # Search experiment variant domain
     │   │   │   │   │   │   ├── experiment.ts  # Search experiments
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search experiments
+    │   │   │   │   │   │   │   # - Search experiments
     │   │   │   │   │   │   │   # Search A/B testing domain
     │   │   │   │   │   │   ├── explainability.ts  # Explainability types
     │   │   │   │   │   │   ├── facet-config.ts  # Facet configurations
@@ -27457,7 +27564,7 @@ fe/
     │   │   │   │   │   │   ├── facet.ts  # Search facet types
     │   │   │   │   │   │   │   # Search facets
     │   │   │   │   │   │   │   # Facet, FacetBanding
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search facets
+    │   │   │   │   │   │   │   # - Search facets
     │   │   │   │   │   │   ├── feed-interaction.ts  # Feed interaction entity
     │   │   │   │   │   │   │   # Feed interaction domain
     │   │   │   │   │   │   ├── feed-item.ts  # Feed item domain
@@ -27469,7 +27576,7 @@ fe/
     │   │   │   │   │   │   ├── filter.ts  # Search filter types
     │   │   │   │   │   │   │   # Search filters
     │   │   │   │   │   │   │   # SearchFilter, FilterCriteria
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search filters
+    │   │   │   │   │   │   │   # - Search filters
     │   │   │   │   │   │   ├── geo-config.ts  # Geo configurations
     │   │   │   │   │   │   ├── geo-location.ts  # Geo locations
     │   │   │   │   │   │   ├── geo.ts  # Geo search types
@@ -27477,15 +27584,15 @@ fe/
     │   │   │   │   │   │   ├── hygiene-duplicate.ts  # Duplicate detection entity
     │   │   │   │   │   │   │   # Hygiene duplicate domain
     │   │   │   │   │   │   ├── hygiene-job.ts  # Hygiene jobs
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Index hygiene jobs
+    │   │   │   │   │   │   │   # - Index hygiene jobs
     │   │   │   │   │   │   │   # Hygiene job domain
     │   │   │   │   │   │   ├── hygiene-orphan.ts  # Orphan cleanup domain
-    │   │   │   │   │   │   ├── hygiene-task.ts  # ⚠️ MISSING - Hygiene tasks
+    │   │   │   │   │   │   ├── hygiene-task.ts  # - Hygiene tasks
     │   │   │   │   │   │   ├── hygiene.ts  # Data hygiene types
     │   │   │   │   │   │   │   # Search index hygiene
     │   │   │   │   │   │   │   # HygieneTask, Deduplication
     │   │   │   │   │   │   ├── index-alias.ts  # Index alias domain
-    │   │   │   │   │   │   ├── index-build.ts  # ⚠️ MISSING - Index builds
+    │   │   │   │   │   │   ├── index-build.ts  # - Index builds
     │   │   │   │   │   │   ├── index-config.ts  # Index configurations
     │   │   │   │   │   │   ├── index-health.ts  # Index health domain
     │   │   │   │   │   │   ├── index-lifecycle-execution.ts  # Index lifecycle execution entity
@@ -27494,18 +27601,17 @@ fe/
     │   │   │   │   │   │   ├── index-lifecycle.ts  # Index lifecycle types
     │   │   │   │   │   │   ├── index-mapping.ts  # Index mappings
     │   │   │   │   │   │   │   # Index mapping domain
-    │   │   │   │   │   │   ├── index-segment.ts  # ⚠️ MISSING - Index segments
+    │   │   │   │   │   │   ├── index-segment.ts  # - Index segments
     │   │   │   │   │   │   ├── index-shard.ts  # Index shards
     │   │   │   │   │   │   ├── index-snapshot.ts  # Index snapshot domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export for search domain
     │   │   │   │   │   │   │   # SearchIndex, IndexConfig
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search indexes
+    │   │   │   │   │   │   │   # - Search indexes
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── ingest-pipeline.ts  # Ingest pipelines
     │   │   │   │   │   │   ├── job-index.ts  # Job index document domain
     │   │   │   │   │   │   │   # Job index types
-    │   │   │   │   │   │   │   # ❌ CREATE - Search projection
+    │   │   │   │   │   │   │   # Search projection
     │   │   │   │   │   │   │   # BE: search-be/job_index
     │   │   │   │   │   │   ├── language-config.ts  # Language configs
     │   │   │   │   │   │   ├── language-detection.ts  # Language detection domain
@@ -27517,45 +27623,45 @@ fe/
     │   │   │   │   │   │   ├── ltr-signal.ts  # Learning to rank signal entity
     │   │   │   │   │   │   │   # LTR signal domain
     │   │   │   │   │   │   ├── ltr.ts  # Learning to rank types
-    │   │   │   │   │   │   │   # ❌ CREATE - Learning-to-rank (features/labels)
+    │   │   │   │   │   │   │   # Learning-to-rank (features/labels)
     │   │   │   │   │   │   ├── match-interaction.ts  # Match interaction domain
     │   │   │   │   │   │   ├── match.ts  # Match domain
     │   │   │   │   │   │   ├── matching.ts  # Matching types
-    │   │   │   │   │   │   ├── message-index.ts  # ❌ CREATE - Messages projection
+    │   │   │   │   │   │   ├── message-index.ts  # Messages projection
     │   │   │   │   │   │   │   # BE: search-be/message_index
     │   │   │   │   │   │   ├── ml-model.ts  # ML models
-    │   │   │   │   │   │   │   # ⚠️ MISSING - ML models
+    │   │   │   │   │   │   │   # - ML models
     │   │   │   │   │   │   ├── multi-language-detection.ts  # Language detection entity
     │   │   │   │   │   │   ├── multi-language.ts  # Multi-language types
     │   │   │   │   │   │   ├── normalization-rule.ts  # Normalization rules
     │   │   │   │   │   │   ├── performance-alert.ts  # Performance alerts
     │   │   │   │   │   │   │   # Performance alert entity
     │   │   │   │   │   │   │   # Performance alert domain
-    │   │   │   │   │   │   ├── performance-metric.ts  # ⚠️ MISSING - Performance metrics
+    │   │   │   │   │   │   ├── performance-metric.ts  # - Performance metrics
     │   │   │   │   │   │   │   # Performance metric domain
     │   │   │   │   │   │   ├── performance.ts  # Performance metrics
     │   │   │   │   │   │   ├── personalization-profile.ts  # Personalization profile domain
     │   │   │   │   │   │   ├── personalization.ts  # Personalized search types
     │   │   │   │   │   │   │   # Personalized search
     │   │   │   │   │   │   │   # Search personalization types
-    │   │   │   │   │   │   │   # ❌ CREATE - Personalization signals/profile
+    │   │   │   │   │   │   │   # Personalization signals/profile
     │   │   │   │   │   │   ├── pii-masking.ts  # PII masking
     │   │   │   │   │   │   ├── portfolio-index.ts  # Portfolio index types
     │   │   │   │   │   │   │   # Portfolio index entity
     │   │   │   │   │   │   │   # Portfolio index document domain
-    │   │   │   │   │   │   ├── profile-index.ts  # ❌ CREATE - Talent/company
+    │   │   │   │   │   │   ├── profile-index.ts  # Talent/company
     │   │   │   │   │   │   │   # BE: search-be/profile_index
     │   │   │   │   │   │   ├── promotion-campaign.ts  # Promotion campaign domain
     │   │   │   │   │   │   ├── promotion-tracking.ts  # Promotion tracking entity
     │   │   │   │   │   │   │   # Promotion tracking domain
     │   │   │   │   │   │   ├── promotion.ts  # Promotion types
     │   │   │   │   │   │   ├── proposal-index.ts  # Proposal index types
-    │   │   │   │   │   │   │   # ❌ CREATE - Proposal projection
+    │   │   │   │   │   │   │   # Proposal projection
     │   │   │   │   │   │   │   # BE: search-be/proposal_index
     │   │   │   │   │   │   ├── query-correction.ts  # Query correction domain
     │   │   │   │   │   │   ├── query-log.ts  # Query logs
     │   │   │   │   │   │   │   # Search query logging
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Query logs
+    │   │   │   │   │   │   │   # - Query logs
     │   │   │   │   │   │   │   # Query log domain
     │   │   │   │   │   │   │   # Query log types
     │   │   │   │   │   │   ├── query-rewrite-application.ts  # Query rewrite application entity
@@ -27566,13 +27672,13 @@ fe/
     │   │   │   │   │   │   ├── query.ts  # Search query types
     │   │   │   │   │   │   │   # Search query structure
     │   │   │   │   │   │   │   # SearchQuery, QueryParser
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search queries
+    │   │   │   │   │   │   │   # - Search queries
     │   │   │   │   │   │   ├── ranking-configuration.ts  # Ranking configuration domain
     │   │   │   │   │   │   ├── ranking-profile.ts  # Ranking profiles
     │   │   │   │   │   │   ├── ranking.ts  # Result ranking
     │   │   │   │   │   │   │   # Search ranking
     │   │   │   │   │   │   │   # RankingAlgorithm, RankingFactor
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Ranking configuration
+    │   │   │   │   │   │   │   # - Ranking configuration
     │   │   │   │   │   │   ├── recommendation-interaction.ts  # Recommendation interaction entity
     │   │   │   │   │   │   │   # Recommendation interaction domain
     │   │   │   │   │   │   ├── recommendation-model.ts  # Recommendation model entity
@@ -27580,12 +27686,12 @@ fe/
     │   │   │   │   │   │   ├── recommendation.ts  # Search-based recommendation types
     │   │   │   │   │   │   │   # Recommendation domain
     │   │   │   │   │   │   │   # Recommendation types
-    │   │   │   │   │   │   │   # ❌ CREATE - Recommendations (entities/reasons)
+    │   │   │   │   │   │   │   # Recommendations (entities/reasons)
     │   │   │   │   │   │   ├── relevance-tuning.ts  # Relevance tuning
     │   │   │   │   │   │   │   # Relevance tuning types
     │   │   │   │   │   │   ├── result.ts  # Search result types
     │   │   │   │   │   │   │   # Search result structure
-    │   │   │   │   │   │   ├── rewrite-rule.ts  # ⚠️ MISSING - Query rewrites
+    │   │   │   │   │   │   ├── rewrite-rule.ts  # - Query rewrites
     │   │   │   │   │   │   ├── safety-filter-application.ts  # Safety filter application entity
     │   │   │   │   │   │   ├── safety-filter.ts  # Safety filter types
     │   │   │   │   │   │   ├── safety.ts  # SafetyFilter, ContentModeration
@@ -27594,11 +27700,11 @@ fe/
     │   │   │   │   │   │   ├── saved-search-execution.ts  # Saved search execution entity
     │   │   │   │   │   │   │   # Saved search execution domain
     │   │   │   │   │   │   ├── saved-search.ts  # Saved search types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Saved searches
+    │   │   │   │   │   │   │   # - Saved searches
     │   │   │   │   │   │   ├── saved_query.ts  # Saved query types
     │   │   │   │   │   │   ├── schema-version.ts  # Schema versions
     │   │   │   │   │   │   ├── schema.ts  # Search schemas
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search schemas
+    │   │   │   │   │   │   │   # - Search schemas
     │   │   │   │   │   │   ├── search-alert.ts  # Search alert types
     │   │   │   │   │   │   ├── search-experiment.ts  # Search experiment types
     │   │   │   │   │   │   ├── search-index-job.ts  # Search index job entity
@@ -27615,55 +27721,55 @@ fe/
     │   │   │   │   │   │   │   # Similarity domain
     │   │   │   │   │   │   ├── skill-taxonomy.ts  # Skill taxonomy types
     │   │   │   │   │   │   ├── snapshot.ts  # Index snapshots
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Index snapshots
+    │   │   │   │   │   │   │   # - Index snapshots
     │   │   │   │   │   │   ├── sort.ts  # Sort option types
     │   │   │   │   │   │   ├── spell-check.ts  # Spell check types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Spell checking
+    │   │   │   │   │   │   │   # - Spell checking
     │   │   │   │   │   │   ├── speller-correction.ts  # Spelling correction entity
     │   │   │   │   │   │   │   # Spelling correction domain
     │   │   │   │   │   │   ├── speller-dictionary.ts  # Spelling dictionary domain
     │   │   │   │   │   │   ├── speller-suggestion.ts  # Spelling suggestion entity
     │   │   │   │   │   │   ├── speller.ts  # Speller types
     │   │   │   │   │   │   ├── stop-word.ts  # Stop words
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Stop words
+    │   │   │   │   │   │   │   # - Stop words
     │   │   │   │   │   │   ├── stopword.ts  # Stopword types
     │   │   │   │   │   │   ├── suggestion-tracking.ts  # Suggestion tracking entity
     │   │   │   │   │   │   │   # Suggestion tracking domain
     │   │   │   │   │   │   ├── suggestion.ts  # Search suggestion types
     │   │   │   │   │   │   │   # SearchSuggestion, AutoComplete
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Search suggestions
+    │   │   │   │   │   │   │   # - Search suggestions
     │   │   │   │   │   │   │   # Search suggestion domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Search suggestions / autocomplete
+    │   │   │   │   │   │   │   # Search suggestions / autocomplete
     │   │   │   │   │   │   ├── synonym-group.ts  # Synonym group domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Synonym grouping
+    │   │   │   │   │   │   │   # Synonym grouping
     │   │   │   │   │   │   ├── synonym.ts  # Synonym types
     │   │   │   │   │   │   │   # Search synonyms
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Synonyms
-    │   │   │   │   │   │   │   # ❌ CREATE - Synonym entry
+    │   │   │   │   │   │   │   # - Synonyms
+    │   │   │   │   │   │   │   # Synonym entry
     │   │   │   │   │   │   ├── taxonomy-skill.ts  # Taxonomy skill domain
     │   │   │   │   │   │   ├── taxonomy-synonym.ts  # Taxonomy synonym entity
     │   │   │   │   │   │   │   # Taxonomy synonym domain
-    │   │   │   │   │   │   │   # ❌ CREATE - Taxonomy–synonym mapping
+    │   │   │   │   │   │   │   # Taxonomy–synonym mapping
     │   │   │   │   │   │   ├── taxonomy-trend.ts  # Taxonomy trend domain
     │   │   │   │   │   │   │   # Taxonomy trend types
-    │   │   │   │   │   │   │   # ❌ CREATE - Taxonomy trends (decay/recency)
+    │   │   │   │   │   │   │   # Taxonomy trends (decay/recency)
     │   │   │   │   │   │   ├── taxonomy.ts  # Taxonomy types
     │   │   │   │   │   │   │   # Taxonomy, Category, Synonym
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Taxonomy
-    │   │   │   │   │   │   │   # ❌ CREATE - Taxonomy (Category/Skill/Topic)
+    │   │   │   │   │   │   │   # - Taxonomy
+    │   │   │   │   │   │   │   # Taxonomy (Category/Skill/Topic)
     │   │   │   │   │   │   ├── trending.ts  # Trending types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Trending searches
+    │   │   │   │   │   │   │   # - Trending searches
     │   │   │   │   │   │   │   # Trending domain
     │   │   │   │   │   │   │   # Trending search types
-    │   │   │   │   │   │   │   # ❌ CREATE - Trending searches/signals
+    │   │   │   │   │   │   │   # Trending searches/signals
     │   │   │   │   │   │   ├── user-index.ts  # User index document domain
     │   │   │   │   │   │   │   # User index types
     │   │   │   │   │   │   ├── user-preference-signal.ts  # Preference signal entity
     │   │   │   │   │   │   │   # User preference signal domain
     │   │   │   │   │   │   │   # User preference signal types
     │   │   │   │   │   │   └── user-preference.ts  # User preference types
-    │   │   │   │   │   │       # ⚠️ MISSING - User preferences
-    │   │   │   │   │   │       # ❌ CREATE - User search prefs/signals
+    │   │   │   │   │   │       # - User preferences
+    │   │   │   │   │   │       # User search prefs/signals
     │   │   │   │   │   ├── storage/  # Storage domain types
     │   │   │   │   │   │   # Storage domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Storage domain types (COMPREHENSIVE MISSING)
@@ -27671,53 +27777,53 @@ fe/
     │   │   │   │   │   │   ├── access-control.ts  # Access control
     │   │   │   │   │   │   │   # File access control
     │   │   │   │   │   │   │   # AccessControl, Permission
-    │   │   │   │   │   │   │   # ❌ CREATE - ACL/roles/sharing
+    │   │   │   │   │   │   │   # ACL/roles/sharing
     │   │   │   │   │   │   ├── access-grant.ts  # Access grants
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Access grants
+    │   │   │   │   │   │   │   # - Access grants
     │   │   │   │   │   │   │   # Access grant types
     │   │   │   │   │   │   ├── access-log.ts  # Access log types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Access logs
+    │   │   │   │   │   │   │   # - Access logs
     │   │   │   │   │   │   ├── access.ts  # Access control types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Access control
+    │   │   │   │   │   │   │   # - Access control
     │   │   │   │   │   │   ├── annotation.ts  # File annotations
-    │   │   │   │   │   │   │   # ⚠️ MISSING - File annotations
+    │   │   │   │   │   │   │   # - File annotations
     │   │   │   │   │   │   │   # File annotation types
     │   │   │   │   │   │   ├── artifact-manifest.ts  # Artifact manifest domain
     │   │   │   │   │   │   ├── artifact.ts  # Processing artifact types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Processing artifacts
+    │   │   │   │   │   │   │   # - Processing artifacts
     │   │   │   │   │   │   │   # Generated artifact domain
     │   │   │   │   │   │   ├── audit.ts  # Storage audit log types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Storage audit logs
+    │   │   │   │   │   │   │   # - Storage audit logs
     │   │   │   │   │   │   │   # Storage audit types
     │   │   │   │   │   │   ├── batch-operation.ts  # Batch operation types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Batch operations
-    │   │   │   │   │   │   ├── blob.ts  # ⚠️ MISSING - Binary blobs
+    │   │   │   │   │   │   │   # - Batch operations
+    │   │   │   │   │   │   ├── blob.ts  # - Binary blobs
     │   │   │   │   │   │   │   # Binary blob types
-    │   │   │   │   │   │   ├── bucket.ts  # ❌ CREATE - Bucket (zone, policy)
+    │   │   │   │   │   │   ├── bucket.ts  # Bucket (zone, policy)
     │   │   │   │   │   │   ├── cdn-config.ts  # CDN configuration
-    │   │   │   │   │   │   │   # ⚠️ MISSING - CDN configuration
+    │   │   │   │   │   │   │   # - CDN configuration
     │   │   │   │   │   │   │   # CDN configuration types
     │   │   │   │   │   │   ├── cdn.ts  # CDN configuration types
     │   │   │   │   │   │   ├── checksum.ts  # Checksum types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Checksums
+    │   │   │   │   │   │   │   # - Checksums
     │   │   │   │   │   │   ├── chunk.ts  # Chunk upload types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Chunk uploads
+    │   │   │   │   │   │   │   # - Chunk uploads
     │   │   │   │   │   │   │   # Upload chunk domain
     │   │   │   │   │   │   ├── collaboration.ts  # File collaboration
-    │   │   │   │   │   │   │   # ⚠️ MISSING - File collaboration
+    │   │   │   │   │   │   │   # - File collaboration
     │   │   │   │   │   │   │   # File collaboration types
     │   │   │   │   │   │   ├── comment.ts  # File comments
-    │   │   │   │   │   │   │   # ⚠️ MISSING - File comments
+    │   │   │   │   │   │   │   # - File comments
     │   │   │   │   │   │   │   # File comment types
     │   │   │   │   │   │   ├── compliance-policy.ts  # Compliance policies
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Compliance policies
+    │   │   │   │   │   │   │   # - Compliance policies
     │   │   │   │   │   │   │   # Compliance policy types
-    │   │   │   │   │   │   ├── compliance-result.ts  # ⚠️ MISSING - Compliance results
+    │   │   │   │   │   │   ├── compliance-result.ts  # - Compliance results
     │   │   │   │   │   │   │   # Compliance result types
     │   │   │   │   │   │   ├── compliance.ts  # Compliance tracking types
     │   │   │   │   │   │   ├── compression.ts  # Compression types
     │   │   │   │   │   │   ├── content-flag.ts  # Content flagging domain
-    │   │   │   │   │   │   ├── content-moderation.ts  # ❌ CREATE - Content scanning/labels
+    │   │   │   │   │   │   ├── content-moderation.ts  # Content scanning/labels
     │   │   │   │   │   │   ├── content-type.ts  # Content types
     │   │   │   │   │   │   ├── data-retention-policy.ts  # Data retention policy domain
     │   │   │   │   │   │   ├── data-zone.ts  # Data zones
@@ -27725,7 +27831,7 @@ fe/
     │   │   │   │   │   │   │   # Data zone domain
     │   │   │   │   │   │   ├── deduplication.ts  # Deduplication types
     │   │   │   │   │   │   ├── device-sync.ts  # Device sync
-    │   │   │   │   │   │   ├── dlp-match.ts  # ⚠️ MISSING - DLP matches
+    │   │   │   │   │   │   ├── dlp-match.ts  # - DLP matches
     │   │   │   │   │   │   │   # DLP match types
     │   │   │   │   │   │   ├── dlp-policy.ts  # DLP policy domain
     │   │   │   │   │   │   ├── dlp-scan.ts  # DLP scan domain
@@ -27734,17 +27840,17 @@ fe/
     │   │   │   │   │   │   │   # Download, DownloadLink
     │   │   │   │   │   │   ├── embedding.ts  # AI embeddings
     │   │   │   │   │   │   ├── encryption-key.ts  # Encryption keys
-    │   │   │   │   │   │   ├── encryption-rotation.ts  # ⚠️ MISSING - Encryption rotation
+    │   │   │   │   │   │   ├── encryption-rotation.ts  # - Encryption rotation
     │   │   │   │   │   │   │   # Encryption rotation types
     │   │   │   │   │   │   ├── encryption.ts  # Encryption types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Encryption
+    │   │   │   │   │   │   │   # - Encryption
     │   │   │   │   │   │   ├── export.ts  # File exports
     │   │   │   │   │   │   ├── extraction-job.ts  # Text extraction job domain
     │   │   │   │   │   │   ├── extraction.ts  # Content extraction types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Text extraction
+    │   │   │   │   │   │   │   # - Text extraction
     │   │   │   │   │   │   ├── favorite.ts  # Favorite files
     │   │   │   │   │   │   ├── file-activity.ts  # File activity log domain
-    │   │   │   │   │   │   ├── file-asset.ts  # ❌ CREATE - Canonical file
+    │   │   │   │   │   │   ├── file-asset.ts  # Canonical file
     │   │   │   │   │   │   │   # BE: storage-be/file_asset
     │   │   │   │   │   │   ├── file-collection.ts  # File collection entity
     │   │   │   │   │   │   │   # File collection domain
@@ -27753,7 +27859,7 @@ fe/
     │   │   │   │   │   │   ├── file-compression.ts  # File compression domain
     │   │   │   │   │   │   ├── file-encryption.ts  # Encryption entity
     │   │   │   │   │   │   │   # File encryption domain
-    │   │   │   │   │   │   ├── file-flag.ts  # ⚠️ MISSING - File flags
+    │   │   │   │   │   │   ├── file-flag.ts  # - File flags
     │   │   │   │   │   │   │   # File flag types
     │   │   │   │   │   │   ├── file-hash.ts  # File hash domain
     │   │   │   │   │   │   ├── file-lifecycle-execution.ts  # Lifecycle execution domain
@@ -27764,7 +27870,7 @@ fe/
     │   │   │   │   │   │   ├── file-lock.ts  # File lock entity
     │   │   │   │   │   │   │   # File lock domain
     │   │   │   │   │   │   ├── file-metadata.ts  # FileMetadata, MimeType, FileSize
-    │   │   │   │   │   │   │   # ⚠️ MISSING - File metadata
+    │   │   │   │   │   │   │   # - File metadata
     │   │   │   │   │   │   ├── file-permission.ts  # File permission entity
     │   │   │   │   │   │   ├── file-preview.ts  # File preview domain
     │   │   │   │   │   │   ├── file-reference.ts  # Cross-entity file reference domain
@@ -27774,26 +27880,25 @@ fe/
     │   │   │   │   │   │   ├── file-tag.ts  # File tag entity
     │   │   │   │   │   │   ├── file-transfer.ts  # File transfers
     │   │   │   │   │   │   ├── file-version.ts  # File version entity
-    │   │   │   │   │   │   │   # ❌ CREATE - Versioned blob
+    │   │   │   │   │   │   │   # Versioned blob
     │   │   │   │   │   │   │   # BE: storage-be/file_version
     │   │   │   │   │   │   ├── file.ts  # File entity types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Files (main entity)
-    │   │   │   │   │   │   │   # ❌ CREATE - File (id, name, size, hash, storage_id)
+    │   │   │   │   │   │   │   # - Files (main entity)
+    │   │   │   │   │   │   │   # File (id, name, size, hash, storage_id)
     │   │   │   │   │   │   ├── folder-permission.ts  # Folder permissions
     │   │   │   │   │   │   ├── folder.ts  # Folder entity types
     │   │   │   │   │   │   │   # Folder management
     │   │   │   │   │   │   │   # Folder, FolderStructure
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Folders
-    │   │   │   │   │   │   │   # ❌ CREATE - Folder (tree, parent_id, path)
-    │   │   │   │   │   │   │   # ❌ CREATE - Logical folders
+    │   │   │   │   │   │   │   # - Folders
+    │   │   │   │   │   │   │   # Folder (tree, parent_id, path)
+    │   │   │   │   │   │   │   # Logical folders
     │   │   │   │   │   │   │   # BE: storage-be/folder
-    │   │   │   │   │   │   ├── gc.ts  # ⚠️ MISSING - Garbage collection
+    │   │   │   │   │   │   ├── gc.ts  # - Garbage collection
     │   │   │   │   │   │   │   # Garbage collection types
     │   │   │   │   │   │   ├── geo-replication.ts  # Geo replication
     │   │   │   │   │   │   ├── import.ts  # File imports
     │   │   │   │   │   │   ├── index.ts  # Barrel export for storage domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── job-artifact.ts  # Processing artifacts
     │   │   │   │   │   │   ├── job-queue.ts  # Job queue entity
     │   │   │   │   │   │   │   # Processing job queue domain
@@ -27801,16 +27906,16 @@ fe/
     │   │   │   │   │   │   ├── job.ts  # Processing jobs
     │   │   │   │   │   │   ├── legal-hold.ts  # Legal hold types
     │   │   │   │   │   │   │   # Legal hold entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Legal holds
+    │   │   │   │   │   │   │   # - Legal holds
     │   │   │   │   │   │   │   # Legal hold domain
     │   │   │   │   │   │   ├── lifecycle-execution.ts  # Lifecycle execution entity
     │   │   │   │   │   │   ├── lifecycle-rule.ts  # Lifecycle rules
     │   │   │   │   │   │   ├── lifecycle.ts  # Lifecycle policy types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Lifecycle policies
+    │   │   │   │   │   │   │   # - Lifecycle policies
     │   │   │   │   │   │   ├── link.ts  # Link types
-    │   │   │   │   │   │   ├── linking-audit.ts  # ⚠️ MISSING - Link audit logs
+    │   │   │   │   │   │   ├── linking-audit.ts  # - Link audit logs
     │   │   │   │   │   │   │   # Link audit types
-    │   │   │   │   │   │   ├── linking.ts  # ⚠️ MISSING - Public links
+    │   │   │   │   │   │   ├── linking.ts  # - Public links
     │   │   │   │   │   │   │   # Public link types
     │   │   │   │   │   │   ├── lock.ts  # File lock types
     │   │   │   │   │   │   ├── media-metadata.ts  # Media metadata
@@ -27818,12 +27923,12 @@ fe/
     │   │   │   │   │   │   ├── media-transform-job.ts  # Media transformation job domain
     │   │   │   │   │   │   ├── media-transform.ts  # Transform jobs
     │   │   │   │   │   │   │   # Media transformation entity
-    │   │   │   │   │   │   ├── media.ts  # ⚠️ MISSING - Media processing
+    │   │   │   │   │   │   ├── media.ts  # - Media processing
     │   │   │   │   │   │   ├── metadata-extraction.ts  # Metadata extraction
     │   │   │   │   │   │   ├── metadata.ts  # File metadata types
     │   │   │   │   │   │   ├── mirror.ts  # File mirrors
     │   │   │   │   │   │   ├── multipart-upload.ts  # Multipart upload entity
-    │   │   │   │   │   │   ├── namespace.ts  # ⚠️ MISSING - Namespaces
+    │   │   │   │   │   │   ├── namespace.ts  # - Namespaces
     │   │   │   │   │   │   │   # Storage namespace domain
     │   │   │   │   │   │   ├── notification.ts  # Storage notifications
     │   │   │   │   │   │   ├── ocr-result.ts  # OCR results
@@ -27833,10 +27938,10 @@ fe/
     │   │   │   │   │   │   ├── permission-template.ts  # Permission templates
     │   │   │   │   │   │   ├── permission.ts  # Access permissions
     │   │   │   │   │   │   ├── policy-enforcement.ts  # Policy enforcement
-    │   │   │   │   │   │   ├── policy-result.ts  # ⚠️ MISSING - Policy results
+    │   │   │   │   │   │   ├── policy-result.ts  # - Policy results
     │   │   │   │   │   │   ├── policy.ts  # Storage policy types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Storage policies
-    │   │   │   │   │   │   ├── presigned-url.ts  # ❌ CREATE - Upload/download tickets
+    │   │   │   │   │   │   │   # - Storage policies
+    │   │   │   │   │   │   ├── presigned-url.ts  # Upload/download tickets
     │   │   │   │   │   │   ├── preview.ts  # Preview generation types
     │   │   │   │   │   │   ├── processing-job.ts  # Processing job entity
     │   │   │   │   │   │   │   # Processing job domain
@@ -27844,38 +27949,38 @@ fe/
     │   │   │   │   │   │   ├── public-link.ts  # Public links
     │   │   │   │   │   │   ├── quarantine-log.ts  # Quarantine logs
     │   │   │   │   │   │   ├── quarantine.ts  # Quarantined file types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Quarantine
+    │   │   │   │   │   │   │   # - Quarantine
     │   │   │   │   │   │   ├── quota-alert.ts  # Quota alert domain
     │   │   │   │   │   │   ├── quota-override.ts  # Quota overrides
     │   │   │   │   │   │   ├── quota.ts  # Storage quota types
     │   │   │   │   │   │   │   # Storage quota tracking
     │   │   │   │   │   │   │   # StorageQuota, QuotaUsage
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Storage quotas
+    │   │   │   │   │   │   │   # - Storage quotas
     │   │   │   │   │   │   │   # Storage quota domain
     │   │   │   │   │   │   ├── recovery-point.ts  # Recovery points
-    │   │   │   │   │   │   ├── reference.ts  # ⚠️ MISSING - File references
+    │   │   │   │   │   │   ├── reference.ts  # - File references
     │   │   │   │   │   │   ├── replication-log.ts  # Replication logs
     │   │   │   │   │   │   │   # Replication log domain
     │   │   │   │   │   │   ├── replication-status.ts  # Replication status entity
     │   │   │   │   │   │   │   # Replication status domain
     │   │   │   │   │   │   ├── replication.ts  # Replication types
     │   │   │   │   │   │   ├── retention-log.ts  # Retention logs
-    │   │   │   │   │   │   ├── retention-policy.ts  # ❌ CREATE - TTL/legal hold
+    │   │   │   │   │   │   ├── retention-policy.ts  # TTL/legal hold
     │   │   │   │   │   │   ├── retention.ts  # Retention policy types
     │   │   │   │   │   │   ├── scan-queue.ts  # Scan queue entity
     │   │   │   │   │   │   │   # Virus scan queue domain
     │   │   │   │   │   │   ├── scan-result.ts  # Scan results
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Scan results
+    │   │   │   │   │   │   │   # - Scan results
     │   │   │   │   │   │   ├── scan.ts  # Virus/malware scan types
     │   │   │   │   │   │   │   # Virus/malware scanning
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Virus scans
+    │   │   │   │   │   │   │   # - Virus scans
     │   │   │   │   │   │   ├── search-index.ts  # File search index types
     │   │   │   │   │   │   ├── share-link.ts  # Share link types
     │   │   │   │   │   │   │   # File sharing links
     │   │   │   │   │   │   ├── share-permission.ts  # Share permissions
-    │   │   │   │   │   │   ├── share.ts  # ⚠️ MISSING - File shares
+    │   │   │   │   │   │   ├── share.ts  # - File shares
     │   │   │   │   │   │   ├── sharing.ts  # File sharing types
-    │   │   │   │   │   │   ├── signed-url-request.ts  # ❌ CREATE - Temp access URL
+    │   │   │   │   │   │   ├── signed-url-request.ts  # Temp access URL
     │   │   │   │   │   │   │   # BE: storage-be/signed_url_request
     │   │   │   │   │   │   ├── signed-url.ts  # Signed URL domain
     │   │   │   │   │   │   ├── snapshot.ts  # Snapshots
@@ -27886,7 +27991,7 @@ fe/
     │   │   │   │   │   │   ├── storage-tier.ts  # Storage tiers
     │   │   │   │   │   │   │   # Storage tier entity
     │   │   │   │   │   │   │   # Storage tier domain
-    │   │   │   │   │   │   ├── storage-usage.ts  # ❌ CREATE - Usage/accounting rollups
+    │   │   │   │   │   │   ├── storage-usage.ts  # Usage/accounting rollups
     │   │   │   │   │   │   ├── sync-conflict.ts  # Sync conflicts
     │   │   │   │   │   │   │   # Sync conflict domain
     │   │   │   │   │   │   ├── sync-session.ts  # Sync sessions
@@ -27902,17 +28007,17 @@ fe/
     │   │   │   │   │   │   ├── transfer-acceleration.ts  # Transfer acceleration domain
     │   │   │   │   │   │   ├── transform-preset.ts  # Transform presets
     │   │   │   │   │   │   ├── transform.ts  # Transform job types
-    │   │   │   │   │   │   ├── upload-chunk.ts  # ❌ CREATE - Chunk tracking
+    │   │   │   │   │   │   ├── upload-chunk.ts  # Chunk tracking
     │   │   │   │   │   │   │   # BE: storage-be/upload_chunk
     │   │   │   │   │   │   ├── upload-part.ts  # Upload parts
     │   │   │   │   │   │   ├── upload-session.ts  # Resumable upload session types
     │   │   │   │   │   │   │   # Multi-part upload sessions
     │   │   │   │   │   │   │   # Upload session entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Upload sessions
+    │   │   │   │   │   │   │   # - Upload sessions
     │   │   │   │   │   │   │   # Multipart upload session domain
     │   │   │   │   │   │   ├── upload.ts  # File upload types
     │   │   │   │   │   │   │   # Upload, UploadProgress, UploadStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - Upload session
+    │   │   │   │   │   │   │   # Upload session
     │   │   │   │   │   │   │   # BE: storage-be/upload
     │   │   │   │   │   │   ├── usage-log.ts  # Usage log entity
     │   │   │   │   │   │   │   # Usage log domain
@@ -27920,19 +28025,19 @@ fe/
     │   │   │   │   │   │   ├── version.ts  # File version types
     │   │   │   │   │   │   │   # File versioning
     │   │   │   │   │   │   │   # FileVersion, VersionHistory
-    │   │   │   │   │   │   │   # ⚠️ MISSING - File versions
+    │   │   │   │   │   │   │   # - File versions
     │   │   │   │   │   │   ├── virus-definition.ts  # Virus definitions
-    │   │   │   │   │   │   ├── virus-scan-report.ts  # ❌ CREATE - AV scan result
+    │   │   │   │   │   │   ├── virus-scan-report.ts  # AV scan result
     │   │   │   │   │   │   │   # BE: storage-be/virus_scan_report
     │   │   │   │   │   │   ├── virus-scan.ts  # Virus scan types
     │   │   │   │   │   │   │   # VirusScan, ScanResult
     │   │   │   │   │   │   │   # Virus scan entity
-    │   │   │   │   │   │   │   # ❌ CREATE - AV scan request/result
+    │   │   │   │   │   │   │   # AV scan request/result
     │   │   │   │   │   │   ├── watermark-template.ts  # Watermark template domain
     │   │   │   │   │   │   ├── watermark.ts  # Watermark types
     │   │   │   │   │   │   │   # Watermark entity
     │   │   │   │   │   │   └── webhook.ts  # Storage webhook types
-    │   │   │   │   │   │       # ❌ CREATE - Storage webhooks (ingest/complete)
+    │   │   │   │   │   │       # Storage webhooks (ingest/complete)
     │   │   │   │   │   ├── subscriptions/  # Subscriptions domain types
     │   │   │   │   │   │   # Subscriptions domain types (MISSING ENTITIES)
     │   │   │   │   │   │   # Subscriptions domain types (MANY MISSING)
@@ -27940,76 +28045,76 @@ fe/
     │   │   │   │   │   │   ├── addon.ts  # Add-on types
     │   │   │   │   │   │   │   # Subscription add-ons
     │   │   │   │   │   │   │   # Addon, AddonType
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Add-ons
+    │   │   │   │   │   │   │   # - Add-ons
     │   │   │   │   │   │   │   # Subscription addon types
     │   │   │   │   │   │   ├── allowance-transaction.ts  # Allowance transactions
     │   │   │   │   │   │   │   # Allowance transaction entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Allowance transactions
+    │   │   │   │   │   │   │   # - Allowance transactions
     │   │   │   │   │   │   │   # Allowance transaction domain
     │   │   │   │   │   │   │   # Allowance transaction types
     │   │   │   │   │   │   ├── allowance.ts  # Allowance types
     │   │   │   │   │   │   │   # Monthly allowances (connects, bids)
     │   │   │   │   │   │   │   # Allowance, AllowanceTransaction
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Allowances
+    │   │   │   │   │   │   │   # - Allowances
     │   │   │   │   │   │   │   # Usage allowance types
     │   │   │   │   │   │   ├── analytics.ts  # Subscription analytics types
     │   │   │   │   │   │   ├── billing-cycle.ts  # Billing cycle types
     │   │   │   │   │   │   ├── billing-history.ts  # Billing history types
     │   │   │   │   │   │   │   # BillingHistory, HistoryEntry
     │   │   │   │   │   │   │   # Billing history entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Billing history
+    │   │   │   │   │   │   │   # - Billing history
     │   │   │   │   │   │   ├── billing-profile.ts  # Billing profile types
     │   │   │   │   │   │   │   # Billing information
     │   │   │   │   │   │   │   # BillingProfile, ProfileDetails
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Billing profiles
+    │   │   │   │   │   │   │   # - Billing profiles
     │   │   │   │   │   │   ├── cancellation-reason.ts  # Cancellation reasons
     │   │   │   │   │   │   ├── cancellation.ts  # Cancellation types
     │   │   │   │   │   │   ├── change-request.ts  # Subscription change request types
     │   │   │   │   │   │   ├── connect-balance.ts  # Connects system types
     │   │   │   │   │   │   │   # Connect balance tracking
     │   │   │   │   │   │   │   # Connect balance entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect balances
+    │   │   │   │   │   │   │   # - Connect balances
     │   │   │   │   │   │   │   # Connect balance domain
     │   │   │   │   │   │   │   # Connect balance types
     │   │   │   │   │   │   ├── connect-package.ts  # Connect packages
     │   │   │   │   │   │   │   # ConnectPackage, PackageType
     │   │   │   │   │   │   │   # Connect package entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect packages
+    │   │   │   │   │   │   │   # - Connect packages
     │   │   │   │   │   │   │   # Connect package domain
     │   │   │   │   │   │   │   # Connect package types
     │   │   │   │   │   │   ├── connect-transaction.ts  # Connect transactions
     │   │   │   │   │   │   │   # Connect usage transactions
     │   │   │   │   │   │   │   # ConnectTransaction, TransactionType
     │   │   │   │   │   │   │   # Connect transaction entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Connect transactions
+    │   │   │   │   │   │   │   # - Connect transactions
     │   │   │   │   │   │   │   # Connect transaction domain
     │   │   │   │   │   │   │   # Connect transaction types
     │   │   │   │   │   │   ├── connect.ts  # Connect balance types
     │   │   │   │   │   │   ├── coupon.ts  # Promotional coupons
     │   │   │   │   │   │   ├── credit-application.ts  # Credit applications
     │   │   │   │   │   │   │   # Credit application entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Credit applications
+    │   │   │   │   │   │   │   # - Credit applications
     │   │   │   │   │   │   │   # Credit application domain
     │   │   │   │   │   │   │   # Credit application types
     │   │   │   │   │   │   ├── credit-note.ts  # Credit note types
     │   │   │   │   │   │   │   # CreditNote, CreditApplication
     │   │   │   │   │   │   │   # Credit note entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Credit notes
+    │   │   │   │   │   │   │   # - Credit notes
     │   │   │   │   │   │   ├── credit.ts  # Account credits
     │   │   │   │   │   │   ├── discount.ts  # Discount/coupon types
     │   │   │   │   │   │   │   # Discounts
     │   │   │   │   │   │   ├── dunning-action.ts  # Dunning actions
     │   │   │   │   │   │   │   # Dunning action entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Dunning actions
+    │   │   │   │   │   │   │   # - Dunning actions
     │   │   │   │   │   │   │   # Dunning action domain
     │   │   │   │   │   │   │   # Dunning action types
     │   │   │   │   │   │   ├── dunning-case.ts  # Dunning case entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Dunning cases
+    │   │   │   │   │   │   │   # - Dunning cases
     │   │   │   │   │   │   │   # Dunning case domain
     │   │   │   │   │   │   │   # Dunning case types
     │   │   │   │   │   │   ├── dunning-schedule.ts  # Dunning schedules
     │   │   │   │   │   │   │   # Dunning schedule entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Dunning schedules
+    │   │   │   │   │   │   │   # - Dunning schedules
     │   │   │   │   │   │   │   # Dunning schedule domain
     │   │   │   │   │   │   │   # Dunning schedule types
     │   │   │   │   │   │   ├── dunning.ts  # Dunning process types
@@ -28018,45 +28123,44 @@ fe/
     │   │   │   │   │   │   ├── entitlement-grant.ts  # Entitlement grants
     │   │   │   │   │   │   │   # EntitlementGrant, GrantType
     │   │   │   │   │   │   │   # Entitlement grant entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Entitlement grants
+    │   │   │   │   │   │   │   # - Entitlement grants
     │   │   │   │   │   │   │   # Entitlement grant domain
     │   │   │   │   │   │   │   # Entitlement grant types
     │   │   │   │   │   │   ├── entitlement.ts  # Entitlement types
     │   │   │   │   │   │   │   # Feature entitlements
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Entitlements
-    │   │   │   │   │   │   │   # ❌ CREATE - Granted caps/flags
+    │   │   │   │   │   │   │   # - Entitlements
+    │   │   │   │   │   │   │   # Granted caps/flags
     │   │   │   │   │   │   │   # BE: subscriptions-be/entitlement
     │   │   │   │   │   │   ├── feature-toggle.ts  # Feature toggle types
     │   │   │   │   │   │   │   # FeatureToggle, ToggleRule
     │   │   │   │   │   │   │   # Feature toggle entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Feature toggles
+    │   │   │   │   │   │   │   # - Feature toggles
     │   │   │   │   │   │   ├── feature-usage.ts  # Feature usage
     │   │   │   │   │   │   ├── feature.ts  # Feature entitlement types
     │   │   │   │   │   │   ├── grant.ts  # Bonus grants
     │   │   │   │   │   │   ├── index.ts  # Barrel export for subscriptions domain
     │   │   │   │   │   │   │   # Barrel export
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── invoice-item.ts  # Line items
     │   │   │   │   │   │   ├── invoice-line-item.ts  # Invoice line items
     │   │   │   │   │   │   │   # Invoice line item entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Invoice line items
+    │   │   │   │   │   │   │   # - Invoice line items
     │   │   │   │   │   │   │   # Invoice line item domain
     │   │   │   │   │   │   │   # Invoice line item types
     │   │   │   │   │   │   ├── invoice.ts  # Subscription invoice types
     │   │   │   │   │   │   │   # Billing invoices
     │   │   │   │   │   │   │   # Invoice, InvoiceLineItem
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Subscription invoices
+    │   │   │   │   │   │   │   # - Subscription invoices
     │   │   │   │   │   │   │   # Invoice types
     │   │   │   │   │   │   ├── meter.ts  # Usage meters
     │   │   │   │   │   │   ├── payment-attempt.ts  # Payment attempt types
     │   │   │   │   │   │   │   # PaymentAttempt, AttemptStatus
     │   │   │   │   │   │   │   # Payment attempt entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment attempts
+    │   │   │   │   │   │   │   # - Payment attempts
     │   │   │   │   │   │   ├── payment-history.ts  # Payment history
     │   │   │   │   │   │   ├── payment-webhook.ts  # Payment webhooks
     │   │   │   │   │   │   │   # PaymentWebhook, WebhookEvent
     │   │   │   │   │   │   │   # Payment webhook entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Payment webhooks
+    │   │   │   │   │   │   │   # - Payment webhooks
     │   │   │   │   │   │   │   # Payment webhook domain
     │   │   │   │   │   │   │   # Payment webhook types
     │   │   │   │   │   │   ├── payment.ts  # Subscription payment types
@@ -28066,46 +28170,46 @@ fe/
     │   │   │   │   │   │   ├── plan-pricing.ts  # Pricing tiers
     │   │   │   │   │   │   │   # PlanPricing, PricingTier
     │   │   │   │   │   │   │   # Plan pricing entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Plan pricing
+    │   │   │   │   │   │   │   # - Plan pricing
     │   │   │   │   │   │   │   # Plan pricing domain
     │   │   │   │   │   │   │   # Plan pricing types
     │   │   │   │   │   │   ├── plan-version.ts  # Plan versioning
     │   │   │   │   │   │   │   # PlanVersion, VersionHistory
     │   │   │   │   │   │   │   # Plan version entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Plan versions
+    │   │   │   │   │   │   │   # - Plan versions
     │   │   │   │   │   │   │   # Plan version domain
     │   │   │   │   │   │   │   # Plan version types
     │   │   │   │   │   │   ├── plan.ts  # Subscription plan types
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Plans
-    │   │   │   │   │   │   │   # ❌ CREATE - Tier/features
+    │   │   │   │   │   │   │   # - Plans
+    │   │   │   │   │   │   │   # Tier/features
     │   │   │   │   │   │   │   # BE: subscriptions-be/plan
-    │   │   │   │   │   │   ├── price.ts  # ❌ CREATE - Billing price
+    │   │   │   │   │   │   ├── price.ts  # Billing price
     │   │   │   │   │   │   │   # BE: subscriptions-be/price
     │   │   │   │   │   │   ├── pricing.ts  # Pricing types
-    │   │   │   │   │   │   ├── product.ts  # ❌ CREATE - Catalog parent
+    │   │   │   │   │   │   ├── product.ts  # Catalog parent
     │   │   │   │   │   │   │   # BE: subscriptions-be/product
     │   │   │   │   │   │   ├── promotion-redemption.ts  # Promotion redemptions
     │   │   │   │   │   │   │   # Promotion redemption entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Promotion redemptions
+    │   │   │   │   │   │   │   # - Promotion redemptions
     │   │   │   │   │   │   │   # Promotion redemption domain
     │   │   │   │   │   │   │   # Promotion redemption types
     │   │   │   │   │   │   ├── promotion.ts  # Promotion types
     │   │   │   │   │   │   │   # Promotion, PromotionRedemption
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Promotions
+    │   │   │   │   │   │   │   # - Promotions
     │   │   │   │   │   │   ├── proration.ts  # Proration types
     │   │   │   │   │   │   │   # Proration calculations
     │   │   │   │   │   │   ├── renewal.ts  # Renewal types
     │   │   │   │   │   │   ├── seat-assignment.ts  # Seat assignments
     │   │   │   │   │   │   │   # Seat assignment entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Seat assignments
+    │   │   │   │   │   │   │   # - Seat assignments
     │   │   │   │   │   │   │   # Seat assignment domain
     │   │   │   │   │   │   │   # Seat assignment types
     │   │   │   │   │   │   ├── seat-billing.ts  # Seat billing types
     │   │   │   │   │   │   │   # SeatBilling, SeatAssignment
     │   │   │   │   │   │   │   # Seat billing entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Seat billing
+    │   │   │   │   │   │   │   # - Seat billing
     │   │   │   │   │   │   │   # Seat billing domain
-    │   │   │   │   │   │   ├── seat-overage-history.ts  # ⚠️ MISSING - Seat overage history
+    │   │   │   │   │   │   ├── seat-overage-history.ts  # - Seat overage history
     │   │   │   │   │   │   │   # Seat overage history domain
     │   │   │   │   │   │   ├── seat-overage.ts  # Seat overage history
     │   │   │   │   │   │   │   # Seat overage entity
@@ -28113,49 +28217,49 @@ fe/
     │   │   │   │   │   │   ├── seat.ts  # Seat billing types
     │   │   │   │   │   │   ├── subscription-addon.ts  # Subscription addons
     │   │   │   │   │   │   │   # Subscription addon entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Subscription add-ons
+    │   │   │   │   │   │   │   # - Subscription add-ons
     │   │   │   │   │   │   │   # Subscription addon domain
     │   │   │   │   │   │   │   # Subscription addon types
     │   │   │   │   │   │   ├── subscription-change-request.ts  # Change request entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Change requests
+    │   │   │   │   │   │   │   # - Change requests
     │   │   │   │   │   │   │   # Change request domain
     │   │   │   │   │   │   ├── subscription-change.ts  # Subscription changes
     │   │   │   │   │   │   │   # SubscriptionChange, ChangeRequest
     │   │   │   │   │   │   │   # Subscription change types
-    │   │   │   │   │   │   ├── subscription-item.ts  # ❌ CREATE - Per-feature line
+    │   │   │   │   │   │   ├── subscription-item.ts  # Per-feature line
     │   │   │   │   │   │   │   # BE: subscriptions-be/subscription_item
     │   │   │   │   │   │   ├── subscription.ts  # Subscription types
     │   │   │   │   │   │   │   # ✅ EXISTS (main entity)
-    │   │   │   │   │   │   │   # ❌ CREATE - Active sub
+    │   │   │   │   │   │   │   # Active sub
     │   │   │   │   │   │   │   # BE: subscriptions-be/subscription
     │   │   │   │   │   │   ├── tax-binding.ts  # Tax bindings
     │   │   │   │   │   │   │   # Tax binding domain
     │   │   │   │   │   │   │   # Tax binding types
     │   │   │   │   │   │   ├── tax-class.ts  # Tax class types
     │   │   │   │   │   │   │   # TaxClass, TaxBinding
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Tax classes
+    │   │   │   │   │   │   │   # - Tax classes
     │   │   │   │   │   │   ├── tier.ts  # Plan tier types
     │   │   │   │   │   │   ├── trial.ts  # Trial period types
     │   │   │   │   │   │   │   # Free trial tracking
     │   │   │   │   │   │   │   # Trial, TrialStatus
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Trials
+    │   │   │   │   │   │   │   # - Trials
     │   │   │   │   │   │   │   # Trial types
     │   │   │   │   │   │   ├── upgrade-path.ts  # Upgrade/downgrade paths
     │   │   │   │   │   │   ├── upgrade.ts  # Upgrade/downgrade types
     │   │   │   │   │   │   ├── usage-counter.ts  # Usage counters
     │   │   │   │   │   │   │   # Usage counter entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Usage counters
+    │   │   │   │   │   │   │   # - Usage counters
     │   │   │   │   │   │   │   # Usage counter domain
     │   │   │   │   │   │   │   # Usage counter types
     │   │   │   │   │   │   ├── usage-event.ts  # Usage events
     │   │   │   │   │   │   │   # UsageEvent, EventType
     │   │   │   │   │   │   │   # Usage event entity
-    │   │   │   │   │   │   │   # ⚠️ MISSING - Usage events
+    │   │   │   │   │   │   │   # - Usage events
     │   │   │   │   │   │   │   # Usage event domain
     │   │   │   │   │   │   │   # Usage event types
     │   │   │   │   │   │   ├── usage-tracking.ts  # Feature usage tracking
     │   │   │   │   │   │   ├── usage.ts  # Usage tracking types
-    │   │   │   │   │   │   │   # ❌ CREATE - Metered usage
+    │   │   │   │   │   │   │   # Metered usage
     │   │   │   │   │   │   │   # BE: subscriptions-be/usage
     │   │   │   │   │   │   ├── user-entitlement-grant.ts  # User entitlement grant entity
     │   │   │   │   │   │   │   # User entitlement grant domain
@@ -28163,20 +28267,20 @@ fe/
     │   │   │   │   │   │   ├── user-entitlement.ts  # User entitlement grants
     │   │   │   │   │   │   └── user-tax-binding.ts  # User tax binding entity
     │   │   │   │   │   ├── user/
-    │   │   │   │   │   │   ├── account.ts  # ❌ CREATE - Account core
+    │   │   │   │   │   │   ├── account.ts  # Account core
     │   │   │   │   │   │   │   # BE: user-be/account
-    │   │   │   │   │   │   ├── device.ts  # ❌ CREATE - Known devices
+    │   │   │   │   │   │   ├── device.ts  # Known devices
     │   │   │   │   │   │   │   # BE: user-be/device
-    │   │   │   │   │   │   ├── index.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── kyc-document.ts  # ❌ CREATE - Doc metadata
+    │   │   │   │   │   │   ├── index.ts
+    │   │   │   │   │   │   ├── kyc-document.ts  # Doc metadata
     │   │   │   │   │   │   │   # BE: user-be/kyc_document
-    │   │   │   │   │   │   ├── preference.ts  # ❌ CREATE - Settings/preferences
+    │   │   │   │   │   │   ├── preference.ts  # Settings/preferences
     │   │   │   │   │   │   │   # BE: user-be/preference
-    │   │   │   │   │   │   ├── profile.ts  # ❌ CREATE - Public profile
+    │   │   │   │   │   │   ├── profile.ts  # Public profile
     │   │   │   │   │   │   │   # BE: user-be/profile
-    │   │   │   │   │   │   ├── session.ts  # ❌ CREATE - Login session
+    │   │   │   │   │   │   ├── session.ts  # Login session
     │   │   │   │   │   │   │   # BE: user-be/session
-    │   │   │   │   │   │   └── verification.ts  # ❌ CREATE - KYC/verifications
+    │   │   │   │   │   │   └── verification.ts  # KYC/verifications
     │   │   │   │   │   │       # BE: user-be/verification
     │   │   │   │   │   └── users/  # Users domain types
     │   │   │   │   │       # Users domain types (MISSING ENTITIES)
@@ -28190,10 +28294,10 @@ fe/
     │   │   │   │   │       ├── achievement-unlock.ts  # Achievement unlock domain
     │   │   │   │   │       ├── achievement.ts  # Achievement types
     │   │   │   │   │       │   # Achievement entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Achievements
+    │   │   │   │   │       │   # - Achievements
     │   │   │   │   │       ├── activity-feed.ts  # Activity feed entity
     │   │   │   │   │       ├── activity.ts  # User activity types
-    │   │   │   │   │       │   # ⚠️ MISSING - Activity logs
+    │   │   │   │   │       │   # - Activity logs
     │   │   │   │   │       ├── address.ts  # User addresses
     │   │   │   │   │       ├── affiliate-conversion.ts  # Affiliate conversion domain
     │   │   │   │   │       ├── affiliate-link.ts  # Affiliate link domain
@@ -28203,14 +28307,14 @@ fe/
     │   │   │   │   │       ├── api-key.ts  # API keys
     │   │   │   │   │       ├── appeal-submission.ts  # Appeal submission entity
     │   │   │   │   │       ├── appeal.ts  # UserAppeal, AppealStatus
-    │   │   │   │   │       │   # ⚠️ MISSING - Appeals
+    │   │   │   │   │       │   # - Appeals
     │   │   │   │   │       ├── assessment.ts  # Assessment types
     │   │   │   │   │       ├── audit-log.ts  # User audit logs
     │   │   │   │   │       ├── automation.ts  # Automation rules
     │   │   │   │   │       ├── availability-block.ts  # Availability block domain
     │   │   │   │   │       ├── availability-exception.ts  # Availability exception domain
     │   │   │   │   │       ├── availability-recurring-rule.ts  # Recurring availability rule entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Recurring rules
+    │   │   │   │   │       │   # - Recurring rules
     │   │   │   │   │       │   # Recurring availability rule domain
     │   │   │   │   │       ├── availability-rule.ts  # Recurring availability types
     │   │   │   │   │       ├── availability-schedule.ts  # AvailabilitySchedule, RecurringRules
@@ -28220,24 +28324,24 @@ fe/
     │   │   │   │   │       │   # User availability types
     │   │   │   │   │       ├── background-check.ts  # Background check types
     │   │   │   │   │       ├── badge.ts  # User badge types
-    │   │   │   │   │       │   # ⚠️ MISSING - User badges
+    │   │   │   │   │       │   # - User badges
     │   │   │   │   │       ├── ban-history.ts  # Ban history entity
     │   │   │   │   │       ├── ban.ts  # Ban, BanReason, BanDuration
     │   │   │   │   │       ├── billing-address.ts  # Billing address domain
     │   │   │   │   │       ├── bio-section.ts  # Bio section entity
     │   │   │   │   │       ├── bio.ts  # User bios
-    │   │   │   │   │       │   # ⚠️ MISSING - Bio sections
+    │   │   │   │   │       │   # - Bio sections
     │   │   │   │   │       ├── block.ts  # Blocked user types
     │   │   │   │   │       ├── blocked-user.ts  # Blocked users types
     │   │   │   │   │       │   # Blocked user domain
-    │   │   │   │   │       │   # ❌ CREATE - Blocked relation (blocker_id/blocked_id)
+    │   │   │   │   │       │   # Blocked relation (blocker_id/blocked_id)
     │   │   │   │   │       ├── blocked-users.ts  # BlockedUser, BlockReason
     │   │   │   │   │       ├── bookmark.ts  # User bookmarks
-    │   │   │   │   │       ├── business-verification.ts  # ❌ CREATE - Business/KYB snapshot
+    │   │   │   │   │       ├── business-verification.ts  # Business/KYB snapshot
     │   │   │   │   │       ├── capability.ts  # User capability types
     │   │   │   │   │       │   # User capabilities
     │   │   │   │   │       │   # Capability entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Capabilities
+    │   │   │   │   │       │   # - Capabilities
     │   │   │   │   │       ├── certification-expiry.ts  # Certification expiry domain
     │   │   │   │   │       ├── certification-verification.ts  # Certification verification entity
     │   │   │   │   │       ├── certification.ts  # Certification types
@@ -28249,18 +28353,18 @@ fe/
     │   │   │   │   │       ├── client.ts  # Client-specific types
     │   │   │   │   │       ├── communication-channel.ts  # Communication routing
     │   │   │   │   │       │   # Communication channel entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Communication channels
+    │   │   │   │   │       │   # - Communication channels
     │   │   │   │   │       │   # Communication channel domain
-    │   │   │   │   │       ├── compliance-report.ts  # ⚠️ MISSING - Compliance reports
+    │   │   │   │   │       ├── compliance-report.ts  # - Compliance reports
     │   │   │   │   │       ├── compliance.ts  # Compliance records
     │   │   │   │   │       │   # UserCompliance, ComplianceCheck
     │   │   │   │   │       ├── connection-request.ts  # Connection requests
     │   │   │   │   │       │   # Connection request entity
     │   │   │   │   │       ├── connection.ts  # User connection types
-    │   │   │   │   │       │   # ⚠️ MISSING - User connections
+    │   │   │   │   │       │   # - User connections
     │   │   │   │   │       ├── consent-record.ts  # Consent record entity
     │   │   │   │   │       ├── consent.ts  # User consents
-    │   │   │   │   │       │   # ⚠️ MISSING - Consent tracking
+    │   │   │   │   │       │   # - Consent tracking
     │   │   │   │   │       ├── contact-info.ts  # Contact information
     │   │   │   │   │       ├── credit.ts  # User credits
     │   │   │   │   │       ├── data-deletion.ts  # Data deletion entity
@@ -28268,12 +28372,12 @@ fe/
     │   │   │   │   │       ├── device-trust.ts  # Device trust domain
     │   │   │   │   │       ├── device.ts  # Trusted device types
     │   │   │   │   │       │   # Device, DeviceType
-    │   │   │   │   │       │   # ⚠️ MISSING - Trusted devices
+    │   │   │   │   │       │   # - Trusted devices
     │   │   │   │   │       │   # Trusted device domain
     │   │   │   │   │       │   # Device types
     │   │   │   │   │       ├── earning-goal.ts  # Earning goal types
     │   │   │   │   │       │   # Earning goal entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Earning goals
+    │   │   │   │   │       │   # - Earning goals
     │   │   │   │   │       │   # Earning goal domain
     │   │   │   │   │       ├── earning-goals.ts  # EarningGoals, GoalTracking
     │   │   │   │   │       ├── earning.ts  # Earnings tracking
@@ -28284,7 +28388,7 @@ fe/
     │   │   │   │   │       ├── email-change-request.ts  # Email change request domain
     │   │   │   │   │       ├── email-preference.ts  # Email preferences
     │   │   │   │   │       │   # Email preference entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Email preferences
+    │   │   │   │   │       │   # - Email preferences
     │   │   │   │   │       │   # Email preference domain
     │   │   │   │   │       ├── email-verification-token.ts  # Email verification token domain
     │   │   │   │   │       ├── email-verification.ts  # Email verifications
@@ -28292,7 +28396,7 @@ fe/
     │   │   │   │   │       ├── employment-history.ts  # Employment history types
     │   │   │   │   │       ├── employment.ts  # Employment history
     │   │   │   │   │       ├── endorsement.ts  # Endorsement types
-    │   │   │   │   │       │   # ⚠️ MISSING - Endorsements
+    │   │   │   │   │       │   # - Endorsements
     │   │   │   │   │       │   # Endorsement domain
     │   │   │   │   │       ├── event-subscription.ts  # Event subscription domain
     │   │   │   │   │       ├── experience-level.ts  # Experience level domain
@@ -28300,14 +28404,14 @@ fe/
     │   │   │   │   │       │   # Work experience
     │   │   │   │   │       │   # ✅ EXISTS
     │   │   │   │   │       ├── export.ts  # Data exports
-    │   │   │   │   │       │   # ⚠️ MISSING - Data exports
+    │   │   │   │   │       │   # - Data exports
     │   │   │   │   │       ├── favorite.ts  # User favorites
     │   │   │   │   │       ├── feed-item.ts  # Feed items
     │   │   │   │   │       ├── feedback.ts  # User feedback
     │   │   │   │   │       ├── financial-profile.ts  # Financial profile
     │   │   │   │   │       ├── flag-category.ts  # Flag category domain
     │   │   │   │   │       ├── flag.ts  # UserFlag, FlagReason
-    │   │   │   │   │       │   # ⚠️ MISSING - User flags
+    │   │   │   │   │       │   # - User flags
     │   │   │   │   │       ├── follow.ts  # Follow/connection types
     │   │   │   │   │       ├── freelancer-profile.ts  # Freelancer-specific profile types
     │   │   │   │   │       │   # Freelancer profile types
@@ -28318,13 +28422,13 @@ fe/
     │   │   │   │   │       ├── hourly-rate.ts  # Hourly rate entity
     │   │   │   │   │       │   # Hourly rate types
     │   │   │   │   │       ├── id-verification.ts  # ID verification entity
-    │   │   │   │   │       ├── identity-document.ts  # ⚠️ MISSING - Identity documents
+    │   │   │   │   │       ├── identity-document.ts  # - Identity documents
     │   │   │   │   │       ├── identity-verification.ts  # KYC/KYB types
-    │   │   │   │   │       │   # ❌ CREATE - KYC flow (doc checks, status)
+    │   │   │   │   │       │   # KYC flow (doc checks, status)
     │   │   │   │   │       ├── index.ts  # Barrel export for users domain
     │   │   │   │   │       │   # Barrel export
     │   │   │   │   │       ├── insight.ts  # User insight types
-    │   │   │   │   │       ├── integration.ts  # ⚠️ MISSING - Third-party integrations
+    │   │   │   │   │       ├── integration.ts  # - Third-party integrations
     │   │   │   │   │       ├── interview-setting.ts  # Interview settings
     │   │   │   │   │       ├── invite.ts  # User invites
     │   │   │   │   │       ├── invoice.ts  # User invoices
@@ -28333,15 +28437,15 @@ fe/
     │   │   │   │   │       ├── kyc-document.ts  # KYC documents
     │   │   │   │   │       │   # KYC document entity
     │   │   │   │   │       ├── kyc.ts  # KYC verification
-    │   │   │   │   │       │   # ⚠️ MISSING - KYC verification
+    │   │   │   │   │       │   # - KYC verification
     │   │   │   │   │       ├── language-preference.ts  # Language preferences
     │   │   │   │   │       ├── language-proficiency.ts  # Language proficiency types
     │   │   │   │   │       ├── language.ts  # Language proficiency types
-    │   │   │   │   │       │   # ⚠️ MISSING - Languages
+    │   │   │   │   │       │   # - Languages
     │   │   │   │   │       ├── learning-path.ts  # Learning path types
     │   │   │   │   │       │   # LearningPath, CourseProgress
     │   │   │   │   │       │   # Learning path entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Learning paths
+    │   │   │   │   │       │   # - Learning paths
     │   │   │   │   │       │   # Learning path domain
     │   │   │   │   │       ├── login-history-summary.ts  # Login history summary domain
     │   │   │   │   │       ├── login-history.ts  # Login history
@@ -28352,21 +28456,21 @@ fe/
     │   │   │   │   │       ├── mentorship.ts  # Mentorship types
     │   │   │   │   │       │   # Mentorship, MentorshipStatus
     │   │   │   │   │       │   # Mentorship entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Mentorships
+    │   │   │   │   │       │   # - Mentorships
     │   │   │   │   │       │   # Mentorship domain
     │   │   │   │   │       ├── metric.ts  # User metric types
     │   │   │   │   │       │   # User performance metrics
-    │   │   │   │   │       │   # ⚠️ MISSING - User metrics
+    │   │   │   │   │       │   # - User metrics
     │   │   │   │   │       ├── mfa-backup-code.ts  # MFA backup code entity
-    │   │   │   │   │       ├── moderation-action.ts  # ⚠️ MISSING - Moderation actions
-    │   │   │   │   │       ├── moderation.ts  # ❌ CREATE - Moderation aggregate
-    │   │   │   │   │       ├── network-connection.ts  # ⚠️ MISSING - Network connections
+    │   │   │   │   │       ├── moderation-action.ts  # - Moderation actions
+    │   │   │   │   │       ├── moderation.ts  # Moderation aggregate
+    │   │   │   │   │       ├── network-connection.ts  # - Network connections
     │   │   │   │   │       ├── network-stat.ts  # Network statistics
     │   │   │   │   │       ├── newsletter-subscription.ts  # Newsletter subscriptions
     │   │   │   │   │       ├── note.ts  # User notes
     │   │   │   │   │       ├── notification-digest.ts  # Notification digest domain
     │   │   │   │   │       ├── notification-preference.ts  # Notification preference types
-    │   │   │   │   │       │   # ⚠️ MISSING - Notification preferences
+    │   │   │   │   │       │   # - Notification preferences
     │   │   │   │   │       ├── notification-preferences.ts  # NotificationPreferences, Channel
     │   │   │   │   │       ├── notification-setting.ts  # Notification prefs
     │   │   │   │   │       │   # Notification setting types
@@ -28374,11 +28478,11 @@ fe/
     │   │   │   │   │       ├── oauth-app.ts  # OAuth applications
     │   │   │   │   │       ├── onboarding-step.ts  # Onboarding steps
     │   │   │   │   │       ├── onboarding.ts  # Onboarding
-    │   │   │   │   │       │   # ⚠️ MISSING - Onboarding
-    │   │   │   │   │       ├── organization-member.ts  # ⚠️ MISSING - Organization members
+    │   │   │   │   │       │   # - Onboarding
+    │   │   │   │   │       ├── organization-member.ts  # - Organization members
     │   │   │   │   │       ├── organization.ts  # Organization types
     │   │   │   │   │       │   # Organization/company profiles
-    │   │   │   │   │       │   # ⚠️ MISSING - Organizations
+    │   │   │   │   │       │   # - Organizations
     │   │   │   │   │       ├── password-reset-token.ts  # Password reset token domain
     │   │   │   │   │       ├── password-reset.ts  # Password resets
     │   │   │   │   │       │   # PasswordReset, ResetToken
@@ -28399,97 +28503,97 @@ fe/
     │   │   │   │   │       │   # ✅ EXISTS
     │   │   │   │   │       ├── privacy-setting.ts  # Privacy setting types
     │   │   │   │   │       │   # Privacy setting entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Privacy settings
+    │   │   │   │   │       │   # - Privacy settings
     │   │   │   │   │       ├── privacy-settings.ts  # PrivacySettings, VisibilityControl
     │   │   │   │   │       ├── privacy.ts  # Privacy setting types
     │   │   │   │   │       ├── professional-headline.ts  # Professional headline entity
     │   │   │   │   │       ├── professional-network.ts  # Connection, ConnectionRequest
     │   │   │   │   │       ├── profile-completeness.ts  # Profile completeness
     │   │   │   │   │       ├── profile-completion.ts  # Profile completion
-    │   │   │   │   │       │   # ⚠️ MISSING - Profile completion
+    │   │   │   │   │       │   # - Profile completion
     │   │   │   │   │       │   # Profile completion types
     │   │   │   │   │       ├── profile-depth-score.ts  # Profile depth scoring domain
-    │   │   │   │   │       ├── profile-depth.ts  # ⚠️ MISSING - Profile depth metrics
+    │   │   │   │   │       ├── profile-depth.ts  # - Profile depth metrics
     │   │   │   │   │       ├── profile-impression.ts  # Profile impression entity
     │   │   │   │   │       │   # Profile impression domain
     │   │   │   │   │       ├── profile-view.ts  # Profile views
     │   │   │   │   │       │   # Profile view entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Profile views
+    │   │   │   │   │       │   # - Profile views
     │   │   │   │   │       │   # Profile view types
     │   │   │   │   │       ├── profile-visibility.ts  # Visibility control types
     │   │   │   │   │       │   # Profile visibility entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Visibility settings
+    │   │   │   │   │       │   # - Visibility settings
     │   │   │   │   │       ├── profile.ts  # User profile types
     │   │   │   │   │       │   # User profile
     │   │   │   │   │       │   # ✅ EXISTS
     │   │   │   │   │       ├── project-image.ts  # Project image entity
-    │   │   │   │   │       ├── quota-override.ts  # ❌ CREATE - Overrides (limits/quotas)
+    │   │   │   │   │       ├── quota-override.ts  # Overrides (limits/quotas)
     │   │   │   │   │       ├── rate-card.ts  # UserRateCard, RateType
     │   │   │   │   │       ├── rate-history.ts  # Rate history types
     │   │   │   │   │       │   # Rate history entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Rate history
+    │   │   │   │   │       │   # - Rate history
     │   │   │   │   │       │   # Rate history domain
     │   │   │   │   │       ├── rate.ts  # Rate settings
     │   │   │   │   │       ├── recommendation.ts  # User recommendations
     │   │   │   │   │       ├── recovery.ts  # Account recovery types
-    │   │   │   │   │       │   # ⚠️ MISSING - Account recovery
+    │   │   │   │   │       │   # - Account recovery
     │   │   │   │   │       ├── referral-bonus.ts  # Referral bonus domain
     │   │   │   │   │       ├── referral-conversion.ts  # Referral conversion domain
     │   │   │   │   │       ├── referral-tier.ts  # Referral tier domain
     │   │   │   │   │       ├── referral.ts  # Referral types
     │   │   │   │   │       │   # Referral, ReferralCode, ReferralReward
-    │   │   │   │   │       │   # ⚠️ MISSING - Referrals
+    │   │   │   │   │       │   # - Referrals
     │   │   │   │   │       ├── relationship.ts  # User relationships
-    │   │   │   │   │       │   # ⚠️ MISSING - Relationships
+    │   │   │   │   │       │   # - Relationships
     │   │   │   │   │       ├── report.ts  # User reports
-    │   │   │   │   │       │   # ⚠️ MISSING - User reports
+    │   │   │   │   │       │   # - User reports
     │   │   │   │   │       ├── reputation-score.ts  # Reputation score entity
     │   │   │   │   │       ├── reputation.ts  # Reputation types
-    │   │   │   │   │       │   # ⚠️ MISSING - Reputation
+    │   │   │   │   │       │   # - Reputation
     │   │   │   │   │       ├── review-stat.ts  # Review statistics
     │   │   │   │   │       ├── saved-freelancer.ts  # Saved freelancers
     │   │   │   │   │       │   # Saved freelancer domain
     │   │   │   │   │       ├── saved-item.ts  # Saved item types
-    │   │   │   │   │       │   # ⚠️ MISSING - Saved items
+    │   │   │   │   │       │   # - Saved items
     │   │   │   │   │       ├── saved-items.ts  # SavedItem, ItemType
     │   │   │   │   │       ├── saved-job.ts  # Saved jobs
     │   │   │   │   │       │   # Saved job domain
     │   │   │   │   │       ├── saved-search.ts  # Saved searches
-    │   │   │   │   │       ├── scoring-factor.ts  # ⚠️ MISSING - Scoring factors
+    │   │   │   │   │       ├── scoring-factor.ts  # - Scoring factors
     │   │   │   │   │       ├── scoring.ts  # User scoring
     │   │   │   │   │       ├── search-appearance.ts  # Search appearance entity
     │   │   │   │   │       ├── search-criteria.ts  # Search criteria domain
-    │   │   │   │   │       ├── search-history.ts  # ⚠️ MISSING - Search history
+    │   │   │   │   │       ├── search-history.ts  # - Search history
     │   │   │   │   │       ├── search-preference.ts  # Search preferences
     │   │   │   │   │       ├── security-alert.ts  # Security alert entity
     │   │   │   │   │       ├── security-event.ts  # Security event types
-    │   │   │   │   │       │   # ⚠️ MISSING - Security events
+    │   │   │   │   │       │   # - Security events
     │   │   │   │   │       ├── security-question.ts  # Security questions
-    │   │   │   │   │       │   # ⚠️ MISSING - Security questions
+    │   │   │   │   │       │   # - Security questions
     │   │   │   │   │       ├── security-setting.ts  # Security settings
     │   │   │   │   │       ├── security.ts  # SecuritySettings, TrustedDevice
     │   │   │   │   │       ├── service-catalog.ts  # Service catalog types
     │   │   │   │   │       │   # ServiceCatalog, ServicePackage
     │   │   │   │   │       │   # Service catalog entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Service catalog
+    │   │   │   │   │       │   # - Service catalog
     │   │   │   │   │       │   # Service catalog domain
     │   │   │   │   │       ├── service-required-skill.ts  # Service required skill domain
     │   │   │   │   │       ├── session-device.ts  # Session device entity
     │   │   │   │   │       │   # Session device domain
     │   │   │   │   │       ├── session.ts  # Session types
     │   │   │   │   │       │   # UserSession, SessionStatus
-    │   │   │   │   │       │   # ⚠️ MISSING - User sessions
+    │   │   │   │   │       │   # - User sessions
     │   │   │   │   │       ├── setting.ts  # User setting types
     │   │   │   │   │       ├── skill-assessment.ts  # Skill assessments
     │   │   │   │   │       ├── skill-category.ts  # Skill categories
     │   │   │   │   │       ├── skill-endorsement.ts  # Skill endorsements
     │   │   │   │   │       │   # Skill endorsement entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Skill endorsements
+    │   │   │   │   │       │   # - Skill endorsements
     │   │   │   │   │       │   # Skill endorsement types
     │   │   │   │   │       ├── skill-level-history.ts  # Skill level history domain
     │   │   │   │   │       ├── skill-taxonomy.ts  # Skill taxonomy
     │   │   │   │   │       │   # Skill taxonomy domain
-    │   │   │   │   │       ├── skill-verification.ts  # ⚠️ MISSING - Skill verifications
+    │   │   │   │   │       ├── skill-verification.ts  # - Skill verifications
     │   │   │   │   │       ├── skill.ts  # Skill types
     │   │   │   │   │       │   # User skills
     │   │   │   │   │       │   # ✅ EXISTS
@@ -28499,7 +28603,7 @@ fe/
     │   │   │   │   │       ├── specialization.ts  # Specialization types
     │   │   │   │   │       │   # Specialization, SpecializationLevel
     │   │   │   │   │       │   # Specialization entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Specializations
+    │   │   │   │   │       │   # - Specializations
     │   │   │   │   │       │   # Specialization domain
     │   │   │   │   │       ├── spending-limit.ts  # Spending limits
     │   │   │   │   │       ├── spending.ts  # Spending tracking
@@ -28507,34 +28611,34 @@ fe/
     │   │   │   │   │       ├── suspend-history.ts  # Suspension history
     │   │   │   │   │       ├── suspension-history.ts  # Suspension history entity
     │   │   │   │   │       ├── suspension.ts  # Suspension, SuspensionReason
-    │   │   │   │   │       │   # ⚠️ MISSING - Suspensions
-    │   │   │   │   │       │   # ❌ CREATE - Suspension (reason, from/to, scope)
+    │   │   │   │   │       │   # - Suspensions
+    │   │   │   │   │       │   # Suspension (reason, from/to, scope)
     │   │   │   │   │       ├── tag.ts  # User tag types
     │   │   │   │   │       ├── tax-info.ts  # Tax information
     │   │   │   │   │       ├── tax-profile.ts  # Tax profile entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Tax profiles
+    │   │   │   │   │       │   # - Tax profiles
     │   │   │   │   │       │   # Tax profile domain
     │   │   │   │   │       ├── tax.ts  # Tax profile types
     │   │   │   │   │       ├── team-invitation.ts  # Team invitation entity
     │   │   │   │   │       ├── team-member.ts  # Team members
     │   │   │   │   │       │   # Team member entity
-    │   │   │   │   │       │   # ⚠️ MISSING - Team members
+    │   │   │   │   │       │   # - Team members
     │   │   │   │   │       ├── team.ts  # Team types
     │   │   │   │   │       │   # Team management
-    │   │   │   │   │       │   # ⚠️ MISSING - Teams
+    │   │   │   │   │       │   # - Teams
     │   │   │   │   │       ├── testimonial.ts  # Testimonials
     │   │   │   │   │       ├── time-zone.ts  # TimeZonePreference, TimeZoneOverlap
     │   │   │   │   │       ├── timezone-preference.ts  # Timezone preferences
-    │   │   │   │   │       │   # ⚠️ MISSING - Timezone preferences
+    │   │   │   │   │       │   # - Timezone preferences
     │   │   │   │   │       ├── transaction-history.ts  # Transaction history
-    │   │   │   │   │       ├── trust-level.ts  # ⚠️ MISSING - Trust levels
+    │   │   │   │   │       ├── trust-level.ts  # - Trust levels
     │   │   │   │   │       ├── trust-score.ts  # Trust score types
     │   │   │   │   │       │   # Trust/safety scoring
     │   │   │   │   │       ├── trust-signal.ts  # Trust signal entity
     │   │   │   │   │       ├── trusted-device.ts  # Trusted device entity
     │   │   │   │   │       ├── two-factor-auth.ts  # TwoFactorAuth, AuthMethod
     │   │   │   │   │       ├── two-factor.ts  # Two-factor auth
-    │   │   │   │   │       │   # ⚠️ MISSING - Two-factor auth
+    │   │   │   │   │       │   # - Two-factor auth
     │   │   │   │   │       ├── user-activity.ts  # User activity types
     │   │   │   │   │       ├── user-badge.ts  # User badge entity
     │   │   │   │   │       │   # User badge types
@@ -28544,7 +28648,7 @@ fe/
     │   │   │   │   │       ├── user-follow.ts  # User follow entity
     │   │   │   │   │       ├── user-group.ts  # UserGroup, GroupMembership
     │   │   │   │   │       ├── user-metric.ts  # User metrics domain
-    │   │   │   │   │       ├── user-metrics.ts  # ❌ CREATE - Metrics snapshot (response_time, completion_rate…)
+    │   │   │   │   │       ├── user-metrics.ts  # Metrics snapshot (response_time, completion_rate…)
     │   │   │   │   │       ├── user-note.ts  # User note types
     │   │   │   │   │       ├── user-projection.ts  # User projection (CQRS) domain
     │   │   │   │   │       ├── user-read-model.ts  # User read model domain
@@ -28561,13 +28665,13 @@ fe/
     │   │   │   │   │       │   # ✅ EXISTS
     │   │   │   │   │       │   # Verification types
     │   │   │   │   │       ├── video-intro.ts  # Video introductions
-    │   │   │   │   │       │   # ⚠️ MISSING - Video introductions
-    │   │   │   │   │       │   # ❌ CREATE - User video intro metadata & review state
+    │   │   │   │   │       │   # - Video introductions
+    │   │   │   │   │       │   # User video intro metadata & review state
     │   │   │   │   │       ├── view-history.ts  # View history
     │   │   │   │   │       ├── warning-history.ts  # Warning history entity
     │   │   │   │   │       ├── warning.ts  # Warning, WarningSeverity
-    │   │   │   │   │       │   # ⚠️ MISSING - Warnings
-    │   │   │   │   │       │   # ❌ CREATE - Warning record (reason/severity)
+    │   │   │   │   │       │   # - Warnings
+    │   │   │   │   │       │   # Warning record (reason/severity)
     │   │   │   │   │       ├── watch.ts  # User watches
     │   │   │   │   │       ├── webhook-subscription.ts  # Webhook subscription domain
     │   │   │   │   │       ├── webhook.ts  # User webhook types
@@ -28576,9 +28680,9 @@ fe/
     │   │   │   │   │       └── workload-capacity.ts  # Workload capacity types
     │   │   │   │   │           # WorkloadCapacity, CapacityStatus
     │   │   │   │   │           # Workload capacity entity
-    │   │   │   │   │           # ⚠️ MISSING - Workload capacity
+    │   │   │   │   │           # - Workload capacity
     │   │   │   │   │           # Workload capacity domain
-    │   │   │   │   │           # ❌ CREATE - Capacity (status, weekly_hours)
+    │   │   │   │   │           # Capacity (status, weekly_hours)
     │   │   │   │   ├── enums/  # Shared enumeration types
     │   │   │   │   │   # Shared enumerations (MISSING ENUMS BELOW)
     │   │   │   │   │   # Shared enumerations (MISSING ITEMS)
@@ -28589,7 +28693,7 @@ fe/
     │   │   │   │   │   │   ├── action-category.enum.ts  # ActionCategory
     │   │   │   │   │   │   ├── action-type.enum.ts  # Admin action types
     │   │   │   │   │   │   │   # ActionType
-    │   │   │   │   │   │   ├── admin-action-status.enum.ts  # ❌ CREATE  # ACTIVE|EXPIRED|REVERSED|SUPERSEDED
+    │   │   │   │   │   │   ├── admin-action-status.enum.ts  # ACTIVE|EXPIRED|REVERSED|SUPERSEDED
     │   │   │   │   │   │   ├── admin-activity-type.enum.ts
     │   │   │   │   │   │   ├── admin-role.enum.ts  # Admin roles
     │   │   │   │   │   │   ├── api-key-status.enum.ts  # API key status enum
@@ -28605,7 +28709,7 @@ fe/
     │   │   │   │   │   │   │   # CaseStatus
     │   │   │   │   │   │   ├── case-type.enum.ts  # Case types
     │   │   │   │   │   │   ├── change-type.enum.ts
-    │   │   │   │   │   │   ├── content-action-type.enum.ts  # ❌ CREATE  # REMOVE|HIDE|APPROVE|REJECT|RESTORE|FEATURE
+    │   │   │   │   │   │   ├── content-action-type.enum.ts  # REMOVE|HIDE|APPROVE|REJECT|RESTORE|FEATURE
     │   │   │   │   │   │   ├── data-masking-type.enum.ts  # Data masking type enum
     │   │   │   │   │   │   ├── dsar-status.enum.ts  # DSAR request statuses
     │   │   │   │   │   │   │   # DSARStatus
@@ -28619,7 +28723,7 @@ fe/
     │   │   │   │   │   │   ├── health-check-status.enum.ts  # Health check statuses
     │   │   │   │   │   │   ├── hold-reason.enum.ts  # HoldReason
     │   │   │   │   │   │   │   # Hold reason enum
-    │   │   │   │   │   │   ├── hold-status.enum.ts  # ❌ CREATE  # OPEN|RELEASED|EXPIRED|BREACHED
+    │   │   │   │   │   │   ├── hold-status.enum.ts  # OPEN|RELEASED|EXPIRED|BREACHED
     │   │   │   │   │   │   ├── hold-type.enum.ts  # Hold types
     │   │   │   │   │   │   ├── impersonation-reason.enum.ts
     │   │   │   │   │   │   ├── incident-severity.enum.ts  # Incident severities
@@ -28654,19 +28758,19 @@ fe/
     │   │   │   │   │   │   ├── throttle-action.enum.ts  # Throttle action enum
     │   │   │   │   │   │   ├── ticket-priority.enum.ts  # Ticket priorities
     │   │   │   │   │   │   └── user-action-type.enum.ts  # User action type enum
-    │   │   │   │   │   │       # ❌ CREATE  # BAN|UNBAN|WARN|VERIFY|RESTRICT|UNRESTRICT
+    │   │   │   │   │   │       # # BAN|UNBAN|WARN|VERIFY|RESTRICT|UNRESTRICT
     │   │   │   │   │   ├── communications/  # Communications enumerations
     │   │   │   │   │   │   # MISSING ENUMS (40+ enums missing)
     │   │   │   │   │   │   ├── alert-severity.enum.ts  # AlertSeverity
     │   │   │   │   │   │   ├── attachment-type.enum.ts  # Attachment types
-    │   │   │   │   │   │   │   # ❌ CREATE  # DOCUMENT|IMAGE|VIDEO|AUDIO|OTHER
+    │   │   │   │   │   │   │   # # DOCUMENT|IMAGE|VIDEO|AUDIO|OTHER
     │   │   │   │   │   │   ├── blocklist-reason.enum.ts  # Blocklist reasons
     │   │   │   │   │   │   ├── bookmark-type.enum.ts  # Bookmark type enum
     │   │   │   │   │   │   ├── calendar-status.enum.ts  # Calendar status enum
     │   │   │   │   │   │   ├── call-status.enum.ts  # CallStatus
     │   │   │   │   │   │   │   # Call statuses
     │   │   │   │   │   │   │   # Call status enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Idle, Ringing, Active, Hold, Ended, Failed)
+    │   │   │   │   │   │   │   # (Idle, Ringing, Active, Hold, Ended, Failed)
     │   │   │   │   │   │   ├── call-type.enum.ts  # Call types
     │   │   │   │   │   │   ├── channel-type.enum.ts  # Channel types
     │   │   │   │   │   │   ├── collaboration-action.enum.ts  # Collaboration actions
@@ -28679,10 +28783,10 @@ fe/
     │   │   │   │   │   │   ├── delivery-status.enum.ts  # Delivery statuses
     │   │   │   │   │   │   │   # DeliveryStatus
     │   │   │   │   │   │   │   # Delivery status enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Queued, Sent, Delivered, Opened, Clicked, Bounced, Failed, Suppressed)
+    │   │   │   │   │   │   │   # (Queued, Sent, Delivered, Opened, Clicked, Bounced, Failed, Suppressed)
     │   │   │   │   │   │   ├── digest-frequency.enum.ts  # Digest frequencies
     │   │   │   │   │   │   │   # Digest frequency enum
-    │   │   │   │   │   │   ├── dlq-reason.enum.ts  # ❌ CREATE - (PermanentFailure, RetryExhausted, PolicyBlocked)
+    │   │   │   │   │   │   ├── dlq-reason.enum.ts  # (PermanentFailure, RetryExhausted, PolicyBlocked)
     │   │   │   │   │   │   ├── draft-status.enum.ts  # Draft statuses
     │   │   │   │   │   │   │   # Draft status enum
     │   │   │   │   │   │   ├── email-bounce-type.enum.ts
@@ -28702,7 +28806,7 @@ fe/
     │   │   │   │   │   │   ├── in-app-notification-action.enum.ts  # In-app notification actions
     │   │   │   │   │   │   ├── in-app-notification-category.enum.ts  # In-app notification categories
     │   │   │   │   │   │   ├── index.ts  # Barrel export
-    │   │   │   │   │   │   ├── interview-stage.enum.ts  # ❌ CREATE - (Screen, Tech, Panel, Final)
+    │   │   │   │   │   │   ├── interview-stage.enum.ts  # (Screen, Tech, Panel, Final)
     │   │   │   │   │   │   ├── interview-status.enum.ts  # InterviewStatus
     │   │   │   │   │   │   │   # Interview statuses
     │   │   │   │   │   │   │   # Interview status enum
@@ -28710,56 +28814,56 @@ fe/
     │   │   │   │   │   │   │   # Mail tracking event enum
     │   │   │   │   │   │   ├── mention-type.enum.ts  # Mention type enum
     │   │   │   │   │   │   ├── message-format.enum.ts  # Message formats
-    │   │   │   │   │   │   ├── message-kind.enum.ts  # ❌ CREATE - (Text, System, File, Reaction)
+    │   │   │   │   │   │   ├── message-kind.enum.ts  # (Text, System, File, Reaction)
     │   │   │   │   │   │   ├── message-reaction-type.enum.ts  # Message reaction type enum
     │   │   │   │   │   │   ├── message-sequence-status.enum.ts  # Message sequence status enum
     │   │   │   │   │   │   ├── message-status.enum.ts  # Message statuses
-    │   │   │   │   │   │   │   # ❌ CREATE  # SENT|DELIVERED|READ|FAILED|RETRYING
+    │   │   │   │   │   │   │   # # SENT|DELIVERED|READ|FAILED|RETRYING
     │   │   │   │   │   │   ├── message-type.enum.ts  # MessageType
     │   │   │   │   │   │   │   # Message types
-    │   │   │   │   │   │   │   # ❌ CREATE  # TEXT|RICH|FILE|SYSTEM
+    │   │   │   │   │   │   │   # # TEXT|RICH|FILE|SYSTEM
     │   │   │   │   │   │   ├── moderation-action-type.enum.ts  # Moderation action types
     │   │   │   │   │   │   ├── moderation-action.enum.ts  # Moderation action enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Allow, ShadowHide, Remove, Ban)
-    │   │   │   │   │   │   ├── mute-state.enum.ts  # ❌ CREATE - (On, Off, Until)
+    │   │   │   │   │   │   │   # (Allow, ShadowHide, Remove, Ban)
+    │   │   │   │   │   │   ├── mute-state.enum.ts  # (On, Off, Until)
     │   │   │   │   │   │   ├── notification-channel-type.enum.ts  # Notification channel type enum
     │   │   │   │   │   │   ├── notification-channel.enum.ts  # Notification channels
     │   │   │   │   │   │   │   # NotificationChannel
-    │   │   │   │   │   │   │   # ❌ CREATE - (Email, SMS, Push, InApp)
+    │   │   │   │   │   │   │   # (Email, SMS, Push, InApp)
     │   │   │   │   │   │   ├── notification-preference-level.enum.ts  # Notification preference level enum
     │   │   │   │   │   │   ├── notification-priority.enum.ts  # Notification priorities
-    │   │   │   │   │   │   │   # ❌ CREATE - (Low, Normal, High, Critical)
+    │   │   │   │   │   │   │   # (Low, Normal, High, Critical)
     │   │   │   │   │   │   ├── notification-queue-priority.enum.ts  # Queue priorities
     │   │   │   │   │   │   │   # Notification queue priority enum
     │   │   │   │   │   │   ├── notification-queue-status.enum.ts  # Queue statuses
     │   │   │   │   │   │   ├── notification-status.enum.ts  # Notification statuses
     │   │   │   │   │   │   ├── notification-template-type.enum.ts  # Notification template type enum
     │   │   │   │   │   │   ├── notification-type.enum.ts  # NotificationType
-    │   │   │   │   │   │   ├── participant-role.enum.ts  # ❌ CREATE - (Owner, Admin, Member)
+    │   │   │   │   │   │   ├── participant-role.enum.ts  # (Owner, Admin, Member)
     │   │   │   │   │   │   ├── pin-type.enum.ts  # Pin type enum
     │   │   │   │   │   │   ├── platform-alert-severity.enum.ts  # Alert severities
     │   │   │   │   │   │   │   # Platform alert severity enum
     │   │   │   │   │   │   ├── platform-alert-target.enum.ts  # Alert targets
-    │   │   │   │   │   │   ├── presence-state.enum.ts  # ❌ CREATE - (Online, Away, DND, Offline)
+    │   │   │   │   │   │   ├── presence-state.enum.ts  # (Online, Away, DND, Offline)
     │   │   │   │   │   │   ├── presence-status.enum.ts  # Presence statuses
     │   │   │   │   │   │   │   # PresenceStatus
     │   │   │   │   │   │   │   # Presence status enum
-    │   │   │   │   │   │   │   # ❌ CREATE  # ONLINE|OFFLINE|AWAY|BUSY|TYPING
+    │   │   │   │   │   │   │   # # ONLINE|OFFLINE|AWAY|BUSY|TYPING
     │   │   │   │   │   │   ├── push-notification-type.enum.ts  # Push notification type enum
     │   │   │   │   │   │   ├── push-subscription-status.enum.ts  # Push subscription status enum
-    │   │   │   │   │   │   ├── quota-scope.enum.ts  # ❌ CREATE - (PerUser, PerOrg, PerChannel)
+    │   │   │   │   │   │   ├── quota-scope.enum.ts  # (PerUser, PerOrg, PerChannel)
     │   │   │   │   │   │   ├── rate-limit-type.enum.ts  # Rate limit type enum
-    │   │   │   │   │   │   ├── reaction-type.enum.ts  # ❌ CREATE  # LIKE|LOVE|LAUGH|WOW|SAD|ANGRY|CUSTOM
+    │   │   │   │   │   │   ├── reaction-type.enum.ts  # LIKE|LOVE|LAUGH|WOW|SAD|ANGRY|CUSTOM
     │   │   │   │   │   │   ├── read-receipt-status.enum.ts  # Read receipt status enum
     │   │   │   │   │   │   ├── read-state-status.enum.ts  # Read state status enum
     │   │   │   │   │   │   ├── read-status.enum.ts  # Read statuses
     │   │   │   │   │   │   │   # ReadStatus
     │   │   │   │   │   │   ├── retention-action.enum.ts  # Retention action enum
-    │   │   │   │   │   │   ├── retention-applies-to.enum.ts  # ❌ CREATE  # THREAD|MESSAGE|NOTIFICATION|ATTACHMENT
-    │   │   │   │   │   │   ├── retention-expiry-action.enum.ts  # ❌ CREATE  # DELETE|ARCHIVE|ANONYMIZE
-    │   │   │   │   │   │   ├── retention-scope.enum.ts  # ❌ CREATE - (User, Workspace, Global)
+    │   │   │   │   │   │   ├── retention-applies-to.enum.ts  # THREAD|MESSAGE|NOTIFICATION|ATTACHMENT
+    │   │   │   │   │   │   ├── retention-expiry-action.enum.ts  # DELETE|ARCHIVE|ANONYMIZE
+    │   │   │   │   │   │   ├── retention-scope.enum.ts  # (User, Workspace, Global)
     │   │   │   │   │   │   ├── scheduled-message-status.enum.ts  # Scheduled message status enum
-    │   │   │   │   │   │   ├── sequence-node-type.enum.ts  # ❌ CREATE - (Delay, Send, Branch)
+    │   │   │   │   │   │   ├── sequence-node-type.enum.ts  # (Delay, Send, Branch)
     │   │   │   │   │   │   ├── sms-notification-status.enum.ts  # SMS notification status enum
     │   │   │   │   │   │   ├── spam-action.enum.ts
     │   │   │   │   │   │   ├── spam-confidence.enum.ts  # Spam confidence levels
@@ -28770,23 +28874,23 @@ fe/
     │   │   │   │   │   │   │   # System message type enum
     │   │   │   │   │   │   ├── thread-status.enum.ts  # Thread statuses
     │   │   │   │   │   │   │   # Thread status enum
-    │   │   │   │   │   │   ├── typing-indicator-state.enum.ts  # ❌ CREATE - (Started, Paused, Stopped)
+    │   │   │   │   │   │   ├── typing-indicator-state.enum.ts  # (Started, Paused, Stopped)
     │   │   │   │   │   │   ├── typing-indicator-status.enum.ts  # Typing indicator status enum
-    │   │   │   │   │   │   ├── typing-state.enum.ts  # ❌ CREATE - (Started, Paused, Stopped)
+    │   │   │   │   │   │   ├── typing-state.enum.ts  # (Started, Paused, Stopped)
     │   │   │   │   │   │   ├── unsubscribe-reason.enum.ts  # Unsubscribe reasons
     │   │   │   │   │   │   ├── url-safety-verdict.enum.ts  # URL safety verdicts
-    │   │   │   │   │   │   ├── webhook-delivery-status.enum.ts  # ❌ CREATE  # PENDING|SENT|FAILED|GAVE_UP
+    │   │   │   │   │   │   ├── webhook-delivery-status.enum.ts  # PENDING|SENT|FAILED|GAVE_UP
     │   │   │   │   │   │   ├── webhook-event.enum.ts  # Webhook event enum
-    │   │   │   │   │   │   ├── websocket-close-code.enum.ts  # ❌ CREATE - (Normal, PolicyViolation, Timeout, ServerError)
+    │   │   │   │   │   │   ├── websocket-close-code.enum.ts  # (Normal, PolicyViolation, Timeout, ServerError)
     │   │   │   │   │   │   └── websocket-status.enum.ts  # WebSocket status enum
     │   │   │   │   │   ├── contracts/  # Contracts enumerations
     │   │   │   │   │   │   # MISSING ENUMS (10+ enums missing)
     │   │   │   │   │   │   ├── agency-contract-type.enum.ts  # Agency contract types
     │   │   │   │   │   │   ├── amendment-status.enum.ts  # AmendmentStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Draft, Proposed, Approved, Rejected, Applied)
-    │   │   │   │   │   │   ├── approval-state.enum.ts  # ❌ CREATE - (Pending, Approved, Rejected)   # unify?
+    │   │   │   │   │   │   │   # (Draft, Proposed, Approved, Rejected, Applied)
+    │   │   │   │   │   │   ├── approval-state.enum.ts  # (Pending, Approved, Rejected)   # unify?
     │   │   │   │   │   │   ├── approval-status.enum.ts  # Contract approval statuses
-    │   │   │   │   │   │   │   # ❌ CREATE - (Pending, Approved, Rejected)   # unify?
+    │   │   │   │   │   │   │   # (Pending, Approved, Rejected)   # unify?
     │   │   │   │   │   │   ├── budget-alert-type.enum.ts  # Budget alert types
     │   │   │   │   │   │   ├── cancellation-reason.enum.ts
     │   │   │   │   │   │   ├── clause-type.enum.ts  # Clause types
@@ -28795,35 +28899,35 @@ fe/
     │   │   │   │   │   │   ├── compliance-status.enum.ts  # Compliance statuses
     │   │   │   │   │   │   ├── contract-status.enum.ts  # Contract statuses
     │   │   │   │   │   │   │   # ContractStatus
-    │   │   │   │   │   │   │   # ❌ CREATE  # DRAFT|PENDING_SIGNATURE|ACTIVE|PAUSED|COMPLETED|TERMINATED|DISPUTED|CANCELLED|EXPIRED
+    │   │   │   │   │   │   │   # # DRAFT|PENDING_SIGNATURE|ACTIVE|PAUSED|COMPLETED|TERMINATED|DISPUTED|CANCELLED|EXPIRED
     │   │   │   │   │   │   ├── contract-type.enum.ts  # Contract types
     │   │   │   │   │   │   ├── deliverable-status.enum.ts  # Deliverable statuses
     │   │   │   │   │   │   │   # DeliverableStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Planned, InProgress, Submitted, Accepted, Rejected, Reworked)
-    │   │   │   │   │   │   ├── dispute-reason.enum.ts  # ❌ CREATE  # QUALITY|DELAY|SCOPE|PAYMENT|OTHER
+    │   │   │   │   │   │   │   # (Planned, InProgress, Submitted, Accepted, Rejected, Reworked)
+    │   │   │   │   │   │   ├── dispute-reason.enum.ts  # QUALITY|DELAY|SCOPE|PAYMENT|OTHER
     │   │   │   │   │   │   ├── dispute-resolution.enum.ts  # Dispute resolutions
     │   │   │   │   │   │   ├── dispute-status.enum.ts  # Dispute statuses
     │   │   │   │   │   │   │   # DisputeStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Open, UnderReview, Resolved, Escalated, Closed)
+    │   │   │   │   │   │   │   # (Open, UnderReview, Resolved, Escalated, Closed)
     │   │   │   │   │   │   ├── escrow-status.enum.ts  # Escrow statuses
-    │   │   │   │   │   │   │   # ❌ CREATE - (Funded, OnHold, Released, Refunded, Disputed)
-    │   │   │   │   │   │   ├── hold-kind.enum.ts  # ❌ CREATE - (Payment, Compliance, Legal)
+    │   │   │   │   │   │   │   # (Funded, OnHold, Released, Refunded, Disputed)
+    │   │   │   │   │   │   ├── hold-kind.enum.ts  # (Payment, Compliance, Legal)
     │   │   │   │   │   │   ├── hold-reason.enum.ts  # Hold reasons
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── insurance-claim-status.enum.ts  # Insurance claim statuses
     │   │   │   │   │   │   ├── insurance-type.enum.ts  # Insurance type enum
     │   │   │   │   │   │   ├── invitation-status.enum.ts  # Invitation status enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Pending, Accepted, Declined, Expired)
+    │   │   │   │   │   │   │   # (Pending, Accepted, Declined, Expired)
     │   │   │   │   │   │   ├── invoice-line-item-type.enum.ts  # Invoice line item type enum
-    │   │   │   │   │   │   │   # ❌ CREATE  # SERVICE|PRODUCT|HOUR|MILESTONE|ADJUSTMENT|FEE|TAX
+    │   │   │   │   │   │   │   # # SERVICE|PRODUCT|HOUR|MILESTONE|ADJUSTMENT|FEE|TAX
     │   │   │   │   │   │   ├── invoice-payment-status.enum.ts  # Invoice payment status enum
-    │   │   │   │   │   │   ├── invoice-status.enum.ts  # ❌ CREATE  # DRAFT|ISSUED|SENT|VIEWED|PARTIALLY_PAID|PAID|OVERDUE|CANCELLED|REFUNDED|DISPUTED
-    │   │   │   │   │   │   ├── kpi-kind.enum.ts  # ❌ CREATE - (Velocity, Quality, SLA, Cost)
+    │   │   │   │   │   │   ├── invoice-status.enum.ts  # DRAFT|ISSUED|SENT|VIEWED|PARTIALLY_PAID|PAID|OVERDUE|CANCELLED|REFUNDED|DISPUTED
+    │   │   │   │   │   │   ├── kpi-kind.enum.ts  # (Velocity, Quality, SLA, Cost)
     │   │   │   │   │   │   ├── kpi-status.enum.ts  # KPI statuses
     │   │   │   │   │   │   ├── kpi-type.enum.ts
     │   │   │   │   │   │   ├── milestone-status.enum.ts  # Milestone statuses
     │   │   │   │   │   │   │   # MilestoneStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Planned, InProgress, Submitted, Approved, Rejected, Paid)
+    │   │   │   │   │   │   │   # (Planned, InProgress, Submitted, Approved, Rejected, Paid)
     │   │   │   │   │   │   ├── nda-breach-severity.enum.ts  # NDA breach severity enum
     │   │   │   │   │   │   ├── nda-status.enum.ts  # NDAStatus
     │   │   │   │   │   │   │   # NDA status enum
@@ -28834,10 +28938,10 @@ fe/
     │   │   │   │   │   │   ├── payment-term.enum.ts  # Payment terms
     │   │   │   │   │   │   ├── renewal-status.enum.ts  # Renewal statuses
     │   │   │   │   │   │   │   # RenewalStatus
-    │   │   │   │   │   │   ├── renewal-type.enum.ts  # ❌ CREATE - (Manual, Auto, FixedTerm)
+    │   │   │   │   │   │   ├── renewal-type.enum.ts  # (Manual, Auto, FixedTerm)
     │   │   │   │   │   │   ├── risk-level.enum.ts
     │   │   │   │   │   │   ├── signature-status.enum.ts  # SignatureStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Pending, Signed, Declined, Expired)
+    │   │   │   │   │   │   │   # (Pending, Signed, Declined, Expired)
     │   │   │   │   │   │   ├── sla-breach-type.enum.ts  # SLA breach types
     │   │   │   │   │   │   ├── sla-metric.enum.ts
     │   │   │   │   │   │   ├── sla-priority.enum.ts  # SLA priorities
@@ -28846,15 +28950,15 @@ fe/
     │   │   │   │   │   │   ├── task-status.enum.ts
     │   │   │   │   │   │   ├── termination-reason.enum.ts  # Termination reasons
     │   │   │   │   │   │   │   # TerminationReason
-    │   │   │   │   │   │   │   # ❌ CREATE - (Completed, Performance, ScopeChange, Breach, Other)
+    │   │   │   │   │   │   │   # (Completed, Performance, ScopeChange, Breach, Other)
     │   │   │   │   │   │   ├── termination-type.enum.ts  # Termination types
-    │   │   │   │   │   │   ├── time-entry-type.enum.ts  # ❌ CREATE - (Billable, NonBillable, Overtime, ManualEntry)
+    │   │   │   │   │   │   ├── time-entry-type.enum.ts  # (Billable, NonBillable, Overtime, ManualEntry)
     │   │   │   │   │   │   ├── timesheet-status.enum.ts  # Timesheet statuses
     │   │   │   │   │   │   │   # TimesheetStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Draft, Submitted, UnderReview, Approved, Rejected, Paid, Disputed)
-    │   │   │   │   │   │   │   # ❌ CREATE  # DRAFT|SUBMITTED|UNDER_REVIEW|APPROVED|REJECTED|PAID|DISPUTED
+    │   │   │   │   │   │   │   # (Draft, Submitted, UnderReview, Approved, Rejected, Paid, Disputed)
+    │   │   │   │   │   │   │   # # DRAFT|SUBMITTED|UNDER_REVIEW|APPROVED|REJECTED|PAID|DISPUTED
     │   │   │   │   │   │   ├── work-diary-activity-type.enum.ts
-    │   │   │   │   │   │   ├── work-diary-entry.enum.ts  # ❌ CREATE - (Screenshot, Note, Manual)
+    │   │   │   │   │   │   ├── work-diary-entry.enum.ts  # (Screenshot, Note, Manual)
     │   │   │   │   │   │   ├── work-diary-status.enum.ts  # Work diary statuses
     │   │   │   │   │   │   ├── work-type.enum.ts  # WorkType
     │   │   │   │   │   │   ├── workroom-task-priority.enum.ts  # Task priorities
@@ -28874,15 +28978,15 @@ fe/
     │   │   │   │   │   │   │   # Chargeback reason enum
     │   │   │   │   │   │   ├── chargeback-status.enum.ts  # Chargeback statuses
     │   │   │   │   │   │   │   # ChargebackStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Inquiry, Won, Lost, Reversed, Closed)
+    │   │   │   │   │   │   │   # (Inquiry, Won, Lost, Reversed, Closed)
     │   │   │   │   │   │   ├── commission-type.enum.ts
     │   │   │   │   │   │   ├── connects-transaction-type.enum.ts  # Connects transaction types
     │   │   │   │   │   │   ├── conversion-status.enum.ts  # Conversion statuses
     │   │   │   │   │   │   ├── coupon-type.enum.ts  # Coupon types
     │   │   │   │   │   │   ├── crypto-payment-status.enum.ts  # Crypto payment status enum
     │   │   │   │   │   │   ├── currency-code.enum.ts  # Currency codes
-    │   │   │   │   │   │   │   # ❌ CREATE - ISO-4217 codes
-    │   │   │   │   │   │   │   # ❌ CREATE  # ISO-4217 codes
+    │   │   │   │   │   │   │   # ISO-4217 codes
+    │   │   │   │   │   │   │   # # ISO-4217 codes
     │   │   │   │   │   │   ├── currency-rate-type.enum.ts  # Currency rate type enum
     │   │   │   │   │   │   ├── dispute-case-status.enum.ts  # Dispute case status enum
     │   │   │   │   │   │   ├── dispute-reason.enum.ts  # Dispute reasons
@@ -28892,12 +28996,12 @@ fe/
     │   │   │   │   │   │   ├── escrow-hold-status.enum.ts  # Escrow hold statuses
     │   │   │   │   │   │   ├── escrow-ledger-type.enum.ts  # Escrow ledger type enum
     │   │   │   │   │   │   ├── escrow-release-status.enum.ts  # Escrow release statuses
-    │   │   │   │   │   │   │   # ❌ CREATE  # PENDING|APPROVED|PROCESSING|COMPLETED|FAILED|CANCELLED
+    │   │   │   │   │   │   │   # # PENDING|APPROVED|PROCESSING|COMPLETED|FAILED|CANCELLED
     │   │   │   │   │   │   ├── escrow-status.enum.ts  # Escrow statuses
     │   │   │   │   │   │   ├── expense-status.enum.ts  # Expense statuses
     │   │   │   │   │   │   ├── fee-schedule-type.enum.ts  # Fee schedule type enum
     │   │   │   │   │   │   ├── fee-type.enum.ts  # Fee types
-    │   │   │   │   │   │   ├── fee-version-status.enum.ts  # ❌ CREATE  # DRAFT|PENDING|ACTIVE|ARCHIVED|ROLLED_BACK
+    │   │   │   │   │   │   ├── fee-version-status.enum.ts  # DRAFT|PENDING|ACTIVE|ARCHIVED|ROLLED_BACK
     │   │   │   │   │   │   ├── fraud-alert-level.enum.ts  # Fraud alert level enum
     │   │   │   │   │   │   ├── fraud-alert-severity.enum.ts  # Fraud alert severities
     │   │   │   │   │   │   ├── fraud-alert-type.enum.ts  # Fraud alert types
@@ -28905,7 +29009,7 @@ fe/
     │   │   │   │   │   │   ├── fraud-risk-level.enum.ts
     │   │   │   │   │   │   ├── fund-hold-reason.enum.ts  # Fund hold reason enum
     │   │   │   │   │   │   ├── gateway-provider.enum.ts  # Gateway providers
-    │   │   │   │   │   │   ├── gateway-status.enum.ts  # ❌ CREATE - (Active, Restricted, Disabled)
+    │   │   │   │   │   │   ├── gateway-status.enum.ts  # (Active, Restricted, Disabled)
     │   │   │   │   │   │   ├── gateway-type.enum.ts  # Gateway types
     │   │   │   │   │   │   │   # GatewayType
     │   │   │   │   │   │   ├── gateway-webhook-event.enum.ts  # Gateway webhook events
@@ -28917,7 +29021,7 @@ fe/
     │   │   │   │   │   │   ├── invoice-line-item-type.enum.ts  # Invoice line item type enum
     │   │   │   │   │   │   ├── invoice-status.enum.ts  # Invoice statuses
     │   │   │   │   │   │   │   # InvoiceStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Draft, Open, Void, Paid, Uncollectible)
+    │   │   │   │   │   │   │   # (Draft, Open, Void, Paid, Uncollectible)
     │   │   │   │   │   │   ├── ledger-entry-type.enum.ts  # Ledger entry types
     │   │   │   │   │   │   ├── merchant-account-status.enum.ts  # Merchant account status enum
     │   │   │   │   │   │   ├── payment-attempt-status.enum.ts  # Payment attempt statuses
@@ -28929,25 +29033,25 @@ fe/
     │   │   │   │   │   │   ├── payment-schedule-frequency.enum.ts  # Payment schedule frequencies
     │   │   │   │   │   │   ├── payment-status.enum.ts  # Payment statuses
     │   │   │   │   │   │   │   # PaymentStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Created, Pending, Succeeded, PartiallyRefunded, Refunded, Failed)
-    │   │   │   │   │   │   │   # ❌ CREATE  # INITIATED|PROCESSING|SETTLED|FAILED|REFUNDED|CHARGEBACK
+    │   │   │   │   │   │   │   # (Created, Pending, Succeeded, PartiallyRefunded, Refunded, Failed)
+    │   │   │   │   │   │   │   # # INITIATED|PROCESSING|SETTLED|FAILED|REFUNDED|CHARGEBACK
     │   │   │   │   │   │   ├── payout-batch-status.enum.ts  # Payout batch statuses
     │   │   │   │   │   │   │   # Payout batch status enum
     │   │   │   │   │   │   ├── payout-schedule-frequency.enum.ts  # Payout schedule frequency enum
     │   │   │   │   │   │   ├── payout-status.enum.ts  # Payout statuses
     │   │   │   │   │   │   │   # PayoutStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Queued, Processing, Paid, Failed, Canceled)
-    │   │   │   │   │   │   │   # ❌ CREATE  # PENDING|QUEUED|PROCESSING|COMPLETED|FAILED|CANCELLED|REVERSED
+    │   │   │   │   │   │   │   # (Queued, Processing, Paid, Failed, Canceled)
+    │   │   │   │   │   │   │   # # PENDING|QUEUED|PROCESSING|COMPLETED|FAILED|CANCELLED|REVERSED
     │   │   │   │   │   │   ├── payroll-frequency.enum.ts  # Payroll frequencies
     │   │   │   │   │   │   ├── payroll-status.enum.ts  # Payroll statuses
-    │   │   │   │   │   │   │   # ❌ CREATE - (Pending, Processing, Completed, Failed)
-    │   │   │   │   │   │   ├── protection-plan-level.enum.ts  # ❌ CREATE - (Basic, Standard, Premium)
+    │   │   │   │   │   │   │   # (Pending, Processing, Completed, Failed)
+    │   │   │   │   │   │   ├── protection-plan-level.enum.ts  # (Basic, Standard, Premium)
     │   │   │   │   │   │   ├── reconciliation-status.enum.ts  # Reconciliation statuses
     │   │   │   │   │   │   │   # Reconciliation status enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Unmatched, Suggested, Matched, Disputed)
+    │   │   │   │   │   │   │   # (Unmatched, Suggested, Matched, Disputed)
     │   │   │   │   │   │   ├── refund-policy-type.enum.ts  # Refund policy type enum
     │   │   │   │   │   │   ├── refund-reason.enum.ts  # Refund reasons
-    │   │   │   │   │   │   │   # ❌ CREATE - (Duplicate, Fraud, RequestedByCustomer, Partial)
+    │   │   │   │   │   │   │   # (Duplicate, Fraud, RequestedByCustomer, Partial)
     │   │   │   │   │   │   ├── refund-status.enum.ts  # Refund statuses
     │   │   │   │   │   │   │   # RefundStatus
     │   │   │   │   │   │   ├── reminder-type.enum.ts  # Reminder types
@@ -28966,31 +29070,31 @@ fe/
     │   │   │   │   │   │   ├── transaction-status.enum.ts  # Transaction statuses
     │   │   │   │   │   │   ├── transaction-type.enum.ts  # Transaction types
     │   │   │   │   │   │   │   # TransactionType
-    │   │   │   │   │   │   │   # ❌ CREATE - (Debit, Credit, Fee, Adjustment)
+    │   │   │   │   │   │   │   # (Debit, Credit, Fee, Adjustment)
     │   │   │   │   │   │   ├── verification-method.enum.ts  # Verification methods
     │   │   │   │   │   │   ├── verification-status.enum.ts  # Verification statuses
     │   │   │   │   │   │   ├── wallet-limit-type.enum.ts  # Wallet limit type enum
     │   │   │   │   │   │   ├── wallet-status.enum.ts  # Wallet statuses
     │   │   │   │   │   │   ├── wallet-transfer-status.enum.ts  # Wallet transfer status enum
     │   │   │   │   │   │   ├── wire-transfer-status.enum.ts  # Wire transfer status enum
-    │   │   │   │   │   │   ├── withdrawal-limit-kind.enum.ts  # ❌ CREATE - (Daily, Weekly, Monthly, Rolling)
+    │   │   │   │   │   │   ├── withdrawal-limit-kind.enum.ts  # (Daily, Weekly, Monthly, Rolling)
     │   │   │   │   │   │   └── withdrawal-status.enum.ts
     │   │   │   │   │   ├── jobs/  # Jobs enumerations
     │   │   │   │   │   │   # MISSING ENUMS (15+ enums missing)
     │   │   │   │   │   │   ├── ai-optimization-type.enum.ts  # AI optimization type enum
-    │   │   │   │   │   │   ├── ai-suggestion-source.enum.ts  # ❌ CREATE - (Model, Rules, Hybrid)
+    │   │   │   │   │   │   ├── ai-suggestion-source.enum.ts  # (Model, Rules, Hybrid)
     │   │   │   │   │   │   ├── ai-suggestion-type.enum.ts  # AI suggestion types
     │   │   │   │   │   │   │   # AI suggestion type enum
     │   │   │   │   │   │   ├── applicant-tracking-status.enum.ts  # Applicant tracking status enum
     │   │   │   │   │   │   ├── application-status.enum.ts  # Application statuses
-    │   │   │   │   │   │   ├── attachment-scan-status.enum.ts  # ❌ CREATE  # PENDING|SCANNED|CLEAN|THREAT_DETECTED|FAILED
+    │   │   │   │   │   │   ├── attachment-scan-status.enum.ts  # PENDING|SCANNED|CLEAN|THREAT_DETECTED|FAILED
     │   │   │   │   │   │   ├── auto-close-reason.enum.ts  # Auto-close reason enum
     │   │   │   │   │   │   ├── boost-level.enum.ts
     │   │   │   │   │   │   ├── boost-status.enum.ts  # Boost statuses
     │   │   │   │   │   │   ├── budget-control-type.enum.ts  # Budget control type enum
     │   │   │   │   │   │   ├── budget-type.enum.ts  # Budget types
     │   │   │   │   │   │   │   # BudgetType
-    │   │   │   │   │   │   ├── campaign-tag-kind.enum.ts  # ❌ CREATE - (Brand, Seasonal, Region)
+    │   │   │   │   │   │   ├── campaign-tag-kind.enum.ts  # (Brand, Seasonal, Region)
     │   │   │   │   │   │   ├── compliance-status.enum.ts  # Compliance statuses
     │   │   │   │   │   │   ├── contract-transition-status.enum.ts  # ContractTransitionStatus
     │   │   │   │   │   │   │   # Transition statuses
@@ -29000,9 +29104,9 @@ fe/
     │   │   │   │   │   │   ├── draft-status.enum.ts
     │   │   │   │   │   │   ├── duplicate-confidence.enum.ts  # Duplicate confidence levels
     │   │   │   │   │   │   ├── duplicate-detection-action.enum.ts  # Duplicate detection action enum
-    │   │   │   │   │   │   ├── duplicate-flag.enum.ts  # ❌ CREATE - (NearDuplicate, ExactDuplicate, Clean)
+    │   │   │   │   │   │   ├── duplicate-flag.enum.ts  # (NearDuplicate, ExactDuplicate, Clean)
     │   │   │   │   │   │   ├── duration-type.enum.ts  # DurationType
-    │   │   │   │   │   │   ├── eligibility-result.enum.ts  # ❌ CREATE - (Eligible, ConditionallyEligible, Ineligible)
+    │   │   │   │   │   │   ├── eligibility-result.enum.ts  # (Eligible, ConditionallyEligible, Ineligible)
     │   │   │   │   │   │   ├── eligibility-status.enum.ts  # Eligibility status enum
     │   │   │   │   │   │   ├── employment-type.enum.ts  # Employment types
     │   │   │   │   │   │   ├── experience-level.enum.ts  # Experience levels
@@ -29036,8 +29140,8 @@ fe/
     │   │   │   │   │   │   ├── job-skill-level.enum.ts  # Job skill level enum
     │   │   │   │   │   │   ├── job-status.enum.ts  # Job statuses
     │   │   │   │   │   │   │   # JobStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Draft, Published, Paused, Closed, Archived)
-    │   │   │   │   │   │   │   # ❌ CREATE  # DRAFT|OPEN|ON_HOLD|CLOSED|ARCHIVED
+    │   │   │   │   │   │   │   # (Draft, Published, Paused, Closed, Archived)
+    │   │   │   │   │   │   │   # # DRAFT|OPEN|ON_HOLD|CLOSED|ARCHIVED
     │   │   │   │   │   │   ├── job-template-type.enum.ts  # Job template type enum
     │   │   │   │   │   │   ├── job-type.enum.ts  # Job types
     │   │   │   │   │   │   │   # JobType
@@ -29046,11 +29150,11 @@ fe/
     │   │   │   │   │   │   ├── localization-status.enum.ts  # Localization statuses
     │   │   │   │   │   │   ├── match-score-range.enum.ts
     │   │   │   │   │   │   ├── moderation-action.enum.ts  # Moderation actions
-    │   │   │   │   │   │   ├── moderation-flag-type.enum.ts  # ❌ CREATE  # SPAM|ABUSE|SCAM|NSFW|OTHER
+    │   │   │   │   │   │   ├── moderation-flag-type.enum.ts  # SPAM|ABUSE|SCAM|NSFW|OTHER
     │   │   │   │   │   │   ├── moderation-state-status.enum.ts  # Moderation state status enum
     │   │   │   │   │   │   ├── moderation-state.enum.ts  # ModerationState
     │   │   │   │   │   │   │   # Moderation states
-    │   │   │   │   │   │   │   # ❌ CREATE - (Clean, Flagged, Removed, Escalated)
+    │   │   │   │   │   │   │   # (Clean, Flagged, Removed, Escalated)
     │   │   │   │   │   │   ├── package-type.enum.ts  # Package types
     │   │   │   │   │   │   ├── payment-type.enum.ts  # Payment types
     │   │   │   │   │   │   ├── posting-schedule-status.enum.ts  # Posting schedule status enum
@@ -29062,15 +29166,15 @@ fe/
     │   │   │   │   │   │   ├── saved-search-frequency.enum.ts  # Saved search frequency enum
     │   │   │   │   │   │   ├── screening-answer-type.enum.ts  # Screening answer types
     │   │   │   │   │   │   ├── screening-question-type.enum.ts  # Screening question type enum
-    │   │   │   │   │   │   │   # ❌ CREATE  # TEXT|MULTI_CHOICE|YES_NO|RATING|FILE_UPLOAD
+    │   │   │   │   │   │   │   # # TEXT|MULTI_CHOICE|YES_NO|RATING|FILE_UPLOAD
     │   │   │   │   │   │   ├── screening-test-type.enum.ts  # Screening test types
-    │   │   │   │   │   │   ├── sharing-scope.enum.ts  # ❌ CREATE - (Private, Team, Org, PublicLink)
+    │   │   │   │   │   │   ├── sharing-scope.enum.ts  # (Private, Team, Org, PublicLink)
     │   │   │   │   │   │   ├── skill-level.enum.ts  # Skill level enum
     │   │   │   │   │   │   ├── sourcing-channel.enum.ts  # Sourcing channel enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Organic, Campaign, Referral, Syndicated)
+    │   │   │   │   │   │   │   # (Organic, Campaign, Referral, Syndicated)
     │   │   │   │   │   │   ├── sourcing-mode.enum.ts  # SourcingMode
     │   │   │   │   │   │   ├── sourcing-status.enum.ts  # Sourcing statuses
-    │   │   │   │   │   │   ├── syndication-target.enum.ts  # ❌ CREATE - (LinkedIn, Indeed, ExternalFeed, Custom)
+    │   │   │   │   │   │   ├── syndication-target.enum.ts  # (LinkedIn, Indeed, ExternalFeed, Custom)
     │   │   │   │   │   │   ├── talent-pool-type.enum.ts  # Talent pool types
     │   │   │   │   │   │   ├── targeting-type.enum.ts  # Targeting type enum
     │   │   │   │   │   │   ├── upsell-type.enum.ts  # Upsell types
@@ -29078,7 +29182,7 @@ fe/
     │   │   │   │   │   │   ├── visibility-rule-type.enum.ts  # Visibility rule type enum
     │   │   │   │   │   │   ├── visibility-status.enum.ts  # VisibilityStatus
     │   │   │   │   │   │   └── visibility.enum.ts  # Visibility types
-    │   │   │   │   │   │       # ❌ CREATE - (Public, Private, InviteOnly)
+    │   │   │   │   │   │       # (Public, Private, InviteOnly)
     │   │   │   │   │   ├── proposals/  # Proposals enumerations
     │   │   │   │   │   │   # MISSING ENUMS (25+ enums missing)
     │   │   │   │   │   │   ├── anomaly-detection-type.enum.ts  # Anomaly detection type enum
@@ -29092,7 +29196,7 @@ fe/
     │   │   │   │   │   │   ├── bid-status.enum.ts  # Bid statuses
     │   │   │   │   │   │   │   # BidStatus
     │   │   │   │   │   │   │   # Bid status enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Open, Outbid, Won, Lost, Withdrawn)
+    │   │   │   │   │   │   │   # (Open, Outbid, Won, Lost, Withdrawn)
     │   │   │   │   │   │   ├── bid-strategy-type.enum.ts  # BidStrategyType
     │   │   │   │   │   │   │   # Bid strategy types
     │   │   │   │   │   │   │   # Bid strategy type enum
@@ -29111,7 +29215,7 @@ fe/
     │   │   │   │   │   │   ├── cover-letter-template.enum.ts  # Cover letter template enum
     │   │   │   │   │   │   ├── engagement-level.enum.ts  # EngagementLevel
     │   │   │   │   │   │   ├── engagement-metric-type.enum.ts  # Engagement metric type enum
-    │   │   │   │   │   │   ├── engagement-status.enum.ts  # ❌ CREATE - (Scheduled, Sent, Paused, Capped)
+    │   │   │   │   │   │   ├── engagement-status.enum.ts  # (Scheduled, Sent, Paused, Capped)
     │   │   │   │   │   │   ├── engagement-type.enum.ts  # Engagement types
     │   │   │   │   │   │   ├── experiment-status.enum.ts  # Experiment statuses
     │   │   │   │   │   │   ├── feedback-loop-status.enum.ts  # Feedback loop status enum
@@ -29125,17 +29229,17 @@ fe/
     │   │   │   │   │   │   ├── interview-status.enum.ts  # Interview statuses
     │   │   │   │   │   │   │   # InterviewStatus
     │   │   │   │   │   │   ├── invitation-status.enum.ts  # InvitationStatus
-    │   │   │   │   │   │   ├── invite-status.enum.ts  # ❌ CREATE - (Sent, Accepted, Declined, Expired)
+    │   │   │   │   │   │   ├── invite-status.enum.ts  # (Sent, Accepted, Declined, Expired)
     │   │   │   │   │   │   ├── milestone-proposal-status.enum.ts  # Milestone proposal status enum
-    │   │   │   │   │   │   ├── negotiation-outcome.enum.ts  # ❌ CREATE - (Accepted, Rejected, Countered, Expired)
+    │   │   │   │   │   │   ├── negotiation-outcome.enum.ts  # (Accepted, Rejected, Countered, Expired)
     │   │   │   │   │   │   ├── negotiation-status.enum.ts  # Negotiation statuses
     │   │   │   │   │   │   │   # NegotiationStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Initiated, Countered, Accepted, Rejected, Closed)
+    │   │   │   │   │   │   │   # (Initiated, Countered, Accepted, Rejected, Closed)
     │   │   │   │   │   │   ├── performance-analytics-type.enum.ts  # Performance analytics type enum
     │   │   │   │   │   │   ├── pipeline-stage-type.enum.ts  # Pipeline stage types
     │   │   │   │   │   │   ├── pipeline-stage.enum.ts  # Pipeline stages
     │   │   │   │   │   │   │   # PipelineStage
-    │   │   │   │   │   │   │   # ❌ CREATE - (New, Shortlisted, Interviewing, Offered, Hired, Rejected)
+    │   │   │   │   │   │   │   # (New, Shortlisted, Interviewing, Offered, Hired, Rejected)
     │   │   │   │   │   │   ├── portfolio-showcase-type.enum.ts  # Portfolio showcase type enum
     │   │   │   │   │   │   ├── proposal-archive-reason.enum.ts  # Archive reasons
     │   │   │   │   │   │   ├── proposal-attachment-type.enum.ts  # Proposal attachment type enum
@@ -29151,17 +29255,17 @@ fe/
     │   │   │   │   │   │   ├── proposal-similarity-threshold.enum.ts  # Similarity thresholds
     │   │   │   │   │   │   ├── proposal-status.enum.ts  # Proposal statuses
     │   │   │   │   │   │   │   # ProposalStatus
-    │   │   │   │   │   │   │   # ❌ CREATE  # DRAFT|SUBMITTED|UNDER_REVIEW|SHORTLISTED|REJECTED|WITHDRAWN
+    │   │   │   │   │   │   │   # # DRAFT|SUBMITTED|UNDER_REVIEW|SHORTLISTED|REJECTED|WITHDRAWN
     │   │   │   │   │   │   ├── proposal-urgency-level.enum.ts  # Urgency levels
     │   │   │   │   │   │   ├── proposal-version-status.enum.ts  # Proposal version status enum
-    │   │   │   │   │   │   │   # ❌ CREATE  # CURRENT|SUPERSEDED
+    │   │   │   │   │   │   │   # # CURRENT|SUPERSEDED
     │   │   │   │   │   │   ├── proposal-withdrawal-reason.enum.ts  # Withdrawal reasons
     │   │   │   │   │   │   ├── rate-card-template-type.enum.ts  # Rate card template type enum
     │   │   │   │   │   │   ├── reference-type.enum.ts  # Reference types
     │   │   │   │   │   │   ├── risk-level.enum.ts  # Risk levels
     │   │   │   │   │   │   │   # RiskLevel
-    │   │   │   │   │   │   │   # ❌ CREATE - (Low, Medium, High)
-    │   │   │   │   │   │   ├── shortlist-reason.enum.ts  # ❌ CREATE - (SkillsMatch, PriceFit, Referral, PriorWork)
+    │   │   │   │   │   │   │   # (Low, Medium, High)
+    │   │   │   │   │   │   ├── shortlist-reason.enum.ts  # (SkillsMatch, PriceFit, Referral, PriorWork)
     │   │   │   │   │   │   ├── shortlist-status.enum.ts  # Shortlist statuses
     │   │   │   │   │   │   │   # Shortlist status enum
     │   │   │   │   │   │   ├── similarity-detection-action.enum.ts  # Similarity detection action enum
@@ -29169,28 +29273,28 @@ fe/
     │   │   │   │   │   │   ├── skill-match-level.enum.ts  # Skill match levels
     │   │   │   │   │   │   ├── spam-detection-action.enum.ts  # Spam detection action enum
     │   │   │   │   │   │   ├── spam-detection-confidence.enum.ts  # Spam confidence levels
-    │   │   │   │   │   │   ├── spam-reason.enum.ts  # ❌ CREATE - (MassApply, OffPlatform, ScamIndicators)
+    │   │   │   │   │   │   ├── spam-reason.enum.ts  # (MassApply, OffPlatform, ScamIndicators)
     │   │   │   │   │   │   ├── spam-score-level.enum.ts  # SpamScoreLevel
     │   │   │   │   │   │   ├── spam-type.enum.ts  # Spam types
     │   │   │   │   │   │   ├── tag-type.enum.ts
     │   │   │   │   │   │   ├── team-role.enum.ts  # Team member roles
     │   │   │   │   │   │   ├── template-type.enum.ts  # Template type enum
     │   │   │   │   │   │   ├── urgency-level.enum.ts  # Urgency levels
-    │   │   │   │   │   │   │   # ❌ CREATE - (Normal, Urgent, Critical)
+    │   │   │   │   │   │   │   # (Normal, Urgent, Critical)
     │   │   │   │   │   │   ├── video-status.enum.ts  # Video statuses
     │   │   │   │   │   │   └── withdrawal-reason.enum.ts  # Withdrawal reasons
     │   │   │   │   │   │       # WithdrawalReason
     │   │   │   │   │   │       # Withdrawal reason enum
-    │   │   │   │   │   │       # ❌ CREATE - (ClientHiredElsewhere, RateMismatch, ScopeMismatch, Other)
+    │   │   │   │   │   │       # (ClientHiredElsewhere, RateMismatch, ScopeMismatch, Other)
     │   │   │   │   │   ├── reviews/  # Reviews enumerations
     │   │   │   │   │   │   # MISSING ENUMS (8+ enums missing)
     │   │   │   │   │   │   ├── appeal-status.enum.ts  # Appeal statuses
     │   │   │   │   │   │   │   # AppealStatus
     │   │   │   │   │   │   │   # Appeal status enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Open, Approved, Denied, Closed)
+    │   │   │   │   │   │   │   # (Open, Approved, Denied, Closed)
     │   │   │   │   │   │   ├── badge-category.enum.ts
     │   │   │   │   │   │   ├── badge-eligibility-status.enum.ts  # Badge eligibility statuses
-    │   │   │   │   │   │   ├── badge-kind.enum.ts  # ❌ CREATE - (TopRated, RisingTalent, LongTerm)
+    │   │   │   │   │   │   ├── badge-kind.enum.ts  # (TopRated, RisingTalent, LongTerm)
     │   │   │   │   │   │   ├── badge-tier.enum.ts
     │   │   │   │   │   │   ├── badge-type.enum.ts  # Badge types
     │   │   │   │   │   │   │   # BadgeType
@@ -29200,7 +29304,7 @@ fe/
     │   │   │   │   │   │   ├── compliance-action-type.enum.ts  # Compliance action types
     │   │   │   │   │   │   ├── compliance-action.enum.ts  # ComplianceAction
     │   │   │   │   │   │   ├── compliance-status.enum.ts  # Compliance status enum
-    │   │   │   │   │   │   ├── double-blind-state.enum.ts  # ❌ CREATE - (Hidden, RevealRequested, Revealed, Expired)
+    │   │   │   │   │   │   ├── double-blind-state.enum.ts  # (Hidden, RevealRequested, Revealed, Expired)
     │   │   │   │   │   │   ├── double-blind-status.enum.ts  # Double-blind statuses
     │   │   │   │   │   │   │   # Double-blind status enum
     │   │   │   │   │   │   ├── draft-status.enum.ts  # DraftStatus
@@ -29211,7 +29315,7 @@ fe/
     │   │   │   │   │   │   │   # Eligibility status enum
     │   │   │   │   │   │   ├── evidence-type.enum.ts  # EvidenceType
     │   │   │   │   │   │   │   # Evidence type enum
-    │   │   │   │   │   │   ├── featured-category.enum.ts  # ❌ CREATE  # QUALITY|HELPFUL|DETAILED
+    │   │   │   │   │   │   ├── featured-category.enum.ts  # QUALITY|HELPFUL|DETAILED
     │   │   │   │   │   │   ├── featured-review-reason.enum.ts  # Featured review reason enum
     │   │   │   │   │   │   ├── flag-reason.enum.ts  # Flag reasons
     │   │   │   │   │   │   │   # FlagReason
@@ -29223,7 +29327,7 @@ fe/
     │   │   │   │   │   │   │   # ModerationAction
     │   │   │   │   │   │   │   # Moderation action enum
     │   │   │   │   │   │   ├── moderation-history-action.enum.ts  # Moderation history action enum
-    │   │   │   │   │   │   ├── moderation-outcome.enum.ts  # ❌ CREATE - (Allow, EditRequired, Remove)
+    │   │   │   │   │   │   ├── moderation-outcome.enum.ts  # (Allow, EditRequired, Remove)
     │   │   │   │   │   │   ├── moderation-status.enum.ts  # Moderation statuses
     │   │   │   │   │   │   ├── private-feedback-type.enum.ts  # Private feedback type enum
     │   │   │   │   │   │   ├── rating-aggregate-type.enum.ts  # Rating aggregate type enum
@@ -29234,25 +29338,25 @@ fe/
     │   │   │   │   │   │   ├── redaction-policy-type.enum.ts  # Redaction policy types
     │   │   │   │   │   │   │   # Redaction policy type enum
     │   │   │   │   │   │   ├── redaction-reason.enum.ts  # Redaction reason enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (PII, Abuse, Legal, Duplicate)
+    │   │   │   │   │   │   │   # (PII, Abuse, Legal, Duplicate)
     │   │   │   │   │   │   ├── redaction-type.enum.ts  # Redaction types
     │   │   │   │   │   │   ├── reminder-frequency.enum.ts  # Reminder frequency enum
     │   │   │   │   │   │   ├── reminder-type.enum.ts  # Reminder types
     │   │   │   │   │   │   │   # ReminderType
     │   │   │   │   │   │   ├── reputation-calculation-method.enum.ts  # Calculation methods
-    │   │   │   │   │   │   ├── reputation-event.enum.ts  # ❌ CREATE - (ReviewGained, ReviewLost, BadgeAwarded)
+    │   │   │   │   │   │   ├── reputation-event.enum.ts  # (ReviewGained, ReviewLost, BadgeAwarded)
     │   │   │   │   │   │   ├── reputation-history-event.enum.ts  # Reputation history event enum
     │   │   │   │   │   │   ├── reputation-level.enum.ts  # Reputation level enum
     │   │   │   │   │   │   ├── reputation-tier.enum.ts  # ReputationTier
     │   │   │   │   │   │   ├── response-status.enum.ts  # ResponseStatus
     │   │   │   │   │   │   ├── response-type.enum.ts  # Response type enum
-    │   │   │   │   │   │   ├── review-reminder-status.enum.ts  # ❌ CREATE - (Pending, Dismissed, Snoozed)
+    │   │   │   │   │   │   ├── review-reminder-status.enum.ts  # (Pending, Dismissed, Snoozed)
     │   │   │   │   │   │   ├── review-revision-type.enum.ts  # Revision types
     │   │   │   │   │   │   ├── review-stats-type.enum.ts  # Review stats type enum
     │   │   │   │   │   │   ├── review-status.enum.ts  # Review statuses
     │   │   │   │   │   │   │   # ReviewStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Pending, Published, Removed)
-    │   │   │   │   │   │   ├── review-visibility.enum.ts  # ❌ CREATE  # PUBLIC|PRIVATE|ANONYMIZED
+    │   │   │   │   │   │   │   # (Pending, Published, Removed)
+    │   │   │   │   │   │   ├── review-visibility.enum.ts  # PUBLIC|PRIVATE|ANONYMIZED
     │   │   │   │   │   │   ├── user-badge-type.enum.ts  # User badge type enum
     │   │   │   │   │   │   ├── vote-type.enum.ts  # Vote types
     │   │   │   │   │   │   └── window-status.enum.ts
@@ -29296,7 +29400,7 @@ fe/
     │   │   │   │   │   │   ├── index-replication-status.enum.ts  # Replication statuses
     │   │   │   │   │   │   ├── index-status.enum.ts  # Index statuses
     │   │   │   │   │   │   ├── index-type.enum.ts  # IndexType
-    │   │   │   │   │   │   │   # ❌ CREATE  # JOB|PROFILE|PROPOSAL|MESSAGE
+    │   │   │   │   │   │   │   # # JOB|PROFILE|PROPOSAL|MESSAGE
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── job-index-status.enum.ts  # Job index status enum
     │   │   │   │   │   │   ├── language-code.enum.ts  # Language codes
@@ -29386,12 +29490,12 @@ fe/
     │   │   │   │   │   │   ├── file-activity-type.enum.ts  # File activity types
     │   │   │   │   │   │   ├── file-flag-reason.enum.ts  # File flag reasons
     │   │   │   │   │   │   │   # File flag reason enum
-    │   │   │   │   │   │   ├── file-kind.enum.ts  # ❌ CREATE  # USER_AVATAR|DOC|CONTRACT|KYC|OTHER
+    │   │   │   │   │   │   ├── file-kind.enum.ts  # USER_AVATAR|DOC|CONTRACT|KYC|OTHER
     │   │   │   │   │   │   ├── file-lifecycle-action.enum.ts  # Lifecycle actions
     │   │   │   │   │   │   ├── file-lock-mode.enum.ts  # Lock modes
     │   │   │   │   │   │   ├── file-relation-type.enum.ts  # Relation types
     │   │   │   │   │   │   ├── file-status.enum.ts  # File status enumeration
-    │   │   │   │   │   │   │   # ❌ CREATE - (Uploading, Scanning, Ready, Blocked, Deleted)
+    │   │   │   │   │   │   │   # (Uploading, Scanning, Ready, Blocked, Deleted)
     │   │   │   │   │   │   ├── file-type.enum.ts  # FileType
     │   │   │   │   │   │   ├── gc-status.enum.ts  # Garbage collection status enum
     │   │   │   │   │   │   ├── index.ts  # Barrel export
@@ -29417,8 +29521,8 @@ fe/
     │   │   │   │   │   │   ├── quota-type.enum.ts
     │   │   │   │   │   │   ├── replication-mode.enum.ts  # Replication modes
     │   │   │   │   │   │   ├── replication-status.enum.ts  # Replication statuses
-    │   │   │   │   │   │   ├── retention-scope.enum.ts  # ❌ CREATE - (User, Contract, LegalHold, Policy)
-    │   │   │   │   │   │   ├── scan-result.enum.ts  # ❌ CREATE - (Clean, Suspicious, Infected)
+    │   │   │   │   │   │   ├── retention-scope.enum.ts  # (User, Contract, LegalHold, Policy)
+    │   │   │   │   │   │   ├── scan-result.enum.ts  # (Clean, Suspicious, Infected)
     │   │   │   │   │   │   ├── scan-status.enum.ts  # Scan statuses
     │   │   │   │   │   │   │   # ScanStatus
     │   │   │   │   │   │   ├── scan-verdict.enum.ts
@@ -29433,7 +29537,7 @@ fe/
     │   │   │   │   │   │   ├── upload-session-status.enum.ts
     │   │   │   │   │   │   ├── upload-status.enum.ts  # Upload status enumeration
     │   │   │   │   │   │   │   # UploadStatus
-    │   │   │   │   │   │   │   # ❌ CREATE  # INITIATED|IN_PROGRESS|COMPLETED|ABORTED|FAILED
+    │   │   │   │   │   │   │   # # INITIATED|IN_PROGRESS|COMPLETED|ABORTED|FAILED
     │   │   │   │   │   │   ├── version-action.enum.ts  # Version actions
     │   │   │   │   │   │   ├── virus-scan-status.enum.ts  # Virus scan status enumeration
     │   │   │   │   │   │   └── watermark-position.enum.ts  # Watermark positions
@@ -29445,7 +29549,7 @@ fe/
     │   │   │   │   │   │   ├── allowance-transaction-type.enum.ts  # Allowance transaction types
     │   │   │   │   │   │   │   # Allowance transaction type enum
     │   │   │   │   │   │   ├── allowance-type.enum.ts  # Allowance type enum
-    │   │   │   │   │   │   ├── billing-cadence.enum.ts  # ❌ CREATE - (Monthly, Quarterly, Yearly)
+    │   │   │   │   │   │   ├── billing-cadence.enum.ts  # (Monthly, Quarterly, Yearly)
     │   │   │   │   │   │   ├── billing-cycle.enum.ts  # Billing cycle enumeration
     │   │   │   │   │   │   ├── billing-history-event.enum.ts  # Billing history event enum
     │   │   │   │   │   │   ├── billing-profile-type.enum.ts  # Billing profile type enum
@@ -29456,7 +29560,7 @@ fe/
     │   │   │   │   │   │   │   # Connect package type enum
     │   │   │   │   │   │   ├── connect-transaction-type.enum.ts  # ConnectTransactionType
     │   │   │   │   │   │   │   # Connect transaction type enum
-    │   │   │   │   │   │   ├── coupon-type.enum.ts  # ❌ CREATE - (PercentOff, AmountOff, FreeTrial)
+    │   │   │   │   │   │   ├── coupon-type.enum.ts  # (PercentOff, AmountOff, FreeTrial)
     │   │   │   │   │   │   ├── credit-application-status.enum.ts  # Credit application status enum
     │   │   │   │   │   │   ├── credit-note-reason.enum.ts  # Credit note reason enum
     │   │   │   │   │   │   ├── credit-type.enum.ts
@@ -29490,7 +29594,7 @@ fe/
     │   │   │   │   │   │   ├── payment-webhook-event.enum.ts  # Payment webhook event enum
     │   │   │   │   │   │   ├── plan-pricing-model.enum.ts  # Plan pricing model enum
     │   │   │   │   │   │   ├── plan-status.enum.ts  # Plan status enum
-    │   │   │   │   │   │   │   # ❌ CREATE - (Active, Deprecated, Hidden)
+    │   │   │   │   │   │   │   # (Active, Deprecated, Hidden)
     │   │   │   │   │   │   ├── plan-type.enum.ts  # Plan type enumeration
     │   │   │   │   │   │   │   # PlanType
     │   │   │   │   │   │   ├── plan-version-status.enum.ts  # Plan version statuses
@@ -29499,7 +29603,7 @@ fe/
     │   │   │   │   │   │   ├── promotion-discount-type.enum.ts  # Discount types
     │   │   │   │   │   │   ├── promotion-redemption-status.enum.ts  # Promotion redemption status enum
     │   │   │   │   │   │   ├── promotion-type.enum.ts  # Promotion type enum
-    │   │   │   │   │   │   ├── proration-behavior.enum.ts  # ❌ CREATE - (AlwaysInvoice, CreateProrations, None)
+    │   │   │   │   │   │   ├── proration-behavior.enum.ts  # (AlwaysInvoice, CreateProrations, None)
     │   │   │   │   │   │   ├── proration-mode.enum.ts
     │   │   │   │   │   │   ├── seat-assignment-status.enum.ts  # Seat assignment statuses
     │   │   │   │   │   │   │   # Seat assignment status enum
@@ -29511,7 +29615,7 @@ fe/
     │   │   │   │   │   │   │   # Subscription change type enum
     │   │   │   │   │   │   ├── subscription-status.enum.ts  # Subscription status enumeration
     │   │   │   │   │   │   │   # SubscriptionStatus
-    │   │   │   │   │   │   │   # ❌ CREATE - (Trialing, Active, PastDue, Canceled, Incomplete)
+    │   │   │   │   │   │   │   # (Trialing, Active, PastDue, Canceled, Incomplete)
     │   │   │   │   │   │   ├── tax-binding-type.enum.ts  # Tax binding type enum
     │   │   │   │   │   │   ├── tax-class-type.enum.ts  # Tax class type enum
     │   │   │   │   │   │   ├── tax-type.enum.ts  # Tax types
@@ -29528,9 +29632,9 @@ fe/
     │   │   │   │   │   │   ├── user-entitlement-grant-status.enum.ts  # User entitlement grant status enum
     │   │   │   │   │   │   └── webhook-status.enum.ts  # Webhook statuses
     │   │   │   │   │   ├── user/
-    │   │   │   │   │   │   ├── kyc-document-type.enum.ts  # ❌ CREATE  # PASSPORT|NATIONAL_ID|DRIVER_LICENSE|OTHER
-    │   │   │   │   │   │   ├── session-status.enum.ts  # ❌ CREATE  # ACTIVE|REVOKED|EXPIRED
-    │   │   │   │   │   │   └── verification-status.enum.ts  # ❌ CREATE  # PENDING|VERIFIED|REJECTED|EXPIRED
+    │   │   │   │   │   │   ├── kyc-document-type.enum.ts  # PASSPORT|NATIONAL_ID|DRIVER_LICENSE|OTHER
+    │   │   │   │   │   │   ├── session-status.enum.ts  # ACTIVE|REVOKED|EXPIRED
+    │   │   │   │   │   │   └── verification-status.enum.ts  # PENDING|VERIFIED|REJECTED|EXPIRED
     │   │   │   │   │   └── users/  # Users enumerations
     │   │   │   │   │       # MISSING ENUMS (35+ enums missing)
     │   │   │   │   │       ├── account-status.enum.ts  # Account status enumeration
@@ -29687,7 +29791,7 @@ fe/
     │   │   │   │   │   │   ├── audit-export.mapper.ts  # Audit export DTO ↔ Domain
     │   │   │   │   │   │   ├── audit-trail.mapper.ts  # Audit trail DTO ↔ Domain
     │   │   │   │   │   │   ├── auto-flag-rule.mapper.ts  # Auto-flag rule DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   │   # - DTO ↔ Domain
     │   │   │   │   │   │   ├── break-glass-access.mapper.ts  # Break-glass access DTO ↔ Domain
     │   │   │   │   │   │   │   # Break glass access DTO ↔ Domain
     │   │   │   │   │   │   ├── bulk-operation-item.mapper.ts  # Bulk operation item DTO ↔ Domain
@@ -29699,32 +29803,32 @@ fe/
     │   │   │   │   │   │   ├── compliance-context.mapper.ts  # ComplianceContext DTO ↔ Domain
     │   │   │   │   │   │   ├── config-history.mapper.ts  # Config history DTO ↔ Domain
     │   │   │   │   │   │   ├── content-action.mapper.ts  # Content action DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   │   # - DTO ↔ Domain
     │   │   │   │   │   │   ├── data-masking-policy.mapper.ts  # Data masking policy DTO ↔ Domain
     │   │   │   │   │   │   ├── data-masking.mapper.ts  # Data masking DTO ↔ Domain
-    │   │   │   │   │   │   ├── dispute-case.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
-    │   │   │   │   │   │   ├── dispute-evidence.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── dispute-case.mapper.ts  # - DTO ↔ Domain
+    │   │   │   │   │   │   ├── dispute-evidence.mapper.ts  # - DTO ↔ Domain
     │   │   │   │   │   │   ├── dsar.mapper.ts  # DSAR DTO ↔ Domain
     │   │   │   │   │   │   ├── experiment.mapper.ts  # Experiment DTO ↔ Domain
     │   │   │   │   │   │   │   # ExperimentDTO ↔ Experiment
-    │   │   │   │   │   │   ├── faq-category.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
-    │   │   │   │   │   │   ├── faq.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── faq-category.mapper.ts  # - DTO ↔ Domain
+    │   │   │   │   │   │   ├── faq.mapper.ts  # - DTO ↔ Domain
     │   │   │   │   │   │   ├── feature-flag.mapper.ts  # FeatureFlag DTO ↔ Domain
     │   │   │   │   │   │   │   # FeatureFlagDTO ↔ FeatureFlag
     │   │   │   │   │   │   │   # Feature flag DTO ↔ Domain
     │   │   │   │   │   │   ├── financial-hold.mapper.ts  # Financial hold DTO ↔ Domain
     │   │   │   │   │   │   ├── fraud-case.mapper.ts  # Fraud case DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   │   # - DTO ↔ Domain
     │   │   │   │   │   │   ├── fraud-detection.mapper.ts  # Fraud detection DTO ↔ Domain
     │   │   │   │   │   │   ├── fraud-pattern.mapper.ts  # Fraud pattern DTO ↔ Domain
-    │   │   │   │   │   │   ├── fraud-rule.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── fraud-rule.mapper.ts  # - DTO ↔ Domain
     │   │   │   │   │   │   ├── fraud-signal.mapper.ts  # Fraud signal DTO ↔ Domain
     │   │   │   │   │   │   ├── gdpr-request.mapper.ts  # GDPR request DTO ↔ Domain
     │   │   │   │   │   │   ├── health-check.mapper.ts  # Health check DTO ↔ Domain
     │   │   │   │   │   │   ├── hold.mapper.ts  # Hold DTO ↔ Domain
     │   │   │   │   │   │   ├── impersonation.mapper.ts  # Impersonation DTO ↔ Domain
     │   │   │   │   │   │   ├── incident-response.mapper.ts  # Incident response DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   │   # - DTO ↔ Domain
     │   │   │   │   │   │   ├── incident.mapper.ts  # Incident DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── integration.mapper.ts  # Integration DTO ↔ Domain
@@ -29755,7 +29859,7 @@ fe/
     │   │   │   │   │   │   ├── priority-queue.mapper.ts  # Priority queue DTO ↔ Domain
     │   │   │   │   │   │   ├── privacy-request.mapper.ts  # PrivacyRequest DTO ↔ Domain
     │   │   │   │   │   │   │   # Privacy request DTO ↔ Domain
-    │   │   │   │   │   │   ├── quota-override.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── quota-override.mapper.ts  # - DTO ↔ Domain
     │   │   │   │   │   │   ├── rate-limit-override.mapper.ts  # Rate limit override DTO ↔ Domain
     │   │   │   │   │   │   ├── report-execution.mapper.ts  # Report execution DTO ↔ Domain
     │   │   │   │   │   │   ├── report-schedule.mapper.ts  # Report schedule DTO ↔ Domain
@@ -29769,8 +29873,8 @@ fe/
     │   │   │   │   │   │   ├── session.mapper.ts  # Session DTO ↔ Domain
     │   │   │   │   │   │   ├── sla-breach.mapper.ts  # SLA breach DTO ↔ Domain
     │   │   │   │   │   │   ├── sla-policy.mapper.ts  # SLA policy DTO ↔ Domain
-    │   │   │   │   │   │   ├── support-attachment.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
-    │   │   │   │   │   │   ├── support-message.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── support-attachment.mapper.ts  # - DTO ↔ Domain
+    │   │   │   │   │   │   ├── support-message.mapper.ts  # - DTO ↔ Domain
     │   │   │   │   │   │   ├── support-ticket-assignment.mapper.ts  # Ticket assignment DTO ↔ Domain
     │   │   │   │   │   │   ├── support-ticket-attachment.mapper.ts  # Ticket attachment DTO ↔ Domain
     │   │   │   │   │   │   ├── support-ticket-history.mapper.ts  # Ticket history DTO ↔ Domain
@@ -29781,13 +29885,13 @@ fe/
     │   │   │   │   │   │   ├── system-setting.mapper.ts  # SystemSetting DTO ↔ Domain
     │   │   │   │   │   │   ├── task-delegation.mapper.ts  # Task delegation DTO ↔ Domain
     │   │   │   │   │   │   ├── throttle-config.mapper.ts  # Throttle config DTO ↔ Domain
-    │   │   │   │   │   │   ├── throttle-exception.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
-    │   │   │   │   │   │   ├── throttle-policy.mapper.ts  # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   ├── throttle-exception.mapper.ts  # - DTO ↔ Domain
+    │   │   │   │   │   │   ├── throttle-policy.mapper.ts  # - DTO ↔ Domain
     │   │   │   │   │   │   │   # Throttle policy DTO ↔ Domain
     │   │   │   │   │   │   ├── ticket-category.mapper.ts  # Ticket category DTO ↔ Domain
     │   │   │   │   │   │   ├── two-person-approval.mapper.ts  # Two-person approval DTO ↔ Domain
     │   │   │   │   │   │   ├── user-action.mapper.ts  # User action DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING - DTO ↔ Domain
+    │   │   │   │   │   │   │   # - DTO ↔ Domain
     │   │   │   │   │   │   ├── watchlist-check.mapper.ts  # Watchlist check DTO ↔ Domain
     │   │   │   │   │   │   ├── webhook-delivery.mapper.ts  # Webhook delivery DTO ↔ Domain
     │   │   │   │   │   │   ├── webhook-event.mapper.ts  # Webhook event DTO ↔ Domain
@@ -29801,16 +29905,15 @@ fe/
     │   │   │   │   │   │   ├── calendar-invite.mapper.ts  # CalendarInvite DTO ↔ Domain
     │   │   │   │   │   │   │   # Calendar invite DTO ↔ Domain
     │   │   │   │   │   │   ├── call.mapper.ts  # Call DTO ↔ Domain
-    │   │   │   │   │   │   ├── channel-member.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── channel-member.mapper.ts
     │   │   │   │   │   │   ├── collaboration-cursor.mapper.ts  # Cursor tracking DTO ↔ Domain
     │   │   │   │   │   │   ├── collaboration-document.mapper.ts  # Collaboration document DTO ↔ Domain
     │   │   │   │   │   │   ├── collaboration-participant.mapper.ts  # Collaboration participant DTO ↔ Domain
     │   │   │   │   │   │   ├── collaboration-session.mapper.ts  # Collaboration session DTO ↔ Domain
     │   │   │   │   │   │   ├── collaboration.mapper.ts  # Collaboration DTO ↔ Domain
-    │   │   │   │   │   │   ├── conversation-archive.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── conversation-export.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── conversation-participant.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Conversation participant DTO ↔ Domain
+    │   │   │   │   │   │   ├── conversation-archive.mapper.ts
+    │   │   │   │   │   │   ├── conversation-export.mapper.ts
+    │   │   │   │   │   │   ├── conversation-participant.mapper.ts  # Conversation participant DTO ↔ Domain
     │   │   │   │   │   │   ├── conversation.mapper.ts  # Conversation DTO ↔ Domain
     │   │   │   │   │   │   │   # ConversationDTO ↔ Conversation
     │   │   │   │   │   │   ├── delivery-log.mapper.ts  # DeliveryLog DTO ↔ Domain
@@ -29822,10 +29925,9 @@ fe/
     │   │   │   │   │   │   ├── email-bridge-inbound.mapper.ts  # Inbound email DTO ↔ Domain
     │   │   │   │   │   │   ├── email-bridge.mapper.ts  # EmailBridge DTO ↔ Domain
     │   │   │   │   │   │   │   # Email bridge DTO ↔ Domain
-    │   │   │   │   │   │   ├── email-layout.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── email-layout.mapper.ts
     │   │   │   │   │   │   ├── email-notification.mapper.ts  # Email notification DTO ↔ Domain
-    │   │   │   │   │   │   ├── email-template.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Email template DTO ↔ Domain
+    │   │   │   │   │   │   ├── email-template.mapper.ts  # Email template DTO ↔ Domain
     │   │   │   │   │   │   ├── email.mapper.ts  # Email DTO ↔ Domain
     │   │   │   │   │   │   │   # EmailDTO ↔ Email
     │   │   │   │   │   │   ├── encryption-conversation-key.mapper.ts  # E2EE conversation key DTO ↔ Domain
@@ -29841,21 +29943,18 @@ fe/
     │   │   │   │   │   │   ├── interview.mapper.ts  # Interview DTO ↔ Domain
     │   │   │   │   │   │   ├── mail-tracking.mapper.ts  # MailTracking DTO ↔ Domain
     │   │   │   │   │   │   │   # Mail tracking DTO ↔ Domain
-    │   │   │   │   │   │   ├── mention.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Mention DTO ↔ Domain
-    │   │   │   │   │   │   ├── message-draft.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── message-reaction.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Message reaction DTO ↔ Domain
-    │   │   │   │   │   │   ├── message-search-index.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── mention.mapper.ts  # Mention DTO ↔ Domain
+    │   │   │   │   │   │   ├── message-draft.mapper.ts
+    │   │   │   │   │   │   ├── message-reaction.mapper.ts  # Message reaction DTO ↔ Domain
+    │   │   │   │   │   │   ├── message-search-index.mapper.ts
     │   │   │   │   │   │   ├── message-sequence.mapper.ts  # Message sequence DTO ↔ Domain
     │   │   │   │   │   │   ├── message.mapper.ts  # Message DTO ↔ Domain
     │   │   │   │   │   │   │   # MessageDTO ↔ Message
     │   │   │   │   │   │   ├── moderation-action.mapper.ts  # Moderation action DTO ↔ Domain
     │   │   │   │   │   │   ├── moderation.mapper.ts  # Moderation DTO ↔ Domain
     │   │   │   │   │   │   ├── notification-channel.mapper.ts  # Notification channel DTO ↔ Domain
-    │   │   │   │   │   │   ├── notification-delivery-log.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── notification-preference.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Notification preference DTO ↔ Domain
+    │   │   │   │   │   │   ├── notification-delivery-log.mapper.ts
+    │   │   │   │   │   │   ├── notification-preference.mapper.ts  # Notification preference DTO ↔ Domain
     │   │   │   │   │   │   ├── notification-queue.mapper.ts  # NotificationQueue DTO ↔ Domain
     │   │   │   │   │   │   │   # Notification queue DTO ↔ Domain
     │   │   │   │   │   │   ├── notification-template.mapper.ts  # NotificationTemplate DTO ↔ Domain
@@ -29871,17 +29970,14 @@ fe/
     │   │   │   │   │   │   │   # Push device DTO ↔ Domain
     │   │   │   │   │   │   ├── push-notification.mapper.ts  # PushNotification DTO ↔ Domain
     │   │   │   │   │   │   │   # Push notification DTO ↔ Domain
-    │   │   │   │   │   │   ├── push-subscription.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Push subscription DTO ↔ Domain
-    │   │   │   │   │   │   ├── quota-usage.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── quota.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── push-subscription.mapper.ts  # Push subscription DTO ↔ Domain
+    │   │   │   │   │   │   ├── quota-usage.mapper.ts
+    │   │   │   │   │   │   ├── quota.mapper.ts
     │   │   │   │   │   │   ├── rate-limit.mapper.ts  # Rate limit DTO ↔ Domain
-    │   │   │   │   │   │   ├── read-receipt.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Read receipt DTO ↔ Domain
+    │   │   │   │   │   │   ├── read-receipt.mapper.ts  # Read receipt DTO ↔ Domain
     │   │   │   │   │   │   ├── read-state.mapper.ts  # ReadState DTO ↔ Domain
     │   │   │   │   │   │   │   # Read state DTO ↔ Domain
-    │   │   │   │   │   │   ├── retention-policy.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Retention policy DTO ↔ Domain
+    │   │   │   │   │   │   ├── retention-policy.mapper.ts  # Retention policy DTO ↔ Domain
     │   │   │   │   │   │   ├── scheduled-message.mapper.ts  # Scheduled message DTO ↔ Domain
     │   │   │   │   │   │   ├── sms-notification.mapper.ts  # SMS notification DTO ↔ Domain
     │   │   │   │   │   │   ├── spam-detection-rule.mapper.ts  # Spam detection rule DTO ↔ Domain
@@ -29891,8 +29987,7 @@ fe/
     │   │   │   │   │   │   ├── system-message.mapper.ts  # SystemMessage DTO ↔ Domain
     │   │   │   │   │   │   │   # System message DTO ↔ Domain
     │   │   │   │   │   │   ├── thread.mapper.ts  # Thread DTO ↔ Domain
-    │   │   │   │   │   │   ├── typing-indicator.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Typing indicator DTO ↔ Domain
+    │   │   │   │   │   │   ├── typing-indicator.mapper.ts  # Typing indicator DTO ↔ Domain
     │   │   │   │   │   │   ├── unsubscribe.mapper.ts  # Unsubscribe DTO ↔ Domain
     │   │   │   │   │   │   ├── url-safety.mapper.ts  # UrlSafety DTO ↔ Domain
     │   │   │   │   │   │   │   # URL safety DTO ↔ Domain
@@ -29907,20 +30002,15 @@ fe/
     │   │   │   │   │   │   │   # Agency contract DTO ↔ Domain
     │   │   │   │   │   │   ├── amendment.mapper.ts  # Amendment DTO ↔ Domain
     │   │   │   │   │   │   │   # AmendmentDTO ↔ ContractAmendment
-    │   │   │   │   │   │   ├── analytics.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── approval-workflow.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── analytics.mapper.ts
+    │   │   │   │   │   │   ├── approval-workflow.mapper.ts
     │   │   │   │   │   │   ├── approval.mapper.ts  # Approval DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── audit-log.mapper.ts  # AuditLog DTO ↔ Domain
     │   │   │   │   │   │   ├── budget-adjustment.mapper.ts  # Budget adjustment DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── budget.mapper.ts  # Budget DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── cancellation.mapper.ts  # Cancellation DTO ↔ Domain
-    │   │   │   │   │   │   ├── client-feedback.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Client feedback DTO ↔ Domain
-    │   │   │   │   │   │   ├── collaboration-tool.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Collaboration tool DTO ↔ Domain
+    │   │   │   │   │   │   ├── client-feedback.mapper.ts  # Client feedback DTO ↔ Domain
+    │   │   │   │   │   │   ├── collaboration-tool.mapper.ts  # Collaboration tool DTO ↔ Domain
     │   │   │   │   │   │   ├── compliance.mapper.ts  # Compliance DTO ↔ Domain
     │   │   │   │   │   │   ├── contract-amendment.mapper.ts  # Amendment DTO ↔ Domain
     │   │   │   │   │   │   ├── contract-analytics.mapper.ts  # Analytics DTO ↔ Domain
@@ -29942,79 +30032,56 @@ fe/
     │   │   │   │   │   │   ├── deliverable.mapper.ts  # Deliverable DTO ↔ Domain
     │   │   │   │   │   │   │   # DeliverableDTO ↔ Deliverable
     │   │   │   │   │   │   ├── dispute-evidence.mapper.ts  # Dispute evidence DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── dispute-message.mapper.ts  # Dispute message DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── dispute.mapper.ts  # Dispute DTO ↔ Domain
     │   │   │   │   │   │   │   # DisputeDTO ↔ Dispute
     │   │   │   │   │   │   ├── escrow-transaction.mapper.ts  # Escrow transaction DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── escrow.mapper.ts  # Escrow DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── feedback.mapper.ts  # Feedback DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── financial-hold.mapper.ts  # Financial hold DTO ↔ Domain
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── insurance-claim.mapper.ts  # Insurance claim DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── insurance.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Insurance DTO ↔ Domain
-    │   │   │   │   │   │   ├── invitation.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Invitation DTO ↔ Domain
-    │   │   │   │   │   │   ├── invoice-line-item.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Invoice line item DTO ↔ Domain
-    │   │   │   │   │   │   ├── invoice-payment.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Invoice payment DTO ↔ Domain
+    │   │   │   │   │   │   ├── insurance.mapper.ts  # Insurance DTO ↔ Domain
+    │   │   │   │   │   │   ├── invitation.mapper.ts  # Invitation DTO ↔ Domain
+    │   │   │   │   │   │   ├── invoice-line-item.mapper.ts  # Invoice line item DTO ↔ Domain
+    │   │   │   │   │   │   ├── invoice-payment.mapper.ts  # Invoice payment DTO ↔ Domain
     │   │   │   │   │   │   ├── ip-rights.mapper.ts  # IPRightsDTO ↔ IPRights
     │   │   │   │   │   │   ├── milestone.mapper.ts  # Milestone DTO ↔ Domain
     │   │   │   │   │   │   │   # MilestoneDTO ↔ Milestone
-    │   │   │   │   │   │   ├── nda-breach.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # NDA breach DTO ↔ Domain
+    │   │   │   │   │   │   ├── nda-breach.mapper.ts  # NDA breach DTO ↔ Domain
     │   │   │   │   │   │   ├── nda.mapper.ts  # NDADTO ↔ NDA
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   │   # NDA DTO ↔ Domain
-    │   │   │   │   │   │   ├── negotiation-offer.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Negotiation offer DTO ↔ Domain
-    │   │   │   │   │   │   ├── negotiation.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── payment-schedule.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Payment schedule DTO ↔ Domain
+    │   │   │   │   │   │   ├── negotiation-offer.mapper.ts  # Negotiation offer DTO ↔ Domain
+    │   │   │   │   │   │   ├── negotiation.mapper.ts
+    │   │   │   │   │   │   ├── payment-schedule.mapper.ts  # Payment schedule DTO ↔ Domain
     │   │   │   │   │   │   ├── performance-kpi.mapper.ts  # PerformanceKPI DTO ↔ Domain
     │   │   │   │   │   │   │   # Performance KPI DTO ↔ Domain
     │   │   │   │   │   │   ├── performance.mapper.ts  # PerformanceDTO ↔ PerformanceKPI
-    │   │   │   │   │   │   ├── rate-card.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── rate-card.mapper.ts
     │   │   │   │   │   │   ├── recurring-contract.mapper.ts  # Recurring contract DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── reminder.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── renegotiation.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── renewal-history.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Renewal history DTO ↔ Domain
+    │   │   │   │   │   │   ├── reminder.mapper.ts
+    │   │   │   │   │   │   ├── renegotiation.mapper.ts
+    │   │   │   │   │   │   ├── renewal-history.mapper.ts  # Renewal history DTO ↔ Domain
     │   │   │   │   │   │   ├── renewal.mapper.ts  # Renewal DTO ↔ Domain
     │   │   │   │   │   │   │   # RenewalDTO ↔ ContractRenewal
     │   │   │   │   │   │   ├── risk-assessment.mapper.ts  # RiskAssessment DTO ↔ Domain
     │   │   │   │   │   │   ├── signature.mapper.ts  # Signature DTO ↔ Domain
     │   │   │   │   │   │   │   # SignatureDTO ↔ ContractSignature
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── sla-breach.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── sla-metric.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── sla-performance-record.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sla-breach.mapper.ts
+    │   │   │   │   │   │   ├── sla-metric.mapper.ts
+    │   │   │   │   │   │   ├── sla-performance-record.mapper.ts
     │   │   │   │   │   │   ├── sla.mapper.ts  # SLA DTO ↔ Domain
     │   │   │   │   │   │   │   # SLADTO ↔ SLA
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── statement-of-work.mapper.ts  # SOW DTO ↔ Domain
-    │   │   │   │   │   │   ├── task.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── template.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── task.mapper.ts
+    │   │   │   │   │   │   ├── template.mapper.ts
     │   │   │   │   │   │   ├── termination.mapper.ts  # TerminationDTO ↔ ContractTermination
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── time-entry.mapper.ts  # Time entry DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── timesheet.mapper.ts  # Timesheet DTO ↔ Domain
     │   │   │   │   │   │   │   # TimesheetDTO ↔ Timesheet
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── version.mapper.ts  # Version DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── work-diary-daily-summary.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── work-diary-daily-summary.mapper.ts
     │   │   │   │   │   │   ├── work-diary-entry.mapper.ts  # Work diary DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── work-diary-summary.mapper.ts  # Daily summary DTO ↔ Domain
     │   │   │   │   │   │   ├── work-diary.mapper.ts  # WorkDiary DTO ↔ Domain
     │   │   │   │   │   │   │   # WorkDiaryDTO ↔ WorkDiary
@@ -30023,32 +30090,26 @@ fe/
     │   │   │   │   │   │   ├── workroom-task.mapper.ts  # WorkroomTask DTO ↔ Domain
     │   │   │   │   │   │   │   # Workroom task DTO ↔ Domain
     │   │   │   │   │   │   ├── workspace-comment.mapper.ts  # Workspace comment DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── workspace-document.mapper.ts  # Workspace document DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   └── workspace.mapper.ts  # Workspace DTO ↔ Domain
-    │   │   │   │   │   │       # ⚠️ MISSING
     │   │   │   │   │   ├── financial/  # Financial mappers
     │   │   │   │   │   │   # Financial mappers (MISSING MAPPERS)
     │   │   │   │   │   │   # MISSING MAPPERS (ALL FINANCIAL ENTITIES)
     │   │   │   │   │   │   # MISSING MAPPERS (ALL FINANCIAL ENTITIES - 40+ mappers missing)
-    │   │   │   │   │   │   ├── account-freeze.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── account-limit.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── balance-snapshot.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── account-freeze.mapper.ts
+    │   │   │   │   │   │   ├── account-limit.mapper.ts
+    │   │   │   │   │   │   ├── balance-snapshot.mapper.ts
     │   │   │   │   │   │   ├── bank-account.mapper.ts  # BankAccount DTO ↔ Domain
     │   │   │   │   │   │   │   # Bank account DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bank-verification.mapper.ts  # Bank verification DTO ↔ Domain
     │   │   │   │   │   │   ├── batch-payment.mapper.ts  # Batch payment DTO ↔ Domain
     │   │   │   │   │   │   ├── billing-address.mapper.ts  # BillingAddress DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   │   # Billing address DTO ↔ Domain
     │   │   │   │   │   │   ├── bonus.mapper.ts  # BonusDTO ↔ Bonus
     │   │   │   │   │   │   │   # Bonus DTO ↔ Domain
     │   │   │   │   │   │   ├── budget.mapper.ts  # Budget DTO ↔ Domain
     │   │   │   │   │   │   ├── chargeback.mapper.ts  # Chargeback DTO ↔ Domain
     │   │   │   │   │   │   │   # ChargebackDTO ↔ Chargeback
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── commission.mapper.ts  # Commission DTO ↔ Domain
     │   │   │   │   │   │   ├── connects-purchase.mapper.ts  # Connects purchase DTO ↔ Domain
     │   │   │   │   │   │   ├── connects.mapper.ts  # ConnectsDTO ↔ ConnectsPurchase
@@ -30056,33 +30117,28 @@ fe/
     │   │   │   │   │   │   ├── coupon.mapper.ts  # Coupon DTO ↔ Domain
     │   │   │   │   │   │   ├── crypto-payment.mapper.ts  # Crypto payment DTO ↔ Domain
     │   │   │   │   │   │   ├── currency-conversion.mapper.ts  # CurrencyConversion DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   │   # Currency conversion DTO ↔ Domain
-    │   │   │   │   │   │   ├── currency-exchange-rate.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── currency-exchange-rate.mapper.ts
     │   │   │   │   │   │   ├── currency-preference.mapper.ts  # Currency preference DTO ↔ Domain
     │   │   │   │   │   │   ├── currency-rate.mapper.ts  # Currency rate DTO ↔ Domain
     │   │   │   │   │   │   ├── dispute-case.mapper.ts  # Dispute case DTO ↔ Domain
-    │   │   │   │   │   │   ├── dispute-evidence.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dispute-evidence.mapper.ts
     │   │   │   │   │   │   ├── dispute.mapper.ts  # Dispute DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── earning.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── earning.mapper.ts
     │   │   │   │   │   │   ├── earnings-report.mapper.ts  # Earnings report DTO ↔ Domain
     │   │   │   │   │   │   ├── escrow-hold.mapper.ts  # Escrow hold DTO ↔ Domain
     │   │   │   │   │   │   ├── escrow-ledger.mapper.ts  # Escrow ledger DTO ↔ Domain
-    │   │   │   │   │   │   ├── escrow-release.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Escrow release DTO ↔ Domain
+    │   │   │   │   │   │   ├── escrow-release.mapper.ts  # Escrow release DTO ↔ Domain
     │   │   │   │   │   │   ├── escrow.mapper.ts  # Escrow DTO ↔ Domain
     │   │   │   │   │   │   │   # EscrowDTO ↔ EscrowAccount
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── exchange-rate.mapper.ts  # Exchange rate DTO ↔ Domain
     │   │   │   │   │   │   ├── expense-reimbursement.mapper.ts  # Expense reimbursement DTO ↔ Domain
     │   │   │   │   │   │   ├── fee-migration.mapper.ts  # Fee migration DTO ↔ Domain
     │   │   │   │   │   │   ├── fee-rule.mapper.ts  # Fee rule DTO ↔ Domain
-    │   │   │   │   │   │   ├── fee-schedule.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Fee schedule DTO ↔ Domain
+    │   │   │   │   │   │   ├── fee-schedule.mapper.ts  # Fee schedule DTO ↔ Domain
     │   │   │   │   │   │   ├── fee-transaction.mapper.ts  # Fee transaction DTO ↔ Domain
     │   │   │   │   │   │   ├── fee-version.mapper.ts  # Fee version DTO ↔ Domain
-    │   │   │   │   │   │   ├── fee-waiver.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── fee-waiver.mapper.ts
     │   │   │   │   │   │   ├── fee.mapper.ts  # Fee DTO ↔ Domain
     │   │   │   │   │   │   │   # FeeDTO ↔ PlatformFee
     │   │   │   │   │   │   ├── financial-analytics.mapper.ts  # Financial analytics DTO ↔ Domain
@@ -30092,7 +30148,6 @@ fe/
     │   │   │   │   │   │   ├── gateway-configuration.mapper.ts  # Gateway config DTO ↔ Domain
     │   │   │   │   │   │   ├── gateway-webhook.mapper.ts  # Gateway webhook DTO ↔ Domain
     │   │   │   │   │   │   ├── hold.mapper.ts  # Hold DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── insurance-claim.mapper.ts  # Insurance claim DTO ↔ Domain
     │   │   │   │   │   │   ├── insurance-policy.mapper.ts  # Insurance policy DTO ↔ Domain
@@ -30101,7 +30156,7 @@ fe/
     │   │   │   │   │   │   ├── international-payment.mapper.ts  # International payment DTO ↔ Domain
     │   │   │   │   │   │   ├── intl-compliance.mapper.ts  # International compliance DTO ↔ Domain
     │   │   │   │   │   │   ├── invoice-line-item.mapper.ts  # Invoice line item DTO ↔ Domain
-    │   │   │   │   │   │   ├── invoice-reminder.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invoice-reminder.mapper.ts
     │   │   │   │   │   │   ├── invoice.mapper.ts  # Invoice DTO ↔ Domain
     │   │   │   │   │   │   │   # InvoiceDTO ↔ Invoice
     │   │   │   │   │   │   ├── ledger-entry.mapper.ts  # Ledger entry DTO ↔ Domain
@@ -30116,78 +30171,67 @@ fe/
     │   │   │   │   │   │   ├── payment-method-token.mapper.ts  # Payment method token DTO ↔ Domain
     │   │   │   │   │   │   ├── payment-method.mapper.ts  # PaymentMethod DTO ↔ Domain
     │   │   │   │   │   │   │   # PaymentMethodDTO ↔ PaymentMethod
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment-schedule.mapper.ts  # Payment schedule DTO ↔ Domain
-    │   │   │   │   │   │   ├── payment-verification.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payment-verification.mapper.ts
     │   │   │   │   │   │   ├── payment.mapper.ts  # Payment DTO ↔ Domain
     │   │   │   │   │   │   │   # PaymentDTO ↔ Payment
-    │   │   │   │   │   │   ├── payout-batch.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Payout batch DTO ↔ Domain
-    │   │   │   │   │   │   ├── payout-method.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── payout-batch.mapper.ts  # Payout batch DTO ↔ Domain
+    │   │   │   │   │   │   ├── payout-method.mapper.ts
     │   │   │   │   │   │   ├── payout-schedule.mapper.ts  # Payout schedule DTO ↔ Domain
     │   │   │   │   │   │   ├── payout.mapper.ts  # Payout DTO ↔ Domain
     │   │   │   │   │   │   │   # PayoutDTO ↔ Payout
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payroll-entry.mapper.ts  # Payroll entry DTO ↔ Domain
     │   │   │   │   │   │   ├── payroll-line-item.mapper.ts  # Payroll line item DTO ↔ Domain
     │   │   │   │   │   │   ├── payroll-run.mapper.ts  # Payroll run DTO ↔ Domain
     │   │   │   │   │   │   ├── payroll-withholding.mapper.ts  # Payroll withholding DTO ↔ Domain
     │   │   │   │   │   │   ├── payroll.mapper.ts  # PayrollDTO ↔ PayrollRun
     │   │   │   │   │   │   │   # Payroll DTO ↔ Domain
-    │   │   │   │   │   │   ├── platform-fee.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Platform fee DTO ↔ Domain
+    │   │   │   │   │   │   ├── platform-fee.mapper.ts  # Platform fee DTO ↔ Domain
     │   │   │   │   │   │   ├── platform-financial-metric.mapper.ts  # Platform metrics DTO ↔ Domain
     │   │   │   │   │   │   ├── promo.mapper.ts  # PromoDTO ↔ PromotionalCredit
     │   │   │   │   │   │   ├── promotional-credit.mapper.ts  # Promotional credit DTO ↔ Domain
     │   │   │   │   │   │   ├── rate-lock.mapper.ts  # Rate lock DTO ↔ Domain
     │   │   │   │   │   │   ├── reconciliation-discrepancy.mapper.ts  # Reconciliation discrepancy DTO ↔ Domain
-    │   │   │   │   │   │   ├── reconciliation-item.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── reconciliation-item.mapper.ts
     │   │   │   │   │   │   ├── reconciliation-report.mapper.ts  # Reconciliation report DTO ↔ Domain
     │   │   │   │   │   │   ├── reconciliation.mapper.ts  # Reconciliation DTO ↔ Domain
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── recurring-payment.mapper.ts  # RecurringPayment DTO ↔ Domain
     │   │   │   │   │   │   ├── refund-policy.mapper.ts  # Refund policy DTO ↔ Domain
     │   │   │   │   │   │   ├── refund.mapper.ts  # Refund DTO ↔ Domain
     │   │   │   │   │   │   │   # RefundDTO ↔ Refund
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── reminder-escalation.mapper.ts  # Reminder escalation DTO ↔ Domain
     │   │   │   │   │   │   ├── reminder-template.mapper.ts  # Reminder template DTO ↔ Domain
     │   │   │   │   │   │   ├── reminder.mapper.ts  # Reminder DTO ↔ Domain
     │   │   │   │   │   │   ├── revenue-share.mapper.ts  # Revenue share DTO ↔ Domain
-    │   │   │   │   │   │   ├── revenue.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── revenue.mapper.ts
     │   │   │   │   │   │   ├── risk-assessment.mapper.ts  # Risk assessment DTO ↔ Domain
     │   │   │   │   │   │   ├── risk.mapper.ts  # RiskAssessmentDTO ↔ RiskAssessment
-    │   │   │   │   │   │   ├── settlement.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── split-config.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── statement.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── settlement.mapper.ts
+    │   │   │   │   │   │   ├── split-config.mapper.ts
+    │   │   │   │   │   │   ├── statement.mapper.ts
     │   │   │   │   │   │   ├── subscription-billing.mapper.ts  # Subscription billing DTO ↔ Domain
     │   │   │   │   │   │   ├── subscription-invoice.mapper.ts  # Subscription invoice DTO ↔ Domain
     │   │   │   │   │   │   ├── subscription-payment.mapper.ts  # Subscription payment DTO ↔ Domain
-    │   │   │   │   │   │   ├── tax-document.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Tax document DTO ↔ Domain
-    │   │   │   │   │   │   ├── tax-exemption.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── tax-document.mapper.ts  # Tax document DTO ↔ Domain
+    │   │   │   │   │   │   ├── tax-exemption.mapper.ts
     │   │   │   │   │   │   ├── tax-form.mapper.ts  # Tax form DTO ↔ Domain
     │   │   │   │   │   │   ├── tax-profile.mapper.ts  # Tax profile DTO ↔ Domain
-    │   │   │   │   │   │   ├── tax-rate.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Tax rate DTO ↔ Domain
+    │   │   │   │   │   │   ├── tax-rate.mapper.ts  # Tax rate DTO ↔ Domain
     │   │   │   │   │   │   ├── tax-withholding.mapper.ts  # Tax withholding DTO ↔ Domain
     │   │   │   │   │   │   ├── tax.mapper.ts  # Tax DTO ↔ Domain
     │   │   │   │   │   │   │   # TaxDTO ↔ TaxProfile
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── transaction-event.mapper.ts  # Transaction event DTO ↔ Domain
-    │   │   │   │   │   │   ├── transaction-fee.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Transaction fee DTO ↔ Domain
+    │   │   │   │   │   │   ├── transaction-fee.mapper.ts  # Transaction fee DTO ↔ Domain
     │   │   │   │   │   │   ├── transaction.mapper.ts  # Transaction DTO ↔ Domain
     │   │   │   │   │   │   │   # TransactionDTO ↔ Transaction
-    │   │   │   │   │   │   ├── transfer.mapper.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── verification.mapper.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── transfer.mapper.ts
+    │   │   │   │   │   │   ├── verification.mapper.ts
     │   │   │   │   │   │   ├── wallet-limit.mapper.ts  # Wallet limit DTO ↔ Domain
     │   │   │   │   │   │   ├── wallet-transfer.mapper.ts  # Wallet transfer DTO ↔ Domain
     │   │   │   │   │   │   ├── wallet.mapper.ts  # Wallet DTO ↔ Domain
     │   │   │   │   │   │   │   # WalletDTO ↔ Wallet
     │   │   │   │   │   │   ├── wire-transfer.mapper.ts  # Wire transfer DTO ↔ Domain
     │   │   │   │   │   │   └── withdrawal.mapper.ts  # Withdrawal DTO ↔ Domain
-    │   │   │   │   │   │       # ⚠️ MISSING
     │   │   │   │   │   ├── jobs/  # Jobs mappers
     │   │   │   │   │   │   # Jobs mappers (MISSING MAPPERS)
     │   │   │   │   │   │   # MISSING MAPPERS (ALL JOB ENTITIES - 20+ mappers missing)
@@ -30869,30 +30913,28 @@ fe/
     │   │   │   │   │   │   ├── alert-trigger.dto.ts  # Alert trigger DTO
     │   │   │   │   │   │   ├── announcement-dto.ts  # Announcement DTO
     │   │   │   │   │   │   ├── api-key.dto.ts  # API key DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ApiKeyDTO
+    │   │   │   │   │   │   │   # ApiKeyDTO
     │   │   │   │   │   │   ├── appeal-dto.ts  # AppealDTO
     │   │   │   │   │   │   ├── audit-dto.ts  # AuditTrailDTO
     │   │   │   │   │   │   ├── audit-entry-dto.ts  # Audit entry DTO
     │   │   │   │   │   │   ├── audit-export.dto.ts  # Audit export DTO
     │   │   │   │   │   │   ├── audit-trail.dto.ts  # Audit trail DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - AuditTrailDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── auto-flag-rule-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # AuditTrailDTO
+    │   │   │   │   │   │   ├── auto-flag-rule-dto.ts
     │   │   │   │   │   │   ├── auto-flag-rule.dto.ts  # Auto-flag rule DTO
     │   │   │   │   │   │   ├── break-glass-access.dto.ts  # Break-glass access DTO
     │   │   │   │   │   │   │   # Break glass access DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BreakGlassAccessDTO
+    │   │   │   │   │   │   │   # BreakGlassAccessDTO
     │   │   │   │   │   │   ├── break-glass-dto.ts  # BreakGlassAccessDTO
     │   │   │   │   │   │   ├── broadcast-dto.ts  # BroadcastDTO
     │   │   │   │   │   │   ├── bulk-operation-dto.ts  # BulkOperationDTO
     │   │   │   │   │   │   ├── bulk-operation-item.dto.ts  # Bulk operation item DTO
     │   │   │   │   │   │   ├── bulk-operation.dto.ts  # Bulk operation DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BulkOperationDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── business-verification.dto.ts  # ❌ CREATE - BusinessVerificationDTO
+    │   │   │   │   │   │   │   # BulkOperationDTO
+    │   │   │   │   │   │   ├── business-verification.dto.ts  # BusinessVerificationDTO
     │   │   │   │   │   │   ├── canned-response-dto.ts  # CannedResponseDTO
     │   │   │   │   │   │   ├── canned-response.dto.ts  # Canned response DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - CannedResponseDTO
+    │   │   │   │   │   │   │   # CannedResponseDTO
     │   │   │   │   │   │   ├── case-dto.ts  # CaseDTO
     │   │   │   │   │   │   ├── change-approval.dto.ts  # Change approval DTO
     │   │   │   │   │   │   ├── change-request-dto.ts  # ChangeRequestDTO
@@ -30900,63 +30942,59 @@ fe/
     │   │   │   │   │   │   ├── compliance-check-dto.ts  # ComplianceCheckDTO
     │   │   │   │   │   │   ├── compliance-context-dto.ts
     │   │   │   │   │   │   ├── config-history.dto.ts  # Config history DTO
-    │   │   │   │   │   │   ├── content-action-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── content-action-dto.ts
     │   │   │   │   │   │   ├── content-action.dto.ts  # Content action DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── content-policy-dto.ts  # ContentPolicyDTO
     │   │   │   │   │   │   ├── data-masking-policy-dto.ts  # Data masking policy DTO
     │   │   │   │   │   │   ├── data-masking-policy.dto.ts  # Data masking policy DTO
     │   │   │   │   │   │   ├── data-masking.dto.ts  # Data masking DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - DataMaskingRuleDTO
-    │   │   │   │   │   │   ├── dispute-case-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── dispute-evidence-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # DataMaskingRuleDTO
+    │   │   │   │   │   │   ├── dispute-case-dto.ts
+    │   │   │   │   │   │   ├── dispute-evidence-dto.ts
     │   │   │   │   │   │   ├── dsar.dto.ts  # DSAR DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - DsarRequestDTO
+    │   │   │   │   │   │   │   # DsarRequestDTO
     │   │   │   │   │   │   ├── experiment-dto.ts  # Experiment DTO
     │   │   │   │   │   │   │   # ExperimentDTO
     │   │   │   │   │   │   ├── experiment.dto.ts  # Experiment DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ExperimentDTO
-    │   │   │   │   │   │   ├── faq-category-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── faq-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── faq.dto.ts  # ❌ CREATE - FaqDTO
+    │   │   │   │   │   │   │   # ExperimentDTO
+    │   │   │   │   │   │   ├── faq-category-dto.ts
+    │   │   │   │   │   │   ├── faq-dto.ts
+    │   │   │   │   │   │   ├── faq.dto.ts  # FaqDTO
     │   │   │   │   │   │   ├── feature-flag-dto.ts  # Feature flag DTO
     │   │   │   │   │   │   ├── feature-flag.dto.ts  # Feature flag DTO
     │   │   │   │   │   │   ├── financial-hold.dto.ts  # Financial hold DTO
-    │   │   │   │   │   │   ├── fraud-case-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── fraud-case-dto.ts
     │   │   │   │   │   │   ├── fraud-case.dto.ts  # Fraud case DTO
     │   │   │   │   │   │   ├── fraud-detection.dto.ts  # Fraud detection DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - FraudCaseDTO
+    │   │   │   │   │   │   │   # FraudCaseDTO
     │   │   │   │   │   │   ├── fraud-pattern-dto.ts  # Fraud pattern DTO
-    │   │   │   │   │   │   ├── fraud-rule-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── fraud-rule-dto.ts
     │   │   │   │   │   │   ├── fraud-signal-dto.ts  # Fraud signal DTO
     │   │   │   │   │   │   ├── gdpr-request.dto.ts  # GDPR request DTO
-    │   │   │   │   │   │   ├── goodwill-credit.dto.ts  # ❌ CREATE - GoodwillCreditDTO
+    │   │   │   │   │   │   ├── goodwill-credit.dto.ts  # GoodwillCreditDTO
     │   │   │   │   │   │   ├── health-check-dto.ts  # Health check DTO
     │   │   │   │   │   │   ├── hold-dto.ts  # UserHoldDTO
     │   │   │   │   │   │   ├── hold.dto.ts  # Hold DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - HoldDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # HoldDTO
     │   │   │   │   │   │   ├── impersonation-dto.ts
     │   │   │   │   │   │   ├── incident-dto.ts  # IncidentDTO
-    │   │   │   │   │   │   ├── incident-response-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── incident-response-dto.ts
     │   │   │   │   │   │   ├── incident-response.dto.ts  # Incident response DTO
     │   │   │   │   │   │   ├── incident.dto.ts  # Incident DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - IncidentDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # IncidentDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── integration-dto.ts  # IntegrationDTO
     │   │   │   │   │   │   ├── integration.dto.ts  # Integration DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - IntegrationDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # IntegrationDTO
     │   │   │   │   │   │   ├── ip-claim.dto.ts  # IP claim DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - IpClaimDTO
+    │   │   │   │   │   │   │   # IpClaimDTO
     │   │   │   │   │   │   ├── kb-article.dto.ts  # Knowledge base article DTO
     │   │   │   │   │   │   ├── kb-category.dto.ts  # KB category DTO
     │   │   │   │   │   │   ├── kb-version.dto.ts  # KB version DTO
     │   │   │   │   │   │   ├── knowledge-base-dto.ts  # KBArticleDTO
     │   │   │   │   │   │   ├── legal-hold-dto.ts  # LegalHoldDTO
     │   │   │   │   │   │   ├── legal-hold.dto.ts  # Legal hold DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - LegalHoldDTO
+    │   │   │   │   │   │   │   # LegalHoldDTO
     │   │   │   │   │   │   ├── legal-notice-dto.ts  # Legal notice DTO
     │   │   │   │   │   │   ├── metric-definition.dto.ts  # Metric definition DTO
     │   │   │   │   │   │   ├── metric-value.dto.ts  # Metric value DTO
@@ -30975,61 +31013,56 @@ fe/
     │   │   │   │   │   │   ├── policy-acceptance.dto.ts  # Policy acceptance DTO
     │   │   │   │   │   │   ├── policy-doc-dto.ts  # PolicyDocumentDTO
     │   │   │   │   │   │   ├── policy-doc.dto.ts  # Policy document DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PolicyDocDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # PolicyDocDTO
     │   │   │   │   │   │   ├── policy-document-dto.ts  # Policy document DTO
     │   │   │   │   │   │   ├── policy-document.dto.ts  # Policy document DTO
     │   │   │   │   │   │   ├── policy-version.dto.ts  # Policy version DTO
     │   │   │   │   │   │   ├── priority-queue-dto.ts  # Priority queue DTO
     │   │   │   │   │   │   ├── privacy-request-dto.ts  # PrivacyRequestDTO
     │   │   │   │   │   │   ├── privacy-request.dto.ts  # Privacy request DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PrivacyRequestDTO
-    │   │   │   │   │   │   ├── quota-override-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # PrivacyRequestDTO
+    │   │   │   │   │   │   ├── quota-override-dto.ts
     │   │   │   │   │   │   ├── rate-limit-override.dto.ts  # Rate limit override DTO
-    │   │   │   │   │   │   ├── refund-case.dto.ts  # ❌ CREATE - RefundCaseDTO
+    │   │   │   │   │   │   ├── refund-case.dto.ts  # RefundCaseDTO
     │   │   │   │   │   │   ├── report-execution.dto.ts  # Report execution DTO
     │   │   │   │   │   │   ├── report-schedule.dto.ts  # Report schedule DTO
     │   │   │   │   │   │   ├── report-template.dto.ts  # Report template DTO
-    │   │   │   │   │   │   ├── reporting.dto.ts  # ❌ CREATE - ReportingDTO
+    │   │   │   │   │   │   ├── reporting.dto.ts  # ReportingDTO
     │   │   │   │   │   │   ├── risk-incident.dto.ts  # Risk incident DTO
-    │   │   │   │   │   │   ├── risk-management.dto.ts  # ❌ CREATE - RiskManagementDTO
+    │   │   │   │   │   │   ├── risk-management.dto.ts  # RiskManagementDTO
     │   │   │   │   │   │   ├── risk-rule-dto.ts  # Risk rule DTO
     │   │   │   │   │   │   ├── sanction-check-dto.ts  # Sanction check DTO
     │   │   │   │   │   │   ├── sanctions-dto.ts  # SanctionsCheckDTO
     │   │   │   │   │   │   ├── sanctions-screening-dto.ts
     │   │   │   │   │   │   ├── sanctions-screening.dto.ts  # Sanctions screening DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - SanctionsScreeningDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # SanctionsScreeningDTO
     │   │   │   │   │   │   ├── session-dto.ts  # AdminSessionDTO
     │   │   │   │   │   │   ├── sla-breach.dto.ts  # SLA breach DTO
     │   │   │   │   │   │   ├── sla-policy.dto.ts  # SLA policy DTO
-    │   │   │   │   │   │   ├── support-agent.dto.ts  # ❌ CREATE - SupportAgentDTO
-    │   │   │   │   │   │   ├── support-attachment-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── support-message-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── support-agent.dto.ts  # SupportAgentDTO
+    │   │   │   │   │   │   ├── support-attachment-dto.ts
+    │   │   │   │   │   │   ├── support-message-dto.ts
     │   │   │   │   │   │   ├── support-ticket-assignment.dto.ts  # Ticket assignment DTO
     │   │   │   │   │   │   ├── support-ticket-attachment.dto.ts  # Ticket attachment DTO
     │   │   │   │   │   │   ├── support-ticket-dto.ts  # Support ticket DTO
     │   │   │   │   │   │   ├── support-ticket-history.dto.ts  # Ticket history DTO
-    │   │   │   │   │   │   ├── support-ticket.dto.ts  # ❌ CREATE - SupportTicketDTO
+    │   │   │   │   │   │   ├── support-ticket.dto.ts  # SupportTicketDTO
     │   │   │   │   │   │   ├── system-config.dto.ts  # System config DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - SystemConfigDTO
+    │   │   │   │   │   │   │   # SystemConfigDTO
     │   │   │   │   │   │   ├── system-metric-dto.ts  # System metric DTO
     │   │   │   │   │   │   ├── system-setting-dto.ts  # System setting DTO
     │   │   │   │   │   │   ├── task-delegation-dto.ts  # Task delegation DTO
     │   │   │   │   │   │   ├── throttle-config.dto.ts  # Throttle config DTO
-    │   │   │   │   │   │   ├── throttle-exception-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── throttle-exception-dto.ts
     │   │   │   │   │   │   ├── throttle-policy-dto.ts  # ThrottlePolicyDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── throttle-policy.dto.ts  # Throttle policy DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ThrottlePolicyDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # ThrottlePolicyDTO
     │   │   │   │   │   │   ├── ticket-category.dto.ts  # Ticket category DTO
-    │   │   │   │   │   │   ├── ticket-message.dto.ts  # ❌ CREATE - TicketMessageDTO
+    │   │   │   │   │   │   ├── ticket-message.dto.ts  # TicketMessageDTO
     │   │   │   │   │   │   ├── two-person-approval.dto.ts  # Two-person approval DTO
-    │   │   │   │   │   │   ├── user-action-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── user-action-dto.ts
     │   │   │   │   │   │   ├── user-action.dto.ts  # User action DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - AdminUserActionDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # AdminUserActionDTO
     │   │   │   │   │   │   ├── watchlist-check.dto.ts  # Watchlist check DTO
     │   │   │   │   │   │   ├── watchlist-dto.ts  # WatchlistEntryDTO
     │   │   │   │   │   │   ├── webhook-delivery.dto.ts  # Webhook delivery DTO
@@ -31040,72 +31073,68 @@ fe/
     │   │   │   │   │   │   # MISSING DTOs
     │   │   │   │   │   │   # MISSING MODELS (40+ DTOs missing)
     │   │   │   │   │   │   ├── analytics-dto.ts  # CommunicationAnalyticsDTO
-    │   │   │   │   │   │   ├── archive.dto.ts  # ❌ CREATE - ConversationArchiveDTO
+    │   │   │   │   │   │   ├── archive.dto.ts  # ConversationArchiveDTO
     │   │   │   │   │   │   ├── attachment-dto.ts  # MessageAttachmentDTO
-    │   │   │   │   │   │   ├── attachment.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── attachment.dto.ts
     │   │   │   │   │   │   ├── blocked-user-dto.ts  # Blocked user DTO
     │   │   │   │   │   │   ├── blocklist-dto.ts  # BlocklistDTO
     │   │   │   │   │   │   ├── blocklist.dto.ts  # Blocklist DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BlocklistDTO
+    │   │   │   │   │   │   │   # BlocklistDTO
     │   │   │   │   │   │   ├── bookmark-dto.ts  # BookmarkDTO
     │   │   │   │   │   │   │   # Bookmark DTO
     │   │   │   │   │   │   ├── bookmark.dto.ts  # Bookmark DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BookmarkDTO
+    │   │   │   │   │   │   │   # BookmarkDTO
     │   │   │   │   │   │   ├── calendar-invite-dto.ts  # CalendarInviteDTO
     │   │   │   │   │   │   │   # Calendar invite DTO
     │   │   │   │   │   │   ├── calendar-invite.dto.ts  # Calendar invite DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - CalendarInviteDTO
+    │   │   │   │   │   │   │   # CalendarInviteDTO
     │   │   │   │   │   │   ├── call-dto.ts  # CallDTO
     │   │   │   │   │   │   │   # Call DTO
     │   │   │   │   │   │   ├── call.dto.ts  # Call DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - CallDTO
-    │   │   │   │   │   │   ├── channel-member-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # CallDTO
+    │   │   │   │   │   │   ├── channel-member-dto.ts
     │   │   │   │   │   │   ├── collaboration-cursor-dto.ts  # Cursor tracking DTO
     │   │   │   │   │   │   ├── collaboration-document-dto.ts  # Collaboration document DTO
     │   │   │   │   │   │   ├── collaboration-dto.ts  # CollaborationDTO
     │   │   │   │   │   │   ├── collaboration-participant-dto.ts  # Collaboration participant DTO
     │   │   │   │   │   │   ├── collaboration-session-dto.ts  # Collaboration session DTO
     │   │   │   │   │   │   ├── collaboration-session.dto.ts  # Collaboration session DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - CollaborationSessionDTO
-    │   │   │   │   │   │   ├── compliance.dto.ts  # ❌ CREATE - CommsComplianceDTO
-    │   │   │   │   │   │   ├── conversation-archive-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # CollaborationSessionDTO
+    │   │   │   │   │   │   ├── compliance.dto.ts  # CommsComplianceDTO
+    │   │   │   │   │   │   ├── conversation-archive-dto.ts
     │   │   │   │   │   │   ├── conversation-dto.ts  # Conversation DTO
-    │   │   │   │   │   │   ├── conversation-export-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── conversation-participant-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Conversation participant DTO
-    │   │   │   │   │   │   ├── conversation-settings.dto.ts  # ❌ CREATE - ConversationSettingsDTO
-    │   │   │   │   │   │   ├── conversation.dto.ts  # ❌ CREATE - ConversationDTO
+    │   │   │   │   │   │   ├── conversation-export-dto.ts
+    │   │   │   │   │   │   ├── conversation-participant-dto.ts  # Conversation participant DTO
+    │   │   │   │   │   │   ├── conversation-settings.dto.ts  # ConversationSettingsDTO
+    │   │   │   │   │   │   ├── conversation.dto.ts  # ConversationDTO
     │   │   │   │   │   │   ├── delivery-dto.ts  # DeliveryStatusDTO
     │   │   │   │   │   │   │   # Delivery DTO
     │   │   │   │   │   │   ├── delivery-log-dto.ts  # DeliveryLogDTO
     │   │   │   │   │   │   │   # Delivery log DTO
     │   │   │   │   │   │   ├── delivery-log.dto.ts  # Delivery log DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - DeliveryLogDTO
+    │   │   │   │   │   │   │   # DeliveryLogDTO
     │   │   │   │   │   │   ├── delivery.dto.ts  # Delivery DTO
     │   │   │   │   │   │   ├── digest-dto.ts  # DigestDTO
     │   │   │   │   │   │   │   # Digest DTO
     │   │   │   │   │   │   ├── digest.dto.ts  # Digest DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - DigestDTO
+    │   │   │   │   │   │   │   # DigestDTO
     │   │   │   │   │   │   ├── document-version-dto.ts  # Document version DTO
     │   │   │   │   │   │   ├── draft-dto.ts  # MessageDraftDTO
     │   │   │   │   │   │   │   # Draft DTO
     │   │   │   │   │   │   ├── draft.dto.ts  # Draft DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - DraftDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # DraftDTO
     │   │   │   │   │   │   ├── email-bridge-dto.ts  # EmailBridgeDTO
     │   │   │   │   │   │   │   # Email bridge DTO
     │   │   │   │   │   │   ├── email-bridge-inbound-dto.ts  # Inbound email DTO
     │   │   │   │   │   │   ├── email-bridge.dto.ts  # Email bridge DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - EmailBridgeDTO
+    │   │   │   │   │   │   │   # EmailBridgeDTO
     │   │   │   │   │   │   ├── email-dto.ts  # Email notification DTO
-    │   │   │   │   │   │   ├── email-layout-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── email-layout-dto.ts
     │   │   │   │   │   │   ├── email-notification.dto.ts  # Email notification DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - EmailNotificationDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── email-template-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # EmailNotificationDTO
+    │   │   │   │   │   │   ├── email-template-dto.ts
     │   │   │   │   │   │   ├── email-template.dto.ts  # Email template DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - EmailTemplateDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # EmailTemplateDTO
     │   │   │   │   │   │   ├── encryption-conversation-key-dto.ts  # E2EE conversation key DTO
     │   │   │   │   │   │   ├── encryption-dto.ts  # EncryptionKeyDTO
     │   │   │   │   │   │   ├── encryption-message-key-dto.ts  # E2EE message key DTO
@@ -31114,9 +31143,9 @@ fe/
     │   │   │   │   │   │   ├── export-dto.ts  # ConversationExportDTO
     │   │   │   │   │   │   │   # Export DTO
     │   │   │   │   │   │   ├── export.dto.ts  # Export DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ExportDTO
+    │   │   │   │   │   │   │   # ExportDTO
     │   │   │   │   │   │   ├── idempotency.dto.ts  # Idempotency DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - IdempotencyKeyDTO
+    │   │   │   │   │   │   │   # IdempotencyKeyDTO
     │   │   │   │   │   │   ├── in-app-notification-dto.ts  # In-app notification DTO
     │   │   │   │   │   │   ├── in-app-notification.dto.ts  # In-app notification DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
@@ -31124,104 +31153,89 @@ fe/
     │   │   │   │   │   │   │   # Interview DTO
     │   │   │   │   │   │   ├── interview-participant-dto.ts  # Interview participant DTO
     │   │   │   │   │   │   ├── interview.dto.ts  # Interview DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - InterviewDTO
+    │   │   │   │   │   │   │   # InterviewDTO
     │   │   │   │   │   │   ├── mail-tracking-dto.ts  # MailTrackingDTO
     │   │   │   │   │   │   │   # Mail tracking DTO
     │   │   │   │   │   │   ├── mail-tracking.dto.ts  # Mail tracking DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - MailTrackingDTO
+    │   │   │   │   │   │   │   # MailTrackingDTO
     │   │   │   │   │   │   ├── mention-dto.ts  # MentionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   │   # Mention DTO
     │   │   │   │   │   │   ├── mention.dto.ts  # Mention DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - MentionDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── message-draft-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # MentionDTO
+    │   │   │   │   │   │   ├── message-draft-dto.ts
     │   │   │   │   │   │   ├── message-dto.ts  # Message DTO
-    │   │   │   │   │   │   ├── message-edit-history.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── message-reaction-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── message-edit-history.dto.ts
+    │   │   │   │   │   │   ├── message-reaction-dto.ts
     │   │   │   │   │   │   ├── message-reaction.dto.ts  # Message reaction DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - MessageReactionDTO
-    │   │   │   │   │   │   ├── message-search-index-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # MessageReactionDTO
+    │   │   │   │   │   │   ├── message-search-index-dto.ts
     │   │   │   │   │   │   ├── message-sequence.dto.ts  # Message sequence DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - MessageSequenceDTO
-    │   │   │   │   │   │   ├── message.dto.ts  # ❌ CREATE - MessageDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # MessageSequenceDTO
+    │   │   │   │   │   │   ├── message.dto.ts  # MessageDTO
     │   │   │   │   │   │   ├── moderation-action-dto.ts  # Moderation action DTO
     │   │   │   │   │   │   ├── moderation-dto.ts  # MessageModerationDTO
     │   │   │   │   │   │   ├── moderation.dto.ts  # Moderation DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - CommsModerationDTO
+    │   │   │   │   │   │   │   # CommsModerationDTO
     │   │   │   │   │   │   ├── notification-channel.dto.ts  # Notification channel DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - NotificationChannelDTO
-    │   │   │   │   │   │   ├── notification-delivery-log-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── notification-dlq.dto.ts  # ❌ CREATE - NotificationDLQItemDTO
+    │   │   │   │   │   │   │   # NotificationChannelDTO
+    │   │   │   │   │   │   ├── notification-delivery-log-dto.ts
+    │   │   │   │   │   │   ├── notification-dlq.dto.ts  # NotificationDLQItemDTO
     │   │   │   │   │   │   ├── notification-dto.ts  # Notification DTO
-    │   │   │   │   │   │   ├── notification-preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── notification-preference-dto.ts
     │   │   │   │   │   │   ├── notification-preference.dto.ts  # Notification preference DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - NotificationPreferenceDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # NotificationPreferenceDTO
     │   │   │   │   │   │   ├── notification-queue-dto.ts  # NotificationQueueDTO
     │   │   │   │   │   │   │   # Notification queue DTO
     │   │   │   │   │   │   ├── notification-queue.dto.ts  # Notification queue DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - NotificationQueueItemDTO
+    │   │   │   │   │   │   │   # NotificationQueueItemDTO
     │   │   │   │   │   │   ├── notification-template-dto.ts  # Notification template DTO
     │   │   │   │   │   │   ├── notification-template.dto.ts  # Notification template DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - NotificationTemplateDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── notification.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── participant.dto.ts  # ❌ CREATE - ParticipantDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # NotificationTemplateDTO
+    │   │   │   │   │   │   ├── notification.dto.ts
+    │   │   │   │   │   │   ├── participant.dto.ts  # ParticipantDTO
     │   │   │   │   │   │   ├── pin-dto.ts  # PinnedMessageDTO
     │   │   │   │   │   │   │   # Pin DTO
     │   │   │   │   │   │   ├── pin.dto.ts  # Pin DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PinDTO
+    │   │   │   │   │   │   │   # PinDTO
     │   │   │   │   │   │   ├── platform-alert-delivery-dto.ts  # Platform alert delivery DTO
     │   │   │   │   │   │   ├── platform-alert-dto.ts  # PlatformAlertDTO
     │   │   │   │   │   │   │   # Platform alert DTO
     │   │   │   │   │   │   ├── platform-alert.dto.ts  # Platform alert DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PlatformAlertDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # PlatformAlertDTO
     │   │   │   │   │   │   ├── presence-dto.ts  # PresenceDTO
     │   │   │   │   │   │   ├── presence.dto.ts  # Presence DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PresenceDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # PresenceDTO
     │   │   │   │   │   │   ├── push-device-dto.ts  # PushDeviceDTO
     │   │   │   │   │   │   │   # Push device DTO
     │   │   │   │   │   │   ├── push-device.dto.ts  # Push device DTO
     │   │   │   │   │   │   ├── push-notification-dto.ts  # Push notification DTO
     │   │   │   │   │   │   ├── push-notification.dto.ts  # Push notification DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PushNotificationDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── push-subscription-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # PushNotificationDTO
+    │   │   │   │   │   │   ├── push-subscription-dto.ts
     │   │   │   │   │   │   ├── push-subscription.dto.ts  # Push subscription DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PushSubscriptionDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── queue-stats.dto.ts  # ❌ CREATE - Aggregated Queue Stats DTO (admin views)
+    │   │   │   │   │   │   │   # PushSubscriptionDTO
+    │   │   │   │   │   │   ├── queue-stats.dto.ts  # Aggregated Queue Stats DTO (admin views)
     │   │   │   │   │   │   ├── quota-dto.ts  # MessageQuotaDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── quota-usage-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── quota.dto.ts  # ❌ CREATE - QuotaDTO
+    │   │   │   │   │   │   ├── quota-usage-dto.ts
+    │   │   │   │   │   │   ├── quota.dto.ts  # QuotaDTO
     │   │   │   │   │   │   ├── rate-limit.dto.ts  # Rate limit DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RateLimitCounterDTO
-    │   │   │   │   │   │   ├── reaction.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── read-receipt-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # RateLimitCounterDTO
+    │   │   │   │   │   │   ├── reaction.dto.ts
+    │   │   │   │   │   │   ├── read-receipt-dto.ts
     │   │   │   │   │   │   ├── read-receipt.dto.ts  # Read receipt DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReadReceiptDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # ReadReceiptDTO
     │   │   │   │   │   │   ├── read-state-dto.ts  # ReadStateDTO
     │   │   │   │   │   │   │   # Read state DTO
     │   │   │   │   │   │   ├── read-state.dto.ts  # Read state DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReadStateDTO
-    │   │   │   │   │   │   ├── retention-policy-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # ReadStateDTO
+    │   │   │   │   │   │   ├── retention-policy-dto.ts
     │   │   │   │   │   │   ├── retention-policy.dto.ts  # Retention policy DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RetentionPolicyDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # RetentionPolicyDTO
     │   │   │   │   │   │   ├── scheduled-message.dto.ts  # Scheduled message DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ScheduledMessageDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # ScheduledMessageDTO
     │   │   │   │   │   │   ├── search-dto.ts  # MessageSearchDTO
     │   │   │   │   │   │   ├── sms-notification.dto.ts  # SMS notification DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - SmsNotificationDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # SmsNotificationDTO
     │   │   │   │   │   │   ├── spam-detection-dto.ts  # SpamDetectionDTO
     │   │   │   │   │   │   │   # Spam detection DTO
     │   │   │   │   │   │   ├── spam-detection-rule-dto.ts  # Spam detection rule DTO
@@ -31232,15 +31246,14 @@ fe/
     │   │   │   │   │   │   ├── system-message-dto.ts  # SystemMessageDTO
     │   │   │   │   │   │   │   # System message DTO
     │   │   │   │   │   │   ├── system-message.dto.ts  # System message DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - SystemMessageDTO
+    │   │   │   │   │   │   │   # SystemMessageDTO
     │   │   │   │   │   │   ├── thread-dto.ts  # ThreadDTO
     │   │   │   │   │   │   │   # Thread DTO
     │   │   │   │   │   │   ├── thread.dto.ts  # Thread DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ThreadDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── typing-indicator-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # ThreadDTO
+    │   │   │   │   │   │   ├── typing-indicator-dto.ts
     │   │   │   │   │   │   ├── typing-indicator.dto.ts  # Typing indicator DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - TypingIndicatorDTO
+    │   │   │   │   │   │   │   # TypingIndicatorDTO
     │   │   │   │   │   │   ├── unsubscribe-dto.ts  # UnsubscribeRegistryDTO
     │   │   │   │   │   │   │   # Unsubscribe DTO
     │   │   │   │   │   │   ├── unsubscribe.dto.ts  # Unsubscribe DTO
@@ -31248,14 +31261,12 @@ fe/
     │   │   │   │   │   │   │   # URL safety DTO
     │   │   │   │   │   │   ├── url-safety.dto.ts  # URL safety DTO
     │   │   │   │   │   │   ├── webhook-delivery-dto.ts  # Webhook delivery DTO
-    │   │   │   │   │   │   ├── webhook-delivery.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── webhook-delivery.dto.ts
     │   │   │   │   │   │   ├── webhook-dto.ts  # WebhookDTO
     │   │   │   │   │   │   ├── webhook.dto.ts  # Webhook DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - WebhookDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # WebhookDTO
     │   │   │   │   │   │   └── websocket-connection.dto.ts  # WebSocket connection DTO
-    │   │   │   │   │   │       # ❌ CREATE - WebsocketConnectionDTO
-    │   │   │   │   │   │       # ❌ CREATE
+    │   │   │   │   │   │       # WebsocketConnectionDTO
     │   │   │   │   │   ├── contracts/  # Contracts backend API DTOs
     │   │   │   │   │   │   # Contracts-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL CONTRACT SUB-ENTITIES)
@@ -31264,32 +31275,28 @@ fe/
     │   │   │   │   │   │   ├── agency-contract-dto.ts  # AgencyContractDTO
     │   │   │   │   │   │   │   # Agency contract DTO
     │   │   │   │   │   │   ├── agency-contract.dto.ts  # Agency contract DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - AgencyContractDTO
+    │   │   │   │   │   │   │   # AgencyContractDTO
     │   │   │   │   │   │   ├── amendment-dto.ts  # Amendment DTO
-    │   │   │   │   │   │   ├── amendment.dto.ts  # ❌ CREATE - ContractAmendmentDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── analytics-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── analytics.dto.ts  # ❌ CREATE - ContractAnalyticsDTO
-    │   │   │   │   │   │   ├── approval-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── approval-workflow-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── approval.dto.ts  # ❌ CREATE - ContractApprovalDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── attachment.dto.ts  # ❌ CREATE - ContractAttachmentDTO
+    │   │   │   │   │   │   ├── amendment.dto.ts  # ContractAmendmentDTO
+    │   │   │   │   │   │   ├── analytics-dto.ts
+    │   │   │   │   │   │   ├── analytics.dto.ts  # ContractAnalyticsDTO
+    │   │   │   │   │   │   ├── approval-dto.ts
+    │   │   │   │   │   │   ├── approval-workflow-dto.ts
+    │   │   │   │   │   │   ├── approval.dto.ts  # ContractApprovalDTO
+    │   │   │   │   │   │   ├── attachment.dto.ts  # ContractAttachmentDTO
     │   │   │   │   │   │   ├── audit-log-dto.ts
-    │   │   │   │   │   │   ├── audit.dto.ts  # ❌ CREATE - ContractAuditDTO
-    │   │   │   │   │   │   ├── budget-adjustment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── audit.dto.ts  # ContractAuditDTO
+    │   │   │   │   │   │   ├── budget-adjustment-dto.ts
     │   │   │   │   │   │   ├── budget-adjustment.dto.ts  # Budget adjustment DTO
     │   │   │   │   │   │   ├── budget-dto.ts  # ContractBudgetDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── budget.dto.ts  # ❌ CREATE - ContractBudgetDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── budget.dto.ts  # ContractBudgetDTO
     │   │   │   │   │   │   ├── cancellation-dto.ts
-    │   │   │   │   │   │   ├── client-feedback-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── client-feedback-dto.ts
     │   │   │   │   │   │   ├── client-feedback.dto.ts  # Client feedback DTO
-    │   │   │   │   │   │   ├── collaboration-tool-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── collaboration-tool-dto.ts
     │   │   │   │   │   │   ├── collaboration-tool.dto.ts  # Collaboration tool DTO
     │   │   │   │   │   │   ├── compliance-dto.ts  # ContractComplianceDTO
-    │   │   │   │   │   │   ├── compliance.dto.ts  # ❌ CREATE - ContractComplianceDTO
+    │   │   │   │   │   │   ├── compliance.dto.ts  # ContractComplianceDTO
     │   │   │   │   │   │   ├── contract-amendment.dto.ts  # Amendment DTO
     │   │   │   │   │   │   ├── contract-analytics.dto.ts  # Analytics DTO
     │   │   │   │   │   │   ├── contract-compliance.dto.ts  # Compliance DTO
@@ -31307,214 +31314,183 @@ fe/
     │   │   │   │   │   │   ├── contract-workroom.dto.ts  # Workroom DTO
     │   │   │   │   │   │   ├── contract-workspace-dto.ts  # Contract workspace DTO
     │   │   │   │   │   │   ├── contract-workspace.dto.ts  # Workspace DTO
-    │   │   │   │   │   │   ├── contract.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── contract.dto.ts
     │   │   │   │   │   │   ├── deliverable-dto.ts  # Deliverable DTO
-    │   │   │   │   │   │   ├── deliverable.dto.ts  # ❌ CREATE - DeliverableDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── deliverable.dto.ts  # DeliverableDTO
     │   │   │   │   │   │   ├── direct-contract-dto.ts  # DirectContractDTO
-    │   │   │   │   │   │   ├── direct-contract.dto.ts  # ❌ CREATE - DirectContractDTO
+    │   │   │   │   │   │   ├── direct-contract.dto.ts  # DirectContractDTO
     │   │   │   │   │   │   ├── dispute-dto.ts  # Dispute DTO
-    │   │   │   │   │   │   ├── dispute-evidence-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dispute-evidence-dto.ts
     │   │   │   │   │   │   ├── dispute-evidence.dto.ts  # Dispute evidence DTO
-    │   │   │   │   │   │   ├── dispute-message-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dispute-message-dto.ts
     │   │   │   │   │   │   ├── dispute-message.dto.ts  # Dispute message DTO
-    │   │   │   │   │   │   ├── dispute.dto.ts  # ❌ CREATE - ContractDisputeDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── dispute.dto.ts  # ContractDisputeDTO
     │   │   │   │   │   │   ├── escrow-dto.ts  # Escrow DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── escrow-transaction-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── escrow-transaction-dto.ts
     │   │   │   │   │   │   ├── escrow-transaction.dto.ts  # Escrow transaction DTO
-    │   │   │   │   │   │   ├── escrow.dto.ts  # ❌ CREATE - EscrowDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── escrow.dto.ts  # EscrowDTO
     │   │   │   │   │   │   ├── feedback-dto.ts  # ContractFeedbackDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── feedback.dto.ts  # ❌ CREATE - ContractFeedbackDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── feedback.dto.ts  # ContractFeedbackDTO
     │   │   │   │   │   │   ├── financial-hold.dto.ts  # Financial hold DTO
-    │   │   │   │   │   │   ├── hold.dto.ts  # ❌ CREATE - ContractHoldDTO
+    │   │   │   │   │   │   ├── hold.dto.ts  # ContractHoldDTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
-    │   │   │   │   │   │   ├── insurance-claim-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Insurance claim DTO
+    │   │   │   │   │   │   ├── insurance-claim-dto.ts  # Insurance claim DTO
     │   │   │   │   │   │   ├── insurance-claim.dto.ts  # Insurance claim DTO
-    │   │   │   │   │   │   ├── insurance-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── insurance-dto.ts
     │   │   │   │   │   │   ├── insurance.dto.ts  # Insurance DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - InsuranceDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── invitation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # InsuranceDTO
+    │   │   │   │   │   │   ├── invitation-dto.ts
     │   │   │   │   │   │   ├── invitation.dto.ts  # Invitation DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ContractInvitationDTO
-    │   │   │   │   │   │   ├── invoice-line-item-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # ContractInvitationDTO
+    │   │   │   │   │   │   ├── invoice-line-item-dto.ts
     │   │   │   │   │   │   ├── invoice-line-item.dto.ts  # Invoice line item DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── invoice-payment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invoice-payment-dto.ts
     │   │   │   │   │   │   ├── invoice-payment.dto.ts  # Invoice payment DTO
-    │   │   │   │   │   │   ├── invoice.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── kpi-score.dto.ts  # ❌ CREATE - KpiScoreDTO
-    │   │   │   │   │   │   ├── kpi.dto.ts  # ❌ CREATE - KpiDTO
+    │   │   │   │   │   │   ├── invoice.dto.ts
+    │   │   │   │   │   │   ├── kpi-score.dto.ts  # KpiScoreDTO
+    │   │   │   │   │   │   ├── kpi.dto.ts  # KpiDTO
     │   │   │   │   │   │   ├── legal-review-dto.ts  # LegalReviewDTO
-    │   │   │   │   │   │   ├── milestone-activity.dto.ts  # ❌ CREATE - MilestoneActivityDTO
+    │   │   │   │   │   │   ├── milestone-activity.dto.ts  # MilestoneActivityDTO
     │   │   │   │   │   │   ├── milestone-dto.ts  # Milestone DTO
-    │   │   │   │   │   │   ├── milestone.dto.ts  # ❌ CREATE - MilestoneDTO
-    │   │   │   │   │   │   ├── nda-breach-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── milestone.dto.ts  # MilestoneDTO
+    │   │   │   │   │   │   ├── nda-breach-dto.ts
     │   │   │   │   │   │   ├── nda-breach.dto.ts  # NDA breach DTO
-    │   │   │   │   │   │   ├── nda-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── nda-dto.ts
     │   │   │   │   │   │   ├── nda.dto.ts  # NDA DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - NDADTO
+    │   │   │   │   │   │   │   # NDADTO
     │   │   │   │   │   │   ├── negotiation-dto.ts  # NegotiationDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── negotiation-offer-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── negotiation-offer-dto.ts
     │   │   │   │   │   │   ├── negotiation-offer.dto.ts  # Negotiation offer DTO
-    │   │   │   │   │   │   ├── negotiation.dto.ts  # ❌ CREATE - NegotiationDTO
-    │   │   │   │   │   │   ├── payment-schedule-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── negotiation.dto.ts  # NegotiationDTO
+    │   │   │   │   │   │   ├── payment-schedule-dto.ts
     │   │   │   │   │   │   ├── payment-schedule.dto.ts  # Payment schedule DTO
     │   │   │   │   │   │   ├── performance-kpi-dto.ts  # Performance KPI DTO
     │   │   │   │   │   │   ├── performance-kpi.dto.ts  # Performance KPI DTO
     │   │   │   │   │   │   ├── rate-adjustment-dto.ts  # RateAdjustmentDTO
-    │   │   │   │   │   │   ├── rate-card-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── rate-card.dto.ts  # ❌ CREATE - RateCardDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── recurring-contract-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Recurring contract DTO
+    │   │   │   │   │   │   ├── rate-card-dto.ts
+    │   │   │   │   │   │   ├── rate-card.dto.ts  # RateCardDTO
+    │   │   │   │   │   │   ├── recurring-contract-dto.ts  # Recurring contract DTO
     │   │   │   │   │   │   ├── recurring-contract.dto.ts  # Recurring contract DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RecurringContractDTO
-    │   │   │   │   │   │   ├── reminder-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── reminder.dto.ts  # ❌ CREATE - ContractReminderDTO
-    │   │   │   │   │   │   ├── renegotiation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # RecurringContractDTO
+    │   │   │   │   │   │   ├── reminder-dto.ts
+    │   │   │   │   │   │   ├── reminder.dto.ts  # ContractReminderDTO
+    │   │   │   │   │   │   ├── renegotiation-dto.ts
     │   │   │   │   │   │   ├── renewal-dto.ts
-    │   │   │   │   │   │   ├── renewal-history-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Renewal history DTO
-    │   │   │   │   │   │   ├── renewal.dto.ts  # ❌ CREATE - ContractRenewalDTO
+    │   │   │   │   │   │   ├── renewal-history-dto.ts  # Renewal history DTO
+    │   │   │   │   │   │   ├── renewal.dto.ts  # ContractRenewalDTO
     │   │   │   │   │   │   ├── report-dto.ts  # ContractReportDTO
-    │   │   │   │   │   │   ├── report-run.dto.ts  # ❌ CREATE - ReportRunDTO
-    │   │   │   │   │   │   ├── report.dto.ts  # ❌ CREATE - ContractReportDTO
+    │   │   │   │   │   │   ├── report-run.dto.ts  # ReportRunDTO
+    │   │   │   │   │   │   ├── report.dto.ts  # ContractReportDTO
     │   │   │   │   │   │   ├── risk-assessment-dto.ts
     │   │   │   │   │   │   ├── security-clearance-dto.ts  # SecurityClearanceDTO
     │   │   │   │   │   │   ├── signature-dto.ts  # Signature DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── signature.dto.ts  # ❌ CREATE - SignatureDTO
-    │   │   │   │   │   │   ├── sla-breach-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── sla-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # SLA DTO
-    │   │   │   │   │   │   ├── sla-metric-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── sla-performance-record-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── sla.dto.ts  # ❌ CREATE - SLADTO
-    │   │   │   │   │   │   ├── sow.dto.ts  # ❌ CREATE - SowDTO
+    │   │   │   │   │   │   ├── signature.dto.ts  # SignatureDTO
+    │   │   │   │   │   │   ├── sla-breach-dto.ts
+    │   │   │   │   │   │   ├── sla-dto.ts  # SLA DTO
+    │   │   │   │   │   │   ├── sla-metric-dto.ts
+    │   │   │   │   │   │   ├── sla-performance-record-dto.ts
+    │   │   │   │   │   │   ├── sla.dto.ts  # SLADTO
+    │   │   │   │   │   │   ├── sow.dto.ts  # SowDTO
     │   │   │   │   │   │   ├── statement-of-work-dto.ts  # SOW DTO
     │   │   │   │   │   │   ├── statement-of-work.dto.ts  # SOW DTO
-    │   │   │   │   │   │   ├── task-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── template-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── template.dto.ts  # ❌ CREATE - ContractTemplateDTO
-    │   │   │   │   │   │   ├── termination-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── termination.dto.ts  # ❌ CREATE - ContractTerminationDTO
-    │   │   │   │   │   │   ├── time-entry-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── task-dto.ts
+    │   │   │   │   │   │   ├── template-dto.ts
+    │   │   │   │   │   │   ├── template.dto.ts  # ContractTemplateDTO
+    │   │   │   │   │   │   ├── termination-dto.ts
+    │   │   │   │   │   │   ├── termination.dto.ts  # ContractTerminationDTO
+    │   │   │   │   │   │   ├── time-entry-dto.ts
     │   │   │   │   │   │   ├── time-entry.dto.ts  # Time entry DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - TimeEntryDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # TimeEntryDTO
     │   │   │   │   │   │   ├── timesheet-dto.ts  # Timesheet DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── timesheet.dto.ts  # ❌ CREATE - TimesheetDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── version-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── work-diary-daily-summary-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── timesheet.dto.ts  # TimesheetDTO
+    │   │   │   │   │   │   ├── version-dto.ts
+    │   │   │   │   │   │   ├── work-diary-daily-summary-dto.ts
     │   │   │   │   │   │   ├── work-diary-dto.ts
-    │   │   │   │   │   │   ├── work-diary-entry-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── work-diary-entry-dto.ts
     │   │   │   │   │   │   ├── work-diary-entry.dto.ts  # Work diary DTO
     │   │   │   │   │   │   ├── work-diary-summary.dto.ts  # Daily summary DTO
-    │   │   │   │   │   │   ├── work-diary.dto.ts  # ❌ CREATE - WorkDiaryDTO
+    │   │   │   │   │   │   ├── work-diary.dto.ts  # WorkDiaryDTO
     │   │   │   │   │   │   ├── work-scope-dto.ts  # WorkScopeDTO
     │   │   │   │   │   │   ├── workroom-dto.ts  # WorkroomDTO
     │   │   │   │   │   │   ├── workroom-note-dto.ts  # Workroom note DTO
     │   │   │   │   │   │   ├── workroom-note.dto.ts  # Workroom note DTO
     │   │   │   │   │   │   ├── workroom-task-dto.ts  # Workroom task DTO
     │   │   │   │   │   │   ├── workroom-task.dto.ts  # Workroom task DTO
-    │   │   │   │   │   │   ├── workroom.dto.ts  # ❌ CREATE - WorkroomDTO
-    │   │   │   │   │   │   ├── workspace-comment-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Workspace comment DTO
+    │   │   │   │   │   │   ├── workroom.dto.ts  # WorkroomDTO
+    │   │   │   │   │   │   ├── workspace-comment-dto.ts  # Workspace comment DTO
     │   │   │   │   │   │   ├── workspace-comment.dto.ts  # Workspace comment DTO
-    │   │   │   │   │   │   ├── workspace-document-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Workspace document DTO
+    │   │   │   │   │   │   ├── workspace-document-dto.ts  # Workspace document DTO
     │   │   │   │   │   │   ├── workspace-document.dto.ts  # Workspace document DTO
-    │   │   │   │   │   │   ├── workspace-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   └── workspace.dto.ts  # ❌ CREATE - WorkspaceDTO
+    │   │   │   │   │   │   ├── workspace-dto.ts
+    │   │   │   │   │   │   └── workspace.dto.ts  # WorkspaceDTO
     │   │   │   │   │   ├── financial/  # Financial backend API DTOs
     │   │   │   │   │   │   # Financial-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL FINANCIAL ENTITIES)
     │   │   │   │   │   │   # MISSING MODELS (40+ DTOs missing)
-    │   │   │   │   │   │   ├── account-freeze-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── account-limit-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── account-freeze-dto.ts
+    │   │   │   │   │   │   ├── account-limit-dto.ts
     │   │   │   │   │   │   ├── analytics-dto.ts  # FinancialAnalyticsDTO
-    │   │   │   │   │   │   ├── balance-snapshot-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── balance-snapshot-dto.ts
     │   │   │   │   │   │   ├── bank-account-dto.ts  # Bank account DTO
     │   │   │   │   │   │   │   # BankAccountDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bank-account.dto.ts  # Bank account DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── bank-verification-dto.ts  # BankVerificationDTO
     │   │   │   │   │   │   │   # Bank verification DTO
-    │   │   │   │   │   │   ├── bank-verification.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── bank.dto.ts  # ❌ CREATE - BankAccountDTO
+    │   │   │   │   │   │   ├── bank-verification.dto.ts
+    │   │   │   │   │   │   ├── bank.dto.ts  # BankAccountDTO
     │   │   │   │   │   │   ├── batch-payment.dto.ts  # Batch payment DTO
-    │   │   │   │   │   │   ├── billing-address-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── billing-address-dto.ts
     │   │   │   │   │   │   ├── billing-address.dto.ts  # Billing address DTO
     │   │   │   │   │   │   ├── bonus-dto.ts  # Bonus DTO
     │   │   │   │   │   │   ├── bonus.dto.ts  # Bonus DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BonusDTO
+    │   │   │   │   │   │   │   # BonusDTO
     │   │   │   │   │   │   ├── budget-dto.ts
     │   │   │   │   │   │   ├── chargeback-dto.ts  # Chargeback DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── chargeback.dto.ts  # Chargeback DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ChargebackDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # ChargebackDTO
     │   │   │   │   │   │   ├── commission-dto.ts
     │   │   │   │   │   │   ├── connects-purchase-dto.ts  # Connects purchase DTO
-    │   │   │   │   │   │   ├── connects.dto.ts  # ❌ CREATE - ConnectsDTO
+    │   │   │   │   │   │   ├── connects.dto.ts  # ConnectsDTO
     │   │   │   │   │   │   ├── coupon-dto.ts  # CouponDTO, CouponRedemptionDTO
     │   │   │   │   │   │   │   # Coupon DTO
     │   │   │   │   │   │   ├── coupon-redemption-dto.ts  # Coupon redemption DTO
-    │   │   │   │   │   │   ├── coupon.dto.ts  # ❌ CREATE - CouponDTO
+    │   │   │   │   │   │   ├── coupon.dto.ts  # CouponDTO
     │   │   │   │   │   │   ├── crypto-payment.dto.ts  # Crypto payment DTO
-    │   │   │   │   │   │   ├── currency-conversion-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Currency conversion DTO
-    │   │   │   │   │   │   ├── currency-conversion.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── currency-exchange-rate-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── currency-conversion-dto.ts  # Currency conversion DTO
+    │   │   │   │   │   │   ├── currency-conversion.dto.ts
+    │   │   │   │   │   │   ├── currency-exchange-rate-dto.ts
     │   │   │   │   │   │   ├── currency-preference-dto.ts  # CurrencyPreferenceDTO
     │   │   │   │   │   │   ├── currency-preference.dto.ts  # Currency preference DTO
     │   │   │   │   │   │   ├── currency-rate.dto.ts  # Currency rate DTO
-    │   │   │   │   │   │   ├── currency.dto.ts  # ❌ CREATE - CurrencyDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── currency.dto.ts  # CurrencyDTO
     │   │   │   │   │   │   ├── dispute-case.dto.ts  # Dispute case DTO
     │   │   │   │   │   │   ├── dispute-dto.ts  # Payment dispute DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── dispute-evidence-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── earning-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dispute-evidence-dto.ts
+    │   │   │   │   │   │   ├── earning-dto.ts
     │   │   │   │   │   │   ├── earnings-report.dto.ts  # Earnings report DTO
-    │   │   │   │   │   │   ├── escrow-account.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── escrow-account.dto.ts
     │   │   │   │   │   │   ├── escrow-dto.ts  # Escrow DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── escrow-hold-dto.ts  # Escrow hold DTO
     │   │   │   │   │   │   ├── escrow-ledger.dto.ts  # Escrow ledger DTO
-    │   │   │   │   │   │   ├── escrow-release-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Escrow release DTO
-    │   │   │   │   │   │   ├── escrow-release.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── escrow-release-dto.ts  # Escrow release DTO
+    │   │   │   │   │   │   ├── escrow-release.dto.ts
     │   │   │   │   │   │   ├── exchange-rate-dto.ts  # Exchange rate DTO
-    │   │   │   │   │   │   ├── exchange-rate.dto.ts  # ❌ CREATE - ExchangeRateDTO
+    │   │   │   │   │   │   ├── exchange-rate.dto.ts  # ExchangeRateDTO
     │   │   │   │   │   │   ├── expense-dto.ts  # ExpenseReimbursementDTO
     │   │   │   │   │   │   ├── expense-reimbursement-dto.ts  # Expense reimbursement DTO
-    │   │   │   │   │   │   ├── expense-reimbursement.dto.ts  # ❌ CREATE - ExpenseReimbursementDTO
-    │   │   │   │   │   │   ├── expense.dto.ts  # ❌ CREATE - ExpenseDTO
+    │   │   │   │   │   │   ├── expense-reimbursement.dto.ts  # ExpenseReimbursementDTO
+    │   │   │   │   │   │   ├── expense.dto.ts  # ExpenseDTO
     │   │   │   │   │   │   ├── fee-dto.ts  # Fee DTO
     │   │   │   │   │   │   ├── fee-migration.dto.ts  # Fee migration DTO
     │   │   │   │   │   │   ├── fee-rule.dto.ts  # Fee rule DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - FeeRuleDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── fee-schedule-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # FeeRuleDTO
+    │   │   │   │   │   │   ├── fee-schedule-dto.ts
     │   │   │   │   │   │   ├── fee-schedule.dto.ts  # Fee schedule DTO
     │   │   │   │   │   │   ├── fee-transaction-dto.ts  # Fee transaction DTO
-    │   │   │   │   │   │   ├── fee-update.dto.ts  # ❌ CREATE - FeeUpdateDTO
+    │   │   │   │   │   │   ├── fee-update.dto.ts  # FeeUpdateDTO
     │   │   │   │   │   │   ├── fee-version.dto.ts  # Fee version DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── fee-waiver-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── fee.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── fee-waiver-dto.ts
+    │   │   │   │   │   │   ├── fee.dto.ts
     │   │   │   │   │   │   ├── financial-analytics-dto.ts  # Financial analytics DTO
     │   │   │   │   │   │   ├── forex-dto.ts  # ExchangeRateDTO, CurrencyConversionDTO
     │   │   │   │   │   │   ├── fraud-alert-dto.ts  # FraudAlertDTO
@@ -31525,9 +31501,9 @@ fe/
     │   │   │   │   │   │   ├── gateway-configuration-dto.ts  # Gateway config DTO
     │   │   │   │   │   │   ├── gateway-dto.ts  # GatewayConfigDTO, GatewayWebhookDTO
     │   │   │   │   │   │   ├── gateway-webhook-dto.ts  # Gateway webhook DTO
-    │   │   │   │   │   │   ├── gateway.dto.ts  # ❌ CREATE - GatewayDTO
-    │   │   │   │   │   │   ├── hold-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── hold.dto.ts  # ❌ CREATE - EscrowHoldDTO  # flagged missing
+    │   │   │   │   │   │   ├── gateway.dto.ts  # GatewayDTO
+    │   │   │   │   │   │   ├── hold-dto.ts
+    │   │   │   │   │   │   ├── hold.dto.ts  # EscrowHoldDTO  # flagged missing
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── insurance-claim-dto.ts  # InsuranceClaimDTO
     │   │   │   │   │   │   │   # Insurance claim DTO
@@ -31535,17 +31511,17 @@ fe/
     │   │   │   │   │   │   ├── insurance-policy-dto.ts  # Insurance policy DTO
     │   │   │   │   │   │   ├── insurance-policy.dto.ts  # Insurance policy DTO
     │   │   │   │   │   │   ├── insurance-provider.dto.ts  # Insurance provider DTO
-    │   │   │   │   │   │   ├── insurance.dto.ts  # ❌ CREATE - FinancialInsuranceDTO
+    │   │   │   │   │   │   ├── insurance.dto.ts  # FinancialInsuranceDTO
     │   │   │   │   │   │   ├── international-payment-dto.ts  # InternationalPaymentDTO
     │   │   │   │   │   │   ├── international-payment.dto.ts  # International payment DTO
     │   │   │   │   │   │   ├── intl-compliance.dto.ts  # International compliance DTO
     │   │   │   │   │   │   ├── invoice-dto.ts  # Invoice DTO
-    │   │   │   │   │   │   ├── invoice-item.dto.ts  # ❌ CREATE - InvoiceItemDTO
+    │   │   │   │   │   │   ├── invoice-item.dto.ts  # InvoiceItemDTO
     │   │   │   │   │   │   ├── invoice-line-item-dto.ts  # Invoice line item DTO
     │   │   │   │   │   │   ├── invoice-line-item.dto.ts  # Invoice line item DTO
-    │   │   │   │   │   │   ├── invoice-reminder-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── invoice-reminder.dto.ts  # ❌ CREATE - InvoiceReminderDTO  # flagged missing
-    │   │   │   │   │   │   ├── invoice.dto.ts  # ❌ CREATE - InvoiceDTO
+    │   │   │   │   │   │   ├── invoice-reminder-dto.ts
+    │   │   │   │   │   │   ├── invoice-reminder.dto.ts  # InvoiceReminderDTO  # flagged missing
+    │   │   │   │   │   │   ├── invoice.dto.ts  # InvoiceDTO
     │   │   │   │   │   │   ├── ledger-dto.ts
     │   │   │   │   │   │   ├── ledger-entry-dto.ts  # Ledger entry DTO
     │   │   │   │   │   │   ├── ledger-journal-dto.ts  # Ledger journal DTO
@@ -31558,181 +31534,157 @@ fe/
     │   │   │   │   │   │   ├── payment-dto.ts  # Payment DTO
     │   │   │   │   │   │   ├── payment-link.dto.ts  # Payment link DTO
     │   │   │   │   │   │   ├── payment-method-dto.ts  # Payment method DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment-method-token.dto.ts  # Payment method token DTO
-    │   │   │   │   │   │   ├── payment-method.dto.ts  # ❌ CREATE - PaymentMethodDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── payment-method.dto.ts  # PaymentMethodDTO
     │   │   │   │   │   │   ├── payment-schedule-dto.ts  # PaymentScheduleDTO
     │   │   │   │   │   │   │   # Payment schedule DTO
-    │   │   │   │   │   │   ├── payment-schedule.dto.ts  # ❌ CREATE - PaymentScheduleDTO
-    │   │   │   │   │   │   ├── payment-verification-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── payment-verification.dto.ts  # ❌ CREATE - PaymentVerificationDTO  # flagged missing
-    │   │   │   │   │   │   ├── payment.dto.ts  # ❌ CREATE - PaymentDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── payout-batch-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Payout batch DTO
+    │   │   │   │   │   │   ├── payment-schedule.dto.ts  # PaymentScheduleDTO
+    │   │   │   │   │   │   ├── payment-verification-dto.ts
+    │   │   │   │   │   │   ├── payment-verification.dto.ts  # PaymentVerificationDTO  # flagged missing
+    │   │   │   │   │   │   ├── payment.dto.ts  # PaymentDTO
+    │   │   │   │   │   │   ├── payout-batch-dto.ts  # Payout batch DTO
     │   │   │   │   │   │   ├── payout-batch.dto.ts  # Payout batch DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PayoutBatchDTO
+    │   │   │   │   │   │   │   # PayoutBatchDTO
     │   │   │   │   │   │   ├── payout-dto.ts  # Payout DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── payout-method-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── payout-method.dto.ts  # ❌ CREATE - PayoutMethodDTO  # flagged missing
+    │   │   │   │   │   │   ├── payout-method-dto.ts
+    │   │   │   │   │   │   ├── payout-method.dto.ts  # PayoutMethodDTO  # flagged missing
     │   │   │   │   │   │   ├── payout-schedule.dto.ts  # Payout schedule DTO
-    │   │   │   │   │   │   ├── payout.dto.ts  # ❌ CREATE - PayoutDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── payout.dto.ts  # PayoutDTO
     │   │   │   │   │   │   ├── payroll-dto.ts  # Payroll DTO
     │   │   │   │   │   │   ├── payroll-entry-dto.ts  # Payroll entry DTO
     │   │   │   │   │   │   ├── payroll-line-item.dto.ts  # Payroll line item DTO
     │   │   │   │   │   │   ├── payroll-run.dto.ts  # Payroll run DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── payroll-withholding.dto.ts  # Payroll withholding DTO
-    │   │   │   │   │   │   ├── payroll.dto.ts  # ❌ CREATE - PayrollDTO
-    │   │   │   │   │   │   ├── platform-fee-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Platform fee DTO
-    │   │   │   │   │   │   ├── platform-fee.dto.ts  # ❌ CREATE - PlatformFeeDTO  # flagged missing
+    │   │   │   │   │   │   ├── payroll.dto.ts  # PayrollDTO
+    │   │   │   │   │   │   ├── platform-fee-dto.ts  # Platform fee DTO
+    │   │   │   │   │   │   ├── platform-fee.dto.ts  # PlatformFeeDTO  # flagged missing
     │   │   │   │   │   │   ├── platform-financial-metric-dto.ts  # Platform metrics DTO
     │   │   │   │   │   │   ├── promotional-credit-dto.ts  # Promotional credit DTO
-    │   │   │   │   │   │   ├── protection-plan.dto.ts  # ❌ CREATE - ProtectionPlanDTO
+    │   │   │   │   │   │   ├── protection-plan.dto.ts  # ProtectionPlanDTO
     │   │   │   │   │   │   ├── rate-lock.dto.ts  # Rate lock DTO
     │   │   │   │   │   │   ├── reconciliation-discrepancy-dto.ts  # Reconciliation discrepancy DTO
     │   │   │   │   │   │   ├── reconciliation-dto.ts  # ReconciliationReportDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── reconciliation-item-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── reconciliation-item.dto.ts  # ❌ CREATE - ReconciliationItemDTO  # flagged missing
+    │   │   │   │   │   │   ├── reconciliation-item-dto.ts
+    │   │   │   │   │   │   ├── reconciliation-item.dto.ts  # ReconciliationItemDTO  # flagged missing
     │   │   │   │   │   │   ├── reconciliation-report-dto.ts  # Reconciliation report DTO
     │   │   │   │   │   │   ├── reconciliation.dto.ts  # Reconciliation DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReconciliationDTO
+    │   │   │   │   │   │   │   # ReconciliationDTO
     │   │   │   │   │   │   ├── recurring-payment-dto.ts
     │   │   │   │   │   │   ├── refund-dto.ts  # Refund DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── refund-policy.dto.ts  # Refund policy DTO
-    │   │   │   │   │   │   ├── refund.dto.ts  # ❌ CREATE - RefundDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── refund.dto.ts  # RefundDTO
     │   │   │   │   │   │   ├── reminder-dto.ts  # PaymentReminderDTO
     │   │   │   │   │   │   │   # Reminder DTO
     │   │   │   │   │   │   ├── reminder-escalation.dto.ts  # Reminder escalation DTO
     │   │   │   │   │   │   ├── reminder-template.dto.ts  # Reminder template DTO
     │   │   │   │   │   │   ├── reminder.dto.ts  # Reminder DTO
-    │   │   │   │   │   │   ├── revenue-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── revenue-dto.ts
     │   │   │   │   │   │   ├── revenue-share.dto.ts  # Revenue share DTO
     │   │   │   │   │   │   ├── risk-assessment-dto.ts  # Risk assessment DTO
-    │   │   │   │   │   │   ├── risk.dto.ts  # ❌ CREATE - FinancialRiskDTO
-    │   │   │   │   │   │   ├── settlement-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── split-config-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── statement-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── risk.dto.ts  # FinancialRiskDTO
+    │   │   │   │   │   │   ├── settlement-dto.ts
+    │   │   │   │   │   │   ├── split-config-dto.ts
+    │   │   │   │   │   │   ├── statement-dto.ts
     │   │   │   │   │   │   ├── subscription-billing-dto.ts  # SubscriptionBillingDTO
     │   │   │   │   │   │   │   # Subscription billing DTO
     │   │   │   │   │   │   ├── subscription-invoice-dto.ts  # Subscription invoice DTO
     │   │   │   │   │   │   ├── subscription-payment.dto.ts  # Subscription payment DTO
-    │   │   │   │   │   │   ├── tax-document-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   │   # Tax document DTO
-    │   │   │   │   │   │   ├── tax-document.dto.ts  # ❌ CREATE - TaxDocumentDTO
+    │   │   │   │   │   │   ├── tax-document-dto.ts  # Tax document DTO
+    │   │   │   │   │   │   ├── tax-document.dto.ts  # TaxDocumentDTO
     │   │   │   │   │   │   ├── tax-dto.ts  # Tax DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── tax-exemption-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── tax-exemption-dto.ts
     │   │   │   │   │   │   ├── tax-form-dto.ts  # TaxFormDTO
     │   │   │   │   │   │   ├── tax-form.dto.ts  # Tax form DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - TaxFormDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # TaxFormDTO
     │   │   │   │   │   │   ├── tax-profile-dto.ts  # Tax profile DTO
-    │   │   │   │   │   │   ├── tax-profile.dto.ts  # ❌ CREATE - TaxProfileDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── tax-rate-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── tax-profile.dto.ts  # TaxProfileDTO
+    │   │   │   │   │   │   ├── tax-rate-dto.ts
     │   │   │   │   │   │   ├── tax-rate.dto.ts  # Tax rate DTO
     │   │   │   │   │   │   ├── tax-withholding-dto.ts  # Tax withholding DTO
-    │   │   │   │   │   │   ├── tax-withholding.dto.ts  # ❌ CREATE - TaxWithholdingDTO
+    │   │   │   │   │   │   ├── tax-withholding.dto.ts  # TaxWithholdingDTO
     │   │   │   │   │   │   ├── transaction-dto.ts  # Transaction DTO
     │   │   │   │   │   │   ├── transaction-event-dto.ts  # Transaction event DTO
-    │   │   │   │   │   │   ├── transaction-fee-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── transaction-fee-dto.ts
     │   │   │   │   │   │   ├── transaction-fee.dto.ts  # Transaction fee DTO
-    │   │   │   │   │   │   ├── transaction.dto.ts  # ❌ CREATE - TransactionDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── transfer-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── verification-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── transaction.dto.ts  # TransactionDTO
+    │   │   │   │   │   │   ├── transfer-dto.ts
+    │   │   │   │   │   │   ├── verification-dto.ts
     │   │   │   │   │   │   ├── wallet-dto.ts  # Wallet DTO
     │   │   │   │   │   │   ├── wallet-limit.dto.ts  # Wallet limit DTO
     │   │   │   │   │   │   ├── wallet-transfer.dto.ts  # Wallet transfer DTO
-    │   │   │   │   │   │   ├── wallet.dto.ts  # ❌ CREATE - WalletDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── wallet.dto.ts  # WalletDTO
     │   │   │   │   │   │   ├── wire-transfer.dto.ts  # Wire transfer DTO
-    │   │   │   │   │   │   ├── withdrawal-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── withdrawal-dto.ts
     │   │   │   │   │   │   ├── withdrawal-limit-dto.ts  # WithdrawalLimitDTO
-    │   │   │   │   │   │   └── withdrawal-limit.dto.ts  # ❌ CREATE - WithdrawalLimitDTO
+    │   │   │   │   │   │   └── withdrawal-limit.dto.ts  # WithdrawalLimitDTO
     │   │   │   │   │   ├── jobs/  # Jobs backend API DTOs
     │   │   │   │   │   │   # Jobs-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL JOB ENTITIES)
     │   │   │   │   │   │   # MISSING MODELS (20+ DTOs missing - see domains/jobs/ for list)
-    │   │   │   │   │   │   ├── ab-experiments.dto.ts  # ❌ CREATE - JobAbExperimentsDTO
-    │   │   │   │   │   │   ├── ai-optimization-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── ab-experiments.dto.ts  # JobAbExperimentsDTO
+    │   │   │   │   │   │   ├── ai-optimization-dto.ts
     │   │   │   │   │   │   ├── ai-optimization.dto.ts  # AI optimization DTO
     │   │   │   │   │   │   ├── ai-suggest-dto.ts  # AISuggestionDTO
-    │   │   │   │   │   │   ├── ai-suggestion-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── ai-suggestion-dto.ts
     │   │   │   │   │   │   ├── ai-suggestion.dto.ts  # AI suggestion DTO
-    │   │   │   │   │   │   ├── analytics-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── analytics.dto.ts  # ❌ CREATE - JobAnalyticsDTO
-    │   │   │   │   │   │   ├── applicant-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── analytics-dto.ts
+    │   │   │   │   │   │   ├── analytics.dto.ts  # JobAnalyticsDTO
+    │   │   │   │   │   │   ├── applicant-dto.ts
     │   │   │   │   │   │   ├── applicant-tracking.dto.ts  # Applicant tracking DTO
     │   │   │   │   │   │   ├── application-dto.ts  # Job application DTO
-    │   │   │   │   │   │   ├── archive-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── archive.dto.ts  # ❌ CREATE - JobArchiveDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── attachment-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── attachment.dto.ts  # ❌ CREATE - JobAttachmentDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── archive-dto.ts
+    │   │   │   │   │   │   ├── archive.dto.ts  # JobArchiveDTO
+    │   │   │   │   │   │   ├── attachment-dto.ts
+    │   │   │   │   │   │   ├── attachment.dto.ts  # JobAttachmentDTO
     │   │   │   │   │   │   ├── auto-close.dto.ts  # Auto-close DTO
-    │   │   │   │   │   │   ├── boost-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── budget-control-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── boost-dto.ts
+    │   │   │   │   │   │   ├── budget-control-dto.ts
     │   │   │   │   │   │   ├── budget-control.dto.ts  # Budget control DTO
     │   │   │   │   │   │   ├── budget-dto.ts
-    │   │   │   │   │   │   ├── bulk-operation-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── bulk-operation.dto.ts  # ❌ CREATE - JobBulkOperationDTO
+    │   │   │   │   │   │   ├── bulk-operation-dto.ts
+    │   │   │   │   │   │   ├── bulk-operation.dto.ts  # JobBulkOperationDTO
     │   │   │   │   │   │   ├── bulk-ops-dto.ts  # BulkOperationDTO
-    │   │   │   │   │   │   ├── campaign-tag.dto.ts  # ❌ CREATE - CampaignTagDTO
-    │   │   │   │   │   │   ├── category-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── campaign-tag.dto.ts  # CampaignTagDTO
+    │   │   │   │   │   │   ├── category-dto.ts
     │   │   │   │   │   │   ├── category-taxonomy-dto.ts
-    │   │   │   │   │   │   ├── category.dto.ts  # ❌ CREATE - CategoryDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── client-preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── category.dto.ts  # CategoryDTO
+    │   │   │   │   │   │   ├── client-preference-dto.ts
     │   │   │   │   │   │   ├── contract-transition-dto.ts  # ContractTransitionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── contract-transition.dto.ts  # Contract transition DTO
-    │   │   │   │   │   │   ├── custom-field-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── custom-field.dto.ts  # ❌ CREATE - JobCustomFieldDTO
+    │   │   │   │   │   │   ├── custom-field-dto.ts
+    │   │   │   │   │   │   ├── custom-field.dto.ts  # JobCustomFieldDTO
     │   │   │   │   │   │   ├── custom-fields-dto.ts  # CustomFieldDTO
     │   │   │   │   │   │   ├── draft-dto.ts
-    │   │   │   │   │   │   ├── duplicate-cluster-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── duplicate-cluster-dto.ts
     │   │   │   │   │   │   ├── duplicate-cluster.dto.ts  # Duplicate cluster DTO
     │   │   │   │   │   │   ├── duplicate-detection.dto.ts  # Duplicate detection DTO
-    │   │   │   │   │   │   ├── duplicate-key-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── duplicate-key-dto.ts
     │   │   │   │   │   │   ├── duplicate-key.dto.ts  # Duplicate key DTO
-    │   │   │   │   │   │   ├── duplicate-match-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── duplicate-match-dto.ts
     │   │   │   │   │   │   ├── duplicate-match.dto.ts  # Duplicate match DTO
     │   │   │   │   │   │   ├── eligibility-dto.ts  # JobEligibilityDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── eligibility-rule.dto.ts  # ❌ CREATE - JobEligibilityRuleDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── eligibility-rule.dto.ts  # JobEligibilityRuleDTO
     │   │   │   │   │   │   ├── eligibility.dto.ts  # Eligibility DTO
     │   │   │   │   │   │   ├── esg-dto.ts  # ESGAttributesDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── esg.dto.ts  # ❌ CREATE - JobEsgDTO
+    │   │   │   │   │   │   ├── esg.dto.ts  # JobEsgDTO
     │   │   │   │   │   │   ├── expiry-dto.ts
-    │   │   │   │   │   │   ├── feature-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── feature-dto.ts
     │   │   │   │   │   │   ├── featured-placement.dto.ts  # Featured placement DTO
     │   │   │   │   │   │   ├── feedback-dto.ts
     │   │   │   │   │   │   ├── fraud-dto.ts  # FraudSignalDTO
-    │   │   │   │   │   │   ├── fraud-signal-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── fraud-signal-dto.ts
     │   │   │   │   │   │   ├── geo-dto.ts  # GeoLocationDTO
-    │   │   │   │   │   │   ├── health-checkpoint-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── health-checkpoint-dto.ts
     │   │   │   │   │   │   ├── health-dto.ts  # HealthCheckpointDTO
-    │   │   │   │   │   │   ├── hiring-option-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── hiring-option-dto.ts
     │   │   │   │   │   │   ├── hiring-option.dto.ts  # Hiring option DTO
     │   │   │   │   │   │   ├── hiring-options-dto.ts  # HiringOptionsDTO
-    │   │   │   │   │   │   ├── hiring-team.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── hiring-team.dto.ts
     │   │   │   │   │   │   ├── inclusivity-dto.ts  # InclusivityFlagsDTO
-    │   │   │   │   │   │   ├── inclusivity-flag-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── inclusivity-flag-dto.ts
     │   │   │   │   │   │   ├── inclusivity-flag.dto.ts  # Inclusivity flag DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
-    │   │   │   │   │   │   ├── invitation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invitation-dto.ts
     │   │   │   │   │   │   ├── invite-dto.ts  # Job invite DTO
     │   │   │   │   │   │   ├── job-activity.dto.ts  # Job activity DTO
     │   │   │   │   │   │   ├── job-alert.dto.ts  # Job alert DTO
@@ -31742,182 +31694,155 @@ fe/
     │   │   │   │   │   │   ├── job-clone.dto.ts  # Job clone DTO
     │   │   │   │   │   │   ├── job-collaboration.dto.ts  # Job collaboration DTO
     │   │   │   │   │   │   ├── job-draft.dto.ts  # Job draft DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - JobDraftDTO
+    │   │   │   │   │   │   │   # JobDraftDTO
     │   │   │   │   │   │   ├── job-dto.ts  # Job DTO
     │   │   │   │   │   │   ├── job-expiry.dto.ts  # Job expiry DTO
     │   │   │   │   │   │   ├── job-lifecycle.dto.ts  # Job lifecycle DTO
     │   │   │   │   │   │   ├── job-localization.dto.ts  # Job localization DTO
     │   │   │   │   │   │   ├── job-metric.dto.ts  # Job metric DTO
-    │   │   │   │   │   │   ├── job-preference.dto.ts  # ❌ CREATE - JobPreferenceDTO
+    │   │   │   │   │   │   ├── job-preference.dto.ts  # JobPreferenceDTO
     │   │   │   │   │   │   ├── job-repost.dto.ts  # Job repost DTO
-    │   │   │   │   │   │   ├── job-skill-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── job-skill-dto.ts
     │   │   │   │   │   │   ├── job-skill.dto.ts  # Job skill DTO
     │   │   │   │   │   │   ├── job-template.dto.ts  # Job template DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - JobTemplateDTO
+    │   │   │   │   │   │   │   # JobTemplateDTO
     │   │   │   │   │   │   ├── job-version.dto.ts  # Job version DTO
-    │   │   │   │   │   │   ├── job.dto.ts  # ❌ CREATE - JobDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── legal-control.dto.ts  # ❌ CREATE - JobLegalControlDTO
+    │   │   │   │   │   │   ├── job.dto.ts  # JobDTO
+    │   │   │   │   │   │   ├── legal-control.dto.ts  # JobLegalControlDTO
     │   │   │   │   │   │   ├── lifecycle-dto.ts  # JobLifecycleDTO
     │   │   │   │   │   │   ├── localization-dto.ts  # JobLocalizationDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── localization.dto.ts  # ❌ CREATE - JobLocalizationDTO
+    │   │   │   │   │   │   ├── localization.dto.ts  # JobLocalizationDTO
     │   │   │   │   │   │   ├── match-dto.ts
     │   │   │   │   │   │   ├── moderation-dto.ts  # JobModerationDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── moderation-flag.dto.ts  # ❌ CREATE - JobModerationFlagDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── moderation-state-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── moderation-flag.dto.ts  # JobModerationFlagDTO
+    │   │   │   │   │   │   ├── moderation-state-dto.ts
     │   │   │   │   │   │   ├── moderation-state.dto.ts  # Moderation state DTO
-    │   │   │   │   │   │   ├── performance-metric-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── performance-metric-dto.ts
     │   │   │   │   │   │   ├── posting-schedule.dto.ts  # Posting schedule DTO
-    │   │   │   │   │   │   ├── preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── preference-dto.ts
     │   │   │   │   │   │   ├── premium-feature.dto.ts  # Premium feature DTO
-    │   │   │   │   │   │   ├── promotion-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── promotion-dto.ts
     │   │   │   │   │   │   ├── promotion.dto.ts  # Promotion DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - JobPromotionDTO
-    │   │   │   │   │   │   ├── quality-score-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── recommendation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # JobPromotionDTO
+    │   │   │   │   │   │   ├── quality-score-dto.ts
+    │   │   │   │   │   │   ├── recommendation-dto.ts
     │   │   │   │   │   │   ├── repost-dto.ts
     │   │   │   │   │   │   ├── requirement-dto.ts  # Job requirement DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── requirements-matrix.dto.ts  # ❌ CREATE - RequirementsMatrixDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── retention-rule.dto.ts  # ❌ CREATE - JobRetentionRuleDTO
+    │   │   │   │   │   │   ├── requirements-matrix.dto.ts  # RequirementsMatrixDTO
+    │   │   │   │   │   │   ├── retention-rule.dto.ts  # JobRetentionRuleDTO
     │   │   │   │   │   │   ├── saved-search-dto.ts
     │   │   │   │   │   │   ├── saved-search.dto.ts  # Saved search DTO
-    │   │   │   │   │   │   ├── screening-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── screening-question-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── screening-dto.ts
+    │   │   │   │   │   │   ├── screening-question-dto.ts
     │   │   │   │   │   │   ├── screening-question.dto.ts  # Screening question DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ScreeningQuestionDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── screening-test.dto.ts  # ❌ CREATE - ScreeningTestDTO
-    │   │   │   │   │   │   ├── screening.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── share-link.dto.ts  # ❌ CREATE - ShareLinkDTO
+    │   │   │   │   │   │   │   # ScreeningQuestionDTO
+    │   │   │   │   │   │   ├── screening-test.dto.ts  # ScreeningTestDTO
+    │   │   │   │   │   │   ├── screening.dto.ts
+    │   │   │   │   │   │   ├── share-link.dto.ts  # ShareLinkDTO
     │   │   │   │   │   │   ├── sharing-dto.ts  # ShareLinkDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── sharing.dto.ts  # ❌ CREATE - JobSharingDTO
-    │   │   │   │   │   │   ├── shortlist.dto.ts  # ❌ CREATE - ShortlistDTO
-    │   │   │   │   │   │   ├── skill-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sharing.dto.ts  # JobSharingDTO
+    │   │   │   │   │   │   ├── shortlist.dto.ts  # ShortlistDTO
+    │   │   │   │   │   │   ├── skill-dto.ts
     │   │   │   │   │   │   ├── skill.dto.ts  # Skill DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - SkillDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # SkillDTO
     │   │   │   │   │   │   ├── snapshot-dto.ts
-    │   │   │   │   │   │   ├── sourcing-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── sourcing-dto.ts
     │   │   │   │   │   │   ├── sourcing.dto.ts  # Sourcing DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - SourcingDTO
+    │   │   │   │   │   │   │   # SourcingDTO
     │   │   │   │   │   │   ├── statistics-dto.ts
-    │   │   │   │   │   │   ├── subscription-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── syndication.dto.ts  # ❌ CREATE - JobSyndicationDTO
-    │   │   │   │   │   │   ├── tag-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── subscription-dto.ts
+    │   │   │   │   │   │   ├── syndication.dto.ts  # JobSyndicationDTO
+    │   │   │   │   │   │   ├── tag-dto.ts
     │   │   │   │   │   │   ├── targeting.dto.ts  # Targeting DTO
     │   │   │   │   │   │   ├── template-dto.ts  # Job template DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── template-version.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── template.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── template-version.dto.ts
+    │   │   │   │   │   │   ├── template.dto.ts
     │   │   │   │   │   │   ├── upsell-dto.ts  # UpsellSuggestionDTO
-    │   │   │   │   │   │   ├── upsell-suggestion-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── upsell.dto.ts  # ❌ CREATE - JobUpsellDTO
-    │   │   │   │   │   │   ├── view-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── upsell-suggestion-dto.ts
+    │   │   │   │   │   │   ├── upsell.dto.ts  # JobUpsellDTO
+    │   │   │   │   │   │   ├── view-dto.ts
     │   │   │   │   │   │   ├── visibility-dto.ts  # JobVisibilityDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── visibility-lifecycle.dto.ts  # ❌ CREATE - VisibilityLifecycleDTO
+    │   │   │   │   │   │   ├── visibility-lifecycle.dto.ts  # VisibilityLifecycleDTO
     │   │   │   │   │   │   ├── visibility-rule.dto.ts  # Visibility rule DTO
     │   │   │   │   │   │   ├── webhook-dto.ts  # WebhookSubscriptionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── webhook.dto.ts  # ❌ CREATE - JobWebhookDTO
+    │   │   │   │   │   │   ├── webhook.dto.ts  # JobWebhookDTO
     │   │   │   │   │   │   └── workspace-dto.ts
     │   │   │   │   │   ├── proposals/  # Proposals backend API DTOs
     │   │   │   │   │   │   # Proposals-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL PROPOSAL ENTITIES)
     │   │   │   │   │   │   # MISSING MODELS (30+ DTOs missing - see domains/proposals/ for list)
-    │   │   │   │   │   │   ├── ab-testing.dto.ts  # ❌ CREATE - ProposalAbTestingDTO
+    │   │   │   │   │   │   ├── ab-testing.dto.ts  # ProposalAbTestingDTO
     │   │   │   │   │   │   ├── ai-assist-dto.ts  # AIAssistDTO
     │   │   │   │   │   │   ├── anomaly-detection.dto.ts  # Anomaly detection DTO
-    │   │   │   │   │   │   ├── anomaly-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── anomaly-dto.ts
     │   │   │   │   │   │   ├── archive-dto.ts  # ProposalArchiveDTO
-    │   │   │   │   │   │   ├── archive.dto.ts  # ❌ CREATE - ProposalArchiveDTO
-    │   │   │   │   │   │   ├── attachment-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── attachment.dto.ts  # ❌ CREATE - ProposalAttachmentDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── archive.dto.ts  # ProposalArchiveDTO
+    │   │   │   │   │   │   ├── attachment-dto.ts
+    │   │   │   │   │   │   ├── attachment.dto.ts  # ProposalAttachmentDTO
     │   │   │   │   │   │   ├── auction-dto.ts  # AuctionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── auction.dto.ts  # Auction DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - AuctionDTO
+    │   │   │   │   │   │   │   # AuctionDTO
     │   │   │   │   │   │   ├── bid-anomaly.dto.ts  # Bid anomaly DTO
     │   │   │   │   │   │   ├── bid-dto.ts  # Bid DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bid-notification-dto.ts  # BidNotificationDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bid-notification.dto.ts  # Bid notification DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BidNotificationDTO
+    │   │   │   │   │   │   │   # BidNotificationDTO
     │   │   │   │   │   │   ├── bid-strategy-dto.ts  # BidStrategyDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── bid-strategy.dto.ts  # Bid strategy DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BidStrategyDTO
+    │   │   │   │   │   │   │   # BidStrategyDTO
     │   │   │   │   │   │   ├── bid.dto.ts  # Bid DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BidDTO
+    │   │   │   │   │   │   │   # BidDTO
     │   │   │   │   │   │   ├── boost-dto.ts  # ProposalBoostDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── boost.dto.ts  # Boost DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BoostDTO
+    │   │   │   │   │   │   │   # BoostDTO
     │   │   │   │   │   │   ├── collaboration-dto.ts  # TeamProposalDTO
-    │   │   │   │   │   │   ├── collaboration.dto.ts  # ❌ CREATE - ProposalCollaborationDTO
+    │   │   │   │   │   │   ├── collaboration.dto.ts  # ProposalCollaborationDTO
     │   │   │   │   │   │   ├── comparison-dto.ts
     │   │   │   │   │   │   ├── compliance-check.dto.ts  # Compliance check DTO
     │   │   │   │   │   │   ├── compliance-dto.ts  # ProposalComplianceDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── compliance.dto.ts  # ❌ CREATE - ProposalComplianceDTO
-    │   │   │   │   │   │   ├── connect-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── compliance.dto.ts  # ProposalComplianceDTO
+    │   │   │   │   │   │   ├── connect-dto.ts
     │   │   │   │   │   │   ├── connect-refund-dto.ts  # ConnectRefundDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-refund.dto.ts  # Connect refund DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ConnectRefundDTO
-    │   │   │   │   │   │   ├── connect-transaction.dto.ts  # ❌ CREATE - ConnectTransactionDTO
+    │   │   │   │   │   │   │   # ConnectRefundDTO
+    │   │   │   │   │   │   ├── connect-transaction.dto.ts  # ConnectTransactionDTO
     │   │   │   │   │   │   ├── connect.dto.ts  # Connect DTO
     │   │   │   │   │   │   ├── context-dto.ts  # ProposalContextDTO
-    │   │   │   │   │   │   ├── context.dto.ts  # ❌ CREATE - ProposalContextDTO
+    │   │   │   │   │   │   ├── context.dto.ts  # ProposalContextDTO
     │   │   │   │   │   │   ├── conversation-dto.ts  # ProposalConversationDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── conversation-tracking-dto.ts
     │   │   │   │   │   │   ├── conversation.dto.ts  # Conversation DTO
-    │   │   │   │   │   │   ├── cover-letter-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── cover-letter-dto.ts
     │   │   │   │   │   │   ├── cover-letter-template-dto.ts
     │   │   │   │   │   │   ├── cover-letter.dto.ts  # Cover letter DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── draft-dto.ts
-    │   │   │   │   │   │   ├── duplicate-cluster.dto.ts  # ❌ CREATE - DuplicateClusterDTO
+    │   │   │   │   │   │   ├── duplicate-cluster.dto.ts  # DuplicateClusterDTO
     │   │   │   │   │   │   ├── engagement-dto.ts  # ProposalEngagementDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── engagement-metric.dto.ts  # Engagement metric DTO
-    │   │   │   │   │   │   ├── engagement.dto.ts  # ❌ CREATE - EngagementDTO
+    │   │   │   │   │   │   ├── engagement.dto.ts  # EngagementDTO
     │   │   │   │   │   │   ├── expiration-dto.ts  # ProposalExpirationDTO
     │   │   │   │   │   │   ├── feedback-dto.ts  # ProposalFeedbackDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── feedback-loop.dto.ts  # Feedback loop DTO
     │   │   │   │   │   │   ├── flag-dto.ts  # ProposalFlagDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── flag.dto.ts  # Flag DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── interview-dto.ts  # Interview DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── interview-scheduling.dto.ts  # Interview scheduling DTO
     │   │   │   │   │   │   ├── invite-dto.ts  # InvitationDTO
-    │   │   │   │   │   │   ├── invite.dto.ts  # ❌ CREATE - InviteDTO
-    │   │   │   │   │   │   ├── milestone-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invite.dto.ts  # InviteDTO
+    │   │   │   │   │   │   ├── milestone-dto.ts
     │   │   │   │   │   │   ├── milestone-proposal.dto.ts  # Milestone proposal DTO
     │   │   │   │   │   │   ├── negotiation-dto.ts  # Negotiation DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── negotiation.dto.ts  # ❌ CREATE - NegotiationDTO
+    │   │   │   │   │   │   ├── negotiation.dto.ts  # NegotiationDTO
     │   │   │   │   │   │   ├── performance-analytics.dto.ts  # Performance analytics DTO
-    │   │   │   │   │   │   ├── performance-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── performance.dto.ts  # ❌ CREATE - ProposalPerformanceDTO
+    │   │   │   │   │   │   ├── performance-dto.ts
+    │   │   │   │   │   │   ├── performance.dto.ts  # ProposalPerformanceDTO
     │   │   │   │   │   │   ├── pipeline-dto.ts  # ProposalPipelineDTO
-    │   │   │   │   │   │   ├── pipeline.dto.ts  # ❌ CREATE - ProposalPipelineDTO
-    │   │   │   │   │   │   ├── portfolio-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── pipeline.dto.ts  # ProposalPipelineDTO
+    │   │   │   │   │   │   ├── portfolio-dto.ts
     │   │   │   │   │   │   ├── portfolio-item-dto.ts
     │   │   │   │   │   │   ├── portfolio-link-dto.ts  # PortfolioLinkDTO
-    │   │   │   │   │   │   ├── portfolio-links.dto.ts  # ❌ CREATE - PortfolioLinksDTO  # naming per earlier note
+    │   │   │   │   │   │   ├── portfolio-links.dto.ts  # PortfolioLinksDTO  # naming per earlier note
     │   │   │   │   │   │   ├── portfolio-showcase.dto.ts  # Portfolio showcase DTO
     │   │   │   │   │   │   ├── proposal-ai-optimization.dto.ts  # AI optimization DTO
     │   │   │   │   │   │   ├── proposal-ai-suggestion.dto.ts  # AI suggestion DTO
@@ -31937,145 +31862,126 @@ fe/
     │   │   │   │   │   │   ├── proposal-skill-match.dto.ts  # Skill match DTO
     │   │   │   │   │   │   ├── proposal-urgency.dto.ts  # Proposal urgency DTO
     │   │   │   │   │   │   ├── proposal-version.dto.ts  # Proposal version DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── proposal-withdrawal.dto.ts  # Proposal withdrawal DTO
-    │   │   │   │   │   │   ├── proposal.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── proposal.dto.ts
     │   │   │   │   │   │   ├── question-answer-dto.ts  # QuestionAnswerDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── question-answer.dto.ts  # ❌ CREATE - QuestionAnswerDTO
-    │   │   │   │   │   │   ├── rate-card-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── question-answer.dto.ts  # QuestionAnswerDTO
+    │   │   │   │   │   │   ├── rate-card-dto.ts
     │   │   │   │   │   │   ├── rate-card-template.dto.ts  # Rate card template DTO
     │   │   │   │   │   │   ├── recommendation-dto.ts  # ProposalRecommendationDTO
-    │   │   │   │   │   │   ├── recommendation.dto.ts  # ❌ CREATE - ProposalRecommendationDTO
+    │   │   │   │   │   │   ├── recommendation.dto.ts  # ProposalRecommendationDTO
     │   │   │   │   │   │   ├── recycling-dto.ts  # ProposalRecyclingDTO
-    │   │   │   │   │   │   ├── recycling.dto.ts  # ❌ CREATE - ProposalRecyclingDTO
+    │   │   │   │   │   │   ├── recycling.dto.ts  # ProposalRecyclingDTO
     │   │   │   │   │   │   ├── reference-dto.ts  # ProposalReferenceDTO
-    │   │   │   │   │   │   ├── reference.dto.ts  # ❌ CREATE - ProposalReferenceDTO
+    │   │   │   │   │   │   ├── reference.dto.ts  # ProposalReferenceDTO
     │   │   │   │   │   │   ├── revision-dto.ts  # ProposalRevisionDTO
-    │   │   │   │   │   │   ├── revision.dto.ts  # ❌ CREATE - ProposalRevisionDTO
+    │   │   │   │   │   │   ├── revision.dto.ts  # ProposalRevisionDTO
     │   │   │   │   │   │   ├── risk-assessment-dto.ts  # ProposalRiskAssessmentDTO
-    │   │   │   │   │   │   ├── risk-assessment.dto.ts  # ❌ CREATE - ProposalRiskAssessmentDTO
+    │   │   │   │   │   │   ├── risk-assessment.dto.ts  # ProposalRiskAssessmentDTO
     │   │   │   │   │   │   ├── shortlist-dto.ts  # Shortlist DTO
     │   │   │   │   │   │   │   # ShortlistDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── shortlist.dto.ts  # Shortlist DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ProposalShortlistDTO
+    │   │   │   │   │   │   │   # ProposalShortlistDTO
     │   │   │   │   │   │   ├── similarity-detection.dto.ts  # Similarity detection DTO
     │   │   │   │   │   │   ├── similarity-dto.ts  # ProposalSimilarityDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── similarity.dto.ts  # ❌ CREATE - ProposalSimilarityDTO
+    │   │   │   │   │   │   ├── similarity.dto.ts  # ProposalSimilarityDTO
     │   │   │   │   │   │   ├── skill-match-dto.ts  # SkillMatchDTO
-    │   │   │   │   │   │   ├── skill-match.dto.ts  # ❌ CREATE - ProposalSkillMatchDTO
+    │   │   │   │   │   │   ├── skill-match.dto.ts  # ProposalSkillMatchDTO
     │   │   │   │   │   │   ├── spam-detection-dto.ts  # SpamDetectionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── spam-detection.dto.ts  # Spam detection DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ProposalSpamDetectionDTO
+    │   │   │   │   │   │   │   # ProposalSpamDetectionDTO
     │   │   │   │   │   │   ├── statistics-dto.ts
     │   │   │   │   │   │   ├── tag-dto.ts
     │   │   │   │   │   │   ├── team-proposal.dto.ts  # Team proposal DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - TeamProposalDTO
+    │   │   │   │   │   │   │   # TeamProposalDTO
     │   │   │   │   │   │   ├── template-dto.ts  # Proposal template DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── template.dto.ts  # Template DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ProposalTemplateDTO
+    │   │   │   │   │   │   │   # ProposalTemplateDTO
     │   │   │   │   │   │   ├── urgency-dto.ts  # ProposalUrgencyDTO
-    │   │   │   │   │   │   ├── urgency.dto.ts  # ❌ CREATE - ProposalUrgencyDTO
+    │   │   │   │   │   │   ├── urgency.dto.ts  # ProposalUrgencyDTO
     │   │   │   │   │   │   ├── version-dto.ts
     │   │   │   │   │   │   ├── video-intro-dto.ts  # VideoIntroductionDTO
     │   │   │   │   │   │   ├── video-introduction.dto.ts  # Video intro DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ProposalVideoIntroductionDTO
+    │   │   │   │   │   │   │   # ProposalVideoIntroductionDTO
     │   │   │   │   │   │   ├── withdrawal-dto.ts  # ProposalWithdrawalDTO
     │   │   │   │   │   │   └── withdrawal.dto.ts  # Withdrawal DTO
-    │   │   │   │   │   │       # ❌ CREATE - ProposalWithdrawalDTO
+    │   │   │   │   │   │       # ProposalWithdrawalDTO
     │   │   │   │   │   ├── reviews/  # Reviews backend API DTOs
     │   │   │   │   │   │   # Reviews-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL REVIEW ENTITIES)
     │   │   │   │   │   │   # MISSING MODELS (10+ DTOs missing - see domains/reviews/ for list)
     │   │   │   │   │   │   ├── appeal-dto.ts  # Appeal DTO
     │   │   │   │   │   │   │   # ReviewAppealDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── appeal.dto.ts  # Appeal DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewAppealDTO
+    │   │   │   │   │   │   │   # ReviewAppealDTO
     │   │   │   │   │   │   ├── audit-trail-dto.ts  # AuditTrailDTO
-    │   │   │   │   │   │   ├── audit-trail.dto.ts  # ❌ CREATE - ReviewAuditTrailDTO
-    │   │   │   │   │   │   ├── badge-assignment-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── badge-criteria-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── audit-trail.dto.ts  # ReviewAuditTrailDTO
+    │   │   │   │   │   │   ├── badge-assignment-dto.ts
+    │   │   │   │   │   │   ├── badge-criteria-dto.ts
     │   │   │   │   │   │   ├── badge-dto.ts  # Badge DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── badge-eligibility-dto.ts
     │   │   │   │   │   │   ├── badge.dto.ts  # Badge DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - BadgeDTO
-    │   │   │   │   │   │   ├── compliance-action-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # BadgeDTO
+    │   │   │   │   │   │   ├── compliance-action-dto.ts
     │   │   │   │   │   │   ├── compliance-dto.ts  # ReviewComplianceDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── compliance.dto.ts  # Compliance DTO
     │   │   │   │   │   │   ├── double-blind-dto.ts  # DoubleBlindWindowDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── double-blind-window-dto.ts
     │   │   │   │   │   │   ├── double-blind.dto.ts  # Double-blind DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - DoubleBlindDTO
-    │   │   │   │   │   │   ├── draft-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # DoubleBlindDTO
+    │   │   │   │   │   │   ├── draft-dto.ts
     │   │   │   │   │   │   ├── draft.dto.ts  # Draft DTO
     │   │   │   │   │   │   ├── eligibility-dto.ts  # ReviewEligibilityDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── eligibility-policy-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── eligibility-policy-dto.ts
     │   │   │   │   │   │   ├── eligibility-policy.dto.ts  # Eligibility policy DTO
     │   │   │   │   │   │   ├── eligibility.dto.ts  # Eligibility DTO
     │   │   │   │   │   │   ├── evidence-dto.ts  # EvidenceDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── evidence.dto.ts  # Evidence DTO
     │   │   │   │   │   │   ├── featured-dto.ts  # FeaturedReviewDTO
-    │   │   │   │   │   │   ├── featured-review-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── featured-review-dto.ts
     │   │   │   │   │   │   ├── featured-review.dto.ts  # Featured review DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── featured.dto.ts  # ❌ CREATE - FeaturedReviewDTO
-    │   │   │   │   │   │   ├── feedback-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── flag-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── featured.dto.ts  # FeaturedReviewDTO
+    │   │   │   │   │   │   ├── feedback-dto.ts
+    │   │   │   │   │   │   ├── flag-dto.ts
     │   │   │   │   │   │   ├── flag.dto.ts  # Flag DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewFlagDTO
-    │   │   │   │   │   │   ├── helpful-vote-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # ReviewFlagDTO
+    │   │   │   │   │   │   ├── helpful-vote-dto.ts
     │   │   │   │   │   │   ├── helpful-vote.dto.ts  # Helpful vote DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── moderation-dto.ts  # Moderation DTO
     │   │   │   │   │   │   │   # ReviewModerationDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── moderation-history-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── moderation-history-dto.ts
     │   │   │   │   │   │   ├── moderation-history.dto.ts  # Moderation history DTO
     │   │   │   │   │   │   ├── moderation.dto.ts  # Moderation DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewModerationDTO
+    │   │   │   │   │   │   │   # ReviewModerationDTO
     │   │   │   │   │   │   ├── private-feedback-dto.ts  # PrivateFeedbackDTO
     │   │   │   │   │   │   ├── private-feedback.dto.ts  # Private feedback DTO
     │   │   │   │   │   │   ├── rating-aggregate.dto.ts  # Rating aggregate DTO
     │   │   │   │   │   │   ├── rating-criteria-dto.ts  # RatingCriteriaDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── rating-criteria.dto.ts  # Rating criteria DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RatingCriteriaDTO
+    │   │   │   │   │   │   │   # RatingCriteriaDTO
     │   │   │   │   │   │   ├── rating-dimension-dto.ts
     │   │   │   │   │   │   ├── rating-dto.ts  # Rating DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── rating.dto.ts  # Rating DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RatingDTO
+    │   │   │   │   │   │   │   # RatingDTO
     │   │   │   │   │   │   ├── redaction-dto.ts  # RedactionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── redaction-policy-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── redaction-policy-dto.ts
     │   │   │   │   │   │   ├── redaction-policy.dto.ts  # Redaction policy DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RedactionPolicyDTO
+    │   │   │   │   │   │   │   # RedactionPolicyDTO
     │   │   │   │   │   │   ├── redaction.dto.ts  # Redaction DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RedactionDTO
+    │   │   │   │   │   │   │   # RedactionDTO
     │   │   │   │   │   │   ├── reminder-dto.ts  # ReviewReminderDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── reminder.dto.ts  # Reminder DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewReminderDTO
+    │   │   │   │   │   │   │   # ReviewReminderDTO
     │   │   │   │   │   │   ├── reputation-dto.ts  # Reputation DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── reputation-history.dto.ts  # Reputation history DTO
     │   │   │   │   │   │   ├── reputation.dto.ts  # Reputation DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReputationDTO
-    │   │   │   │   │   │   ├── response-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # ReputationDTO
+    │   │   │   │   │   │   ├── response-dto.ts
     │   │   │   │   │   │   ├── response.dto.ts  # Response DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewResponseDTO
+    │   │   │   │   │   │   │   # ReviewResponseDTO
     │   │   │   │   │   │   ├── review-appeal.dto.ts  # Appeal DTO
-    │   │   │   │   │   │   ├── review-audit-trail.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── review-audit-trail.dto.ts
     │   │   │   │   │   │   ├── review-badge.dto.ts  # Badge DTO
     │   │   │   │   │   │   ├── review-blind.dto.ts  # Blind review DTO
     │   │   │   │   │   │   ├── review-category.dto.ts  # Category DTO
@@ -32086,15 +31992,15 @@ fe/
     │   │   │   │   │   │   ├── review-double-blind.dto.ts  # Double-blind review DTO
     │   │   │   │   │   │   ├── review-draft-dto.ts  # ReviewDraftDTO
     │   │   │   │   │   │   ├── review-draft.dto.ts  # Draft DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewDraftDTO
+    │   │   │   │   │   │   │   # ReviewDraftDTO
     │   │   │   │   │   │   ├── review-dto.ts  # Review DTO
-    │   │   │   │   │   │   ├── review-eligibility-policy.dto.ts  # ❌ CREATE - ReviewEligibilityPolicyDTO
-    │   │   │   │   │   │   ├── review-eligibility.dto.ts  # ❌ CREATE - ReviewEligibilityDTO
+    │   │   │   │   │   │   ├── review-eligibility-policy.dto.ts  # ReviewEligibilityPolicyDTO
+    │   │   │   │   │   │   ├── review-eligibility.dto.ts  # ReviewEligibilityDTO
     │   │   │   │   │   │   ├── review-evidence.dto.ts  # Evidence DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewEvidenceDTO
+    │   │   │   │   │   │   │   # ReviewEvidenceDTO
     │   │   │   │   │   │   ├── review-flag-dto.ts  # ReviewFlagDTO
     │   │   │   │   │   │   ├── review-flag.dto.ts  # Flag DTO
-    │   │   │   │   │   │   ├── review-helpful-vote.dto.ts  # ❌ CREATE - ReviewHelpfulVoteDTO
+    │   │   │   │   │   │   ├── review-helpful-vote.dto.ts  # ReviewHelpfulVoteDTO
     │   │   │   │   │   │   ├── review-moderation.dto.ts  # Moderation DTO
     │   │   │   │   │   │   ├── review-redaction.dto.ts  # Redaction DTO
     │   │   │   │   │   │   ├── review-reminder.dto.ts  # Reminder DTO
@@ -32102,105 +32008,93 @@ fe/
     │   │   │   │   │   │   ├── review-revision.dto.ts  # Revision DTO
     │   │   │   │   │   │   ├── review-stats.dto.ts  # Statistics DTO
     │   │   │   │   │   │   │   # Review stats DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ReviewStatsDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   │   # ReviewStatsDTO
     │   │   │   │   │   │   ├── review-window.dto.ts  # Window DTO
-    │   │   │   │   │   │   ├── review.dto.ts  # ❌ CREATE - ReviewDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
+    │   │   │   │   │   │   ├── review.dto.ts  # ReviewDTO
     │   │   │   │   │   │   ├── statistics-dto.ts
     │   │   │   │   │   │   ├── stats-dto.ts  # ReviewStatsDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── user-badge-dto.ts  # UserBadgeDTO
     │   │   │   │   │   │   ├── user-badge.dto.ts  # User badge DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - UserBadgeDTO
+    │   │   │   │   │   │   │   # UserBadgeDTO
     │   │   │   │   │   │   └── window-dto.ts
     │   │   │   │   │   ├── search/  # Search backend API DTOs
     │   │   │   │   │   │   # Search-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL SEARCH ENTITIES)
     │   │   │   │   │   │   # MISSING MODELS (50+ DTOs missing - see domains/search/ for list)
     │   │   │   │   │   │   ├── alert-dto.ts  # Search alert DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── alert-history.dto.ts  # ❌ CREATE - AlertRunHistoryDTO
-    │   │   │   │   │   │   ├── alert.dto.ts  # ❌ CREATE - SavedSearchAlertDTO
+    │   │   │   │   │   │   ├── alert-history.dto.ts  # AlertRunHistoryDTO
+    │   │   │   │   │   │   ├── alert.dto.ts  # SavedSearchAlertDTO
     │   │   │   │   │   │   ├── analytics-aggregation.dto.ts  # Analytics aggregation DTO
     │   │   │   │   │   │   ├── analytics-dashboard.dto.ts  # Analytics dashboard DTO
     │   │   │   │   │   │   ├── analytics-dto.ts  # SearchAnalyticsDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── anomaly.dto.ts  # Anomaly DTO
     │   │   │   │   │   │   ├── autocomplete.dto.ts  # Autocomplete DTO
-    │   │   │   │   │   │   ├── boost-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── boost-dto.ts
     │   │   │   │   │   │   ├── boost-rule.dto.ts  # Boost rule DTO
-    │   │   │   │   │   │   ├── cache-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── cache-dto.ts
     │   │   │   │   │   │   ├── click-tracking.dto.ts  # Click tracking DTO
-    │   │   │   │   │   │   ├── cluster-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── cluster-membership-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── cluster-dto.ts
+    │   │   │   │   │   │   ├── cluster-membership-dto.ts
     │   │   │   │   │   │   ├── compliance-pii-masking.dto.ts  # PII masking DTO
     │   │   │   │   │   │   ├── contract-index.dto.ts  # Contract index DTO
-    │   │   │   │   │   │   ├── experiment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── experiment-dto.ts
     │   │   │   │   │   │   ├── facet-dto.ts  # Search facet DTO
     │   │   │   │   │   │   │   # FacetDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── facet-value.dto.ts  # Facet value DTO
     │   │   │   │   │   │   ├── facet.dto.ts  # Facet DTO
     │   │   │   │   │   │   ├── feed-interaction.dto.ts  # Feed interaction DTO
     │   │   │   │   │   │   ├── filter-dto.ts  # Search filter DTO
     │   │   │   │   │   │   │   # SearchFilterDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── filter-preset.dto.ts  # Filter preset DTO
     │   │   │   │   │   │   ├── hygiene-dto.ts  # HygieneTaskDTO
     │   │   │   │   │   │   ├── hygiene-duplicate.dto.ts  # Duplicate detection DTO
-    │   │   │   │   │   │   ├── hygiene-job-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── hygiene-task-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── index-build-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── hygiene-job-dto.ts
+    │   │   │   │   │   │   ├── hygiene-task-dto.ts
+    │   │   │   │   │   │   ├── index-build-dto.ts
     │   │   │   │   │   │   ├── index-dto.ts  # SearchIndexDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── index-lifecycle-execution.dto.ts  # Index lifecycle execution DTO
-    │   │   │   │   │   │   ├── index-segment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── index-segment-dto.ts
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── job-index.dto.ts  # Job index DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── location-index.dto.ts  # Location index DTO
     │   │   │   │   │   │   ├── ltr-feature.dto.ts  # LTR feature DTO
     │   │   │   │   │   │   ├── ltr-signal.dto.ts  # LTR signal DTO
-    │   │   │   │   │   │   ├── ltr.dto.ts  # ❌ CREATE - LTRFeatureDTO
-    │   │   │   │   │   │   ├── message-index.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── ml-model-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── ltr.dto.ts  # LTRFeatureDTO
+    │   │   │   │   │   │   ├── message-index.dto.ts
+    │   │   │   │   │   │   ├── ml-model-dto.ts
     │   │   │   │   │   │   ├── multi-language-detection.dto.ts  # Language detection DTO
     │   │   │   │   │   │   ├── performance-alert.dto.ts  # Performance alert DTO
-    │   │   │   │   │   │   ├── performance-metric-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── performance-metric-dto.ts
     │   │   │   │   │   │   ├── personalization-dto.ts
     │   │   │   │   │   │   ├── personalization.dto.ts  # Personalization DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - PersonalizationDTO
+    │   │   │   │   │   │   │   # PersonalizationDTO
     │   │   │   │   │   │   ├── portfolio-index.dto.ts  # Portfolio index DTO
-    │   │   │   │   │   │   ├── profile-index.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── profile-index.dto.ts
     │   │   │   │   │   │   ├── promotion-tracking.dto.ts  # Promotion tracking DTO
     │   │   │   │   │   │   ├── proposal-index.dto.ts  # Proposal index DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
     │   │   │   │   │   │   ├── query-dto.ts  # Search query DTO
     │   │   │   │   │   │   │   # SearchQueryDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── query-log-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── query-log-entry.dto.ts  # ❌ CREATE - QueryLogEntryDTO
+    │   │   │   │   │   │   ├── query-log-dto.ts
+    │   │   │   │   │   │   ├── query-log-entry.dto.ts  # QueryLogEntryDTO
     │   │   │   │   │   │   ├── query-log.dto.ts  # Query log DTO
     │   │   │   │   │   │   ├── query-rewrite-application.dto.ts  # Query rewrite application DTO
     │   │   │   │   │   │   ├── query-rewrite-dto.ts
     │   │   │   │   │   │   ├── ranking-dto.ts  # RankingAlgorithmDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── recommendation-interaction.dto.ts  # Recommendation interaction DTO
     │   │   │   │   │   │   ├── recommendation-model.dto.ts  # Recommendation model DTO
     │   │   │   │   │   │   ├── recommendation.dto.ts  # Recommendation DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - RecommendationDTO
+    │   │   │   │   │   │   │   # RecommendationDTO
     │   │   │   │   │   │   ├── relevance-tuning.dto.ts  # Relevance tuning DTO
     │   │   │   │   │   │   ├── result-dto.ts  # Search result DTO
-    │   │   │   │   │   │   ├── rewrite-rule-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── rewrite-rule-dto.ts
     │   │   │   │   │   │   ├── safety-dto.ts  # SafetyFilterDTO
     │   │   │   │   │   │   ├── safety-filter-application.dto.ts  # Safety filter application DTO
     │   │   │   │   │   │   ├── saved-filter.dto.ts  # Saved filter DTO
     │   │   │   │   │   │   ├── saved-query-dto.ts  # Saved query DTO
-    │   │   │   │   │   │   ├── saved-search-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── saved-search-dto.ts
     │   │   │   │   │   │   ├── saved-search-execution.dto.ts  # Saved search execution DTO
-    │   │   │   │   │   │   ├── saved-search.dto.ts  # ❌ CREATE - SavedSearchDTO
-    │   │   │   │   │   │   ├── schema-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── saved-search.dto.ts  # SavedSearchDTO
+    │   │   │   │   │   │   ├── schema-dto.ts
     │   │   │   │   │   │   ├── search-alert.dto.ts  # Search alert DTO
     │   │   │   │   │   │   ├── search-experiment.dto.ts  # Search experiment DTO
     │   │   │   │   │   │   ├── search-index-job.dto.ts  # Search index job DTO
@@ -32209,284 +32103,251 @@ fe/
     │   │   │   │   │   │   ├── search-query-filter.dto.ts  # Query filter DTO
     │   │   │   │   │   │   ├── semantic-search.dto.ts  # Semantic search DTO
     │   │   │   │   │   │   ├── skill-taxonomy.dto.ts  # Skill taxonomy DTO
-    │   │   │   │   │   │   ├── snapshot-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── spell-check-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── snapshot-dto.ts
+    │   │   │   │   │   │   ├── spell-check-dto.ts
     │   │   │   │   │   │   ├── speller-correction.dto.ts  # Spelling correction DTO
     │   │   │   │   │   │   ├── speller-suggestion.dto.ts  # Spelling suggestion DTO
-    │   │   │   │   │   │   ├── stop-word-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── stop-word-dto.ts
     │   │   │   │   │   │   ├── suggestion-dto.ts  # SearchSuggestionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── suggestion-tracking.dto.ts  # Suggestion tracking DTO
-    │   │   │   │   │   │   ├── suggestion.dto.ts  # ❌ CREATE - SuggestionDTO
-    │   │   │   │   │   │   ├── synonym-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── synonym-group.dto.ts  # ❌ CREATE - SynonymGroupDTO
+    │   │   │   │   │   │   ├── suggestion.dto.ts  # SuggestionDTO
+    │   │   │   │   │   │   ├── synonym-dto.ts
+    │   │   │   │   │   │   ├── synonym-group.dto.ts  # SynonymGroupDTO
     │   │   │   │   │   │   ├── synonym.dto.ts  # Synonym DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - SynonymDTO
+    │   │   │   │   │   │   │   # SynonymDTO
     │   │   │   │   │   │   ├── taxonomy-dto.ts  # TaxonomyDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── taxonomy-synonym.dto.ts  # Taxonomy synonym DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - TaxonomySynonymDTO
+    │   │   │   │   │   │   │   # TaxonomySynonymDTO
     │   │   │   │   │   │   ├── taxonomy-trend.dto.ts  # Taxonomy trend DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - TaxonomyTrendDTO
-    │   │   │   │   │   │   ├── taxonomy.dto.ts  # ❌ CREATE - TaxonomyDTO
-    │   │   │   │   │   │   ├── trending-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   │   # TaxonomyTrendDTO
+    │   │   │   │   │   │   ├── taxonomy.dto.ts  # TaxonomyDTO
+    │   │   │   │   │   │   ├── trending-dto.ts
     │   │   │   │   │   │   ├── trending.dto.ts  # Trending DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - TrendingSearchDTO
+    │   │   │   │   │   │   │   # TrendingSearchDTO
     │   │   │   │   │   │   ├── user-index.dto.ts  # User index DTO
-    │   │   │   │   │   │   ├── user-preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── user-preference-dto.ts
     │   │   │   │   │   │   ├── user-preference-signal.dto.ts  # Preference signal DTO
     │   │   │   │   │   │   │   # User preference signal DTO
-    │   │   │   │   │   │   └── user-preference.dto.ts  # ❌ CREATE - UserPreferenceDTO
+    │   │   │   │   │   │   └── user-preference.dto.ts  # UserPreferenceDTO
     │   │   │   │   │   ├── storage/  # Storage backend API DTOs
     │   │   │   │   │   │   # Storage-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL STORAGE ENTITIES)
     │   │   │   │   │   │   # MISSING MODELS (30+ DTOs missing - see domains/storage/ for list)
     │   │   │   │   │   │   ├── access-control-dto.ts  # AccessControlDTO
-    │   │   │   │   │   │   ├── access-control.dto.ts  # ❌ CREATE - FileAclDTO
+    │   │   │   │   │   │   ├── access-control.dto.ts  # FileAclDTO
     │   │   │   │   │   │   ├── access-dto.ts  # File access DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── access-grant-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── access-grant-dto.ts
     │   │   │   │   │   │   ├── access-grant.dto.ts  # Access grant DTO
-    │   │   │   │   │   │   ├── access-log-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── access-log-dto.ts
     │   │   │   │   │   │   ├── access-log.dto.ts  # Access log DTO
-    │   │   │   │   │   │   ├── annotation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── annotation-dto.ts
     │   │   │   │   │   │   ├── annotation.dto.ts  # Annotation DTO
-    │   │   │   │   │   │   ├── artifact-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── artifact-dto.ts
     │   │   │   │   │   │   ├── artifact.dto.ts  # Artifact DTO
-    │   │   │   │   │   │   ├── audit-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── audit-dto.ts
     │   │   │   │   │   │   ├── audit.dto.ts  # Audit DTO
-    │   │   │   │   │   │   ├── batch-operation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── batch-operation-dto.ts
     │   │   │   │   │   │   ├── batch-operation.dto.ts  # Batch operation DTO
-    │   │   │   │   │   │   ├── blob-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── blob-dto.ts
     │   │   │   │   │   │   ├── blob.dto.ts  # Blob DTO
-    │   │   │   │   │   │   ├── bucket-policy.dto.ts  # ❌ CREATE - BucketPolicyDTO
-    │   │   │   │   │   │   ├── bucket.dto.ts  # ❌ CREATE - BucketDTO
-    │   │   │   │   │   │   ├── cdn-config-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── bucket-policy.dto.ts  # BucketPolicyDTO
+    │   │   │   │   │   │   ├── bucket.dto.ts  # BucketDTO
+    │   │   │   │   │   │   ├── cdn-config-dto.ts
     │   │   │   │   │   │   ├── cdn-config.dto.ts  # CDN config DTO
-    │   │   │   │   │   │   ├── checksum-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── checksum-dto.ts
     │   │   │   │   │   │   ├── checksum.dto.ts  # Checksum DTO
-    │   │   │   │   │   │   ├── chunk-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── collaboration-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── chunk-dto.ts
+    │   │   │   │   │   │   ├── collaboration-dto.ts
     │   │   │   │   │   │   ├── collaboration.dto.ts  # Collaboration DTO
-    │   │   │   │   │   │   ├── comment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── comment-dto.ts
     │   │   │   │   │   │   ├── comment.dto.ts  # Comment DTO
-    │   │   │   │   │   │   ├── compliance-policy-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── compliance-policy-dto.ts
     │   │   │   │   │   │   ├── compliance-policy.dto.ts  # Compliance policy DTO
-    │   │   │   │   │   │   ├── compliance-result-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── compliance-result-dto.ts
     │   │   │   │   │   │   ├── compliance-result.dto.ts  # Compliance result DTO
-    │   │   │   │   │   │   ├── content-moderation.dto.ts  # ❌ CREATE - ContentModerationDTO
+    │   │   │   │   │   │   ├── content-moderation.dto.ts  # ContentModerationDTO
     │   │   │   │   │   │   ├── data-zone.dto.ts  # Data zone DTO
-    │   │   │   │   │   │   ├── dlp-match-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dlp-match-dto.ts
     │   │   │   │   │   │   ├── dlp-match.dto.ts  # DLP match DTO
     │   │   │   │   │   │   ├── download-dto.ts  # DownloadDTO
-    │   │   │   │   │   │   ├── encryption-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── encryption-rotation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── encryption-dto.ts
+    │   │   │   │   │   │   ├── encryption-rotation-dto.ts
     │   │   │   │   │   │   ├── encryption-rotation.dto.ts  # Encryption rotation DTO
-    │   │   │   │   │   │   ├── extraction-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── extraction-dto.ts
     │   │   │   │   │   │   ├── extraction.dto.ts  # Extraction DTO
-    │   │   │   │   │   │   ├── file-asset.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── file-asset.dto.ts
     │   │   │   │   │   │   ├── file-collection.dto.ts  # File collection DTO
     │   │   │   │   │   │   ├── file-comment.dto.ts  # File comment DTO
     │   │   │   │   │   │   ├── file-dto.ts  # File DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── file-encryption.dto.ts  # Encryption DTO
-    │   │   │   │   │   │   ├── file-flag-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── file-flag-dto.ts
     │   │   │   │   │   │   ├── file-flag.dto.ts  # File flag DTO
     │   │   │   │   │   │   ├── file-lifecycle.dto.ts  # Lifecycle policy DTO
     │   │   │   │   │   │   ├── file-link.dto.ts  # Share link DTO
     │   │   │   │   │   │   ├── file-lock.dto.ts  # File lock DTO
     │   │   │   │   │   │   ├── file-metadata-dto.ts  # FileMetadataDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── file-permission.dto.ts  # File permission DTO
     │   │   │   │   │   │   ├── file-share.dto.ts  # File sharing DTO
     │   │   │   │   │   │   ├── file-tag.dto.ts  # File tag DTO
     │   │   │   │   │   │   ├── file-version.dto.ts  # File version DTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── file.dto.ts  # ❌ CREATE - FileDTO
+    │   │   │   │   │   │   ├── file.dto.ts  # FileDTO
     │   │   │   │   │   │   ├── folder-dto.ts  # Folder DTO
     │   │   │   │   │   │   │   # FolderDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── folder.dto.ts  # ❌ CREATE - FolderDTO
-    │   │   │   │   │   │   │   # ❌ CREATE
-    │   │   │   │   │   │   ├── gc-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── folder.dto.ts  # FolderDTO
+    │   │   │   │   │   │   ├── gc-dto.ts
     │   │   │   │   │   │   ├── gc.dto.ts  # Garbage collection DTO
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── job-queue.dto.ts  # Job queue DTO
-    │   │   │   │   │   │   ├── legal-hold-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── legal-hold-dto.ts
     │   │   │   │   │   │   ├── legal-hold.dto.ts  # Legal hold DTO
-    │   │   │   │   │   │   ├── lifecycle-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── lifecycle-dto.ts
     │   │   │   │   │   │   ├── lifecycle-execution.dto.ts  # Lifecycle execution DTO
-    │   │   │   │   │   │   ├── linking-audit-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── linking-audit-dto.ts
     │   │   │   │   │   │   ├── linking-audit.dto.ts  # Linking audit DTO
-    │   │   │   │   │   │   ├── linking-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── linking-dto.ts
     │   │   │   │   │   │   ├── linking.dto.ts  # Linking DTO
-    │   │   │   │   │   │   ├── media-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── media-dto.ts
     │   │   │   │   │   │   ├── media-transform.dto.ts  # Media transformation DTO
     │   │   │   │   │   │   ├── multipart-upload.dto.ts  # Multipart upload DTO
-    │   │   │   │   │   │   ├── namespace-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── object-metadata.dto.ts  # ❌ CREATE - ObjectMetadataDTO
+    │   │   │   │   │   │   ├── namespace-dto.ts
+    │   │   │   │   │   │   ├── object-metadata.dto.ts  # ObjectMetadataDTO
     │   │   │   │   │   │   ├── ocr-result.dto.ts  # OCR result DTO
-    │   │   │   │   │   │   ├── policy-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── policy-result-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── presigned-url.dto.ts  # ❌ CREATE - PresignedUrlDTO
+    │   │   │   │   │   │   ├── policy-dto.ts
+    │   │   │   │   │   │   ├── policy-result-dto.ts
+    │   │   │   │   │   │   ├── presigned-url.dto.ts  # PresignedUrlDTO
     │   │   │   │   │   │   ├── processing-job.dto.ts  # Processing job DTO
-    │   │   │   │   │   │   ├── quarantine-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── quarantine-dto.ts
     │   │   │   │   │   │   ├── quota-dto.ts  # Quota DTO
     │   │   │   │   │   │   │   # StorageQuotaDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── reference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── reference-dto.ts
     │   │   │   │   │   │   ├── replication-status.dto.ts  # Replication status DTO
-    │   │   │   │   │   │   ├── retention-policy.dto.ts  # ❌ CREATE - RetentionPolicyDTO
+    │   │   │   │   │   │   ├── retention-policy.dto.ts  # RetentionPolicyDTO
     │   │   │   │   │   │   ├── scan-dto.ts  # File scan DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── scan-queue.dto.ts  # Scan queue DTO
-    │   │   │   │   │   │   ├── scan-result-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │   │   ├── share-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── scan-result-dto.ts
+    │   │   │   │   │   │   ├── share-dto.ts
     │   │   │   │   │   │   ├── share-link-dto.ts  # Share link DTO
-    │   │   │   │   │   │   ├── signed-url-request.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── signed-url-request.dto.ts
     │   │   │   │   │   │   ├── storage-quota.dto.ts  # Storage quota DTO
     │   │   │   │   │   │   ├── storage-tier.dto.ts  # Storage tier DTO
-    │   │   │   │   │   │   ├── storage-usage.dto.ts  # ❌ CREATE - StorageUsageDTO
+    │   │   │   │   │   │   ├── storage-usage.dto.ts  # StorageUsageDTO
     │   │   │   │   │   │   ├── sync-status.dto.ts  # Sync status DTO
     │   │   │   │   │   │   ├── thumbnail-dto.ts
     │   │   │   │   │   │   ├── thumbnail.dto.ts  # Thumbnail DTO
-    │   │   │   │   │   │   ├── upload-chunk.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── upload-chunk.dto.ts
     │   │   │   │   │   │   ├── upload-dto.ts  # UploadDTO
     │   │   │   │   │   │   ├── upload-session-dto.ts  # Upload session DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── upload-session.dto.ts  # Upload session DTO
-    │   │   │   │   │   │   ├── upload.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── upload.dto.ts
     │   │   │   │   │   │   ├── usage-log.dto.ts  # Usage log DTO
     │   │   │   │   │   │   ├── version-dto.ts  # FileVersionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── virus-scan-dto.ts  # VirusScanDTO
-    │   │   │   │   │   │   ├── virus-scan-report.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── virus-scan-report.dto.ts
     │   │   │   │   │   │   ├── virus-scan.dto.ts  # Virus scan DTO
-    │   │   │   │   │   │   │   # ❌ CREATE - ScanResultDTO
+    │   │   │   │   │   │   │   # ScanResultDTO
     │   │   │   │   │   │   ├── watermark.dto.ts  # Watermark DTO
-    │   │   │   │   │   │   └── webhook.dto.ts  # ❌ CREATE - StorageWebhookDTO
+    │   │   │   │   │   │   └── webhook.dto.ts  # StorageWebhookDTO
     │   │   │   │   │   ├── subscriptions/  # Subscriptions backend API DTOs
     │   │   │   │   │   │   # Subscriptions-BE DTOs (MISSING DTOs)
     │   │   │   │   │   │   # MISSING DTOs (ALL SUBSCRIPTION ENTITIES)
     │   │   │   │   │   │   # MISSING MODELS (20+ DTOs missing - see domains/subscriptions/ for list)
     │   │   │   │   │   │   ├── addon-dto.ts  # Add-on DTO
     │   │   │   │   │   │   │   # AddonDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── addon.dto.ts  # Addon DTO
     │   │   │   │   │   │   ├── allowance-dto.ts  # AllowanceDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── allowance-transaction-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── allowance-transaction-dto.ts
     │   │   │   │   │   │   ├── allowance-transaction.dto.ts  # Allowance transaction DTO
     │   │   │   │   │   │   ├── allowance.dto.ts  # Allowance DTO
     │   │   │   │   │   │   ├── billing-history-dto.ts  # BillingHistoryDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── billing-history.dto.ts  # Billing history DTO
     │   │   │   │   │   │   ├── billing-profile-dto.ts  # BillingProfileDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── billing-profile.dto.ts  # Billing profile DTO
-    │   │   │   │   │   │   ├── connect-balance-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── connect-balance-dto.ts
     │   │   │   │   │   │   ├── connect-balance.dto.ts  # Connect balance DTO
     │   │   │   │   │   │   ├── connect-package-dto.ts  # ConnectPackageDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-package.dto.ts  # Connect package DTO
     │   │   │   │   │   │   ├── connect-transaction-dto.ts  # ConnectTransactionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── connect-transaction.dto.ts  # Connect transaction DTO
     │   │   │   │   │   │   ├── coupon-dto.ts
-    │   │   │   │   │   │   ├── credit-application-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── credit-application-dto.ts
     │   │   │   │   │   │   ├── credit-application.dto.ts  # Credit application DTO
     │   │   │   │   │   │   ├── credit-dto.ts
     │   │   │   │   │   │   ├── credit-note-dto.ts  # CreditNoteDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── credit-note.dto.ts  # Credit note DTO
     │   │   │   │   │   │   ├── discount-dto.ts
-    │   │   │   │   │   │   ├── dunning-action-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dunning-action-dto.ts
     │   │   │   │   │   │   ├── dunning-action.dto.ts  # Dunning action DTO
-    │   │   │   │   │   │   ├── dunning-case-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dunning-case-dto.ts
     │   │   │   │   │   │   ├── dunning-case.dto.ts  # Dunning case DTO
     │   │   │   │   │   │   ├── dunning-dto.ts  # DunningCaseDTO
-    │   │   │   │   │   │   ├── dunning-schedule-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── dunning-schedule-dto.ts
     │   │   │   │   │   │   ├── dunning-schedule.dto.ts  # Dunning schedule DTO
     │   │   │   │   │   │   ├── entitlement-dto.ts  # Entitlement DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── entitlement-grant-dto.ts  # EntitlementGrantDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── entitlement-grant.dto.ts  # Entitlement grant DTO
     │   │   │   │   │   │   ├── entitlement.dto.ts  # Entitlement DTO
     │   │   │   │   │   │   ├── feature-toggle-dto.ts  # FeatureToggleDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── feature-toggle.dto.ts  # Feature toggle DTO
     │   │   │   │   │   │   ├── grant-dto.ts
     │   │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   │   ├── invoice-dto.ts  # Invoice DTO
     │   │   │   │   │   │   │   # InvoiceDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── invoice-item-dto.ts
-    │   │   │   │   │   │   ├── invoice-line-item-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── invoice-line-item-dto.ts
     │   │   │   │   │   │   ├── invoice-line-item.dto.ts  # Invoice line item DTO
     │   │   │   │   │   │   ├── invoice.dto.ts  # Invoice DTO
     │   │   │   │   │   │   ├── payment-attempt-dto.ts  # PaymentAttemptDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment-attempt.dto.ts  # Payment attempt DTO
     │   │   │   │   │   │   ├── payment-history-dto.ts
     │   │   │   │   │   │   ├── payment-webhook-dto.ts  # PaymentWebhookDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── payment-webhook.dto.ts  # Payment webhook DTO
     │   │   │   │   │   │   ├── plan-comparison-dto.ts
     │   │   │   │   │   │   ├── plan-dto.ts  # Plan DTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── plan-pricing-dto.ts  # PlanPricingDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── plan-pricing.dto.ts  # Plan pricing DTO
     │   │   │   │   │   │   ├── plan-version-dto.ts  # PlanVersionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── plan-version.dto.ts  # Plan version DTO
     │   │   │   │   │   │   ├── plan.dto.ts  # Plan DTO
     │   │   │   │   │   │   ├── promotion-dto.ts  # PromotionDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
-    │   │   │   │   │   │   ├── promotion-redemption-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── promotion-redemption-dto.ts
     │   │   │   │   │   │   ├── promotion-redemption.dto.ts  # Promotion redemption DTO
     │   │   │   │   │   │   ├── promotion.dto.ts  # Promotion DTO
     │   │   │   │   │   │   ├── proration-dto.ts
-    │   │   │   │   │   │   ├── seat-assignment-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── seat-assignment-dto.ts
     │   │   │   │   │   │   ├── seat-assignment.dto.ts  # Seat assignment DTO
     │   │   │   │   │   │   ├── seat-billing-dto.ts  # SeatBillingDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── seat-billing.dto.ts  # Seat billing DTO
-    │   │   │   │   │   │   ├── seat-overage-history-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── seat-overage-history-dto.ts
     │   │   │   │   │   │   ├── seat-overage.dto.ts  # Seat overage DTO
-    │   │   │   │   │   │   ├── subscription-addon-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── subscription-addon-dto.ts
     │   │   │   │   │   │   ├── subscription-addon.dto.ts  # Subscription addon DTO
     │   │   │   │   │   │   ├── subscription-change-dto.ts  # SubscriptionChangeDTO
-    │   │   │   │   │   │   ├── subscription-change-request-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── subscription-change-request-dto.ts
     │   │   │   │   │   │   ├── subscription-change-request.dto.ts  # Change request DTO
     │   │   │   │   │   │   ├── subscription-change.dto.ts  # Subscription change DTO
     │   │   │   │   │   │   ├── subscription-dto.ts  # Subscription DTO
     │   │   │   │   │   │   ├── tax-binding.dto.ts  # Tax binding DTO
     │   │   │   │   │   │   ├── tax-class-dto.ts  # TaxClassDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── tax-class.dto.ts  # Tax class DTO
     │   │   │   │   │   │   ├── trial-dto.ts  # TrialDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── trial.dto.ts  # Trial DTO
     │   │   │   │   │   │   ├── upgrade-path-dto.ts
-    │   │   │   │   │   │   ├── usage-counter-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │   │   ├── usage-counter-dto.ts
     │   │   │   │   │   │   ├── usage-counter.dto.ts  # Usage counter DTO
     │   │   │   │   │   │   ├── usage-dto.ts  # Usage DTO
     │   │   │   │   │   │   ├── usage-event-dto.ts  # UsageEventDTO
-    │   │   │   │   │   │   │   # ⚠️ MISSING
     │   │   │   │   │   │   ├── usage-event.dto.ts  # Usage event DTO
     │   │   │   │   │   │   ├── usage-tracking-dto.ts
     │   │   │   │   │   │   ├── user-entitlement-grant.dto.ts  # User entitlement grant DTO
     │   │   │   │   │   │   └── user-tax-binding.dto.ts  # User tax binding DTO
     │   │   │   │   │   ├── user/
-    │   │   │   │   │   │   ├── account.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── device.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── kyc-document.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── preference.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── profile.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   ├── session.dto.ts  # ❌ CREATE
-    │   │   │   │   │   │   └── verification.dto.ts  # ❌ CREATE
+    │   │   │   │   │   │   ├── account.dto.ts
+    │   │   │   │   │   │   ├── device.dto.ts
+    │   │   │   │   │   │   ├── kyc-document.dto.ts
+    │   │   │   │   │   │   ├── preference.dto.ts
+    │   │   │   │   │   │   ├── profile.dto.ts
+    │   │   │   │   │   │   ├── session.dto.ts
+    │   │   │   │   │   │   └── verification.dto.ts
     │   │   │   │   │   └── users/  # Users backend API DTOs
     │   │   │   │   │       # Users-BE DTOs (MISSING DTOs)
     │   │   │   │   │       # MISSING DTOs (ALL USER ENTITIES)
@@ -32494,169 +32355,155 @@ fe/
     │   │   │   │   │       ├── account-recovery-dto.ts  # AccountRecoveryDTO
     │   │   │   │   │       ├── account-recovery.dto.ts  # Account recovery DTO
     │   │   │   │   │       ├── account-settings-dto.ts  # AccountSettingsDTO
-    │   │   │   │   │       ├── achievement-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── achievement-dto.ts
     │   │   │   │   │       ├── achievement.dto.ts  # Achievement DTO
-    │   │   │   │   │       ├── activity-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── activity-dto.ts
     │   │   │   │   │       ├── activity-feed.dto.ts  # Activity feed DTO
     │   │   │   │   │       ├── appeal-dto.ts  # UserAppealDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── appeal-submission.dto.ts  # Appeal submission DTO
     │   │   │   │   │       ├── availability-dto.ts  # Availability DTO
-    │   │   │   │   │       ├── availability-recurring-rule-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── availability-recurring-rule-dto.ts
     │   │   │   │   │       ├── availability-recurring-rule.dto.ts  # Recurring availability rule DTO
     │   │   │   │   │       ├── availability-schedule-dto.ts  # AvailabilityScheduleDTO
     │   │   │   │   │       ├── availability.dto.ts  # Availability DTO
-    │   │   │   │   │       ├── badge-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── badge-dto.ts
     │   │   │   │   │       ├── ban-dto.ts  # BanDTO
     │   │   │   │   │       ├── ban-history.dto.ts  # Ban history DTO
-    │   │   │   │   │       ├── bio-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── bio-dto.ts
     │   │   │   │   │       ├── bio-section.dto.ts  # Bio section DTO
-    │   │   │   │   │       ├── blocked-user.dto.ts  # ❌ CREATE - BlockedUserDTO
+    │   │   │   │   │       ├── blocked-user.dto.ts  # BlockedUserDTO
     │   │   │   │   │       ├── blocked-users-dto.ts  # BlockedUserDTO
-    │   │   │   │   │       ├── business-verification.dto.ts  # ❌ CREATE - BusinessVerificationDTO
+    │   │   │   │   │       ├── business-verification.dto.ts  # BusinessVerificationDTO
     │   │   │   │   │       ├── capability-dto.ts  # Capability DTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── capability.dto.ts  # Capability DTO
     │   │   │   │   │       ├── certification-dto.ts  # Certification DTO
     │   │   │   │   │       ├── certification-verification.dto.ts  # Certification verification DTO
     │   │   │   │   │       ├── certification.dto.ts  # Certification DTO
     │   │   │   │   │       ├── client-preference.dto.ts  # Client preference DTO
-    │   │   │   │   │       ├── communication-channel-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── communication-channel-dto.ts
     │   │   │   │   │       ├── communication-channel.dto.ts  # Communication channel DTO
     │   │   │   │   │       ├── compliance-dto.ts  # UserComplianceDTO
-    │   │   │   │   │       ├── compliance-report-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── connection-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── compliance-report-dto.ts
+    │   │   │   │   │       ├── connection-dto.ts
     │   │   │   │   │       ├── connection-request.dto.ts  # Connection request DTO
-    │   │   │   │   │       ├── consent-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── consent-dto.ts
     │   │   │   │   │       ├── consent-record.dto.ts  # Consent record DTO
     │   │   │   │   │       ├── data-deletion.dto.ts  # Data deletion DTO
     │   │   │   │   │       ├── data-export.dto.ts  # Data export DTO
     │   │   │   │   │       ├── device-dto.ts  # DeviceDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── device.dto.ts  # Device DTO
-    │   │   │   │   │       ├── earning-goal-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── earning-goal-dto.ts
     │   │   │   │   │       ├── earning-goal.dto.ts  # Earning goal DTO
     │   │   │   │   │       ├── earning-goals-dto.ts  # EarningGoalsDTO
     │   │   │   │   │       ├── education-dto.ts  # Education DTO
     │   │   │   │   │       ├── education.dto.ts  # Education DTO
-    │   │   │   │   │       ├── email-preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── email-preference-dto.ts
     │   │   │   │   │       ├── email-preference.dto.ts  # Email preference DTO
     │   │   │   │   │       ├── email-verification.dto.ts  # Email verification DTO
     │   │   │   │   │       ├── employment-history.dto.ts  # Employment history DTO
-    │   │   │   │   │       ├── endorsement-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── endorsement-dto.ts
     │   │   │   │   │       ├── experience-dto.ts  # Experience DTO
-    │   │   │   │   │       ├── export-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── export-dto.ts
     │   │   │   │   │       ├── flag-dto.ts  # UserFlagDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── freelancer-profile.dto.ts  # Freelancer profile DTO
     │   │   │   │   │       ├── hourly-rate.dto.ts  # Hourly rate DTO
     │   │   │   │   │       ├── id-verification.dto.ts  # ID verification DTO
-    │   │   │   │   │       ├── identity-document-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── identity-verification.dto.ts  # ❌ CREATE - IdentityVerificationDTO
+    │   │   │   │   │       ├── identity-document-dto.ts
+    │   │   │   │   │       ├── identity-verification.dto.ts  # IdentityVerificationDTO
     │   │   │   │   │       ├── index.ts  # Barrel export
-    │   │   │   │   │       ├── integration-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── integration-dto.ts
     │   │   │   │   │       ├── kyc-document.dto.ts  # KYC document DTO
-    │   │   │   │   │       ├── kyc-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── language-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── kyc-dto.ts
+    │   │   │   │   │       ├── language-dto.ts
     │   │   │   │   │       ├── language-proficiency.dto.ts  # Language proficiency DTO
     │   │   │   │   │       ├── learning-path-dto.ts  # LearningPathDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── learning-path.dto.ts  # Learning path DTO
     │   │   │   │   │       ├── login-history-dto.ts  # LoginHistoryDTO
     │   │   │   │   │       ├── login-history.dto.ts  # Login history DTO
     │   │   │   │   │       ├── mentorship-dto.ts  # MentorshipDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── mentorship.dto.ts  # Mentorship DTO
     │   │   │   │   │       ├── metric-dto.ts  # Metric DTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── mfa-backup-code.dto.ts  # MFA backup code DTO
-    │   │   │   │   │       ├── moderation-action-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── moderation.dto.ts  # ❌ CREATE - UserModerationDTO
-    │   │   │   │   │       ├── network-connection-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── notification-preference-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── moderation-action-dto.ts
+    │   │   │   │   │       ├── moderation.dto.ts  # UserModerationDTO
+    │   │   │   │   │       ├── network-connection-dto.ts
+    │   │   │   │   │       ├── notification-preference-dto.ts
     │   │   │   │   │       ├── notification-preferences-dto.ts  # NotificationPreferencesDTO
     │   │   │   │   │       ├── notification-setting.dto.ts  # Notification setting DTO
-    │   │   │   │   │       ├── onboarding-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── onboarding-dto.ts
     │   │   │   │   │       ├── organization-dto.ts  # Organization DTO
-    │   │   │   │   │       │   # ⚠️ MISSING
-    │   │   │   │   │       ├── organization-member-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── organization-member-dto.ts
     │   │   │   │   │       ├── password-reset-dto.ts  # PasswordResetDTO
     │   │   │   │   │       ├── password-reset.dto.ts  # Password reset DTO
     │   │   │   │   │       ├── phone-verification.dto.ts  # Phone verification DTO
     │   │   │   │   │       ├── portfolio-dto.ts  # Portfolio DTO
     │   │   │   │   │       ├── portfolio-item.dto.ts  # Portfolio item DTO
     │   │   │   │   │       ├── portfolio-project.dto.ts  # Portfolio project DTO
-    │   │   │   │   │       ├── privacy-setting-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── privacy-setting-dto.ts
     │   │   │   │   │       ├── privacy-setting.dto.ts  # Privacy setting DTO
     │   │   │   │   │       ├── privacy-settings-dto.ts  # PrivacySettingsDTO
     │   │   │   │   │       ├── professional-headline.dto.ts  # Professional headline DTO
     │   │   │   │   │       ├── professional-network-dto.ts  # ConnectionDTO
-    │   │   │   │   │       ├── profile-completion-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── profile-completion-dto.ts
     │   │   │   │   │       ├── profile-completion.dto.ts  # Profile completion DTO
-    │   │   │   │   │       ├── profile-depth-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── profile-depth-dto.ts
     │   │   │   │   │       ├── profile-dto.ts  # Profile DTO
     │   │   │   │   │       ├── profile-impression.dto.ts  # Profile impression DTO
-    │   │   │   │   │       ├── profile-view-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── profile-view-dto.ts
     │   │   │   │   │       ├── profile-view.dto.ts  # Profile view DTO
-    │   │   │   │   │       ├── profile-visibility-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── profile-visibility-dto.ts
     │   │   │   │   │       ├── profile-visibility.dto.ts  # Profile visibility DTO
     │   │   │   │   │       ├── project-image.dto.ts  # Project image DTO
-    │   │   │   │   │       ├── quota-override.dto.ts  # ❌ CREATE - QuotaOverrideDTO
+    │   │   │   │   │       ├── quota-override.dto.ts  # QuotaOverrideDTO
     │   │   │   │   │       ├── rate-card-dto.ts  # UserRateCardDTO
-    │   │   │   │   │       ├── rate-history-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── rate-history-dto.ts
     │   │   │   │   │       ├── rate-history.dto.ts  # Rate history DTO
-    │   │   │   │   │       ├── recovery-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── recovery-dto.ts
     │   │   │   │   │       ├── referral-dto.ts  # ReferralDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── referral.dto.ts  # Referral DTO
-    │   │   │   │   │       ├── relationship-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── report-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── reputation-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── relationship-dto.ts
+    │   │   │   │   │       ├── report-dto.ts
+    │   │   │   │   │       ├── reputation-dto.ts
     │   │   │   │   │       ├── reputation-score.dto.ts  # Reputation score DTO
-    │   │   │   │   │       ├── saved-item-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── saved-item-dto.ts
     │   │   │   │   │       ├── saved-item.dto.ts  # Saved item DTO
     │   │   │   │   │       ├── saved-items-dto.ts  # SavedItemDTO
-    │   │   │   │   │       ├── scoring-factor-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── scoring-factor-dto.ts
     │   │   │   │   │       ├── search-appearance.dto.ts  # Search appearance DTO
-    │   │   │   │   │       ├── search-history-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── search-history-dto.ts
     │   │   │   │   │       ├── security-alert.dto.ts  # Security alert DTO
     │   │   │   │   │       ├── security-dto.ts  # SecuritySettingsDTO
-    │   │   │   │   │       ├── security-event-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── security-question-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── security-event-dto.ts
+    │   │   │   │   │       ├── security-question-dto.ts
     │   │   │   │   │       ├── service-catalog-dto.ts  # ServiceCatalogDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── service-catalog.dto.ts  # Service catalog DTO
     │   │   │   │   │       ├── session-device.dto.ts  # Session device DTO
     │   │   │   │   │       ├── session-dto.ts  # UserSessionDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── session.dto.ts  # Session DTO
     │   │   │   │   │       ├── skill-dto.ts  # Skill DTO
-    │   │   │   │   │       ├── skill-endorsement-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── skill-endorsement-dto.ts
     │   │   │   │   │       ├── skill-endorsement.dto.ts  # Skill endorsement DTO
-    │   │   │   │   │       ├── skill-verification-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── skill-verification-dto.ts
     │   │   │   │   │       ├── specialization-dto.ts  # SpecializationDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── specialization.dto.ts  # Specialization DTO
     │   │   │   │   │       ├── suspension-dto.ts  # SuspensionDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── suspension-history.dto.ts  # Suspension history DTO
-    │   │   │   │   │       ├── suspension.dto.ts  # ❌ CREATE - SuspensionDTO
-    │   │   │   │   │       ├── tax-profile-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── suspension.dto.ts  # SuspensionDTO
+    │   │   │   │   │       ├── tax-profile-dto.ts
     │   │   │   │   │       ├── tax-profile.dto.ts  # Tax profile DTO
     │   │   │   │   │       ├── team-dto.ts  # Team DTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── team-invitation.dto.ts  # Team invitation DTO
-    │   │   │   │   │       ├── team-member-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── team-member-dto.ts
     │   │   │   │   │       ├── team-member.dto.ts  # Team member DTO
     │   │   │   │   │       ├── time-zone-dto.ts  # TimeZonePreferenceDTO
-    │   │   │   │   │       ├── timezone-preference-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── trust-level-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── timezone-preference-dto.ts
+    │   │   │   │   │       ├── trust-level-dto.ts
     │   │   │   │   │       ├── trust-score-dto.ts  # Trust score DTO
     │   │   │   │   │       ├── trust-score.dto.ts  # Trust score DTO
     │   │   │   │   │       ├── trust-signal.dto.ts  # Trust signal DTO
     │   │   │   │   │       ├── trusted-device.dto.ts  # Trusted device DTO
     │   │   │   │   │       ├── two-factor-auth-dto.ts  # TwoFactorAuthDTO
-    │   │   │   │   │       ├── two-factor-dto.ts  # ⚠️ MISSING
+    │   │   │   │   │       ├── two-factor-dto.ts
     │   │   │   │   │       ├── user-activity.dto.ts  # User activity DTO
     │   │   │   │   │       ├── user-badge.dto.ts  # User badge DTO
     │   │   │   │   │       ├── user-connection.dto.ts  # User connection DTO
@@ -32664,7 +32511,7 @@ fe/
     │   │   │   │   │       ├── user-flag.dto.ts  # User flag DTO
     │   │   │   │   │       ├── user-follow.dto.ts  # User follow DTO
     │   │   │   │   │       ├── user-group-dto.ts  # UserGroupDTO
-    │   │   │   │   │       ├── user-metrics.dto.ts  # ❌ CREATE - UserMetricsDTO
+    │   │   │   │   │       ├── user-metrics.dto.ts  # UserMetricsDTO
     │   │   │   │   │       ├── user-note.dto.ts  # User note DTO
     │   │   │   │   │       ├── user-read-model.dto.ts  # User read model DTO
     │   │   │   │   │       ├── user-session.dto.ts  # User session DTO
@@ -32672,17 +32519,15 @@ fe/
     │   │   │   │   │       ├── user-stat.dto.ts  # User stat DTO
     │   │   │   │   │       ├── verification-dto.ts  # Verification DTO
     │   │   │   │   │       ├── verification.dto.ts  # Verification DTO
-    │   │   │   │   │       ├── video-intro-dto.ts  # ⚠️ MISSING
-    │   │   │   │   │       ├── video-intro.dto.ts  # ❌ CREATE - VideoIntroDTO
+    │   │   │   │   │       ├── video-intro-dto.ts
+    │   │   │   │   │       ├── video-intro.dto.ts  # VideoIntroDTO
     │   │   │   │   │       ├── warning-dto.ts  # WarningDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       ├── warning-history.dto.ts  # Warning history DTO
-    │   │   │   │   │       ├── warning.dto.ts  # ❌ CREATE - WarningDTO
+    │   │   │   │   │       ├── warning.dto.ts  # WarningDTO
     │   │   │   │   │       ├── work-preference.dto.ts  # Work preference DTO
     │   │   │   │   │       ├── workload-capacity-dto.ts  # WorkloadCapacityDTO
-    │   │   │   │   │       │   # ⚠️ MISSING
     │   │   │   │   │       └── workload-capacity.dto.ts  # Workload capacity DTO
-    │   │   │   │   │           # ❌ CREATE - WorkloadCapacityDTO
+    │   │   │   │   │           # WorkloadCapacityDTO
     │   │   │   │   └── state/  # State management types (MISSING STATE SLICES BELOW)
     │   │   │   │       # State management types (MISSING ITEMS - COMPLETE STATE STRUCTURE)
     │   │   │   │       ├── slices/  # State slice types
@@ -33476,39 +33321,39 @@ fe/
     │       │   │   │       └── ScreenReaderOnly.types.ts
     │       │   │   ├── accessibility/
     │       │   │   │   ├── A11yAnnouncer/
-    │       │   │   │   │   ├── A11yAnnouncer.native.tsx  # ❌ CREATE - Native screen reader announcer
+    │       │   │   │   │   ├── A11yAnnouncer.native.tsx  # Native screen reader announcer
     │       │   │   │   │   │   # - AccessibilityInfo.announceForAccessibility
     │       │   │   │   │   │   # - Live region announcements
     │       │   │   │   │   │   # Props: message, politeness
-    │       │   │   │   │   ├── A11yAnnouncer.tsx  # ❌ CREATE - Base announcer
+    │       │   │   │   │   ├── A11yAnnouncer.tsx  # Base announcer
     │       │   │   │   │   │   # - Shared announcement logic
-    │       │   │   │   │   ├── A11yAnnouncer.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── A11yAnnouncer.types.ts  # Types
     │       │   │   │   │   │   # - Politeness level type
-    │       │   │   │   │   └── A11yAnnouncer.web.tsx  # ❌ CREATE - Web announcer
+    │       │   │   │   │   └── A11yAnnouncer.web.tsx  # Web announcer
     │       │   │   │   │       # - ARIA live region
     │       │   │   │   │       # - Polite/assertive modes
     │       │   │   │   │       # Props: message, politeness
     │       │   │   │   ├── FocusTrap/
-    │       │   │   │   │   ├── FocusTrap.native.tsx  # ❌ CREATE - Native focus trap
+    │       │   │   │   │   ├── FocusTrap.native.tsx  # Native focus trap
     │       │   │   │   │   │   # - findNodeHandle for focus management
     │       │   │   │   │   │   # Props: active, children
-    │       │   │   │   │   ├── FocusTrap.tsx  # ❌ CREATE - Base focus trap
+    │       │   │   │   │   ├── FocusTrap.tsx  # Base focus trap
     │       │   │   │   │   │   # - Shared focus trap logic
-    │       │   │   │   │   ├── FocusTrap.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── FocusTrap.types.ts  # Types
     │       │   │   │   │   │   # - FocusTrapProps interface
-    │       │   │   │   │   └── FocusTrap.web.tsx  # ❌ CREATE - Web focus trap
+    │       │   │   │   │   └── FocusTrap.web.tsx  # Web focus trap
     │       │   │   │   │       # - Traps focus within container
     │       │   │   │   │       # - For modals, dialogs
     │       │   │   │   │       # Props: active, children
     │       │   │   │   ├── SkipLink/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── SkipLink.tsx  # ❌ CREATE - Skip navigation link
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── SkipLink.tsx  # Skip navigation link
     │       │   │   │   │   │   # - Visually hidden until focus
     │       │   │   │   │   │   # - Jumps to main content
     │       │   │   │   │   │   # Props: href, children
-    │       │   │   │   │   └── SkipLink.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   └── SkipLink.types.ts  # Types
     │       │   │   │   │       # - SkipLinkProps interface
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for accessibility
+    │       │   │   │   └── index.ts  # Barrel export for accessibility
     │       │   │   ├── Accordion/
     │       │   │   ├── AI/
     │       │   │   │   ├── AIAssistant/
@@ -33545,187 +33390,202 @@ fe/
     │       │   │   ├── Alert/
     │       │   │   ├── atoms/
     │       │   │   │   ├── Alert/
-    │       │   │   │   │   ├── Alert.native.tsx  # ❌ CREATE - Native alert component using React Native Alert API
+    │       │   │   │   │   ├── Alert.native.tsx  # Native alert component using React Native Alert API
     │       │   │   │   │   │   # - Uses platform Alert.alert() for system alerts
     │       │   │   │   │   │   # - Supports title, message, buttons configuration
     │       │   │   │   │   │   # - Haptic feedback on button press
     │       │   │   │   │   │   # - Accessibility: screen reader announcements
     │       │   │   │   │   │   # Props: variant, title, message, onClose, action
-    │       │   │   │   │   ├── Alert.tsx  # ❌ CREATE - Base alert component
+    │       │   │   │   │   │   # ❌ CREATE Native alert with react-native-paper Alert component, variants: success/error/warning/info
+    │       │   │   │   │   ├── Alert.tsx  # Base alert component
     │       │   │   │   │   │   # - Shared alert logic and types
     │       │   │   │   │   │   # - Props interface definition
     │       │   │   │   │   │   # - Variant types: info, success, warning, error
-    │       │   │   │   │   ├── Alert.types.ts  # ❌ CREATE - Alert type definitions
+    │       │   │   │   │   │   # ❌ CREATE Base alert logic, variant handling, icon mapping, dismissible state
+    │       │   │   │   │   ├── Alert.types.ts  # Alert type definitions
     │       │   │   │   │   │   # - AlertVariant enum
     │       │   │   │   │   │   # - AlertProps interface
     │       │   │   │   │   │   # - AlertAction interface
-    │       │   │   │   │   └── Alert.web.tsx  # ❌ CREATE - Web alert component
-    │       │   │   │   │       # - Dismissible banner with icon
-    │       │   │   │   │       # - Auto-dismiss timeout option
-    │       │   │   │   │       # - ARIA live region for announcements
-    │       │   │   │   │       # - CSS transitions for enter/exit
-    │       │   │   │   │       # Props: variant, title, message, dismissible, autoClose
+    │       │   │   │   │   │   # ❌ CREATE AlertVariant type, AlertProps interface with title/message/variant/dismissible/onDismiss
+    │       │   │   │   │   ├── Alert.web.tsx  # Web alert component
+    │       │   │   │   │   │   # - Dismissible banner with icon
+    │       │   │   │   │   │   # - Auto-dismiss timeout option
+    │       │   │   │   │   │   # - ARIA live region for announcements
+    │       │   │   │   │   │   # - CSS transitions for enter/exit
+    │       │   │   │   │   │   # Props: variant, title, message, dismissible, autoClose
+    │       │   │   │   │   │   # ❌ CREATE Web alert with Tailwind, ARIA live region, auto-dismiss timer support
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── Avatar/
-    │       │   │   │   │   ├── Avatar.native.tsx  # ❌ CREATE - Native avatar with Image component
+    │       │   │   │   │   ├── Avatar.native.tsx  # Native avatar with Image component
     │       │   │   │   │   │   # - React Native Image with fallback
     │       │   │   │   │   │   # - FastImage for better performance
     │       │   │   │   │   │   # - Loading skeleton while image loads
     │       │   │   │   │   │   # - Fallback to initials if no image
     │       │   │   │   │   │   # - Presence indicator (online/offline/away/dnd)
     │       │   │   │   │   │   # Props: src, alt, size, presence, initials, onPress
-    │       │   │   │   │   ├── Avatar.tsx  # ❌ CREATE - Base avatar component
+    │       │   │   │   │   ├── Avatar.tsx  # Base avatar component
     │       │   │   │   │   │   # - Shared avatar logic
     │       │   │   │   │   │   # - Size variants: xs, sm, md, lg, xl
     │       │   │   │   │   │   # - Presence status logic
-    │       │   │   │   │   ├── Avatar.types.ts  # ❌ CREATE - Avatar type definitions
+    │       │   │   │   │   ├── Avatar.types.ts  # Avatar type definitions
     │       │   │   │   │   │   # - AvatarSize type
     │       │   │   │   │   │   # - PresenceStatus enum
     │       │   │   │   │   │   # - AvatarProps interface
-    │       │   │   │   │   └── Avatar.web.tsx  # ❌ CREATE - Web avatar with img tag
+    │       │   │   │   │   └── Avatar.web.tsx  # Web avatar with img tag
     │       │   │   │   │       # - Lazy-loaded image
     │       │   │   │   │       # - Blurhash placeholder
     │       │   │   │   │       # - CSS border radius
     │       │   │   │   │       # - Presence indicator with absolute positioning
     │       │   │   │   │       # Props: src, alt, size, presence, initials, onClick
     │       │   │   │   ├── Badge/
-    │       │   │   │   │   ├── Badge.native.tsx  # ❌ CREATE - Native badge component
+    │       │   │   │   │   ├── Badge.native.tsx  # Native badge component
     │       │   │   │   │   │   # - React Native View with styling
     │       │   │   │   │   │   # - Supports dot badge (no text)
     │       │   │   │   │   │   # - Number abbreviation (99+)
     │       │   │   │   │   │   # - Accessibility: accessibilityLabel
     │       │   │   │   │   │   # Props: count, dot, variant, maxCount
-    │       │   │   │   │   ├── Badge.tsx  # ❌ CREATE - Base badge component
+    │       │   │   │   │   │   # ❌ CREATE Native badge using View with positioning absolute, variants: primary/secondary/success/error/warning
+    │       │   │   │   │   ├── Badge.tsx  # Base badge component
     │       │   │   │   │   │   # - Shared badge logic
     │       │   │   │   │   │   # - Number formatting (1K, 1M)
     │       │   │   │   │   │   # - Variant types: default, primary, success, warning, error
-    │       │   │   │   │   ├── Badge.types.ts  # ❌ CREATE - Badge type definitions
+    │       │   │   │   │   │   # ❌ CREATE Base badge logic, variant styles, size handling, dot mode support
+    │       │   │   │   │   ├── Badge.types.ts  # Badge type definitions
     │       │   │   │   │   │   # - BadgeVariant type
     │       │   │   │   │   │   # - BadgeProps interface
-    │       │   │   │   │   └── Badge.web.tsx  # ❌ CREATE - Web badge component
-    │       │   │   │   │       # - Span element with absolute positioning
-    │       │   │   │   │       # - CSS transforms for positioning
-    │       │   │   │   │       # - ARIA label for screen readers
-    │       │   │   │   │       # Props: count, dot, variant, maxCount, position
+    │       │   │   │   │   │   # ❌ CREATE BadgeVariant type, BadgeSize type, BadgeProps interface
+    │       │   │   │   │   ├── Badge.web.tsx  # Web badge component
+    │       │   │   │   │   │   # - Span element with absolute positioning
+    │       │   │   │   │   │   # - CSS transforms for positioning
+    │       │   │   │   │   │   # - ARIA label for screen readers
+    │       │   │   │   │   │   # Props: count, dot, variant, maxCount, position
+    │       │   │   │   │   │   # ❌ CREATE Web badge with Tailwind badge utilities, pulse animation support
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── Checkbox/
-    │       │   │   │   │   ├── Checkbox.native.tsx  # ❌ CREATE - Native checkbox using Pressable
+    │       │   │   │   │   ├── Checkbox.native.tsx  # Native checkbox using Pressable
     │       │   │   │   │   │   # - Custom Pressable with checkmark icon
     │       │   │   │   │   │   # - Animated check transition
     │       │   │   │   │   │   # - Haptic feedback on toggle
     │       │   │   │   │   │   # - Accessibility: role="checkbox", checked state
     │       │   │   │   │   │   # Props: checked, onChange, label, disabled, indeterminate
-    │       │   │   │   │   ├── Checkbox.tsx  # ❌ CREATE - Base checkbox component
+    │       │   │   │   │   ├── Checkbox.tsx  # Base checkbox component
     │       │   │   │   │   │   # - Shared checkbox logic
     │       │   │   │   │   │   # - Controlled/uncontrolled modes
     │       │   │   │   │   │   # - Indeterminate state support
-    │       │   │   │   │   ├── Checkbox.types.ts  # ❌ CREATE - Checkbox type definitions
+    │       │   │   │   │   ├── Checkbox.types.ts  # Checkbox type definitions
     │       │   │   │   │   │   # - CheckboxProps interface
     │       │   │   │   │   │   # - CheckboxState type
-    │       │   │   │   │   └── Checkbox.web.tsx  # ❌ CREATE - Web checkbox using input[type=checkbox]
+    │       │   │   │   │   └── Checkbox.web.tsx  # Web checkbox using input[type=checkbox]
     │       │   │   │   │       # - Native HTML input with custom styling
     │       │   │   │   │       # - CSS pseudo-elements for checkmark
     │       │   │   │   │       # - Keyboard navigation (Space to toggle)
     │       │   │   │   │       # - ARIA attributes
     │       │   │   │   │       # Props: checked, onChange, label, disabled, indeterminate
     │       │   │   │   ├── Chip/
-    │       │   │   │   │   ├── Chip.native.tsx  # ❌ CREATE - Native chip (filter tag)
+    │       │   │   │   │   ├── Chip.native.tsx  # Native chip (filter tag)
     │       │   │   │   │   │   # - Pressable with rounded background
     │       │   │   │   │   │   # - Dismissible with X button
     │       │   │   │   │   │   # - Selected state with different styling
     │       │   │   │   │   │   # - Haptic feedback on press
     │       │   │   │   │   │   # Props: label, selected, onPress, onDelete, variant
-    │       │   │   │   │   ├── Chip.tsx  # ❌ CREATE - Base chip component
+    │       │   │   │   │   │   # ❌ CREATE Native chip with TouchableOpacity, closeable, selectable, disabled states
+    │       │   │   │   │   ├── Chip.tsx  # Base chip component
     │       │   │   │   │   │   # - Shared chip logic
     │       │   │   │   │   │   # - Variant types: default, primary, outlined
     │       │   │   │   │   │   # - Size variants: sm, md, lg
-    │       │   │   │   │   ├── Chip.types.ts  # ❌ CREATE - Chip type definitions
+    │       │   │   │   │   │   # ❌ CREATE Base chip logic, selection handling, close callback
+    │       │   │   │   │   ├── Chip.types.ts  # Chip type definitions
     │       │   │   │   │   │   # - ChipVariant type
     │       │   │   │   │   │   # - ChipSize type
     │       │   │   │   │   │   # - ChipProps interface
-    │       │   │   │   │   └── Chip.web.tsx  # ❌ CREATE - Web chip component
-    │       │   │   │   │       # - Button element with pill styling
-    │       │   │   │   │       # - Hover/focus states
-    │       │   │   │   │       # - Delete button with X icon
-    │       │   │   │   │       # Props: label, selected, onClick, onDelete, variant
+    │       │   │   │   │   │   # ❌ CREATE ChipVariant type, ChipProps interface with label/selected/onClose/onPress
+    │       │   │   │   │   ├── Chip.web.tsx  # Web chip component
+    │       │   │   │   │   │   # - Button element with pill styling
+    │       │   │   │   │   │   # - Hover/focus states
+    │       │   │   │   │   │   # - Delete button with X icon
+    │       │   │   │   │   │   # Props: label, selected, onClick, onDelete, variant
+    │       │   │   │   │   │   # ❌ CREATE Web chip with Tailwind, keyboard interaction (Enter/Delete), ARIA selected state
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── DataDisplay/
     │       │   │   │   │   ├── Badge/
-    │       │   │   │   │   │   ├── Badge.native.tsx  # ❌ CREATE - Native badge component using View
+    │       │   │   │   │   │   ├── Badge.native.tsx  # Native badge component using View
     │       │   │   │   │   │   │   # - Absolute positioned View over parent
     │       │   │   │   │   │   │   # - Circular or pill-shaped
     │       │   │   │   │   │   │   # - Number formatting (99+)
     │       │   │   │   │   │   │   # - Dot variant for notifications
     │       │   │   │   │   │   │   # - Accessibility: badge count announced
     │       │   │   │   │   │   │   # Props: count, dot, variant, maxCount, position
-    │       │   │   │   │   │   ├── Badge.tsx  # ❌ CREATE - Base badge component
+    │       │   │   │   │   │   ├── Badge.tsx  # Base badge component
     │       │   │   │   │   │   │   # - Shared badge logic
     │       │   │   │   │   │   │   # - Number formatting (1K, 1M)
     │       │   │   │   │   │   │   # - Variant types: default, primary, success, warning, error
-    │       │   │   │   │   │   ├── Badge.types.ts  # ❌ CREATE - Badge type definitions
+    │       │   │   │   │   │   ├── Badge.types.ts  # Badge type definitions
     │       │   │   │   │   │   │   # - BadgeVariant type
     │       │   │   │   │   │   │   # - BadgeProps interface
-    │       │   │   │   │   │   └── Badge.web.tsx  # ❌ CREATE - Web badge component
+    │       │   │   │   │   │   └── Badge.web.tsx  # Web badge component
     │       │   │   │   │   │       # - Span element with absolute positioning
     │       │   │   │   │   │       # - CSS transforms for positioning
     │       │   │   │   │   │       # - ARIA label for screen readers
     │       │   │   │   │   │       # Props: count, dot, variant, maxCount, position
     │       │   │   │   │   ├── Checkbox/
-    │       │   │   │   │   │   ├── Checkbox.native.tsx  # ❌ CREATE - Native checkbox using Pressable
+    │       │   │   │   │   │   ├── Checkbox.native.tsx  # Native checkbox using Pressable
     │       │   │   │   │   │   │   # - Custom Pressable with checkmark icon
     │       │   │   │   │   │   │   # - Animated check transition
     │       │   │   │   │   │   │   # - Haptic feedback on toggle
     │       │   │   │   │   │   │   # - Accessibility: role="checkbox", checked state
     │       │   │   │   │   │   │   # Props: checked, onChange, label, disabled, indeterminate
-    │       │   │   │   │   │   ├── Checkbox.tsx  # ❌ CREATE - Base checkbox component
+    │       │   │   │   │   │   ├── Checkbox.tsx  # Base checkbox component
     │       │   │   │   │   │   │   # - Shared checkbox logic
     │       │   │   │   │   │   │   # - Controlled/uncontrolled modes
     │       │   │   │   │   │   │   # - Indeterminate state support
-    │       │   │   │   │   │   ├── Checkbox.types.ts  # ❌ CREATE - Checkbox type definitions
+    │       │   │   │   │   │   ├── Checkbox.types.ts  # Checkbox type definitions
     │       │   │   │   │   │   │   # - CheckboxProps interface
     │       │   │   │   │   │   │   # - CheckboxState type
-    │       │   │   │   │   │   └── Checkbox.web.tsx  # ❌ CREATE - Web checkbox using input[type=checkbox]
+    │       │   │   │   │   │   └── Checkbox.web.tsx  # Web checkbox using input[type=checkbox]
     │       │   │   │   │   │       # - Native HTML input with custom styling
     │       │   │   │   │   │       # - CSS pseudo-elements for checkmark
     │       │   │   │   │   │       # - Keyboard navigation (Space to toggle)
     │       │   │   │   │   │       # - ARIA attributes
     │       │   │   │   │   │       # Props: checked, onChange, label, disabled, indeterminate
     │       │   │   │   │   ├── Chip/
-    │       │   │   │   │   │   ├── Chip.native.tsx  # ❌ CREATE - Native chip (filter tag)
+    │       │   │   │   │   │   ├── Chip.native.tsx  # Native chip (filter tag)
     │       │   │   │   │   │   │   # - Pressable with rounded background
     │       │   │   │   │   │   │   # - Dismissible with X button
     │       │   │   │   │   │   │   # - Selected state with different styling
     │       │   │   │   │   │   │   # - Haptic feedback on press
     │       │   │   │   │   │   │   # Props: label, selected, onPress, onDelete, variant
-    │       │   │   │   │   │   ├── Chip.tsx  # ❌ CREATE - Base chip component
+    │       │   │   │   │   │   ├── Chip.tsx  # Base chip component
     │       │   │   │   │   │   │   # - Shared chip logic
     │       │   │   │   │   │   │   # - Variant types: default, primary, outlined
     │       │   │   │   │   │   │   # - Size variants: sm, md, lg
-    │       │   │   │   │   │   ├── Chip.types.ts  # ❌ CREATE - Chip type definitions
+    │       │   │   │   │   │   ├── Chip.types.ts  # Chip type definitions
     │       │   │   │   │   │   │   # - ChipVariant type
     │       │   │   │   │   │   │   # - ChipSize type
     │       │   │   │   │   │   │   # - ChipProps interface
-    │       │   │   │   │   │   └── Chip.web.tsx  # ❌ CREATE - Web chip component
+    │       │   │   │   │   │   └── Chip.web.tsx  # Web chip component
     │       │   │   │   │   │       # - Button element with pill styling
     │       │   │   │   │   │       # - Hover/focus states
     │       │   │   │   │   │       # - Delete button with X icon
     │       │   │   │   │   │       # Props: label, selected, onClick, onDelete, variant
     │       │   │   │   │   ├── Divider/
-    │       │   │   │   │   │   ├── Divider.native.tsx  # ❌ CREATE - Native divider using View
+    │       │   │   │   │   │   ├── Divider.native.tsx  # Native divider using View
     │       │   │   │   │   │   │   # - Simple View with border
     │       │   │   │   │   │   │   # - Horizontal/vertical orientation
     │       │   │   │   │   │   │   # - Configurable thickness and color
     │       │   │   │   │   │   │   # Props: orientation, thickness, color, spacing
-    │       │   │   │   │   │   ├── Divider.tsx  # ❌ CREATE - Base divider component
+    │       │   │   │   │   │   ├── Divider.tsx  # Base divider component
     │       │   │   │   │   │   │   # - Shared divider logic
     │       │   │   │   │   │   │   # - Orientation types: horizontal, vertical
-    │       │   │   │   │   │   ├── Divider.types.ts  # ❌ CREATE - Divider type definitions
+    │       │   │   │   │   │   ├── Divider.types.ts  # Divider type definitions
     │       │   │   │   │   │   │   # - DividerOrientation type
     │       │   │   │   │   │   │   # - DividerProps interface
-    │       │   │   │   │   │   └── Divider.web.tsx  # ❌ CREATE - Web divider using hr/div
+    │       │   │   │   │   │   └── Divider.web.tsx  # Web divider using hr/div
     │       │   │   │   │   │       # - Hr element for horizontal
     │       │   │   │   │   │       # - Div with border for vertical
     │       │   │   │   │   │       # - CSS styling for thickness
     │       │   │   │   │   │       # Props: orientation, thickness, color, spacing
     │       │   │   │   │   ├── IconButton/
-    │       │   │   │   │   │   ├── IconButton.native.tsx  # ❌ CREATE - Native icon button
+    │       │   │   │   │   │   ├── IconButton.native.tsx  # Native icon button
     │       │   │   │   │   │   │   # - Pressable with icon only
     │       │   │   │   │   │   │   # - Circular or square shape
     │       │   │   │   │   │   │   # - Size variants: sm, md, lg
@@ -33733,103 +33593,108 @@ fe/
     │       │   │   │   │   │   │   # - Haptic feedback
     │       │   │   │   │   │   │   # - Accessibility: accessibilityLabel required
     │       │   │   │   │   │   │   # Props: icon, size, variant, onPress, ariaLabel
-    │       │   │   │   │   │   ├── IconButton.tsx  # ❌ CREATE - Base icon button
+    │       │   │   │   │   │   ├── IconButton.tsx  # Base icon button
     │       │   │   │   │   │   │   # - Shared button logic
-    │       │   │   │   │   │   ├── IconButton.types.ts  # ❌ CREATE - IconButton types
+    │       │   │   │   │   │   ├── IconButton.types.ts  # IconButton types
     │       │   │   │   │   │   │   # - IconButtonSize type
     │       │   │   │   │   │   │   # - IconButtonVariant type
     │       │   │   │   │   │   │   # - IconButtonProps interface
-    │       │   │   │   │   │   └── IconButton.web.tsx  # ❌ CREATE - Web icon button
+    │       │   │   │   │   │   └── IconButton.web.tsx  # Web icon button
     │       │   │   │   │   │       # - Button element with icon
     │       │   │   │   │   │       # - Hover/focus states
     │       │   │   │   │   │       # - Ripple effect with CSS
     │       │   │   │   │   │       # Props: icon, size, variant, onClick, ariaLabel
     │       │   │   │   │   ├── Radio/
-    │       │   │   │   │   │   ├── Radio.native.tsx  # ❌ CREATE - Native radio using Pressable
+    │       │   │   │   │   │   ├── Radio.native.tsx  # Native radio using Pressable
     │       │   │   │   │   │   │   # - Custom Pressable with circle indicator
     │       │   │   │   │   │   │   # - Animated selection
     │       │   │   │   │   │   │   # - Haptic feedback
     │       │   │   │   │   │   │   # - Accessibility: role="radio", checked state
     │       │   │   │   │   │   │   # Props: checked, onChange, value, label, disabled
-    │       │   │   │   │   │   ├── Radio.tsx  # ❌ CREATE - Base radio component
+    │       │   │   │   │   │   ├── Radio.tsx  # Base radio component
     │       │   │   │   │   │   │   # - Shared radio logic
     │       │   │   │   │   │   │   # - Radio group context
-    │       │   │   │   │   │   ├── Radio.types.ts  # ❌ CREATE - Radio type definitions
+    │       │   │   │   │   │   ├── Radio.types.ts  # Radio type definitions
     │       │   │   │   │   │   │   # - RadioProps interface
     │       │   │   │   │   │   │   # - RadioGroupProps interface
-    │       │   │   │   │   │   └── Radio.web.tsx  # ❌ CREATE - Web radio using input[type=radio]
+    │       │   │   │   │   │   └── Radio.web.tsx  # Web radio using input[type=radio]
     │       │   │   │   │   │       # - Native HTML input with custom styling
     │       │   │   │   │   │       # - CSS for circle indicator
     │       │   │   │   │   │       # - Keyboard navigation
     │       │   │   │   │   │       # Props: checked, onChange, value, label, disabled
     │       │   │   │   │   ├── Spinner/
-    │       │   │   │   │   │   ├── Spinner.native.tsx  # ❌ CREATE - Native spinner using ActivityIndicator
+    │       │   │   │   │   │   ├── Spinner.native.tsx  # Native spinner using ActivityIndicator
     │       │   │   │   │   │   │   # - React Native ActivityIndicator
     │       │   │   │   │   │   │   # - Size variants: small, large
     │       │   │   │   │   │   │   # - Color customization
     │       │   │   │   │   │   │   # - Accessibility: accessibilityLabel
     │       │   │   │   │   │   │   # Props: size, color, label
-    │       │   │   │   │   │   ├── Spinner.tsx  # ❌ CREATE - Base spinner component
+    │       │   │   │   │   │   ├── Spinner.tsx  # Base spinner component
     │       │   │   │   │   │   │   # - Shared spinner logic
     │       │   │   │   │   │   │   # - Size types: xs, sm, md, lg, xl
-    │       │   │   │   │   │   ├── Spinner.types.ts  # ❌ CREATE - Spinner type definitions
+    │       │   │   │   │   │   ├── Spinner.types.ts  # Spinner type definitions
     │       │   │   │   │   │   │   # - SpinnerSize type
     │       │   │   │   │   │   │   # - SpinnerProps interface
-    │       │   │   │   │   │   └── Spinner.web.tsx  # ❌ CREATE - Web spinner with CSS animation
+    │       │   │   │   │   │   └── Spinner.web.tsx  # Web spinner with CSS animation
     │       │   │   │   │   │       # - SVG circle with CSS rotation
     │       │   │   │   │   │       # - Accessibility: role="status", aria-live
     │       │   │   │   │   │       # Props: size, color, label
     │       │   │   │   │   ├── Switch/
-    │       │   │   │   │   │   ├── Switch.native.tsx  # ❌ CREATE - Native switch using RN Switch
+    │       │   │   │   │   │   ├── Switch.native.tsx  # Native switch using RN Switch
     │       │   │   │   │   │   │   # - React Native Switch component
     │       │   │   │   │   │   │   # - Haptic feedback on toggle
     │       │   │   │   │   │   │   # - Accessibility: role="switch", checked state
     │       │   │   │   │   │   │   # Props: checked, onChange, label, disabled
-    │       │   │   │   │   │   ├── Switch.tsx  # ❌ CREATE - Base switch component
+    │       │   │   │   │   │   ├── Switch.tsx  # Base switch component
     │       │   │   │   │   │   │   # - Shared switch logic
     │       │   │   │   │   │   │   # - Controlled/uncontrolled modes
-    │       │   │   │   │   │   ├── Switch.types.ts  # ❌ CREATE - Switch type definitions
+    │       │   │   │   │   │   ├── Switch.types.ts  # Switch type definitions
     │       │   │   │   │   │   │   # - SwitchProps interface
-    │       │   │   │   │   │   └── Switch.web.tsx  # ❌ CREATE - Web switch using button with ARIA
+    │       │   │   │   │   │   └── Switch.web.tsx  # Web switch using button with ARIA
     │       │   │   │   │   │       # - Button with role="switch"
     │       │   │   │   │   │       # - CSS transitions for toggle animation
     │       │   │   │   │   │       # - Keyboard navigation (Space/Enter)
     │       │   │   │   │   │       # Props: checked, onChange, label, disabled
     │       │   │   │   │   └── Tag/
-    │       │   │   │   │       ├── Tag.native.tsx  # ❌ CREATE - Native tag component
+    │       │   │   │   │       ├── Tag.native.tsx  # Native tag component
     │       │   │   │   │       │   # - View with text and optional icon
     │       │   │   │   │       │   # - Color variants for status/category
     │       │   │   │   │       │   # - Pressable for interactive tags
     │       │   │   │   │       │   # Props: label, variant, icon, onPress
-    │       │   │   │   │       ├── Tag.tsx  # ❌ CREATE - Base tag component
+    │       │   │   │   │       ├── Tag.tsx  # Base tag component
     │       │   │   │   │       │   # - Shared tag logic
     │       │   │   │   │       │   # - Variant types: default, primary, success, warning, error, info
-    │       │   │   │   │       ├── Tag.types.ts  # ❌ CREATE - Tag type definitions
+    │       │   │   │   │       ├── Tag.types.ts  # Tag type definitions
     │       │   │   │   │       │   # - TagVariant type
     │       │   │   │   │       │   # - TagProps interface
-    │       │   │   │   │       └── Tag.web.tsx  # ❌ CREATE - Web tag component
+    │       │   │   │   │       └── Tag.web.tsx  # Web tag component
     │       │   │   │   │           # - Span element with styling
     │       │   │   │   │           # - Icon support
     │       │   │   │   │           # Props: label, variant, icon, onClick
     │       │   │   │   ├── Divider/
-    │       │   │   │   │   ├── Divider.native.tsx  # ❌ CREATE - Native divider using View
+    │       │   │   │   │   ├── Divider.native.tsx  # Native divider using View
     │       │   │   │   │   │   # - Simple View with border
     │       │   │   │   │   │   # - Horizontal/vertical orientation
     │       │   │   │   │   │   # - Configurable thickness and color
     │       │   │   │   │   │   # Props: orientation, thickness, color, spacing
-    │       │   │   │   │   ├── Divider.tsx  # ❌ CREATE - Base divider component
+    │       │   │   │   │   │   # ❌ CREATE Native divider using View with 1px height, horizontal/vertical orientation
+    │       │   │   │   │   ├── Divider.tsx  # Base divider component
     │       │   │   │   │   │   # - Shared divider logic
     │       │   │   │   │   │   # - Orientation types: horizontal, vertical
-    │       │   │   │   │   ├── Divider.types.ts  # ❌ CREATE - Divider type definitions
+    │       │   │   │   │   │   # ❌ CREATE Base divider logic, orientation handling
+    │       │   │   │   │   ├── Divider.types.ts  # Divider type definitions
     │       │   │   │   │   │   # - DividerOrientation type
     │       │   │   │   │   │   # - DividerProps interface
-    │       │   │   │   │   └── Divider.web.tsx  # ❌ CREATE - Web divider using hr/div
-    │       │   │   │   │       # - Hr element for horizontal
-    │       │   │   │   │       # - Div with border for vertical
-    │       │   │   │   │       # - CSS styling for thickness
-    │       │   │   │   │       # Props: orientation, thickness, color, spacing
+    │       │   │   │   │   │   # ❌ CREATE DividerOrientation type, DividerProps interface
+    │       │   │   │   │   ├── Divider.web.tsx  # Web divider using hr/div
+    │       │   │   │   │   │   # - Hr element for horizontal
+    │       │   │   │   │   │   # - Div with border for vertical
+    │       │   │   │   │   │   # - CSS styling for thickness
+    │       │   │   │   │   │   # Props: orientation, thickness, color, spacing
+    │       │   │   │   │   │   # ❌ CREATE Web divider with hr/div semantic, vertical using border-left
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── IconButton/
-    │       │   │   │   │   ├── IconButton.native.tsx  # ❌ CREATE - Native icon button
+    │       │   │   │   │   ├── IconButton.native.tsx  # Native icon button
     │       │   │   │   │   │   # - Pressable with icon only
     │       │   │   │   │   │   # - Circular or square shape
     │       │   │   │   │   │   # - Size variants: sm, md, lg
@@ -33837,142 +33702,171 @@ fe/
     │       │   │   │   │   │   # - Haptic feedback
     │       │   │   │   │   │   # - Accessibility: accessibilityLabel required
     │       │   │   │   │   │   # Props: icon, size, variant, onPress, ariaLabel
-    │       │   │   │   │   ├── IconButton.tsx  # ❌ CREATE - Base icon button
+    │       │   │   │   │   ├── IconButton.tsx  # Base icon button
     │       │   │   │   │   │   # - Shared button logic
-    │       │   │   │   │   ├── IconButton.types.ts  # ❌ CREATE - IconButton types
+    │       │   │   │   │   ├── IconButton.types.ts  # IconButton types
     │       │   │   │   │   │   # - IconButtonSize type
     │       │   │   │   │   │   # - IconButtonVariant type
     │       │   │   │   │   │   # - IconButtonProps interface
-    │       │   │   │   │   └── IconButton.web.tsx  # ❌ CREATE - Web icon button
+    │       │   │   │   │   └── IconButton.web.tsx  # Web icon button
     │       │   │   │   │       # - Button with icon
     │       │   │   │   │       # - Hover/focus states
     │       │   │   │   │       # - ARIA label
     │       │   │   │   │       # Props: icon, size, variant, onClick, ariaLabel
     │       │   │   │   ├── Link/
-    │       │   │   │   │   ├── Link.native.tsx  # ❌ CREATE - Native link component
+    │       │   │   │   │   ├── Link.native.tsx  # Native link component
     │       │   │   │   │   │   # - Pressable styled as link
     │       │   │   │   │   │   # - Navigation integration
     │       │   │   │   │   │   # - External link support
     │       │   │   │   │   │   # - Accessibility: proper role
     │       │   │   │   │   │   # Props: href, children, external, onPress
-    │       │   │   │   │   ├── Link.tsx  # ❌ CREATE - Base link component
+    │       │   │   │   │   ├── Link.tsx  # Base link component
     │       │   │   │   │   │   # - Shared link logic
     │       │   │   │   │   │   # - URL parsing
-    │       │   │   │   │   ├── Link.types.ts  # ❌ CREATE - Link types
+    │       │   │   │   │   ├── Link.types.ts  # Link types
     │       │   │   │   │   │   # - LinkProps interface
-    │       │   │   │   │   └── Link.web.tsx  # ❌ CREATE - Web link component
+    │       │   │   │   │   └── Link.web.tsx  # Web link component
     │       │   │   │   │       # - Anchor element
     │       │   │   │   │       # - Next.js Link integration
     │       │   │   │   │       # - External link attributes
     │       │   │   │   │       # Props: href, children, external, onClick
     │       │   │   │   ├── Progress/
-    │       │   │   │   │   ├── Progress.native.tsx  # ❌ CREATE - Native progress bar
+    │       │   │   │   │   ├── Progress.native.tsx  # Native progress bar
     │       │   │   │   │   │   # - Animated progress with react-native-reanimated
     │       │   │   │   │   │   # - Determinate and indeterminate modes
     │       │   │   │   │   │   # - Circular and linear variants
     │       │   │   │   │   │   # - Accessibility: accessibilityRole="progressbar"
     │       │   │   │   │   │   # Props: value, max, variant, size, showLabel
-    │       │   │   │   │   ├── Progress.tsx  # ❌ CREATE - Base progress component
+    │       │   │   │   │   ├── Progress.tsx  # Base progress component
     │       │   │   │   │   │   # - Shared progress logic
     │       │   │   │   │   │   # - Percentage calculation
     │       │   │   │   │   │   # - Variant types: linear, circular
-    │       │   │   │   │   ├── Progress.types.ts  # ❌ CREATE - Progress type definitions
+    │       │   │   │   │   ├── Progress.types.ts  # Progress type definitions
     │       │   │   │   │   │   # - ProgressVariant type
     │       │   │   │   │   │   # - ProgressSize type
     │       │   │   │   │   │   # - ProgressProps interface
-    │       │   │   │   │   └── Progress.web.tsx  # ❌ CREATE - Web progress using progress element
+    │       │   │   │   │   └── Progress.web.tsx  # Web progress using progress element
     │       │   │   │   │       # - HTML5 progress element
     │       │   │   │   │       # - CSS animations for indeterminate
     │       │   │   │   │       # - ARIA attributes (valuenow, valuemin, valuemax)
     │       │   │   │   │       # Props: value, max, variant, size, showLabel
+    │       │   │   │   ├── ProgressBar/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── ProgressBar.native.tsx  # ❌ CREATE Native progress using Animated.View, smooth animation, percentage label
+    │       │   │   │   │   ├── ProgressBar.tsx  # ❌ CREATE Base progress logic, value clamping, label formatter
+    │       │   │   │   │   ├── ProgressBar.types.ts  # ❌ CREATE ProgressBarProps with value/max/showLabel/variant/animated
+    │       │   │   │   │   └── ProgressBar.web.tsx  # ❌ CREATE Web progress using HTML5 progress or div with ARIA valuenow/valuemin/valuemax
+    │       │   │   │   ├── ProgressCircle/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── ProgressCircle.native.tsx  # ❌ CREATE Native circular progress using react-native-svg, animated stroke
+    │       │   │   │   │   ├── ProgressCircle.tsx  # ❌ CREATE Base circular progress logic, circumference calculation
+    │       │   │   │   │   ├── ProgressCircle.types.ts  # ❌ CREATE ProgressCircleProps with value/size/strokeWidth/showPercentage
+    │       │   │   │   │   └── ProgressCircle.web.tsx  # ❌ CREATE Web circular progress using SVG circle, CSS transforms
     │       │   │   │   ├── Radio/
-    │       │   │   │   │   ├── Radio.native.tsx  # ❌ CREATE - Native radio button
+    │       │   │   │   │   ├── Radio.native.tsx  # Native radio button
     │       │   │   │   │   │   # - Custom Pressable with circle indicator
     │       │   │   │   │   │   # - Animated selection
     │       │   │   │   │   │   # - Haptic feedback
     │       │   │   │   │   │   # - Accessibility: role="radio", checked state
     │       │   │   │   │   │   # Props: checked, onChange, label, value, disabled
-    │       │   │   │   │   ├── Radio.tsx  # ❌ CREATE - Base radio component
+    │       │   │   │   │   ├── Radio.tsx  # Base radio component
     │       │   │   │   │   │   # - Shared radio logic
     │       │   │   │   │   │   # - Radio group integration
-    │       │   │   │   │   ├── Radio.types.ts  # ❌ CREATE - Radio type definitions
+    │       │   │   │   │   ├── Radio.types.ts  # Radio type definitions
     │       │   │   │   │   │   # - RadioProps interface
     │       │   │   │   │   │   # - RadioGroupProps interface
-    │       │   │   │   │   └── Radio.web.tsx  # ❌ CREATE - Web radio using input[type=radio]
+    │       │   │   │   │   └── Radio.web.tsx  # Web radio using input[type=radio]
     │       │   │   │   │       # - Native HTML input with custom styling
     │       │   │   │   │       # - CSS pseudo-elements for indicator
     │       │   │   │   │       # - Keyboard navigation
     │       │   │   │   │       # Props: checked, onChange, label, value, disabled
     │       │   │   │   ├── Skeleton/
-    │       │   │   │   │   ├── Skeleton.native.tsx  # ❌ CREATE - Native skeleton loader
+    │       │   │   │   │   ├── Skeleton.native.tsx  # Native skeleton loader
     │       │   │   │   │   │   # - Animated shimmer effect with LinearGradient
     │       │   │   │   │   │   # - react-native-reanimated for smooth animation
     │       │   │   │   │   │   # - Preset shapes: text, circle, rect
     │       │   │   │   │   │   # - Configurable width, height, borderRadius
     │       │   │   │   │   │   # Props: variant, width, height, count, animation
-    │       │   │   │   │   ├── Skeleton.tsx  # ❌ CREATE - Base skeleton component
+    │       │   │   │   │   ├── Skeleton.tsx  # Base skeleton component
     │       │   │   │   │   │   # - Shared skeleton logic
     │       │   │   │   │   │   # - Variant types: text, circle, rect, custom
     │       │   │   │   │   │   # - Animation types: pulse, wave, none
-    │       │   │   │   │   ├── Skeleton.types.ts  # ❌ CREATE - Skeleton type definitions
+    │       │   │   │   │   ├── Skeleton.types.ts  # Skeleton type definitions
     │       │   │   │   │   │   # - SkeletonVariant type
     │       │   │   │   │   │   # - SkeletonAnimation type
     │       │   │   │   │   │   # - SkeletonProps interface
-    │       │   │   │   │   └── Skeleton.web.tsx  # ❌ CREATE - Web skeleton with CSS animation
+    │       │   │   │   │   └── Skeleton.web.tsx  # Web skeleton with CSS animation
     │       │   │   │   │       # - CSS keyframe animation
     │       │   │   │   │       # - Linear gradient shimmer
     │       │   │   │   │       # - ARIA label for accessibility
     │       │   │   │   │       # Props: variant, width, height, count, animation
     │       │   │   │   ├── Spinner/
-    │       │   │   │   │   ├── Spinner.native.tsx  # ❌ CREATE - Native spinner using ActivityIndicator
+    │       │   │   │   │   ├── Spinner.native.tsx  # Native spinner using ActivityIndicator
     │       │   │   │   │   │   # - React Native ActivityIndicator
     │       │   │   │   │   │   # - Size variants: small, large
     │       │   │   │   │   │   # - Color customization
     │       │   │   │   │   │   # - Accessibility: accessibilityLabel
     │       │   │   │   │   │   # Props: size, color, label
-    │       │   │   │   │   ├── Spinner.tsx  # ❌ CREATE - Base spinner component
+    │       │   │   │   │   ├── Spinner.tsx  # Base spinner component
     │       │   │   │   │   │   # - Shared spinner logic
     │       │   │   │   │   │   # - Size types: xs, sm, md, lg, xl
-    │       │   │   │   │   ├── Spinner.types.ts  # ❌ CREATE - Spinner type definitions
+    │       │   │   │   │   ├── Spinner.types.ts  # Spinner type definitions
     │       │   │   │   │   │   # - SpinnerSize type
     │       │   │   │   │   │   # - SpinnerProps interface
-    │       │   │   │   │   └── Spinner.web.tsx  # ❌ CREATE - Web spinner with CSS animation
+    │       │   │   │   │   └── Spinner.web.tsx  # Web spinner with CSS animation
     │       │   │   │   │       # - SVG circle with CSS rotation
     │       │   │   │   │       # - Accessibility: role="status", aria-live
     │       │   │   │   │       # Props: size, color, label
+    │       │   │   │   ├── StatusDot/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── StatusDot.native.tsx  # ❌ CREATE Native status dot using View with borderRadius, pulse animation optional
+    │       │   │   │   │   ├── StatusDot.tsx  # ❌ CREATE Base status dot logic, status to color mapping
+    │       │   │   │   │   ├── StatusDot.types.ts  # ❌ CREATE StatusType enum (online/offline/away/busy), StatusDotProps interface
+    │       │   │   │   │   └── StatusDot.web.tsx  # ❌ CREATE Web status dot with CSS animation, ARIA live region for screen readers
     │       │   │   │   ├── Switch/
-    │       │   │   │   │   ├── Switch.native.tsx  # ❌ CREATE - Native switch using RN Switch
+    │       │   │   │   │   ├── Switch.native.tsx  # Native switch using RN Switch
     │       │   │   │   │   │   # - React Native Switch component
     │       │   │   │   │   │   # - Haptic feedback on toggle
     │       │   │   │   │   │   # - Accessibility: role="switch", checked state
     │       │   │   │   │   │   # Props: checked, onChange, label, disabled
-    │       │   │   │   │   ├── Switch.tsx  # ❌ CREATE - Base switch component
+    │       │   │   │   │   ├── Switch.tsx  # Base switch component
     │       │   │   │   │   │   # - Shared switch logic
     │       │   │   │   │   │   # - Controlled/uncontrolled modes
-    │       │   │   │   │   ├── Switch.types.ts  # ❌ CREATE - Switch type definitions
+    │       │   │   │   │   ├── Switch.types.ts  # Switch type definitions
     │       │   │   │   │   │   # - SwitchProps interface
-    │       │   │   │   │   └── Switch.web.tsx  # ❌ CREATE - Web switch using button with ARIA
+    │       │   │   │   │   └── Switch.web.tsx  # Web switch using button with ARIA
     │       │   │   │   │       # - Button with role="switch"
     │       │   │   │   │       # - CSS transitions for toggle animation
     │       │   │   │   │       # - Keyboard navigation (Space/Enter)
     │       │   │   │   │       # Props: checked, onChange, label, disabled
     │       │   │   │   ├── Tag/
-    │       │   │   │   │   ├── Tag.native.tsx  # ❌ CREATE - Native tag component
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── Tag.native.tsx  # Native tag component
     │       │   │   │   │   │   # - View with text and optional icon
     │       │   │   │   │   │   # - Color variants for status/category
     │       │   │   │   │   │   # - Pressable for interactive tags
     │       │   │   │   │   │   # Props: label, variant, icon, onPress
-    │       │   │   │   │   ├── Tag.tsx  # ❌ CREATE - Base tag component
+    │       │   │   │   │   │   # ❌ CREATE Native tag similar to chip but read-only, color-coded
+    │       │   │   │   │   ├── Tag.tsx  # Base tag component
     │       │   │   │   │   │   # - Shared tag logic
     │       │   │   │   │   │   # - Variant types: default, primary, success, warning, error, info
-    │       │   │   │   │   ├── Tag.types.ts  # ❌ CREATE - Tag type definitions
+    │       │   │   │   │   │   # ❌ CREATE Base tag logic, color variant handling
+    │       │   │   │   │   ├── Tag.types.ts  # Tag type definitions
     │       │   │   │   │   │   # - TagVariant type
     │       │   │   │   │   │   # - TagProps interface
-    │       │   │   │   │   └── Tag.web.tsx  # ❌ CREATE - Web tag component
+    │       │   │   │   │   │   # ❌ CREATE TagColor type, TagSize type, TagProps interface
+    │       │   │   │   │   └── Tag.web.tsx  # Web tag component
     │       │   │   │   │       # - Span element with styling
     │       │   │   │   │       # - Icon support
     │       │   │   │   │       # Props: label, variant, icon, onClick
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for atoms/DataDisplay
+    │       │   │   │   │       # ❌ CREATE Web tag with Tailwind, semantic span element
+    │       │   │   │   ├── Tooltip/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── Tooltip.native.tsx  # ❌ CREATE Native tooltip using Modal with TouchableWithoutFeedback, position: top/bottom/left/right
+    │       │   │   │   │   ├── Tooltip.tsx  # ❌ CREATE Base tooltip logic, position calculation, delay handling
+    │       │   │   │   │   ├── Tooltip.types.ts  # ❌ CREATE TooltipPosition type, TooltipProps with content/children/position/delay
+    │       │   │   │   │   └── Tooltip.web.tsx  # ❌ CREATE Web tooltip using Floating UI, ARIA describedby, keyboard Esc dismiss
+    │       │   │   │   └── index.ts  # Barrel export for atoms/DataDisplay
     │       │   │   ├── auction/
     │       │   │   │   ├── AuctionTimer.native.tsx
     │       │   │   │   ├── AuctionTimer.tsx  # Countdown timer
@@ -34027,56 +33921,56 @@ fe/
     │       │   │   │   └── Card.native.tsx  # Card component
     │       │   │   ├── charts/
     │       │   │   │   ├── AreaChart/
-    │       │   │   │   │   ├── AreaChart.native.tsx  # ❌ CREATE - Native area chart
+    │       │   │   │   │   ├── AreaChart.native.tsx  # Native area chart
     │       │   │   │   │   │   # - react-native-svg-charts or Victory Native
     │       │   │   │   │   │   # Props: data, xKey, yKey, color
-    │       │   │   │   │   ├── AreaChart.tsx  # ❌ CREATE - Base area chart
+    │       │   │   │   │   ├── AreaChart.tsx  # Base area chart
     │       │   │   │   │   │   # - Shared chart logic
-    │       │   │   │   │   ├── AreaChart.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── AreaChart.types.ts  # Types
     │       │   │   │   │   │   # - ChartDataPoint interface
     │       │   │   │   │   │   # - AreaChartProps interface
-    │       │   │   │   │   └── AreaChart.web.tsx  # ❌ CREATE - Web area chart
+    │       │   │   │   │   └── AreaChart.web.tsx  # Web area chart
     │       │   │   │   │       # - Recharts or Chart.js
     │       │   │   │   │       # Props: data, xKey, yKey, color
     │       │   │   │   ├── BarChart/
-    │       │   │   │   │   ├── BarChart.native.tsx  # ❌ CREATE - Native bar chart
+    │       │   │   │   │   ├── BarChart.native.tsx  # Native bar chart
     │       │   │   │   │   │   # - Victory Native or SVG charts
     │       │   │   │   │   │   # Props: data, xKey, yKey, color
-    │       │   │   │   │   ├── BarChart.tsx  # ❌ CREATE - Base bar chart
+    │       │   │   │   │   ├── BarChart.tsx  # Base bar chart
     │       │   │   │   │   │   # - Shared chart logic
-    │       │   │   │   │   ├── BarChart.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── BarChart.types.ts  # Types
     │       │   │   │   │   │   # - BarChartProps interface
-    │       │   │   │   │   └── BarChart.web.tsx  # ❌ CREATE - Web bar chart
+    │       │   │   │   │   └── BarChart.web.tsx  # Web bar chart
     │       │   │   │   │       # - Recharts or Chart.js
     │       │   │   │   │       # Props: data, xKey, yKey, color
     │       │   │   │   ├── LineChart/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── LineChart.native.tsx  # ❌ CREATE - Native line chart
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── LineChart.native.tsx  # Native line chart
     │       │   │   │   │   │   # - Victory Native or SVG charts
     │       │   │   │   │   │   # Props: data, xKey, yKey, color
-    │       │   │   │   │   ├── LineChart.tsx  # ❌ CREATE - Base line chart
+    │       │   │   │   │   ├── LineChart.tsx  # Base line chart
     │       │   │   │   │   │   # - Shared chart logic
-    │       │   │   │   │   ├── LineChart.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── LineChart.types.ts  # Types
     │       │   │   │   │   │   # - LineChartProps interface
-    │       │   │   │   │   └── LineChart.web.tsx  # ❌ CREATE - Web line chart
+    │       │   │   │   │   └── LineChart.web.tsx  # Web line chart
     │       │   │   │   │       # - Recharts or Chart.js
     │       │   │   │   │       # Props: data, xKey, yKey, color
     │       │   │   │   ├── PieChart/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── PieChart.native.tsx  # ❌ CREATE - Native pie chart
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── PieChart.native.tsx  # Native pie chart
     │       │   │   │   │   │   # - Victory Native or SVG charts
     │       │   │   │   │   │   # Props: data, labelKey, valueKey
-    │       │   │   │   │   ├── PieChart.tsx  # ❌ CREATE - Base pie chart
+    │       │   │   │   │   ├── PieChart.tsx  # Base pie chart
     │       │   │   │   │   │   # - Shared chart logic
-    │       │   │   │   │   ├── PieChart.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── PieChart.types.ts  # Types
     │       │   │   │   │   │   # - PieChartProps interface
-    │       │   │   │   │   └── PieChart.web.tsx  # ❌ CREATE - Web pie chart
+    │       │   │   │   │   └── PieChart.web.tsx  # Web pie chart
     │       │   │   │   │       # - Recharts or Chart.js
     │       │   │   │   │       # Props: data, labelKey, valueKey
     │       │   │   │   ├── EarningsChart.native.tsx
     │       │   │   │   ├── EarningsChart.tsx  # Earnings visualization
     │       │   │   │   ├── EarningsChart.web.tsx
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export for charts
+    │       │   │   │   ├── index.ts  # Barrel export for charts
     │       │   │   │   ├── PerformanceChart.native.tsx
     │       │   │   │   ├── PerformanceChart.tsx  # Performance metrics
     │       │   │   │   ├── PerformanceChart.web.tsx
@@ -34300,106 +34194,106 @@ fe/
     │       │   │   │       └── Skeleton.web.tsx
     │       │   │   ├── feedback/
     │       │   │   │   ├── Alert/
-    │       │   │   │   │   ├── Alert.native.tsx  # ❌ CREATE - Native alert banner
+    │       │   │   │   │   ├── Alert.native.tsx  # Native alert banner
     │       │   │   │   │   │   # - View with icon, title, description
     │       │   │   │   │   │   # - Variant colors: success, info, warning, error
     │       │   │   │   │   │   # - Optional dismiss button
     │       │   │   │   │   │   # - Animated entrance/exit
     │       │   │   │   │   │   # Props: variant, title, description, onClose
-    │       │   │   │   │   ├── Alert.tsx  # ❌ CREATE - Base alert component
+    │       │   │   │   │   ├── Alert.tsx  # Base alert component
     │       │   │   │   │   │   # - Shared alert logic
     │       │   │   │   │   │   # - Variant types
-    │       │   │   │   │   ├── Alert.types.ts  # ❌ CREATE - Alert type definitions
+    │       │   │   │   │   ├── Alert.types.ts  # Alert type definitions
     │       │   │   │   │   │   # - AlertVariant type
     │       │   │   │   │   │   # - AlertProps interface
-    │       │   │   │   │   └── Alert.web.tsx  # ❌ CREATE - Web alert banner
+    │       │   │   │   │   └── Alert.web.tsx  # Web alert banner
     │       │   │   │   │       # - Div with role="alert"
     │       │   │   │   │       # - Icon, title, description
     │       │   │   │   │       # - Dismiss button
     │       │   │   │   │       # Props: variant, title, description, onClose
     │       │   │   │   ├── ProgressBar/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── ProgressBar.native.tsx  # ❌ CREATE - Native progress bar
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── ProgressBar.native.tsx  # Native progress bar
     │       │   │   │   │   │   # - View with animated width
     │       │   │   │   │   │   # - Percentage text option
     │       │   │   │   │   │   # - Color customization
     │       │   │   │   │   │   # - Accessibility: progress value announced
     │       │   │   │   │   │   # Props: value, max, label, showPercentage, color
-    │       │   │   │   │   ├── ProgressBar.tsx  # ❌ CREATE - Base progress bar
+    │       │   │   │   │   ├── ProgressBar.tsx  # Base progress bar
     │       │   │   │   │   │   # - Shared progress logic
     │       │   │   │   │   │   # - Value calculation
-    │       │   │   │   │   ├── ProgressBar.types.ts  # ❌ CREATE - ProgressBar types
+    │       │   │   │   │   ├── ProgressBar.types.ts  # ProgressBar types
     │       │   │   │   │   │   # - ProgressBarProps interface
-    │       │   │   │   │   └── ProgressBar.web.tsx  # ❌ CREATE - Web progress bar
+    │       │   │   │   │   └── ProgressBar.web.tsx  # Web progress bar
     │       │   │   │   │       # - Progress element or div with CSS
     │       │   │   │   │       # - Animated width transition
     │       │   │   │   │       # - Percentage text
     │       │   │   │   │       # Props: value, max, label, showPercentage, color
     │       │   │   │   ├── Skeleton/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── Skeleton.native.tsx  # ❌ CREATE - Native skeleton loader
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── Skeleton.native.tsx  # Native skeleton loader
     │       │   │   │   │   │   # - Animated View with shimmer effect
     │       │   │   │   │   │   # - Shape variants: rectangle, circle, text
     │       │   │   │   │   │   # - Size customization
     │       │   │   │   │   │   # - Pulse animation
     │       │   │   │   │   │   # Props: variant, width, height, borderRadius
-    │       │   │   │   │   ├── Skeleton.tsx  # ❌ CREATE - Base skeleton component
+    │       │   │   │   │   ├── Skeleton.tsx  # Base skeleton component
     │       │   │   │   │   │   # - Shared skeleton logic
     │       │   │   │   │   │   # - Shape types
-    │       │   │   │   │   ├── Skeleton.types.ts  # ❌ CREATE - Skeleton types
+    │       │   │   │   │   ├── Skeleton.types.ts  # Skeleton types
     │       │   │   │   │   │   # - SkeletonVariant type
     │       │   │   │   │   │   # - SkeletonProps interface
-    │       │   │   │   │   └── Skeleton.web.tsx  # ❌ CREATE - Web skeleton loader
+    │       │   │   │   │   └── Skeleton.web.tsx  # Web skeleton loader
     │       │   │   │   │       # - Div with gradient animation
     │       │   │   │   │       # - CSS keyframe for shimmer
     │       │   │   │   │       # - Shape variants
     │       │   │   │   │       # Props: variant, width, height, borderRadius
     │       │   │   │   ├── Toast/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── Toast.native.tsx  # ❌ CREATE - Native toast notification
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── Toast.native.tsx  # Native toast notification
     │       │   │   │   │   │   # - Animated View at top/bottom
     │       │   │   │   │   │   # - Auto-dismiss with timer
     │       │   │   │   │   │   # - Variant colors: success, info, warning, error
     │       │   │   │   │   │   # - Icon support
     │       │   │   │   │   │   # - Swipe to dismiss
     │       │   │   │   │   │   # Props: variant, message, duration, position, onClose
-    │       │   │   │   │   ├── Toast.tsx  # ❌ CREATE - Base toast component
+    │       │   │   │   │   ├── Toast.tsx  # Base toast component
     │       │   │   │   │   │   # - Shared toast logic
     │       │   │   │   │   │   # - Timer management
     │       │   │   │   │   │   # - Toast queue
-    │       │   │   │   │   ├── Toast.types.ts  # ❌ CREATE - Toast type definitions
+    │       │   │   │   │   ├── Toast.types.ts  # Toast type definitions
     │       │   │   │   │   │   # - ToastVariant type
     │       │   │   │   │   │   # - ToastPosition type
     │       │   │   │   │   │   # - ToastProps interface
-    │       │   │   │   │   ├── Toast.web.tsx  # ❌ CREATE - Web toast notification
+    │       │   │   │   │   ├── Toast.web.tsx  # Web toast notification
     │       │   │   │   │   │   # - Fixed positioned div
     │       │   │   │   │   │   # - CSS animations
     │       │   │   │   │   │   # - Auto-dismiss
     │       │   │   │   │   │   # Props: variant, message, duration, position, onClose
-    │       │   │   │   │   └── ToastProvider.tsx  # ❌ CREATE - Toast context provider
+    │       │   │   │   │   └── ToastProvider.tsx  # Toast context provider
     │       │   │   │   │       # - Toast context
     │       │   │   │   │       # - showToast function
     │       │   │   │   │       # - Toast queue management
     │       │   │   │   ├── Tooltip/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── Tooltip.native.tsx  # ❌ CREATE - Native tooltip (long press)
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── Tooltip.native.tsx  # Native tooltip (long press)
     │       │   │   │   │   │   # - Pressable with onLongPress
     │       │   │   │   │   │   # - Popover-style tooltip
     │       │   │   │   │   │   # - Positioned relative to trigger
     │       │   │   │   │   │   # - Auto-dismiss
     │       │   │   │   │   │   # Props: content, children, placement
-    │       │   │   │   │   ├── Tooltip.tsx  # ❌ CREATE - Base tooltip component
+    │       │   │   │   │   ├── Tooltip.tsx  # Base tooltip component
     │       │   │   │   │   │   # - Shared tooltip logic
     │       │   │   │   │   │   # - Placement calculation
-    │       │   │   │   │   ├── Tooltip.types.ts  # ❌ CREATE - Tooltip types
+    │       │   │   │   │   ├── Tooltip.types.ts  # Tooltip types
     │       │   │   │   │   │   # - TooltipPlacement type
     │       │   │   │   │   │   # - TooltipProps interface
-    │       │   │   │   │   └── Tooltip.web.tsx  # ❌ CREATE - Web tooltip (hover)
+    │       │   │   │   │   └── Tooltip.web.tsx  # Web tooltip (hover)
     │       │   │   │   │       # - Div with absolute positioning
     │       │   │   │   │       # - CSS transitions
     │       │   │   │   │       # - Placement variants: top, right, bottom, left
     │       │   │   │   │       # Props: content, children, placement
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for feedback
+    │       │   │   │   └── index.ts  # Barrel export for feedback
     │       │   │   ├── FileUpload/
     │       │   │   │   ├── DocumentScanner/
     │       │   │   │   │   └── DocumentScanner.native.tsx  # Document scanner
@@ -34521,143 +34415,204 @@ fe/
     │       │   │   │       ├── Switch.types.ts
     │       │   │   │       └── Switch.web.tsx
     │       │   │   ├── forms/
+    │       │   │   │   ├── AddressAutocomplete/
+    │       │   │   │   │   ├── AddressAutocomplete.tsx  # ❌ CREATE Address autocomplete with Google Places API
+    │       │   │   │   │   │   # - Location search
+    │       │   │   │   │   │   # - Format address
+    │       │   │   │   │   │   # - Validation
+    │       │   │   │   │   │   # BE: none (third-party API)
+    │       │   │   │   │   ├── AddressAutocomplete.types.ts  # ❌ CREATE AddressAutocompleteProps
+    │       │   │   │   │   ├── AddressAutocomplete.web.tsx  # ❌ CREATE Web address autocomplete
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── AutocompleteInput/
-    │       │   │   │   │   ├── AutocompleteInput.native.tsx  # ❌ CREATE - Native autocomplete
+    │       │   │   │   │   ├── AutocompleteInput.native.tsx  # Native autocomplete
     │       │   │   │   │   │   # - TextInput with dropdown suggestions
     │       │   │   │   │   │   # - FlatList for suggestions
     │       │   │   │   │   │   # - Debounced search
     │       │   │   │   │   │   # - Loading indicator
     │       │   │   │   │   │   # Props: value, onChange, onSearch, suggestions, loading
-    │       │   │   │   │   ├── AutocompleteInput.tsx  # ❌ CREATE - Base autocomplete
+    │       │   │   │   │   ├── AutocompleteInput.tsx  # Base autocomplete
     │       │   │   │   │   │   # - Shared autocomplete logic
     │       │   │   │   │   │   # - Search debouncing
     │       │   │   │   │   │   # - Suggestion filtering
-    │       │   │   │   │   ├── AutocompleteInput.types.ts  # ❌ CREATE - Autocomplete types
+    │       │   │   │   │   ├── AutocompleteInput.types.ts  # Autocomplete types
     │       │   │   │   │   │   # - AutocompleteOption interface
     │       │   │   │   │   │   # - AutocompleteProps interface
-    │       │   │   │   │   └── AutocompleteInput.web.tsx  # ❌ CREATE - Web autocomplete
+    │       │   │   │   │   └── AutocompleteInput.web.tsx  # Web autocomplete
     │       │   │   │   │       # - Input with dropdown
     │       │   │   │   │       # - Keyboard navigation
     │       │   │   │   │       # - Highlight matching text
     │       │   │   │   │       # Props: value, onChange, onSearch, suggestions, loading
+    │       │   │   │   ├── CurrencyInput/
+    │       │   │   │   │   ├── CurrencyInput.native.tsx  # ❌ CREATE Native currency input with formatting
+    │       │   │   │   │   │   # - Currency symbol
+    │       │   │   │   │   │   # - Decimal handling
+    │       │   │   │   │   │   # - Min/max validation
+    │       │   │   │   │   ├── CurrencyInput.tsx  # ❌ CREATE Base currency input logic
+    │       │   │   │   │   ├── CurrencyInput.types.ts  # ❌ CREATE CurrencyInputProps
+    │       │   │   │   │   ├── CurrencyInput.web.tsx  # ❌ CREATE Web currency input
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── DateRangePicker/
+    │       │   │   │   │   ├── DateRangePicker.native.tsx  # ❌ CREATE Native date range picker
+    │       │   │   │   │   │   # - Start/end dates
+    │       │   │   │   │   │   # - Calendar view
+    │       │   │   │   │   │   # - Quick presets (last 7 days, etc)
+    │       │   │   │   │   ├── DateRangePicker.tsx  # ❌ CREATE Base date range logic
+    │       │   │   │   │   ├── DateRangePicker.types.ts  # ❌ CREATE DateRangePickerProps
+    │       │   │   │   │   ├── DateRangePicker.web.tsx  # ❌ CREATE Web date range picker
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── FileUpload/
-    │       │   │   │   │   ├── FileUpload.native.tsx  # ❌ CREATE - Native file picker
+    │       │   │   │   │   ├── FileUpload.native.tsx  # Native file picker
     │       │   │   │   │   │   # - expo-document-picker or react-native-image-picker
     │       │   │   │   │   │   # - File type filters
     │       │   │   │   │   │   # - Multiple file selection
     │       │   │   │   │   │   # - Upload progress
     │       │   │   │   │   │   # Props: accept, multiple, maxSize, onUpload, onProgress
-    │       │   │   │   │   ├── FileUpload.tsx  # ❌ CREATE - Base file upload
+    │       │   │   │   │   ├── FileUpload.tsx  # Base file upload
     │       │   │   │   │   │   # - Shared upload logic
     │       │   │   │   │   │   # - File validation
     │       │   │   │   │   │   # - Progress tracking
-    │       │   │   │   │   ├── FileUpload.types.ts  # ❌ CREATE - FileUpload types
+    │       │   │   │   │   ├── FileUpload.types.ts  # FileUpload types
     │       │   │   │   │   │   # - FileUploadProps interface
     │       │   │   │   │   │   # - UploadedFile interface
-    │       │   │   │   │   └── FileUpload.web.tsx  # ❌ CREATE - Web file upload
+    │       │   │   │   │   └── FileUpload.web.tsx  # Web file upload
     │       │   │   │   │       # - Input type="file" with drag-drop
     │       │   │   │   │       # - File preview
     │       │   │   │   │       # - Upload progress bar
     │       │   │   │   │       # Props: accept, multiple, maxSize, onUpload, onProgress
     │       │   │   │   ├── FormField/
-    │       │   │   │   │   ├── FormField.native.tsx  # ❌ CREATE - Native form field wrapper
+    │       │   │   │   │   ├── FormField.native.tsx  # Native form field wrapper
     │       │   │   │   │   │   # - Label, input, error, help text
     │       │   │   │   │   │   # - Required indicator
     │       │   │   │   │   │   # - Error styling
     │       │   │   │   │   │   # Props: label, error, helpText, required, children
-    │       │   │   │   │   ├── FormField.tsx  # ❌ CREATE - Base form field
+    │       │   │   │   │   │   # ❌ CREATE Native form field wrapper
+    │       │   │   │   │   │   # - Label
+    │       │   │   │   │   │   # - Error message
+    │       │   │   │   │   │   # - Help text
+    │       │   │   │   │   ├── FormField.tsx  # Base form field
     │       │   │   │   │   │   # - Shared field logic
-    │       │   │   │   │   ├── FormField.types.ts  # ❌ CREATE - FormField types
+    │       │   │   │   │   │   # ❌ CREATE Base form field logic
+    │       │   │   │   │   ├── FormField.types.ts  # FormField types
     │       │   │   │   │   │   # - FormFieldProps interface
-    │       │   │   │   │   └── FormField.web.tsx  # ❌ CREATE - Web form field wrapper
-    │       │   │   │   │       # - Label, input, error, help text
-    │       │   │   │   │       # - ARIA associations
-    │       │   │   │   │       # Props: label, error, helpText, required, children
+    │       │   │   │   │   │   # ❌ CREATE FormFieldProps
+    │       │   │   │   │   ├── FormField.web.tsx  # Web form field wrapper
+    │       │   │   │   │   │   # - Label, input, error, help text
+    │       │   │   │   │   │   # - ARIA associations
+    │       │   │   │   │   │   # Props: label, error, helpText, required, children
+    │       │   │   │   │   │   # ❌ CREATE Web form field wrapper
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── PhoneInput/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── PhoneInput.native.tsx  # ❌ CREATE Native phone input with country code
+    │       │   │   │   │   │   # - Country selector
+    │       │   │   │   │   │   # - Phone format
+    │       │   │   │   │   │   # - Validation
+    │       │   │   │   │   ├── PhoneInput.tsx  # ❌ CREATE Base phone input logic
+    │       │   │   │   │   ├── PhoneInput.types.ts  # ❌ CREATE PhoneInputProps
+    │       │   │   │   │   └── PhoneInput.web.tsx  # ❌ CREATE Web phone input
     │       │   │   │   ├── RichTextEditor/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── RichTextEditor.native.tsx  # ❌ CREATE - Native rich text editor
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── RichTextEditor.native.tsx  # Native rich text editor
     │       │   │   │   │   │   # - WebView with editor (Quill, TinyMCE)
     │       │   │   │   │   │   # - Toolbar with formatting options
     │       │   │   │   │   │   # - Image upload
     │       │   │   │   │   │   # Props: value, onChange, placeholder, toolbarOptions
-    │       │   │   │   │   ├── RichTextEditor.tsx  # ❌ CREATE - Base rich text editor
+    │       │   │   │   │   ├── RichTextEditor.tsx  # Base rich text editor
     │       │   │   │   │   │   # - Shared editor logic
-    │       │   │   │   │   ├── RichTextEditor.types.ts  # ❌ CREATE - RichTextEditor types
+    │       │   │   │   │   │   # ❌ CREATE Base rich text editor logic
+    │       │   │   │   │   ├── RichTextEditor.types.ts  # RichTextEditor types
     │       │   │   │   │   │   # - EditorToolbarOption type
     │       │   │   │   │   │   # - RichTextEditorProps interface
-    │       │   │   │   │   └── RichTextEditor.web.tsx  # ❌ CREATE - Web rich text editor
+    │       │   │   │   │   │   # ❌ CREATE RichTextEditorProps
+    │       │   │   │   │   └── RichTextEditor.web.tsx  # Web rich text editor
     │       │   │   │   │       # - Quill, Draft.js, or Slate integration
     │       │   │   │   │       # - Formatting toolbar
     │       │   │   │   │       # - HTML output
     │       │   │   │   │       # Props: value, onChange, placeholder, toolbarOptions
+    │       │   │   │   │       # ❌ CREATE Web rich text editor (Tiptap/Slate)
+    │       │   │   │   │       # - Markdown support
+    │       │   │   │   │       # - Image upload
+    │       │   │   │   │       # - Link insertion
     │       │   │   │   ├── SearchInput/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── SearchInput.native.tsx  # ❌ CREATE - Native search input
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── SearchInput.native.tsx  # Native search input
     │       │   │   │   │   │   # - TextInput with search icon
     │       │   │   │   │   │   # - Clear button
     │       │   │   │   │   │   # - Debounced onChange
     │       │   │   │   │   │   # Props: value, onChange, placeholder, debounceMs
-    │       │   │   │   │   ├── SearchInput.tsx  # ❌ CREATE - Base search input
+    │       │   │   │   │   ├── SearchInput.tsx  # Base search input
     │       │   │   │   │   │   # - Shared search logic
     │       │   │   │   │   │   # - Debouncing
-    │       │   │   │   │   ├── SearchInput.types.ts  # ❌ CREATE - SearchInput types
+    │       │   │   │   │   ├── SearchInput.types.ts  # SearchInput types
     │       │   │   │   │   │   # - SearchInputProps interface
-    │       │   │   │   │   └── SearchInput.web.tsx  # ❌ CREATE - Web search input
+    │       │   │   │   │   └── SearchInput.web.tsx  # Web search input
     │       │   │   │   │       # - Input with search icon
     │       │   │   │   │       # - Clear button
     │       │   │   │   │       # - Keyboard shortcuts
     │       │   │   │   │       # Props: value, onChange, placeholder, debounceMs
     │       │   │   │   ├── Select/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── Select.native.tsx  # ❌ CREATE - Native select/picker
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── Select.native.tsx  # Native select/picker
     │       │   │   │   │   │   # - Picker component or custom modal
     │       │   │   │   │   │   # - Search filter for long lists
     │       │   │   │   │   │   # - Multiple selection option
     │       │   │   │   │   │   # Props: value, onChange, options, placeholder, multiple
-    │       │   │   │   │   ├── Select.tsx  # ❌ CREATE - Base select component
+    │       │   │   │   │   ├── Select.tsx  # Base select component
     │       │   │   │   │   │   # - Shared select logic
     │       │   │   │   │   │   # - Option filtering
-    │       │   │   │   │   ├── Select.types.ts  # ❌ CREATE - Select types
+    │       │   │   │   │   ├── Select.types.ts  # Select types
     │       │   │   │   │   │   # - SelectOption interface
     │       │   │   │   │   │   # - SelectProps interface
-    │       │   │   │   │   └── Select.web.tsx  # ❌ CREATE - Web select dropdown
+    │       │   │   │   │   └── Select.web.tsx  # Web select dropdown
     │       │   │   │   │       # - Custom select with dropdown
     │       │   │   │   │       # - Keyboard navigation
     │       │   │   │   │       # - Search filter
     │       │   │   │   │       # Props: value, onChange, options, placeholder, multiple
     │       │   │   │   ├── Slider/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── Slider.native.tsx  # ❌ CREATE - Native slider
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── Slider.native.tsx  # Native slider
     │       │   │   │   │   │   # - Slider component from RN
     │       │   │   │   │   │   # - Min/max labels
     │       │   │   │   │   │   # - Step support
     │       │   │   │   │   │   # Props: value, onChange, min, max, step
-    │       │   │   │   │   ├── Slider.tsx  # ❌ CREATE - Base slider component
+    │       │   │   │   │   ├── Slider.tsx  # Base slider component
     │       │   │   │   │   │   # - Shared slider logic
-    │       │   │   │   │   ├── Slider.types.ts  # ❌ CREATE - Slider types
+    │       │   │   │   │   ├── Slider.types.ts  # Slider types
     │       │   │   │   │   │   # - SliderProps interface
-    │       │   │   │   │   └── Slider.web.tsx  # ❌ CREATE - Web slider
+    │       │   │   │   │   └── Slider.web.tsx  # Web slider
     │       │   │   │   │       # - Input type="range" or custom
     │       │   │   │   │       # - Value tooltip
     │       │   │   │   │       # - Min/max labels
     │       │   │   │   │       # Props: value, onChange, min, max, step
+    │       │   │   │   ├── TagInput/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── TagInput.native.tsx  # ❌ CREATE Native tag input
+    │       │   │   │   │   │   # - Add tag on Enter
+    │       │   │   │   │   │   # - Remove tag button
+    │       │   │   │   │   │   # - Tag validation
+    │       │   │   │   │   │   # - Autocomplete suggestions
+    │       │   │   │   │   ├── TagInput.tsx  # ❌ CREATE Base tag input logic
+    │       │   │   │   │   ├── TagInput.types.ts  # ❌ CREATE TagInputProps
+    │       │   │   │   │   └── TagInput.web.tsx  # ❌ CREATE Web tag input
     │       │   │   │   ├── TextArea/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── TextArea.native.tsx  # ❌ CREATE - Native textarea
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── TextArea.native.tsx  # Native textarea
     │       │   │   │   │   │   # - TextInput with multiline
     │       │   │   │   │   │   # - Auto-grow option
     │       │   │   │   │   │   # - Character count
     │       │   │   │   │   │   # Props: value, onChange, placeholder, maxLength, autoGrow
-    │       │   │   │   │   ├── TextArea.tsx  # ❌ CREATE - Base textarea component
+    │       │   │   │   │   ├── TextArea.tsx  # Base textarea component
     │       │   │   │   │   │   # - Shared textarea logic
-    │       │   │   │   │   ├── TextArea.types.ts  # ❌ CREATE - TextArea types
+    │       │   │   │   │   ├── TextArea.types.ts  # TextArea types
     │       │   │   │   │   │   # - TextAreaProps interface
-    │       │   │   │   │   └── TextArea.web.tsx  # ❌ CREATE - Web textarea
+    │       │   │   │   │   └── TextArea.web.tsx  # Web textarea
     │       │   │   │   │       # - Textarea element
     │       │   │   │   │       # - Auto-resize
     │       │   │   │   │       # - Character count
     │       │   │   │   │       # Props: value, onChange, placeholder, maxLength, autoGrow
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for forms
+    │       │   │   │   └── index.ts  # Barrel export for forms
     │       │   │   ├── groups/  # ENTIRE SECTION
     │       │   │   │   ├── GroupCard.native.tsx  # Group card (native)
     │       │   │   │   │   # - Group preview card
@@ -34685,115 +34640,165 @@ fe/
     │       │   │   │       # - Comment thread
     │       │   │   ├── hooks/
     │       │   │   │   ├── useMediaQuery/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── useMediaQuery.ts  # ❌ CREATE - Media query hook
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── useMediaQuery.ts  # Media query hook
     │       │   │   │   │   │   # - Track window dimensions
     │       │   │   │   │   │   # - Web: window resize listener
     │       │   │   │   │   │   # - Native: Dimensions.addEventListener
     │       │   │   │   │   │   # - Returns { width, height, isMobile, isTablet, isDesktop }
-    │       │   │   │   │   └── useMediaQuery.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   └── useMediaQuery.types.ts  # Types
     │       │   │   │   │       # - MediaQueryResult interface
     │       │   │   │   ├── useTheme/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── useTheme.ts  # ❌ CREATE - Theme hook
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── useTheme.ts  # Theme hook
     │       │   │   │   │   │   # - Access theme context
     │       │   │   │   │   │   # - Returns theme values and toggle function
-    │       │   │   │   │   └── useTheme.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   └── useTheme.types.ts  # Types
     │       │   │   │   │       # - Theme interface
     │       │   │   │   ├── useToast/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── useToast.ts  # ❌ CREATE - Toast hook
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── useToast.ts  # Toast hook
     │       │   │   │   │   │   # - Access toast context
     │       │   │   │   │   │   # - showToast, hideToast functions
-    │       │   │   │   │   └── useToast.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   └── useToast.types.ts  # Types
     │       │   │   │   │       # - ToastOptions interface
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for hooks
+    │       │   │   │   └── index.ts  # Barrel export for hooks
     │       │   │   ├── i18n/
     │       │   │   │   ├── LanguageSwitcher/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── LanguageSwitcher.native.tsx  # ❌ CREATE - Native language switcher
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── LanguageSwitcher.native.tsx  # Native language switcher
     │       │   │   │   │   │   # - Dropdown or modal picker
     │       │   │   │   │   │   # - Current language display
     │       │   │   │   │   │   # Props: currentLanguage, languages, onChange
-    │       │   │   │   │   ├── LanguageSwitcher.tsx  # ❌ CREATE - Base language switcher
+    │       │   │   │   │   │   # ❌ CREATE Native language switcher
+    │       │   │   │   │   │   # - Language dropdown
+    │       │   │   │   │   │   # - Flag icons
+    │       │   │   │   │   │   # - Change handler
+    │       │   │   │   │   ├── LanguageSwitcher.tsx  # Base language switcher
     │       │   │   │   │   │   # - Shared logic
-    │       │   │   │   │   ├── LanguageSwitcher.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   │   # ❌ CREATE Base language switcher logic
+    │       │   │   │   │   ├── LanguageSwitcher.types.ts  # Types
     │       │   │   │   │   │   # - Language interface
     │       │   │   │   │   │   # - LanguageSwitcherProps interface
-    │       │   │   │   │   └── LanguageSwitcher.web.tsx  # ❌ CREATE - Web language switcher
+    │       │   │   │   │   │   # ❌ CREATE LanguageSwitcherProps
+    │       │   │   │   │   └── LanguageSwitcher.web.tsx  # Web language switcher
     │       │   │   │   │       # - Dropdown menu
     │       │   │   │   │       # Props: currentLanguage, languages, onChange
+    │       │   │   │   │       # ❌ CREATE Web language switcher
     │       │   │   │   ├── TranslatedText/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── TranslatedText.tsx  # ❌ CREATE - Translation wrapper component
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── TranslatedText.tsx  # Translation wrapper component
     │       │   │   │   │   │   # - Uses i18n context
     │       │   │   │   │   │   # - Pluralization support
     │       │   │   │   │   │   # - Variable interpolation
     │       │   │   │   │   │   # Props: i18nKey, variables, count
-    │       │   │   │   │   └── TranslatedText.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   │   # ❌ CREATE Base translated text component
+    │       │   │   │   │   │   # - Translation key lookup
+    │       │   │   │   │   │   # - Fallback text
+    │       │   │   │   │   └── TranslatedText.types.ts  # Types
     │       │   │   │   │       # - TranslatedTextProps interface
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for i18n
+    │       │   │   │   │       # ❌ CREATE TranslatedTextProps
+    │       │   │   │   └── index.ts  # Barrel export for i18n
     │       │   │   ├── Input/
     │       │   │   │   ├── Input.native.tsx
     │       │   │   │   ├── Input.test.tsx
     │       │   │   │   ├── Input.tsx
     │       │   │   │   └── Input.web.tsx
     │       │   │   ├── layout/
+    │       │   │   │   ├── AspectRatio/
+    │       │   │   │   │   ├── AspectRatio.native.tsx  # ❌ CREATE Native aspect ratio container
+    │       │   │   │   │   │   # - Maintain aspect ratio
+    │       │   │   │   │   │   # - Responsive sizing
+    │       │   │   │   │   ├── AspectRatio.tsx  # ❌ CREATE Base aspect ratio logic
+    │       │   │   │   │   ├── AspectRatio.types.ts  # ❌ CREATE AspectRatioProps
+    │       │   │   │   │   ├── AspectRatio.web.tsx  # ❌ CREATE Web aspect ratio container
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── Container/
-    │       │   │   │   │   ├── Container.native.tsx  # ❌ CREATE - Native container
+    │       │   │   │   │   ├── Container.native.tsx  # Native container
     │       │   │   │   │   │   # - View with padding
     │       │   │   │   │   │   # - Max width constraint
     │       │   │   │   │   │   # Props: maxWidth, padding
-    │       │   │   │   │   ├── Container.tsx  # ❌ CREATE - Base container
+    │       │   │   │   │   │   # ❌ CREATE Native responsive container
+    │       │   │   │   │   │   # - Max width
+    │       │   │   │   │   │   # - Padding
+    │       │   │   │   │   │   # - Centering
+    │       │   │   │   │   ├── Container.tsx  # Base container
     │       │   │   │   │   │   # - Shared container logic
-    │       │   │   │   │   ├── Container.types.ts  # ❌ CREATE - Container types
+    │       │   │   │   │   │   # ❌ CREATE Base container logic
+    │       │   │   │   │   ├── Container.types.ts  # Container types
     │       │   │   │   │   │   # - ContainerProps interface
-    │       │   │   │   │   └── Container.web.tsx  # ❌ CREATE - Web container
-    │       │   │   │   │       # - Div with max-width
-    │       │   │   │   │       # - Centered content
-    │       │   │   │   │       # Props: maxWidth, padding
+    │       │   │   │   │   │   # ❌ CREATE ContainerProps
+    │       │   │   │   │   ├── Container.web.tsx  # Web container
+    │       │   │   │   │   │   # - Div with max-width
+    │       │   │   │   │   │   # - Centered content
+    │       │   │   │   │   │   # Props: maxWidth, padding
+    │       │   │   │   │   │   # ❌ CREATE Web responsive container
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── Grid/
-    │       │   │   │   │   ├── Grid.native.tsx  # ❌ CREATE - Native grid
+    │       │   │   │   │   ├── Grid.native.tsx  # Native grid
     │       │   │   │   │   │   # - Flexbox grid with wrapping
     │       │   │   │   │   │   # - Gap support
     │       │   │   │   │   │   # Props: columns, gap, children
-    │       │   │   │   │   ├── Grid.tsx  # ❌ CREATE - Base grid component
+    │       │   │   │   │   │   # ❌ CREATE Native grid layout using Flexbox
+    │       │   │   │   │   │   # - Columns
+    │       │   │   │   │   │   # - Gap
+    │       │   │   │   │   │   # - Responsive
+    │       │   │   │   │   ├── Grid.tsx  # Base grid component
     │       │   │   │   │   │   # - Shared grid logic
-    │       │   │   │   │   ├── Grid.types.ts  # ❌ CREATE - Grid types
+    │       │   │   │   │   │   # ❌ CREATE Base grid logic
+    │       │   │   │   │   ├── Grid.types.ts  # Grid types
     │       │   │   │   │   │   # - GridProps interface
-    │       │   │   │   │   └── Grid.web.tsx  # ❌ CREATE - Web grid
-    │       │   │   │   │       # - CSS Grid layout
-    │       │   │   │   │       # - Responsive columns
-    │       │   │   │   │       # Props: columns, gap, children
+    │       │   │   │   │   │   # ❌ CREATE GridProps
+    │       │   │   │   │   ├── Grid.web.tsx  # Web grid
+    │       │   │   │   │   │   # - CSS Grid layout
+    │       │   │   │   │   │   # - Responsive columns
+    │       │   │   │   │   │   # Props: columns, gap, children
+    │       │   │   │   │   │   # ❌ CREATE Web CSS Grid
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   ├── Spacer/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── Spacer.native.tsx  # ❌ CREATE - Native spacer
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── Spacer.native.tsx  # Native spacer
     │       │   │   │   │   │   # - Empty View with height/width
     │       │   │   │   │   │   # Props: size, direction
-    │       │   │   │   │   ├── Spacer.tsx  # ❌ CREATE - Base spacer
+    │       │   │   │   │   ├── Spacer.tsx  # Base spacer
     │       │   │   │   │   │   # - Shared spacer logic
-    │       │   │   │   │   ├── Spacer.types.ts  # ❌ CREATE - Spacer types
+    │       │   │   │   │   ├── Spacer.types.ts  # Spacer types
     │       │   │   │   │   │   # - SpacerProps interface
-    │       │   │   │   │   └── Spacer.web.tsx  # ❌ CREATE - Web spacer
+    │       │   │   │   │   └── Spacer.web.tsx  # Web spacer
     │       │   │   │   │       # - Empty div with height/width
     │       │   │   │   │       # Props: size, direction
     │       │   │   │   ├── Stack/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── Stack.native.tsx  # ❌ CREATE - Native stack
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── Stack.native.tsx  # Native stack
     │       │   │   │   │   │   # - View with flexbox
     │       │   │   │   │   │   # - Direction: row, column
     │       │   │   │   │   │   # - Gap between items
     │       │   │   │   │   │   # Props: direction, gap, align, justify, children
-    │       │   │   │   │   ├── Stack.tsx  # ❌ CREATE - Base stack component
+    │       │   │   │   │   │   # ❌ CREATE Native stack layout (vertical/horizontal)
+    │       │   │   │   │   │   # - Direction
+    │       │   │   │   │   │   # - Spacing
+    │       │   │   │   │   │   # - Alignment
+    │       │   │   │   │   ├── Stack.tsx  # Base stack component
     │       │   │   │   │   │   # - Shared stack logic
-    │       │   │   │   │   ├── Stack.types.ts  # ❌ CREATE - Stack types
+    │       │   │   │   │   │   # ❌ CREATE Base stack logic
+    │       │   │   │   │   ├── Stack.types.ts  # Stack types
     │       │   │   │   │   │   # - StackDirection type
     │       │   │   │   │   │   # - StackProps interface
-    │       │   │   │   │   └── Stack.web.tsx  # ❌ CREATE - Web stack
+    │       │   │   │   │   │   # ❌ CREATE StackProps
+    │       │   │   │   │   └── Stack.web.tsx  # Web stack
     │       │   │   │   │       # - Div with flexbox
     │       │   │   │   │       # - Direction: row, column
     │       │   │   │   │       # Props: direction, gap, align, justify, children
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for layout
+    │       │   │   │   │       # ❌ CREATE Web flexbox stack
+    │       │   │   │   ├── Sticky/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── Sticky.tsx  # ❌ CREATE Base sticky positioning logic
+    │       │   │   │   │   ├── Sticky.types.ts  # ❌ CREATE StickyProps
+    │       │   │   │   │   └── Sticky.web.tsx  # ❌ CREATE Web sticky position CSS
+    │       │   │   │   └── index.ts  # Barrel export for layout
     │       │   │   ├── learning/  # ENTIRE SECTION
     │       │   │   │   ├── AchievementBadge.native.tsx
     │       │   │   │   ├── AchievementBadge.tsx  # Achievement badge
@@ -34845,51 +34850,51 @@ fe/
     │       │   │   │       # BE: none (presentational)
     │       │   │   ├── media/
     │       │   │   │   ├── AudioPlayer/
-    │       │   │   │   │   ├── AudioPlayer.native.tsx  # ❌ CREATE - Native audio player
+    │       │   │   │   │   ├── AudioPlayer.native.tsx  # Native audio player
     │       │   │   │   │   │   # - expo-av Audio component
     │       │   │   │   │   │   # - Play/pause, seek, volume
     │       │   │   │   │   │   # - Progress bar
     │       │   │   │   │   │   # Props: src, autoPlay, onEnd
-    │       │   │   │   │   ├── AudioPlayer.tsx  # ❌ CREATE - Base audio player
+    │       │   │   │   │   ├── AudioPlayer.tsx  # Base audio player
     │       │   │   │   │   │   # - Shared audio logic
-    │       │   │   │   │   ├── AudioPlayer.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── AudioPlayer.types.ts  # Types
     │       │   │   │   │   │   # - AudioPlayerProps interface
-    │       │   │   │   │   └── AudioPlayer.web.tsx  # ❌ CREATE - Web audio player
+    │       │   │   │   │   └── AudioPlayer.web.tsx  # Web audio player
     │       │   │   │   │       # - HTML5 audio element
     │       │   │   │   │       # - Custom controls
     │       │   │   │   │       # Props: src, autoPlay, onEnd
     │       │   │   │   ├── ImageGallery/
-    │       │   │   │   │   ├── ImageGallery.native.tsx  # ❌ CREATE - Native image gallery
+    │       │   │   │   │   ├── ImageGallery.native.tsx  # Native image gallery
     │       │   │   │   │   │   # - FlatList with horizontal scroll
     │       │   │   │   │   │   # - Lightbox on tap
     │       │   │   │   │   │   # - Zoom/pan gestures
     │       │   │   │   │   │   # Props: images, currentIndex, onIndexChange
-    │       │   │   │   │   ├── ImageGallery.tsx  # ❌ CREATE - Base image gallery
+    │       │   │   │   │   ├── ImageGallery.tsx  # Base image gallery
     │       │   │   │   │   │   # - Shared gallery logic
-    │       │   │   │   │   ├── ImageGallery.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── ImageGallery.types.ts  # Types
     │       │   │   │   │   │   # - GalleryImage interface
     │       │   │   │   │   │   # - ImageGalleryProps interface
-    │       │   │   │   │   └── ImageGallery.web.tsx  # ❌ CREATE - Web image gallery
+    │       │   │   │   │   └── ImageGallery.web.tsx  # Web image gallery
     │       │   │   │   │       # - Grid with lightbox
     │       │   │   │   │       # - Keyboard navigation
     │       │   │   │   │       # Props: images, currentIndex, onIndexChange
     │       │   │   │   ├── VideoPlayer/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── VideoPlayer.native.tsx  # ❌ CREATE - Native video player
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── VideoPlayer.native.tsx  # Native video player
     │       │   │   │   │   │   # - expo-av Video component
     │       │   │   │   │   │   # - Full controls: play/pause, seek, fullscreen
     │       │   │   │   │   │   # - Subtitle support
     │       │   │   │   │   │   # Props: src, poster, controls, onEnd
-    │       │   │   │   │   ├── VideoPlayer.tsx  # ❌ CREATE - Base video player
+    │       │   │   │   │   ├── VideoPlayer.tsx  # Base video player
     │       │   │   │   │   │   # - Shared video logic
-    │       │   │   │   │   ├── VideoPlayer.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── VideoPlayer.types.ts  # Types
     │       │   │   │   │   │   # - VideoPlayerProps interface
-    │       │   │   │   │   └── VideoPlayer.web.tsx  # ❌ CREATE - Web video player
+    │       │   │   │   │   └── VideoPlayer.web.tsx  # Web video player
     │       │   │   │   │       # - HTML5 video element
     │       │   │   │   │       # - Custom controls overlay
     │       │   │   │   │       # - Subtitle support
     │       │   │   │   │       # Props: src, poster, controls, onEnd
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for media
+    │       │   │   │   └── index.ts  # Barrel export for media
     │       │   │   ├── Modal/
     │       │   │   │   ├── Modal.native.tsx  # Modal (native)
     │       │   │   │   ├── Modal.tsx  # Modal (shared)
@@ -34898,148 +34903,171 @@ fe/
     │       │   │   ├── molecules/
     │       │   │   │   ├── DataDisplay/
     │       │   │   │   │   ├── EmptyState/
-    │       │   │   │   │   │   ├── EmptyState.native.tsx  # ❌ CREATE - Native empty state
+    │       │   │   │   │   │   ├── EmptyState.native.tsx  # Native empty state
     │       │   │   │   │   │   │   # - Centered View with illustration, title, description
     │       │   │   │   │   │   │   # - Optional action button
     │       │   │   │   │   │   │   # - Preset templates: no-data, no-results, error, no-connection
     │       │   │   │   │   │   │   # - Accessibility: proper heading hierarchy
     │       │   │   │   │   │   │   # Props: variant, title, description, illustration, action
-    │       │   │   │   │   │   ├── EmptyState.tsx  # ❌ CREATE - Base empty state component
+    │       │   │   │   │   │   ├── EmptyState.tsx  # Base empty state component
     │       │   │   │   │   │   │   # - Shared empty state logic
     │       │   │   │   │   │   │   # - Variant types: no-data, no-results, error, no-connection
-    │       │   │   │   │   │   ├── EmptyState.types.ts  # ❌ CREATE - EmptyState type definitions
+    │       │   │   │   │   │   ├── EmptyState.types.ts  # EmptyState type definitions
     │       │   │   │   │   │   │   # - EmptyStateVariant type
     │       │   │   │   │   │   │   # - EmptyStateProps interface
-    │       │   │   │   │   │   └── EmptyState.web.tsx  # ❌ CREATE - Web empty state
+    │       │   │   │   │   │   └── EmptyState.web.tsx  # Web empty state
     │       │   │   │   │   │       # - Div container with centered content
     │       │   │   │   │   │       # - SVG illustration
     │       │   │   │   │   │       # - Action button
     │       │   │   │   │   │       # Props: variant, title, description, illustration, action
+    │       │   │   │   │   ├── FilterChips/
+    │       │   │   │   │   │   ├── FilterChips.native.tsx  # ❌ CREATE Native filter chips using horizontal FlatList, active state, clear all button
+    │       │   │   │   │   │   ├── FilterChips.tsx  # ❌ CREATE Base filter chips logic, selection handling, filter remove callback
+    │       │   │   │   │   │   ├── FilterChips.types.ts  # ❌ CREATE FilterChipItem interface, FilterChipsProps with filters[]/onChange/onClear
+    │       │   │   │   │   │   ├── FilterChips.web.tsx  # ❌ CREATE Web filter chips with Tailwind, keyboard navigation, ARIA selected
+    │       │   │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   │   ├── InfoCard/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── InfoCard.native.tsx  # ❌ CREATE - Native info card
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   ├── InfoCard.native.tsx  # Native info card
     │       │   │   │   │   │   │   # - Card with icon, title, value
     │       │   │   │   │   │   │   # - Optional trend indicator
     │       │   │   │   │   │   │   # - Pressable for drill-down
     │       │   │   │   │   │   │   # Props: title, value, icon, trend, onPress
-    │       │   │   │   │   │   ├── InfoCard.tsx  # ❌ CREATE - Base info card
+    │       │   │   │   │   │   ├── InfoCard.tsx  # Base info card
     │       │   │   │   │   │   │   # - Shared logic
-    │       │   │   │   │   │   ├── InfoCard.types.ts  # ❌ CREATE - InfoCard types
+    │       │   │   │   │   │   ├── InfoCard.types.ts  # InfoCard types
     │       │   │   │   │   │   │   # - InfoCardProps interface
-    │       │   │   │   │   │   └── InfoCard.web.tsx  # ❌ CREATE - Web info card
+    │       │   │   │   │   │   └── InfoCard.web.tsx  # Web info card
     │       │   │   │   │   │       # - Div card with hover effect
     │       │   │   │   │   │       # Props: title, value, icon, trend, onClick
     │       │   │   │   │   ├── KeyValueList/
-    │       │   │   │   │   │   ├── KeyValueList.native.tsx  # ❌ CREATE - Native key-value list
+    │       │   │   │   │   │   ├── KeyValueList.native.tsx  # Native key-value list
     │       │   │   │   │   │   │   # - FlatList of key-value pairs
     │       │   │   │   │   │   │   # - Dividers between items
     │       │   │   │   │   │   │   # - Copy value functionality
     │       │   │   │   │   │   │   # Props: items[], dividers, onCopy
-    │       │   │   │   │   │   ├── KeyValueList.tsx  # ❌ CREATE - Base key-value list
+    │       │   │   │   │   │   ├── KeyValueList.tsx  # Base key-value list
     │       │   │   │   │   │   │   # - Shared logic
-    │       │   │   │   │   │   ├── KeyValueList.types.ts  # ❌ CREATE - KeyValueList types
+    │       │   │   │   │   │   ├── KeyValueList.types.ts  # KeyValueList types
     │       │   │   │   │   │   │   # - KeyValueItem interface
     │       │   │   │   │   │   │   # - KeyValueListProps interface
-    │       │   │   │   │   │   └── KeyValueList.web.tsx  # ❌ CREATE - Web key-value list
+    │       │   │   │   │   │   └── KeyValueList.web.tsx  # Web key-value list
     │       │   │   │   │   │       # - Dl/dt/dd semantic HTML
     │       │   │   │   │   │       # Props: items[], dividers, onCopy
     │       │   │   │   │   ├── Pagination/
     │       │   │   │   │   │   ├── components/
     │       │   │   │   │   │   │   ├── PageInput/
-    │       │   │   │   │   │   │   │   ├── PageInput.native.tsx  # ❌ CREATE - Native page jump input
+    │       │   │   │   │   │   │   │   ├── PageInput.native.tsx  # Native page jump input
     │       │   │   │   │   │   │   │   │   # - Numeric input to jump to page
     │       │   │   │   │   │   │   │   │   # Props: page, total, onPageChange
-    │       │   │   │   │   │   │   │   ├── PageInput.tsx  # ❌ CREATE - Base page input
-    │       │   │   │   │   │   │   │   ├── PageInput.types.ts  # ❌ CREATE - PageInput types
-    │       │   │   │   │   │   │   │   └── PageInput.web.tsx  # ❌ CREATE - Web page jump input
+    │       │   │   │   │   │   │   │   ├── PageInput.tsx  # Base page input
+    │       │   │   │   │   │   │   │   ├── PageInput.types.ts  # PageInput types
+    │       │   │   │   │   │   │   │   └── PageInput.web.tsx  # Web page jump input
     │       │   │   │   │   │   │   ├── PageSizeSelector/
-    │       │   │   │   │   │   │   │   ├── PageSizeSelector.native.tsx  # ❌ CREATE - Native page size picker
+    │       │   │   │   │   │   │   │   ├── PageSizeSelector.native.tsx  # Native page size picker
     │       │   │   │   │   │   │   │   │   # - Select for rows per page
     │       │   │   │   │   │   │   │   │   # Props: pageSize, options[], onChange
-    │       │   │   │   │   │   │   │   ├── PageSizeSelector.tsx  # ❌ CREATE - Base page size selector
-    │       │   │   │   │   │   │   │   ├── PageSizeSelector.types.ts  # ❌ CREATE - PageSizeSelector types
-    │       │   │   │   │   │   │   │   └── PageSizeSelector.web.tsx  # ❌ CREATE - Web page size selector
+    │       │   │   │   │   │   │   │   ├── PageSizeSelector.tsx  # Base page size selector
+    │       │   │   │   │   │   │   │   ├── PageSizeSelector.types.ts  # PageSizeSelector types
+    │       │   │   │   │   │   │   │   └── PageSizeSelector.web.tsx  # Web page size selector
     │       │   │   │   │   │   │   ├── PaginationInfo/
-    │       │   │   │   │   │   │   │   ├── PaginationInfo.native.tsx  # ❌ CREATE - Native pagination info text
+    │       │   │   │   │   │   │   │   ├── PaginationInfo.native.tsx  # Native pagination info text
     │       │   │   │   │   │   │   │   │   # - Shows "1-10 of 100 items"
     │       │   │   │   │   │   │   │   │   # Props: page, pageSize, total
-    │       │   │   │   │   │   │   │   ├── PaginationInfo.tsx  # ❌ CREATE - Base pagination info
-    │       │   │   │   │   │   │   │   ├── PaginationInfo.types.ts  # ❌ CREATE - PaginationInfo types
-    │       │   │   │   │   │   │   │   └── PaginationInfo.web.tsx  # ❌ CREATE - Web pagination info text
-    │       │   │   │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── Pagination.native.tsx  # ❌ CREATE - Native pagination
+    │       │   │   │   │   │   │   │   ├── PaginationInfo.tsx  # Base pagination info
+    │       │   │   │   │   │   │   │   ├── PaginationInfo.types.ts  # PaginationInfo types
+    │       │   │   │   │   │   │   │   └── PaginationInfo.web.tsx  # Web pagination info text
+    │       │   │   │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   │   │   ├── Pagination.native.tsx  # Native pagination
     │       │   │   │   │   │   │   # - Horizontal ScrollView with page buttons
     │       │   │   │   │   │   │   # - Prev/Next buttons
     │       │   │   │   │   │   │   # - Page indicator dots
     │       │   │   │   │   │   │   # - Accessibility: proper button labels
     │       │   │   │   │   │   │   # Props: page, total, onChange, showFirstLast
-    │       │   │   │   │   │   ├── Pagination.tsx  # ❌ CREATE - Base pagination component
+    │       │   │   │   │   │   ├── Pagination.tsx  # Base pagination component
     │       │   │   │   │   │   │   # - Shared pagination logic
     │       │   │   │   │   │   │   # - Page range calculation
     │       │   │   │   │   │   │   # - Jump to page functionality
-    │       │   │   │   │   │   ├── Pagination.types.ts  # ❌ CREATE - Pagination type definitions
+    │       │   │   │   │   │   ├── Pagination.types.ts  # Pagination type definitions
     │       │   │   │   │   │   │   # - PaginationProps interface
     │       │   │   │   │   │   │   # - PageInfo type
-    │       │   │   │   │   │   └── Pagination.web.tsx  # ❌ CREATE - Web pagination
+    │       │   │   │   │   │   └── Pagination.web.tsx  # Web pagination
     │       │   │   │   │   │       # - Nav element with button list
     │       │   │   │   │   │       # - Ellipsis for truncated pages
     │       │   │   │   │   │       # - Keyboard navigation
     │       │   │   │   │   │       # - ARIA labels
     │       │   │   │   │   │       # Props: page, total, onChange, showFirstLast, siblingCount
+    │       │   │   │   │   ├── PriceDisplay/
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── PriceDisplay.native.tsx  # ❌ CREATE Native price display with currency symbol, formatting, strike-through for original price
+    │       │   │   │   │   │   ├── PriceDisplay.tsx  # ❌ CREATE Base price logic, currency formatting (Intl.NumberFormat), discount calculation
+    │       │   │   │   │   │   ├── PriceDisplay.types.ts  # ❌ CREATE PriceDisplayProps with amount/currency/showSymbol/strikethrough/discountPrice
+    │       │   │   │   │   │   └── PriceDisplay.web.tsx  # ❌ CREATE Web price display with semantic del for old price, ARIA label
     │       │   │   │   │   ├── RatingDisplay/
-    │       │   │   │   │   │   ├── RatingDisplay.native.tsx  # ❌ CREATE - Native rating display
+    │       │   │   │   │   │   ├── RatingDisplay.native.tsx  # Native rating display
     │       │   │   │   │   │   │   # - View with star icons
     │       │   │   │   │   │   │   # - Half-star support
     │       │   │   │   │   │   │   # - Read-only display
     │       │   │   │   │   │   │   # - Shows numeric value
     │       │   │   │   │   │   │   # Props: value, max, size, showValue, precision
-    │       │   │   │   │   │   ├── RatingDisplay.tsx  # ❌ CREATE - Base rating display component
+    │       │   │   │   │   │   ├── RatingDisplay.tsx  # Base rating display component
     │       │   │   │   │   │   │   # - Shared rating logic
     │       │   │   │   │   │   │   # - Star fill calculation
     │       │   │   │   │   │   │   # - Precision support (0.5, 0.1)
-    │       │   │   │   │   │   ├── RatingDisplay.types.ts  # ❌ CREATE - RatingDisplay type definitions
+    │       │   │   │   │   │   ├── RatingDisplay.types.ts  # RatingDisplay type definitions
     │       │   │   │   │   │   │   # - RatingPrecision type
     │       │   │   │   │   │   │   # - RatingDisplayProps interface
-    │       │   │   │   │   │   └── RatingDisplay.web.tsx  # ❌ CREATE - Web rating display
+    │       │   │   │   │   │   └── RatingDisplay.web.tsx  # Web rating display
     │       │   │   │   │   │       # - Span with SVG stars
     │       │   │   │   │   │       # - Gradient fill for half stars
     │       │   │   │   │   │       # - ARIA label with value
     │       │   │   │   │   │       # Props: value, max, size, showValue, precision
     │       │   │   │   │   ├── StatCard/
-    │       │   │   │   │   │   ├── StatCard.native.tsx  # ❌ CREATE - Native stat card
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── StatCard.native.tsx  # Native stat card
     │       │   │   │   │   │   │   # - Card View showing metric
     │       │   │   │   │   │   │   # - Label, value, change indicator
     │       │   │   │   │   │   │   # - Trend icon (up/down arrow)
     │       │   │   │   │   │   │   # - Color coding for positive/negative
     │       │   │   │   │   │   │   # Props: label, value, change, trend, icon
-    │       │   │   │   │   │   ├── StatCard.tsx  # ❌ CREATE - Base stat card component
+    │       │   │   │   │   │   │   # ❌ CREATE Native stat card with title/value/trend/icon, gradient background support
+    │       │   │   │   │   │   ├── StatCard.tsx  # Base stat card component
     │       │   │   │   │   │   │   # - Shared stat card logic
     │       │   │   │   │   │   │   # - Trend calculation
     │       │   │   │   │   │   │   # - Format numbers (1K, 1M, 1B)
-    │       │   │   │   │   │   ├── StatCard.types.ts  # ❌ CREATE - StatCard type definitions
+    │       │   │   │   │   │   │   # ❌ CREATE Base stat card logic, trend calculation, percentage change
+    │       │   │   │   │   │   ├── StatCard.types.ts  # StatCard type definitions
     │       │   │   │   │   │   │   # - TrendDirection type
     │       │   │   │   │   │   │   # - StatCardProps interface
-    │       │   │   │   │   │   └── StatCard.web.tsx  # ❌ CREATE - Web stat card
+    │       │   │   │   │   │   │   # ❌ CREATE StatCardProps with title/value/trend/change/icon/loading
+    │       │   │   │   │   │   └── StatCard.web.tsx  # Web stat card
     │       │   │   │   │   │       # - Div card with styled content
     │       │   │   │   │   │       # - Hover effects
     │       │   │   │   │   │       # Props: label, value, change, trend, icon
+    │       │   │   │   │   │       # ❌ CREATE Web stat card with hover effect, click to drill-down
+    │       │   │   │   │   ├── StatusBanner/
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── StatusBanner.native.tsx  # ❌ CREATE Native status banner fixed at top, dismissible, icon support
+    │       │   │   │   │   │   ├── StatusBanner.tsx  # ❌ CREATE Base status banner logic, auto-dismiss timer, status variants
+    │       │   │   │   │   │   ├── StatusBanner.types.ts  # ❌ CREATE StatusBannerVariant enum, StatusBannerProps with message/variant/dismissible/duration
+    │       │   │   │   │   │   └── StatusBanner.web.tsx  # ❌ CREATE Web status banner with sticky position, slide-in animation, ARIA live
     │       │   │   │   │   ├── Table/
-    │       │   │   │   │   │   ├── Table.native.tsx  # ❌ CREATE - Native table (FlatList-based)
+    │       │   │   │   │   │   ├── Table.native.tsx  # Native table (FlatList-based)
     │       │   │   │   │   │   │   # - FlatList with custom row renderer
     │       │   │   │   │   │   │   # - Horizontal scroll for many columns
     │       │   │   │   │   │   │   # - Sticky header
     │       │   │   │   │   │   │   # - Sort indicators
     │       │   │   │   │   │   │   # - Row selection
     │       │   │   │   │   │   │   # Props: columns, data, onSort, onRowPress, selectable
-    │       │   │   │   │   │   ├── Table.tsx  # ❌ CREATE - Base table component
+    │       │   │   │   │   │   ├── Table.tsx  # Base table component
     │       │   │   │   │   │   │   # - Shared table logic
     │       │   │   │   │   │   │   # - Sort state management
     │       │   │   │   │   │   │   # - Column configuration
-    │       │   │   │   │   │   ├── Table.types.ts  # ❌ CREATE - Table type definitions
+    │       │   │   │   │   │   ├── Table.types.ts  # Table type definitions
     │       │   │   │   │   │   │   # - Column interface
     │       │   │   │   │   │   │   # - SortDirection type
     │       │   │   │   │   │   │   # - TableProps interface
-    │       │   │   │   │   │   └── Table.web.tsx  # ❌ CREATE - Web table using HTML table
+    │       │   │   │   │   │   └── Table.web.tsx  # Web table using HTML table
     │       │   │   │   │   │       # - Semantic HTML table
     │       │   │   │   │   │       # - Fixed header
     │       │   │   │   │   │       # - Sortable columns
@@ -35048,42 +35076,55 @@ fe/
     │       │   │   │   │   │       # - ARIA attributes (grid, columnheader, etc.)
     │       │   │   │   │   │       # Props: columns, data, onSort, onRowClick, selectable
     │       │   │   │   │   ├── Timeline/
-    │       │   │   │   │   │   ├── Timeline.native.tsx  # ❌ CREATE - Native timeline
+    │       │   │   │   │   │   ├── Timeline.native.tsx  # Native timeline
     │       │   │   │   │   │   │   # - FlatList with vertical line and dots
     │       │   │   │   │   │   │   # - Event cards with timestamps
     │       │   │   │   │   │   │   # - Icon for each event
     │       │   │   │   │   │   │   # Props: events[], orientation
-    │       │   │   │   │   │   ├── Timeline.tsx  # ❌ CREATE - Base timeline
+    │       │   │   │   │   │   ├── Timeline.tsx  # Base timeline
     │       │   │   │   │   │   │   # - Shared timeline logic
-    │       │   │   │   │   │   ├── Timeline.types.ts  # ❌ CREATE - Timeline types
+    │       │   │   │   │   │   ├── Timeline.types.ts  # Timeline types
     │       │   │   │   │   │   │   # - TimelineEvent interface
     │       │   │   │   │   │   │   # - TimelineProps interface
-    │       │   │   │   │   │   └── Timeline.web.tsx  # ❌ CREATE - Web timeline
+    │       │   │   │   │   │   └── Timeline.web.tsx  # Web timeline
     │       │   │   │   │   │       # - Vertical/horizontal layout
     │       │   │   │   │   │       # - SVG line connecting events
     │       │   │   │   │   │       # Props: events[], orientation
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export for molecules/DataDisplay
+    │       │   │   │   │   ├── TimelineItem/
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── TimelineItem.native.tsx  # ❌ CREATE Native timeline item with connecting line, timestamp, status icon
+    │       │   │   │   │   │   ├── TimelineItem.tsx  # ❌ CREATE Base timeline item logic, relative time formatting
+    │       │   │   │   │   │   ├── TimelineItem.types.ts  # ❌ CREATE TimelineItemProps with title/timestamp/description/status/isLast
+    │       │   │   │   │   │   └── TimelineItem.web.tsx  # ❌ CREATE Web timeline item with CSS pseudo-elements for line, semantic time element
+    │       │   │   │   │   └── index.ts  # Barrel export for molecules/DataDisplay
     │       │   │   │   ├── Feedback/
     │       │   │   │   │   ├── ConfirmDialog/
-    │       │   │   │   │   │   ├── ConfirmDialog.native.tsx  # ❌ CREATE - Native confirm dialog
+    │       │   │   │   │   │   ├── ConfirmDialog.native.tsx  # Native confirm dialog
     │       │   │   │   │   │   │   # - Modal with title, message, actions
     │       │   │   │   │   │   │   # - Confirm/cancel buttons
     │       │   │   │   │   │   │   # - Destructive action styling
     │       │   │   │   │   │   │   # - Accessibility: modal role
     │       │   │   │   │   │   │   # Props: open, title, message, onConfirm, onCancel, variant
-    │       │   │   │   │   │   ├── ConfirmDialog.tsx  # ❌ CREATE - Base confirm dialog
+    │       │   │   │   │   │   ├── ConfirmDialog.tsx  # Base confirm dialog
     │       │   │   │   │   │   │   # - Shared dialog logic
-    │       │   │   │   │   │   ├── ConfirmDialog.types.ts  # ❌ CREATE - ConfirmDialog types
+    │       │   │   │   │   │   ├── ConfirmDialog.types.ts  # ConfirmDialog types
     │       │   │   │   │   │   │   # - ConfirmVariant type (default, destructive)
     │       │   │   │   │   │   │   # - ConfirmDialogProps interface
-    │       │   │   │   │   │   └── ConfirmDialog.web.tsx  # ❌ CREATE - Web confirm dialog
+    │       │   │   │   │   │   └── ConfirmDialog.web.tsx  # Web confirm dialog
     │       │   │   │   │   │       # - Modal with overlay
     │       │   │   │   │   │       # - Focus trap
     │       │   │   │   │   │       # - Esc to cancel
     │       │   │   │   │   │       # - ARIA dialog pattern
     │       │   │   │   │   │       # Props: open, title, message, onConfirm, onCancel, variant
+    │       │   │   │   │   ├── LoadingOverlay/
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── LoadingOverlay.native.tsx  # ❌ CREATE Native loading overlay using Modal, spinner, blocking interactions
+    │       │   │   │   │   │   ├── LoadingOverlay.tsx  # ❌ CREATE Base loading overlay logic, portal support
+    │       │   │   │   │   │   ├── LoadingOverlay.types.ts  # ❌ CREATE LoadingOverlayProps with visible/message/transparent
+    │       │   │   │   │   │   └── LoadingOverlay.web.tsx  # ❌ CREATE Web loading overlay with fixed position, z-index 9999, ARIA busy
     │       │   │   │   │   ├── Snackbar/
-    │       │   │   │   │   │   ├── Snackbar.native.tsx  # ❌ CREATE - Native snackbar (toast)
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── Snackbar.native.tsx  # Native snackbar (toast)
     │       │   │   │   │   │   │   # - Animated bottom notification
     │       │   │   │   │   │   │   # - react-native-reanimated for slide-up animation
     │       │   │   │   │   │   │   # - Auto-dismiss with timer
@@ -35091,194 +35132,236 @@ fe/
     │       │   │   │   │   │   │   # - Haptic feedback on show
     │       │   │   │   │   │   │   # - Queue multiple snackbars
     │       │   │   │   │   │   │   # Props: message, variant, duration, action, onDismiss
-    │       │   │   │   │   │   ├── Snackbar.tsx  # ❌ CREATE - Base snackbar component
+    │       │   │   │   │   │   │   # ❌ CREATE Native snackbar at bottom using Animated, slide-up animation, action button
+    │       │   │   │   │   │   ├── Snackbar.tsx  # Base snackbar component
     │       │   │   │   │   │   │   # - Shared snackbar logic
     │       │   │   │   │   │   │   # - Queue management
     │       │   │   │   │   │   │   # - Variant types: info, success, warning, error
-    │       │   │   │   │   │   ├── Snackbar.types.ts  # ❌ CREATE - Snackbar type definitions
+    │       │   │   │   │   │   │   # ❌ CREATE Base snackbar logic, queue management, auto-dismiss
+    │       │   │   │   │   │   ├── Snackbar.types.ts  # Snackbar type definitions
     │       │   │   │   │   │   │   # - SnackbarVariant type
     │       │   │   │   │   │   │   # - SnackbarAction interface
     │       │   │   │   │   │   │   # - SnackbarProps interface
-    │       │   │   │   │   │   └── Snackbar.web.tsx  # ❌ CREATE - Web snackbar
+    │       │   │   │   │   │   │   # ❌ CREATE SnackbarProps with message/action/duration/variant
+    │       │   │   │   │   │   └── Snackbar.web.tsx  # Web snackbar
     │       │   │   │   │   │       # - Fixed position notification
     │       │   │   │   │   │       # - CSS transitions for slide-in
     │       │   │   │   │   │       # - Auto-dismiss
     │       │   │   │   │   │       # - ARIA live region
     │       │   │   │   │   │       # Props: message, variant, duration, action, onDismiss
+    │       │   │   │   │   │       # ❌ CREATE Web snackbar with CSS animations, ARIA live polite, keyboard dismiss
     │       │   │   │   │   ├── Toast/
-    │       │   │   │   │   │   ├── Toast.native.tsx  # ❌ CREATE - Native toast notification
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── Toast.native.tsx  # Native toast notification
     │       │   │   │   │   │   │   # - Absolute positioned View
     │       │   │   │   │   │   │   # - Animated entrance/exit
     │       │   │   │   │   │   │   # - Top/bottom positioning
     │       │   │   │   │   │   │   # - Icon based on variant
     │       │   │   │   │   │   │   # - Auto-dismiss
     │       │   │   │   │   │   │   # Props: message, variant, position, duration
-    │       │   │   │   │   │   ├── Toast.tsx  # ❌ CREATE - Base toast component
+    │       │   │   │   │   │   │   # ❌ CREATE Native toast notification top-right, auto-dismiss, multiple toasts stack
+    │       │   │   │   │   │   ├── Toast.tsx  # Base toast component
     │       │   │   │   │   │   │   # - Shared toast logic
     │       │   │   │   │   │   │   # - Toast queue management
     │       │   │   │   │   │   │   # - Variant types: info, success, warning, error
-    │       │   │   │   │   │   ├── Toast.types.ts  # ❌ CREATE - Toast type definitions
+    │       │   │   │   │   │   │   # ❌ CREATE Base toast logic, toast queue, position handling
+    │       │   │   │   │   │   ├── Toast.types.ts  # Toast type definitions
     │       │   │   │   │   │   │   # - ToastVariant type
     │       │   │   │   │   │   │   # - ToastPosition type
     │       │   │   │   │   │   │   # - ToastProps interface
-    │       │   │   │   │   │   └── Toast.web.tsx  # ❌ CREATE - Web toast
-    │       │   │   │   │   │       # - Portal-rendered notification
-    │       │   │   │   │   │       # - CSS animations
-    │       │   │   │   │   │       # - Stacking multiple toasts
-    │       │   │   │   │   │       # - ARIA live region
-    │       │   │   │   │   │       # Props: message, variant, position, duration
-    │       │   │   │   │   └── Tooltip/
-    │       │   │   │   │       ├── Tooltip.native.tsx  # ❌ CREATE - Native tooltip (long press)
-    │       │   │   │   │       │   # - Pressable trigger with long press
-    │       │   │   │   │       │   # - Modal overlay with tooltip content
-    │       │   │   │   │       │   # - Positioned relative to trigger
-    │       │   │   │   │       │   # - Auto-dismiss on tap outside
-    │       │   │   │   │       │   # - Accessibility: accessibilityHint
-    │       │   │   │   │       │   # Props: content, children, position, delay
-    │       │   │   │   │       ├── Tooltip.tsx  # ❌ CREATE - Base tooltip component
-    │       │   │   │   │       │   # - Shared tooltip logic
-    │       │   │   │   │       │   # - Position calculation
-    │       │   │   │   │       │   # - Position types: top, bottom, left, right
-    │       │   │   │   │       ├── Tooltip.types.ts  # ❌ CREATE - Tooltip type definitions
-    │       │   │   │   │       │   # - TooltipPosition type
-    │       │   │   │   │       │   # - TooltipProps interface
-    │       │   │   │   │       └── Tooltip.web.tsx  # ❌ CREATE - Web tooltip (hover)
-    │       │   │   │   │           # - CSS :hover trigger
-    │       │   │   │   │           # - Absolute positioned tooltip
-    │       │   │   │   │           # - Arrow pointer
-    │       │   │   │   │           # - ARIA describedby
-    │       │   │   │   │           # Props: content, children, position, delay
+    │       │   │   │   │   │   │   # ❌ CREATE ToastVariant enum, ToastPosition enum, ToastProps with message/variant/position/duration
+    │       │   │   │   │   │   ├── Toast.web.tsx  # Web toast
+    │       │   │   │   │   │   │   # - Portal-rendered notification
+    │       │   │   │   │   │   │   # - CSS animations
+    │       │   │   │   │   │   │   # - Stacking multiple toasts
+    │       │   │   │   │   │   │   # - ARIA live region
+    │       │   │   │   │   │   │   # Props: message, variant, position, duration
+    │       │   │   │   │   │   │   # ❌ CREATE Web toast with CSS transitions, portal rendering, ARIA live assertive
+    │       │   │   │   │   │   ├── ToastContainer.native.tsx  # ❌ CREATE Native container managing multiple toasts
+    │       │   │   │   │   │   ├── ToastContainer.tsx  # ❌ CREATE Base container logic
+    │       │   │   │   │   │   └── ToastContainer.web.tsx  # ❌ CREATE Web container with fixed positioning
+    │       │   │   │   │   ├── Tooltip/
+    │       │   │   │   │   │   ├── Tooltip.native.tsx  # Native tooltip (long press)
+    │       │   │   │   │   │   │   # - Pressable trigger with long press
+    │       │   │   │   │   │   │   # - Modal overlay with tooltip content
+    │       │   │   │   │   │   │   # - Positioned relative to trigger
+    │       │   │   │   │   │   │   # - Auto-dismiss on tap outside
+    │       │   │   │   │   │   │   # - Accessibility: accessibilityHint
+    │       │   │   │   │   │   │   # Props: content, children, position, delay
+    │       │   │   │   │   │   ├── Tooltip.tsx  # Base tooltip component
+    │       │   │   │   │   │   │   # - Shared tooltip logic
+    │       │   │   │   │   │   │   # - Position calculation
+    │       │   │   │   │   │   │   # - Position types: top, bottom, left, right
+    │       │   │   │   │   │   ├── Tooltip.types.ts  # Tooltip type definitions
+    │       │   │   │   │   │   │   # - TooltipPosition type
+    │       │   │   │   │   │   │   # - TooltipProps interface
+    │       │   │   │   │   │   └── Tooltip.web.tsx  # Web tooltip (hover)
+    │       │   │   │   │   │       # - CSS :hover trigger
+    │       │   │   │   │   │       # - Absolute positioned tooltip
+    │       │   │   │   │   │       # - Arrow pointer
+    │       │   │   │   │   │       # - ARIA describedby
+    │       │   │   │   │   │       # Props: content, children, position, delay
+    │       │   │   │   │   └── ValidationMessage/
+    │       │   │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │       ├── ValidationMessage.native.tsx  # ❌ CREATE Native validation message below input, error/success/warning states
+    │       │   │   │   │       ├── ValidationMessage.tsx  # ❌ CREATE Base validation logic, state to icon mapping
+    │       │   │   │   │       ├── ValidationMessage.types.ts  # ❌ CREATE ValidationState enum, ValidationMessageProps with message/state
+    │       │   │   │   │       └── ValidationMessage.web.tsx  # ❌ CREATE Web validation with ARIA live, error icon, semantic role alert
+    │       │   │   │   ├── FileUpload/
+    │       │   │   │   │   ├── DragDropZone/
+    │       │   │   │   │   │   ├── DragDropZone.tsx  # ❌ CREATE Base drag-drop logic, file validation
+    │       │   │   │   │   │   ├── DragDropZone.types.ts  # ❌ CREATE DragDropZoneProps with accept/multiple/maxSize/onDrop
+    │       │   │   │   │   │   ├── DragDropZone.web.tsx  # ❌ CREATE Web drag-drop zone with HTML5 drag API, visual feedback
+    │       │   │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── FilePicker/
+    │       │   │   │   │   │   ├── FilePicker.native.tsx  # ❌ CREATE Native file picker using expo-document-picker, image/document selection
+    │       │   │   │   │   │   ├── FilePicker.tsx  # ❌ CREATE Base file picker logic, file type validation, size limits
+    │       │   │   │   │   │   ├── FilePicker.types.ts  # ❌ CREATE FilePickerProps with accept/multiple/maxSize/onChange
+    │       │   │   │   │   │   ├── FilePicker.web.tsx  # ❌ CREATE Web file picker with hidden input, custom trigger button, preview support
+    │       │   │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── FilePreview/
+    │       │   │   │   │   │   ├── FilePreview.native.tsx  # ❌ CREATE Native file preview with thumbnail, file name, size, remove button
+    │       │   │   │   │   │   ├── FilePreview.tsx  # ❌ CREATE Base file preview logic, file type icon mapping
+    │       │   │   │   │   │   ├── FilePreview.types.ts  # ❌ CREATE FilePreviewProps with file/onRemove/showSize
+    │       │   │   │   │   │   ├── FilePreview.web.tsx  # ❌ CREATE Web file preview with image preview, PDF icon, download link
+    │       │   │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   └── UploadProgress/
+    │       │   │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │       ├── UploadProgress.native.tsx  # ❌ CREATE Native upload progress with progress bar, cancel button, retry on failure
+    │       │   │   │   │       ├── UploadProgress.tsx  # ❌ CREATE Base upload progress logic, percentage calculation, error handling
+    │       │   │   │   │       ├── UploadProgress.types.ts  # ❌ CREATE UploadProgressProps with progress/status/onCancel/onRetry
+    │       │   │   │   │       └── UploadProgress.web.tsx  # ❌ CREATE Web upload progress with animated bar, status text, ARIA progressbar
     │       │   │   │   ├── Form/
     │       │   │   │   │   ├── DatePicker/
-    │       │   │   │   │   │   ├── DatePicker.native.tsx  # ❌ CREATE - Native date picker
+    │       │   │   │   │   │   ├── DatePicker.native.tsx  # Native date picker
     │       │   │   │   │   │   │   # - React Native DateTimePicker
     │       │   │   │   │   │   │   # - Modal presentation
     │       │   │   │   │   │   │   # - Date/time/datetime modes
     │       │   │   │   │   │   │   # - Min/max date constraints
     │       │   │   │   │   │   │   # Props: value, onChange, mode, minDate, maxDate, label
-    │       │   │   │   │   │   ├── DatePicker.tsx  # ❌ CREATE - Base date picker component
+    │       │   │   │   │   │   ├── DatePicker.tsx  # Base date picker component
     │       │   │   │   │   │   │   # - Shared date picker logic
     │       │   │   │   │   │   │   # - Date parsing and formatting
     │       │   │   │   │   │   │   # - Mode types: date, time, datetime
-    │       │   │   │   │   │   ├── DatePicker.types.ts  # ❌ CREATE - DatePicker type definitions
+    │       │   │   │   │   │   ├── DatePicker.types.ts  # DatePicker type definitions
     │       │   │   │   │   │   │   # - DatePickerMode type
     │       │   │   │   │   │   │   # - DatePickerProps interface
-    │       │   │   │   │   │   └── DatePicker.web.tsx  # ❌ CREATE - Web date picker
+    │       │   │   │   │   │   └── DatePicker.web.tsx  # Web date picker
     │       │   │   │   │   │       # - Input with date picker popup
     │       │   │   │   │   │       # - Calendar grid
     │       │   │   │   │   │       # - Keyboard navigation
     │       │   │   │   │   │       # - ARIA attributes
     │       │   │   │   │   │       # Props: value, onChange, mode, minDate, maxDate, label
     │       │   │   │   │   ├── FileInput/
-    │       │   │   │   │   │   ├── FileInput.native.tsx  # ❌ CREATE - Native file picker
+    │       │   │   │   │   │   ├── FileInput.native.tsx  # Native file picker
     │       │   │   │   │   │   │   # - Uses react-native-document-picker
     │       │   │   │   │   │   │   # - Camera/gallery picker
     │       │   │   │   │   │   │   # - Multiple file selection
     │       │   │   │   │   │   │   # - File type filtering
     │       │   │   │   │   │   │   # - Preview thumbnails
     │       │   │   │   │   │   │   # Props: accept, multiple, maxSize, onSelect
-    │       │   │   │   │   │   ├── FileInput.tsx  # ❌ CREATE - Base file input component
+    │       │   │   │   │   │   ├── FileInput.tsx  # Base file input component
     │       │   │   │   │   │   │   # - Shared file input logic
     │       │   │   │   │   │   │   # - File validation
     │       │   │   │   │   │   │   # - Size formatting
-    │       │   │   │   │   │   ├── FileInput.types.ts  # ❌ CREATE - FileInput type definitions
+    │       │   │   │   │   │   ├── FileInput.types.ts  # FileInput type definitions
     │       │   │   │   │   │   │   # - FileInputProps interface
     │       │   │   │   │   │   │   # - SelectedFile interface
-    │       │   │   │   │   │   └── FileInput.web.tsx  # ❌ CREATE - Web file input
+    │       │   │   │   │   │   └── FileInput.web.tsx  # Web file input
     │       │   │   │   │   │       # - Input type="file" with custom styling
     │       │   │   │   │   │       # - Drag and drop support
     │       │   │   │   │   │       # - File preview
     │       │   │   │   │   │       # - Progress indicator
     │       │   │   │   │   │       # Props: accept, multiple, maxSize, onSelect
     │       │   │   │   │   ├── FormError/
-    │       │   │   │   │   │   ├── FormError.native.tsx  # ❌ CREATE - Native form error message
+    │       │   │   │   │   │   ├── FormError.native.tsx  # Native form error message
     │       │   │   │   │   │   │   # - Error Text with icon
     │       │   │   │   │   │   │   # - Animated shake on appear
     │       │   │   │   │   │   │   # - Accessibility: accessibilityRole="alert"
     │       │   │   │   │   │   │   # Props: message, visible
-    │       │   │   │   │   │   ├── FormError.tsx  # ❌ CREATE - Base form error component
+    │       │   │   │   │   │   ├── FormError.tsx  # Base form error component
     │       │   │   │   │   │   │   # - Shared error logic
     │       │   │   │   │   │   │   # - Error message formatting
-    │       │   │   │   │   │   ├── FormError.types.ts  # ❌ CREATE - FormError type definitions
+    │       │   │   │   │   │   ├── FormError.types.ts  # FormError type definitions
     │       │   │   │   │   │   │   # - FormErrorProps interface
-    │       │   │   │   │   │   └── FormError.web.tsx  # ❌ CREATE - Web form error message
+    │       │   │   │   │   │   └── FormError.web.tsx  # Web form error message
     │       │   │   │   │   │       # - Span with error styling
     │       │   │   │   │   │       # - Icon and message
     │       │   │   │   │   │       # - ARIA live region
     │       │   │   │   │   │       # Props: message, visible
     │       │   │   │   │   ├── FormField/
-    │       │   │   │   │   │   ├── FormField.native.tsx  # ❌ CREATE - Native form field wrapper
+    │       │   │   │   │   │   ├── FormField.native.tsx  # Native form field wrapper
     │       │   │   │   │   │   │   # - View container with label, input, error
     │       │   │   │   │   │   │   # - Required indicator
     │       │   │   │   │   │   │   # - Helper text
     │       │   │   │   │   │   │   # - Error state styling
     │       │   │   │   │   │   │   # Props: label, error, helperText, required, children
-    │       │   │   │   │   │   ├── FormField.tsx  # ❌ CREATE - Base form field component
+    │       │   │   │   │   │   ├── FormField.tsx  # Base form field component
     │       │   │   │   │   │   │   # - Shared form field logic
     │       │   │   │   │   │   │   # - Label association
     │       │   │   │   │   │   │   # - Error handling
-    │       │   │   │   │   │   ├── FormField.types.ts  # ❌ CREATE - FormField type definitions
+    │       │   │   │   │   │   ├── FormField.types.ts  # FormField type definitions
     │       │   │   │   │   │   │   # - FormFieldProps interface
-    │       │   │   │   │   │   └── FormField.web.tsx  # ❌ CREATE - Web form field wrapper
+    │       │   │   │   │   │   └── FormField.web.tsx  # Web form field wrapper
     │       │   │   │   │   │       # - Div container with label, input, error
     │       │   │   │   │   │       # - Label with for attribute
     │       │   │   │   │   │       # - ARIA describedby for error/helper
     │       │   │   │   │   │       # Props: label, error, helperText, required, children
     │       │   │   │   │   ├── FormHelper/
-    │       │   │   │   │   │   ├── FormHelper.native.tsx  # ❌ CREATE - Native helper text
+    │       │   │   │   │   │   ├── FormHelper.native.tsx  # Native helper text
     │       │   │   │   │   │   │   # - Text below input
     │       │   │   │   │   │   │   # - Muted color
     │       │   │   │   │   │   │   # Props: text
-    │       │   │   │   │   │   ├── FormHelper.tsx  # ❌ CREATE - Base helper text component
+    │       │   │   │   │   │   ├── FormHelper.tsx  # Base helper text component
     │       │   │   │   │   │   │   # - Shared helper logic
-    │       │   │   │   │   │   ├── FormHelper.types.ts  # ❌ CREATE - FormHelper type definitions
+    │       │   │   │   │   │   ├── FormHelper.types.ts  # FormHelper type definitions
     │       │   │   │   │   │   │   # - FormHelperProps interface
-    │       │   │   │   │   │   └── FormHelper.web.tsx  # ❌ CREATE - Web helper text
+    │       │   │   │   │   │   └── FormHelper.web.tsx  # Web helper text
     │       │   │   │   │   │       # - Small text element
     │       │   │   │   │   │       # - Associated with input via aria-describedby
     │       │   │   │   │   │       # Props: text
     │       │   │   │   │   ├── FormLabel/
-    │       │   │   │   │   │   ├── FormLabel.native.tsx  # ❌ CREATE - Native form label
+    │       │   │   │   │   │   ├── FormLabel.native.tsx  # Native form label
     │       │   │   │   │   │   │   # - Text component
     │       │   │   │   │   │   │   # - Required indicator (*)
     │       │   │   │   │   │   │   # - Associated with input via ID
     │       │   │   │   │   │   │   # Props: text, required, htmlFor
-    │       │   │   │   │   │   ├── FormLabel.tsx  # ❌ CREATE - Base form label component
+    │       │   │   │   │   │   ├── FormLabel.tsx  # Base form label component
     │       │   │   │   │   │   │   # - Shared label logic
-    │       │   │   │   │   │   ├── FormLabel.types.ts  # ❌ CREATE - FormLabel type definitions
+    │       │   │   │   │   │   ├── FormLabel.types.ts  # FormLabel type definitions
     │       │   │   │   │   │   │   # - FormLabelProps interface
-    │       │   │   │   │   │   └── FormLabel.web.tsx  # ❌ CREATE - Web form label
+    │       │   │   │   │   │   └── FormLabel.web.tsx  # Web form label
     │       │   │   │   │   │       # - Label element
     │       │   │   │   │   │       # - For attribute linking to input
     │       │   │   │   │   │       # - Required indicator
     │       │   │   │   │   │       # Props: text, required, htmlFor
     │       │   │   │   │   ├── FormSection/
-    │       │   │   │   │   │   ├── FormSection.native.tsx  # ❌ CREATE - Native form section
+    │       │   │   │   │   │   ├── FormSection.native.tsx  # Native form section
     │       │   │   │   │   │   │   # - View grouping related fields
     │       │   │   │   │   │   │   # - Section title and description
     │       │   │   │   │   │   │   # - Optional divider
     │       │   │   │   │   │   │   # Props: title, description, children
-    │       │   │   │   │   │   ├── FormSection.tsx  # ❌ CREATE - Base form section
+    │       │   │   │   │   │   ├── FormSection.tsx  # Base form section
     │       │   │   │   │   │   │   # - Shared logic
-    │       │   │   │   │   │   ├── FormSection.types.ts  # ❌ CREATE - FormSection types
+    │       │   │   │   │   │   ├── FormSection.types.ts  # FormSection types
     │       │   │   │   │   │   │   # - FormSectionProps interface
-    │       │   │   │   │   │   └── FormSection.web.tsx  # ❌ CREATE - Web form section
+    │       │   │   │   │   │   └── FormSection.web.tsx  # Web form section
     │       │   │   │   │   │       # - Fieldset element
     │       │   │   │   │   │       # - Legend for title
     │       │   │   │   │   │       # Props: title, description, children
     │       │   │   │   │   ├── MultiSelect/
-    │       │   │   │   │   │   ├── MultiSelect.native.tsx  # ❌ CREATE - Native multi-select
+    │       │   │   │   │   │   ├── MultiSelect.native.tsx  # Native multi-select
     │       │   │   │   │   │   │   # - Pressable opening modal list
     │       │   │   │   │   │   │   # - Checkbox for each option
     │       │   │   │   │   │   │   # - Search/filter options
     │       │   │   │   │   │   │   # - Selected count indicator
     │       │   │   │   │   │   │   # Props: options[], value[], onChange, searchable
-    │       │   │   │   │   │   ├── MultiSelect.tsx  # ❌ CREATE - Base multi-select
+    │       │   │   │   │   │   ├── MultiSelect.tsx  # Base multi-select
     │       │   │   │   │   │   │   # - Shared selection logic
-    │       │   │   │   │   │   ├── MultiSelect.types.ts  # ❌ CREATE - MultiSelect types
+    │       │   │   │   │   │   ├── MultiSelect.types.ts  # MultiSelect types
     │       │   │   │   │   │   │   # - MultiSelectOption interface
     │       │   │   │   │   │   │   # - MultiSelectProps interface
-    │       │   │   │   │   │   └── MultiSelect.web.tsx  # ❌ CREATE - Web multi-select
+    │       │   │   │   │   │   └── MultiSelect.web.tsx  # Web multi-select
     │       │   │   │   │   │       # - Custom dropdown with checkboxes
     │       │   │   │   │   │       # - Search input
     │       │   │   │   │   │       # - Select all/none
@@ -35286,207 +35369,207 @@ fe/
     │       │   │   │   │   │       # - ARIA multiselectable
     │       │   │   │   │   │       # Props: options[], value[], onChange, searchable
     │       │   │   │   │   ├── PasswordInput/
-    │       │   │   │   │   │   ├── PasswordInput.native.tsx  # ❌ CREATE - Native password input
+    │       │   │   │   │   │   ├── PasswordInput.native.tsx  # Native password input
     │       │   │   │   │   │   │   # - TextInput with secureTextEntry
     │       │   │   │   │   │   │   # - Toggle visibility button
     │       │   │   │   │   │   │   # - Password strength indicator
     │       │   │   │   │   │   │   # Props: value, onChange, showStrength, requirements
-    │       │   │   │   │   │   ├── PasswordInput.tsx  # ❌ CREATE - Base password input
+    │       │   │   │   │   │   ├── PasswordInput.tsx  # Base password input
     │       │   │   │   │   │   │   # - Shared password logic
     │       │   │   │   │   │   │   # - Strength calculation
-    │       │   │   │   │   │   ├── PasswordInput.types.ts  # ❌ CREATE - PasswordInput types
+    │       │   │   │   │   │   ├── PasswordInput.types.ts  # PasswordInput types
     │       │   │   │   │   │   │   # - PasswordStrength type
     │       │   │   │   │   │   │   # - PasswordRequirement interface
     │       │   │   │   │   │   │   # - PasswordInputProps interface
-    │       │   │   │   │   │   └── PasswordInput.web.tsx  # ❌ CREATE - Web password input
+    │       │   │   │   │   │   └── PasswordInput.web.tsx  # Web password input
     │       │   │   │   │   │       # - Input type="password"
     │       │   │   │   │   │       # - Eye icon to toggle visibility
     │       │   │   │   │   │       # - Strength meter
     │       │   │   │   │   │       # Props: value, onChange, showStrength, requirements
     │       │   │   │   │   ├── SearchInput/
-    │       │   │   │   │   │   ├── SearchInput.native.tsx  # ❌ CREATE - Native search input
+    │       │   │   │   │   │   ├── SearchInput.native.tsx  # Native search input
     │       │   │   │   │   │   │   # - TextInput with search icon
     │       │   │   │   │   │   │   # - Clear button
     │       │   │   │   │   │   │   # - Debounced onChange
     │       │   │   │   │   │   │   # - Accessibility: returnKeyType="search"
     │       │   │   │   │   │   │   # Props: value, onChange, placeholder, debounceMs
-    │       │   │   │   │   │   ├── SearchInput.tsx  # ❌ CREATE - Base search input component
+    │       │   │   │   │   │   ├── SearchInput.tsx  # Base search input component
     │       │   │   │   │   │   │   # - Shared search logic
     │       │   │   │   │   │   │   # - Debounce implementation
-    │       │   │   │   │   │   ├── SearchInput.types.ts  # ❌ CREATE - SearchInput type definitions
+    │       │   │   │   │   │   ├── SearchInput.types.ts  # SearchInput type definitions
     │       │   │   │   │   │   │   # - SearchInputProps interface
-    │       │   │   │   │   │   └── SearchInput.web.tsx  # ❌ CREATE - Web search input
+    │       │   │   │   │   │   └── SearchInput.web.tsx  # Web search input
     │       │   │   │   │   │       # - Input type="search"
     │       │   │   │   │   │       # - Search icon
     │       │   │   │   │   │       # - Clear button
     │       │   │   │   │   │       # - Keyboard shortcuts (Cmd+K)
     │       │   │   │   │   │       # Props: value, onChange, placeholder, debounceMs
     │       │   │   │   │   ├── Select/
-    │       │   │   │   │   │   ├── Select.native.tsx  # ❌ CREATE - Native select (Picker)
+    │       │   │   │   │   │   ├── Select.native.tsx  # Native select (Picker)
     │       │   │   │   │   │   │   # - React Native Picker
     │       │   │   │   │   │   │   # - Modal presentation on iOS
     │       │   │   │   │   │   │   # - Inline on Android
     │       │   │   │   │   │   │   # - Accessibility: accessibilityRole="combobox"
     │       │   │   │   │   │   │   # Props: options, value, onChange, placeholder, label
-    │       │   │   │   │   │   ├── Select.tsx  # ❌ CREATE - Base select component
+    │       │   │   │   │   │   ├── Select.tsx  # Base select component
     │       │   │   │   │   │   │   # - Shared select logic
     │       │   │   │   │   │   │   # - Option filtering
-    │       │   │   │   │   │   ├── Select.types.ts  # ❌ CREATE - Select type definitions
+    │       │   │   │   │   │   ├── Select.types.ts  # Select type definitions
     │       │   │   │   │   │   │   # - SelectOption interface
     │       │   │   │   │   │   │   # - SelectProps interface
-    │       │   │   │   │   │   └── Select.web.tsx  # ❌ CREATE - Web select dropdown
+    │       │   │   │   │   │   └── Select.web.tsx  # Web select dropdown
     │       │   │   │   │   │       # - Custom dropdown (not native select)
     │       │   │   │   │   │       # - Searchable options
     │       │   │   │   │   │       # - Keyboard navigation
     │       │   │   │   │   │       # - ARIA combobox pattern
     │       │   │   │   │   │       # Props: options, value, onChange, placeholder, searchable
     │       │   │   │   │   ├── Slider/
-    │       │   │   │   │   │   ├── Slider.native.tsx  # ❌ CREATE - Native slider
+    │       │   │   │   │   │   ├── Slider.native.tsx  # Native slider
     │       │   │   │   │   │   │   # - React Native Slider
     │       │   │   │   │   │   │   # - Thumb customization
     │       │   │   │   │   │   │   # - Value label
     │       │   │   │   │   │   │   # - Haptic feedback on value change
     │       │   │   │   │   │   │   # Props: value, min, max, step, onChange, label
-    │       │   │   │   │   │   ├── Slider.tsx  # ❌ CREATE - Base slider component
+    │       │   │   │   │   │   ├── Slider.tsx  # Base slider component
     │       │   │   │   │   │   │   # - Shared slider logic
     │       │   │   │   │   │   │   # - Value formatting
-    │       │   │   │   │   │   ├── Slider.types.ts  # ❌ CREATE - Slider type definitions
+    │       │   │   │   │   │   ├── Slider.types.ts  # Slider type definitions
     │       │   │   │   │   │   │   # - SliderProps interface
-    │       │   │   │   │   │   └── Slider.web.tsx  # ❌ CREATE - Web slider
+    │       │   │   │   │   │   └── Slider.web.tsx  # Web slider
     │       │   │   │   │   │       # - Input type="range"
     │       │   │   │   │   │       # - Custom thumb styling
     │       │   │   │   │   │       # - Value tooltip
     │       │   │   │   │   │       # - Keyboard navigation
     │       │   │   │   │   │       # Props: value, min, max, step, onChange, label
     │       │   │   │   │   ├── TagInput/
-    │       │   │   │   │   │   ├── TagInput.native.tsx  # ❌ CREATE - Native tag input
+    │       │   │   │   │   │   ├── TagInput.native.tsx  # Native tag input
     │       │   │   │   │   │   │   # - TextInput with tag chips
     │       │   │   │   │   │   │   # - Add tag on Enter/comma
     │       │   │   │   │   │   │   # - Remove tag with backspace/X
     │       │   │   │   │   │   │   # - Autocomplete suggestions
     │       │   │   │   │   │   │   # Props: tags[], onChange, suggestions[], maxTags
-    │       │   │   │   │   │   ├── TagInput.tsx  # ❌ CREATE - Base tag input
+    │       │   │   │   │   │   ├── TagInput.tsx  # Base tag input
     │       │   │   │   │   │   │   # - Shared tag input logic
     │       │   │   │   │   │   │   # - Tag validation
-    │       │   │   │   │   │   ├── TagInput.types.ts  # ❌ CREATE - TagInput types
+    │       │   │   │   │   │   ├── TagInput.types.ts  # TagInput types
     │       │   │   │   │   │   │   # - Tag interface
     │       │   │   │   │   │   │   # - TagInputProps interface
-    │       │   │   │   │   │   └── TagInput.web.tsx  # ❌ CREATE - Web tag input
+    │       │   │   │   │   │   └── TagInput.web.tsx  # Web tag input
     │       │   │   │   │   │       # - Input with tag chips
     │       │   │   │   │   │       # - Autocomplete dropdown
     │       │   │   │   │   │       # Props: tags[], onChange, suggestions[], maxTags
     │       │   │   │   │   ├── Textarea/
-    │       │   │   │   │   │   ├── Textarea.native.tsx  # ❌ CREATE - Native textarea
+    │       │   │   │   │   │   ├── Textarea.native.tsx  # Native textarea
     │       │   │   │   │   │   │   # - TextInput with multiline
     │       │   │   │   │   │   │   # - Auto-grow height
     │       │   │   │   │   │   │   # - Character counter
     │       │   │   │   │   │   │   # - Accessibility: multiline prop
     │       │   │   │   │   │   │   # Props: value, onChange, placeholder, maxLength, rows
-    │       │   │   │   │   │   ├── Textarea.tsx  # ❌ CREATE - Base textarea component
+    │       │   │   │   │   │   ├── Textarea.tsx  # Base textarea component
     │       │   │   │   │   │   │   # - Shared textarea logic
     │       │   │   │   │   │   │   # - Character counting
-    │       │   │   │   │   │   ├── Textarea.types.ts  # ❌ CREATE - Textarea type definitions
+    │       │   │   │   │   │   ├── Textarea.types.ts  # Textarea type definitions
     │       │   │   │   │   │   │   # - TextareaProps interface
-    │       │   │   │   │   │   └── Textarea.web.tsx  # ❌ CREATE - Web textarea
+    │       │   │   │   │   │   └── Textarea.web.tsx  # Web textarea
     │       │   │   │   │   │       # - Textarea element
     │       │   │   │   │   │       # - Auto-resize
     │       │   │   │   │   │       # - Character counter
     │       │   │   │   │   │       # Props: value, onChange, placeholder, maxLength, rows
     │       │   │   │   │   └── TimePicker/
-    │       │   │   │   │       ├── TimePicker.native.tsx  # ❌ CREATE - Native time picker
+    │       │   │   │   │       ├── TimePicker.native.tsx  # Native time picker
     │       │   │   │   │       │   # - React Native DateTimePicker in time mode
     │       │   │   │   │       │   # - 12/24 hour format
     │       │   │   │   │       │   # - Modal presentation
     │       │   │   │   │       │   # Props: value, onChange, format, label
-    │       │   │   │   │       ├── TimePicker.tsx  # ❌ CREATE - Base time picker component
+    │       │   │   │   │       ├── TimePicker.tsx  # Base time picker component
     │       │   │   │   │       │   # - Shared time picker logic
     │       │   │   │   │       │   # - Time formatting
-    │       │   │   │   │       ├── TimePicker.types.ts  # ❌ CREATE - TimePicker type definitions
+    │       │   │   │   │       ├── TimePicker.types.ts  # TimePicker type definitions
     │       │   │   │   │       │   # - TimeFormat type
     │       │   │   │   │       │   # - TimePickerProps interface
-    │       │   │   │   │       └── TimePicker.web.tsx  # ❌ CREATE - Web time picker
+    │       │   │   │   │       └── TimePicker.web.tsx  # Web time picker
     │       │   │   │   │           # - Input type="time"
     │       │   │   │   │           # - Custom time picker UI
     │       │   │   │   │           # - 12/24 hour toggle
     │       │   │   │   │           # Props: value, onChange, format, label
     │       │   │   │   ├── Layout/
     │       │   │   │   │   ├── Card/
-    │       │   │   │   │   │   ├── Card.native.tsx  # ❌ CREATE - Native card component
+    │       │   │   │   │   │   ├── Card.native.tsx  # Native card component
     │       │   │   │   │   │   │   # - View with shadow and border radius
     │       │   │   │   │   │   │   # - Pressable for interactive cards
     │       │   │   │   │   │   │   # - Elevation variants
     │       │   │   │   │   │   │   # Props: children, variant, onPress, header, footer
-    │       │   │   │   │   │   ├── Card.tsx  # ❌ CREATE - Base card component
+    │       │   │   │   │   │   ├── Card.tsx  # Base card component
     │       │   │   │   │   │   │   # - Shared card logic
     │       │   │   │   │   │   │   # - Variant types: elevated, outlined, filled
-    │       │   │   │   │   │   ├── Card.types.ts  # ❌ CREATE - Card type definitions
+    │       │   │   │   │   │   ├── Card.types.ts  # Card type definitions
     │       │   │   │   │   │   │   # - CardVariant type
     │       │   │   │   │   │   │   # - CardProps interface
-    │       │   │   │   │   │   └── Card.web.tsx  # ❌ CREATE - Web card component
+    │       │   │   │   │   │   └── Card.web.tsx  # Web card component
     │       │   │   │   │   │       # - Div with box shadow
     │       │   │   │   │   │       # - Hover effects
     │       │   │   │   │   │       # Props: children, variant, onClick, header, footer
     │       │   │   │   │   ├── Container/
-    │       │   │   │   │   │   ├── Container.native.tsx  # ❌ CREATE - Native container
+    │       │   │   │   │   │   ├── Container.native.tsx  # Native container
     │       │   │   │   │   │   │   # - View with max width and padding
     │       │   │   │   │   │   │   # - Centered content
     │       │   │   │   │   │   │   # Props: maxWidth, padding, children
-    │       │   │   │   │   │   ├── Container.tsx  # ❌ CREATE - Base container component
+    │       │   │   │   │   │   ├── Container.tsx  # Base container component
     │       │   │   │   │   │   │   # - Shared container logic
     │       │   │   │   │   │   │   # - Responsive max widths
-    │       │   │   │   │   │   ├── Container.types.ts  # ❌ CREATE - Container type definitions
+    │       │   │   │   │   │   ├── Container.types.ts  # Container type definitions
     │       │   │   │   │   │   │   # - ContainerSize type
     │       │   │   │   │   │   │   # - ContainerProps interface
-    │       │   │   │   │   │   └── Container.web.tsx  # ❌ CREATE - Web container
+    │       │   │   │   │   │   └── Container.web.tsx  # Web container
     │       │   │   │   │   │       # - Div with max-width and margin auto
     │       │   │   │   │   │       # - Responsive breakpoints
     │       │   │   │   │   │       # Props: maxWidth, padding, children
     │       │   │   │   │   ├── Grid/
-    │       │   │   │   │   │   ├── Grid.native.tsx  # ❌ CREATE - Native grid layout
+    │       │   │   │   │   │   ├── Grid.native.tsx  # Native grid layout
     │       │   │   │   │   │   │   # - View with flexWrap
     │       │   │   │   │   │   │   # - Configurable columns and gap
     │       │   │   │   │   │   │   # - Responsive columns
     │       │   │   │   │   │   │   # Props: columns, gap, children
-    │       │   │   │   │   │   ├── Grid.tsx  # ❌ CREATE - Base grid component
+    │       │   │   │   │   │   ├── Grid.tsx  # Base grid component
     │       │   │   │   │   │   │   # - Shared grid logic
     │       │   │   │   │   │   │   # - Column calculation
-    │       │   │   │   │   │   ├── Grid.types.ts  # ❌ CREATE - Grid type definitions
+    │       │   │   │   │   │   ├── Grid.types.ts  # Grid type definitions
     │       │   │   │   │   │   │   # - GridColumns type
     │       │   │   │   │   │   │   # - GridProps interface
-    │       │   │   │   │   │   └── Grid.web.tsx  # ❌ CREATE - Web grid layout
+    │       │   │   │   │   │   └── Grid.web.tsx  # Web grid layout
     │       │   │   │   │   │       # - CSS Grid
     │       │   │   │   │   │       # - Responsive columns
     │       │   │   │   │   │       # Props: columns, gap, children
     │       │   │   │   │   ├── Spacer/
-    │       │   │   │   │   │   ├── Spacer.native.tsx  # ❌ CREATE - Native spacer
+    │       │   │   │   │   │   ├── Spacer.native.tsx  # Native spacer
     │       │   │   │   │   │   │   # - Empty View with height/width
     │       │   │   │   │   │   │   # - Vertical/horizontal spacing
     │       │   │   │   │   │   │   # Props: size, direction
-    │       │   │   │   │   │   ├── Spacer.tsx  # ❌ CREATE - Base spacer component
+    │       │   │   │   │   │   ├── Spacer.tsx  # Base spacer component
     │       │   │   │   │   │   │   # - Shared spacer logic
     │       │   │   │   │   │   │   # - Size tokens
-    │       │   │   │   │   │   ├── Spacer.types.ts  # ❌ CREATE - Spacer type definitions
+    │       │   │   │   │   │   ├── Spacer.types.ts  # Spacer type definitions
     │       │   │   │   │   │   │   # - SpacerSize type
     │       │   │   │   │   │   │   # - SpacerDirection type
     │       │   │   │   │   │   │   # - SpacerProps interface
-    │       │   │   │   │   │   └── Spacer.web.tsx  # ❌ CREATE - Web spacer
+    │       │   │   │   │   │   └── Spacer.web.tsx  # Web spacer
     │       │   │   │   │   │       # - Div with height/width
     │       │   │   │   │   │       # Props: size, direction
     │       │   │   │   │   └── Stack/
-    │       │   │   │   │       ├── Stack.native.tsx  # ❌ CREATE - Native stack layout
+    │       │   │   │   │       ├── Stack.native.tsx  # Native stack layout
     │       │   │   │   │       │   # - View with flex direction
     │       │   │   │   │       │   # - Configurable gap and alignment
     │       │   │   │   │       │   # - Horizontal/vertical stacking
     │       │   │   │   │       │   # Props: direction, gap, align, justify, children
-    │       │   │   │   │       ├── Stack.tsx  # ❌ CREATE - Base stack component
+    │       │   │   │   │       ├── Stack.tsx  # Base stack component
     │       │   │   │   │       │   # - Shared stack logic
     │       │   │   │   │       │   # - Alignment utilities
-    │       │   │   │   │       ├── Stack.types.ts  # ❌ CREATE - Stack type definitions
+    │       │   │   │   │       ├── Stack.types.ts  # Stack type definitions
     │       │   │   │   │       │   # - StackDirection type
     │       │   │   │   │       │   # - StackAlign type
     │       │   │   │   │       │   # - StackJustify type
     │       │   │   │   │       │   # - StackProps interface
-    │       │   │   │   │       └── Stack.web.tsx  # ❌ CREATE - Web stack layout
+    │       │   │   │   │       └── Stack.web.tsx  # Web stack layout
     │       │   │   │   │           # - Flexbox container
     │       │   │   │   │           # - Gap using CSS gap property
     │       │   │   │   │           # Props: direction, gap, align, justify, children
@@ -35542,21 +35625,21 @@ fe/
     │       │   │   │   │   │   │   # - Touch target minimum 44x44 pts
     │       │   │   │   │   │   │   # - Accessibility: expandable, expanded states
     │       │   │   │   │   │   │   # Props: items[], expandMultiple, animated
-    │       │   │   │   │   │   │   # ❌ CREATE - Native accordion
+    │       │   │   │   │   │   │   # Native accordion
     │       │   │   │   │   │   │   # - Collapsible sections
     │       │   │   │   │   │   │   # - Animated expand/collapse
     │       │   │   │   │   │   │   # - Single or multiple open
     │       │   │   │   │   │   │   # Props: items, allowMultiple, defaultOpen
     │       │   │   │   │   │   ├── Accordion.tsx  # - Base component
-    │       │   │   │   │   │   │   # ❌ CREATE - Base accordion
+    │       │   │   │   │   │   │   # Base accordion
     │       │   │   │   │   │   │   # - Shared accordion logic
     │       │   │   │   │   │   │   # - State management
     │       │   │   │   │   │   ├── Accordion.types.ts  # - Shared types
-    │       │   │   │   │   │   │   # ❌ CREATE - Accordion types
+    │       │   │   │   │   │   │   # Accordion types
     │       │   │   │   │   │   │   # - AccordionItem interface
     │       │   │   │   │   │   │   # - AccordionProps interface
     │       │   │   │   │   │   └── Accordion.web.tsx  # - Web implementation
-    │       │   │   │   │   │       # ❌ CREATE - Web accordion
+    │       │   │   │   │   │       # Web accordion
     │       │   │   │   │   │       # - Collapsible sections
     │       │   │   │   │   │       # - CSS transitions
     │       │   │   │   │   │       # Props: items, allowMultiple, defaultOpen
@@ -35657,38 +35740,42 @@ fe/
     │       │   │   │   │   │   │   # - onNavigate: (item) => void
     │       │   │   │   │   │   │   # - currentPath: string
     │       │   │   │   │   │   │   # Tests: navigation + overflow handling + accessibility
-    │       │   │   │   │   │   │   # ❌ CREATE - Native breadcrumb navigation
+    │       │   │   │   │   │   │   # Native breadcrumb navigation
     │       │   │   │   │   │   │   # - Horizontal ScrollView with breadcrumb items
     │       │   │   │   │   │   │   # - Chevron separators
     │       │   │   │   │   │   │   # - Auto-collapse: show last 2 items + ellipsis
     │       │   │   │   │   │   │   # - Accessibility: navigation landmark, button roles
-    │       │   │   │   │   │   │   # ❌ CREATE - Native breadcrumb
+    │       │   │   │   │   │   │   # Native breadcrumb
     │       │   │   │   │   │   │   # - Horizontal scroll view with crumbs
     │       │   │   │   │   │   │   # - Separator (/ or >)
     │       │   │   │   │   │   │   # - Pressable crumbs
     │       │   │   │   │   │   │   # Props: items, separator, onItemPress
     │       │   │   │   │   │   ├── Breadcrumb.tsx  # - Base component
-    │       │   │   │   │   │   │   # ❌ CREATE - Base breadcrumb component
+    │       │   │   │   │   │   │   # Base breadcrumb component
     │       │   │   │   │   │   │   # - Shared breadcrumb logic
     │       │   │   │   │   │   │   # - Path management
     │       │   │   │   │   │   │   # - Collapse logic for many items
-    │       │   │   │   │   │   │   # ❌ CREATE - Base breadcrumb
+    │       │   │   │   │   │   │   # Base breadcrumb
+    │       │   │   │   │   │   │   # ❌ CREATE Base breadcrumb logic, route navigation
     │       │   │   │   │   │   ├── Breadcrumb.types.ts  # - Shared types
-    │       │   │   │   │   │   │   # ❌ CREATE - Breadcrumb type definitions
+    │       │   │   │   │   │   │   # Breadcrumb type definitions
     │       │   │   │   │   │   │   # - BreadcrumbItem interface
     │       │   │   │   │   │   │   # - BreadcrumbProps interface
-    │       │   │   │   │   │   │   # ❌ CREATE - Breadcrumb types
-    │       │   │   │   │   │   └── Breadcrumb.web.tsx  # - Web implementation
-    │       │   │   │   │   │       # ❌ CREATE - Web breadcrumb navigation
-    │       │   │   │   │   │       # - Nav element with ol/li structure
-    │       │   │   │   │   │       # - Chevron separators
-    │       │   │   │   │   │       # - ARIA attributes (navigation, current)
-    │       │   │   │   │   │       # - Schema.org BreadcrumbList microdata
-    │       │   │   │   │   │       # Props: items[], separator, onNavigate
-    │       │   │   │   │   │       # ❌ CREATE - Web breadcrumb
-    │       │   │   │   │   │       # - Nav element with links
-    │       │   │   │   │   │       # - ARIA breadcrumb navigation
-    │       │   │   │   │   │       # Props: items, separator, onItemPress
+    │       │   │   │   │   │   │   # Breadcrumb types
+    │       │   │   │   │   │   │   # ❌ CREATE BreadcrumbItem interface, BreadcrumbProps with items[]/separator
+    │       │   │   │   │   │   ├── Breadcrumb.web.tsx  # - Web implementation
+    │       │   │   │   │   │   │   # Web breadcrumb navigation
+    │       │   │   │   │   │   │   # - Nav element with ol/li structure
+    │       │   │   │   │   │   │   # - Chevron separators
+    │       │   │   │   │   │   │   # - ARIA attributes (navigation, current)
+    │       │   │   │   │   │   │   # - Schema.org BreadcrumbList microdata
+    │       │   │   │   │   │   │   # Props: items[], separator, onNavigate
+    │       │   │   │   │   │   │   # Web breadcrumb
+    │       │   │   │   │   │   │   # - Nav element with links
+    │       │   │   │   │   │   │   # - ARIA breadcrumb navigation
+    │       │   │   │   │   │   │   # Props: items, separator, onItemPress
+    │       │   │   │   │   │   │   # ❌ CREATE Web breadcrumb with nav > ol > li semantic, ARIA current page
+    │       │   │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   │   ├── Drawer/
     │       │   │   │   │   │   ├── Drawer.native.tsx  # React Native bottom sheet drawer component
     │       │   │   │   │   │   │   # FEATURES:
@@ -35777,107 +35864,130 @@ fe/
     │       │   │   │   │   │   │   # - react-native-gesture-handler
     │       │   │   │   │   │   │   # - react-native-safe-area-context
     │       │   │   │   │   │   │   # Tests: gestures + animations + accessibility
-    │       │   │   │   │   │   │   # ❌ CREATE - Native drawer (side sheet)
+    │       │   │   │   │   │   │   # Native drawer (side sheet)
     │       │   │   │   │   │   │   # - Animated slide-in from side
     │       │   │   │   │   │   │   # - Overlay backdrop
     │       │   │   │   │   │   │   # - Swipe to close
     │       │   │   │   │   │   │   # Props: open, onClose, position, children
     │       │   │   │   │   │   ├── Drawer.tsx  # - Base component
-    │       │   │   │   │   │   │   # ❌ CREATE - Base drawer
+    │       │   │   │   │   │   │   # Base drawer
     │       │   │   │   │   │   │   # - Shared drawer logic
     │       │   │   │   │   │   ├── Drawer.types.ts  # - Shared types
-    │       │   │   │   │   │   │   # ❌ CREATE - Drawer types
+    │       │   │   │   │   │   │   # Drawer types
     │       │   │   │   │   │   │   # - DrawerPosition type
     │       │   │   │   │   │   │   # - DrawerProps interface
     │       │   │   │   │   │   └── Drawer.web.tsx  # - Web implementation
-    │       │   │   │   │   │       # ❌ CREATE - Web drawer
+    │       │   │   │   │   │       # Web drawer
     │       │   │   │   │   │       # - Fixed sidebar with overlay
     │       │   │   │   │   │       # - CSS transitions
     │       │   │   │   │   │       # Props: open, onClose, position, children
     │       │   │   │   │   ├── Pagination/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── Pagination.native.tsx  # ❌ CREATE - Native pagination
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   ├── Pagination.native.tsx  # Native pagination
     │       │   │   │   │   │   │   # - Page numbers with prev/next
     │       │   │   │   │   │   │   # - Compact mobile view
     │       │   │   │   │   │   │   # Props: currentPage, totalPages, onPageChange
-    │       │   │   │   │   │   ├── Pagination.tsx  # ❌ CREATE - Base pagination
+    │       │   │   │   │   │   ├── Pagination.tsx  # Base pagination
     │       │   │   │   │   │   │   # - Shared pagination logic
     │       │   │   │   │   │   │   # - Page calculation
-    │       │   │   │   │   │   ├── Pagination.types.ts  # ❌ CREATE - Pagination types
+    │       │   │   │   │   │   ├── Pagination.types.ts  # Pagination types
     │       │   │   │   │   │   │   # - PaginationProps interface
-    │       │   │   │   │   │   └── Pagination.web.tsx  # ❌ CREATE - Web pagination
+    │       │   │   │   │   │   └── Pagination.web.tsx  # Web pagination
     │       │   │   │   │   │       # - Page numbers with prev/next
     │       │   │   │   │   │       # - Ellipsis for large page counts
     │       │   │   │   │   │       # Props: currentPage, totalPages, onPageChange
     │       │   │   │   │   ├── Sidebar/
-    │       │   │   │   │   │   ├── Sidebar.native.tsx  # ❌ CREATE - Native sidebar (drawer)
+    │       │   │   │   │   │   ├── Sidebar.native.tsx  # Native sidebar (drawer)
     │       │   │   │   │   │   │   # - Sliding drawer from left/right
     │       │   │   │   │   │   │   # - Overlay when open
     │       │   │   │   │   │   │   # - Gesture to close
     │       │   │   │   │   │   │   # - Navigation items
     │       │   │   │   │   │   │   # Props: open, onClose, position, items[]
-    │       │   │   │   │   │   ├── Sidebar.tsx  # ❌ CREATE - Base sidebar
+    │       │   │   │   │   │   ├── Sidebar.tsx  # Base sidebar
     │       │   │   │   │   │   │   # - Shared sidebar logic
-    │       │   │   │   │   │   ├── Sidebar.types.ts  # ❌ CREATE - Sidebar types
+    │       │   │   │   │   │   ├── Sidebar.types.ts  # Sidebar types
     │       │   │   │   │   │   │   # - SidebarPosition type
     │       │   │   │   │   │   │   # - SidebarItem interface
     │       │   │   │   │   │   │   # - SidebarProps interface
-    │       │   │   │   │   │   └── Sidebar.web.tsx  # ❌ CREATE - Web sidebar
+    │       │   │   │   │   │   └── Sidebar.web.tsx  # Web sidebar
     │       │   │   │   │   │       # - Fixed/sticky sidebar
     │       │   │   │   │   │       # - Collapsible on mobile
     │       │   │   │   │   │       # Props: open, onClose, position, items[]
     │       │   │   │   │   ├── Stepper/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   │   ├── Stepper.native.tsx  # ❌ CREATE - Native stepper (wizard)
+    │       │   │   │   │   │   ├── components/
+    │       │   │   │   │   │   │   ├── Step/
+    │       │   │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   │   ├── Step.native.tsx  # ❌ CREATE Native step item with number, label, status icon
+    │       │   │   │   │   │   │   │   ├── Step.tsx  # ❌ CREATE Base step logic
+    │       │   │   │   │   │   │   │   ├── Step.types.ts  # ❌ CREATE StepStatus enum, StepProps interface
+    │       │   │   │   │   │   │   │   └── Step.web.tsx  # ❌ CREATE Web step with semantic li, ARIA current step
+    │       │   │   │   │   │   │   └── StepConnector/
+    │       │   │   │   │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │       ├── StepConnector.native.tsx  # ❌ CREATE Native connector line between steps
+    │       │   │   │   │   │   │       ├── StepConnector.tsx  # ❌ CREATE Base connector logic
+    │       │   │   │   │   │   │       └── StepConnector.web.tsx  # ❌ CREATE Web connector with CSS line
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   │   │   # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── Stepper.native.tsx  # Native stepper (wizard)
     │       │   │   │   │   │   │   # - Vertical/horizontal step indicator
     │       │   │   │   │   │   │   # - Step labels and status icons
     │       │   │   │   │   │   │   # - Progress line between steps
     │       │   │   │   │   │   │   # - Tap to navigate (if enabled)
     │       │   │   │   │   │   │   # - Accessibility: proper step labeling
     │       │   │   │   │   │   │   # Props: steps[], currentStep, orientation, onStepPress
-    │       │   │   │   │   │   │   # ❌ CREATE - Native stepper/wizard
+    │       │   │   │   │   │   │   # Native stepper/wizard
     │       │   │   │   │   │   │   # - Step indicators
     │       │   │   │   │   │   │   # - Current, completed, upcoming states
     │       │   │   │   │   │   │   # - Vertical or horizontal
     │       │   │   │   │   │   │   # Props: steps, currentStep, orientation
-    │       │   │   │   │   │   ├── Stepper.tsx  # ❌ CREATE - Base stepper component
+    │       │   │   │   │   │   │   # ❌ CREATE Native stepper horizontal/vertical, current step highlight
+    │       │   │   │   │   │   ├── Stepper.tsx  # Base stepper component
     │       │   │   │   │   │   │   # - Shared stepper logic
     │       │   │   │   │   │   │   # - Step validation
     │       │   │   │   │   │   │   # - Navigation controls
-    │       │   │   │   │   │   │   # ❌ CREATE - Base stepper
-    │       │   │   │   │   │   ├── Stepper.types.ts  # ❌ CREATE - Stepper type definitions
+    │       │   │   │   │   │   │   # Base stepper
+    │       │   │   │   │   │   │   # ❌ CREATE Base stepper logic, step navigation, validation
+    │       │   │   │   │   │   ├── Stepper.types.ts  # Stepper type definitions
     │       │   │   │   │   │   │   # - Step interface
     │       │   │   │   │   │   │   # - StepStatus type
     │       │   │   │   │   │   │   # - StepperOrientation type
     │       │   │   │   │   │   │   # - StepperProps interface
-    │       │   │   │   │   │   │   # ❌ CREATE - Stepper types
-    │       │   │   │   │   │   └── Stepper.web.tsx  # ❌ CREATE - Web stepper component
+    │       │   │   │   │   │   │   # Stepper types
+    │       │   │   │   │   │   │   # ❌ CREATE StepperProps with steps[]/activeStep/orientation/onStepChange
+    │       │   │   │   │   │   └── Stepper.web.tsx  # Web stepper component
     │       │   │   │   │   │       # - Horizontal/vertical layout
     │       │   │   │   │   │       # - SVG progress line
     │       │   │   │   │   │       # - Clickable steps
     │       │   │   │   │   │       # - ARIA attributes (progressbar, step)
     │       │   │   │   │   │       # Props: steps[], currentStep, orientation, onStepPress
-    │       │   │   │   │   │       # ❌ CREATE - Web stepper
+    │       │   │   │   │   │       # Web stepper
     │       │   │   │   │   │       # - Step indicators with connector lines
     │       │   │   │   │   │       # Props: steps, currentStep, orientation
+    │       │   │   │   │   │       # ❌ CREATE Web stepper with ol semantic, clickable steps if completed
+    │       │   │   │   │   ├── TabBar/
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── TabBar.native.tsx  # ❌ CREATE Native tab bar horizontal scroll, active indicator, badge support
+    │       │   │   │   │   │   ├── TabBar.tsx  # ❌ CREATE Base tab bar logic, tab switching, keyboard navigation
+    │       │   │   │   │   │   ├── TabBar.types.ts  # ❌ CREATE TabItem interface, TabBarProps with tabs[]/activeTab/onChange
+    │       │   │   │   │   │   └── TabBar.web.tsx  # ❌ CREATE Web tab bar with ARIA tabs pattern, role tablist/tab/tabpanel
     │       │   │   │   │   ├── TabPanel/
-    │       │   │   │   │   │   ├── TabPanel.native.tsx  # ❌ CREATE - Native tab panel
+    │       │   │   │   │   │   ├── TabPanel.native.tsx  # Native tab panel
     │       │   │   │   │   │   │   # - View that shows/hides based on active tab
     │       │   │   │   │   │   │   # - Lazy loading support
     │       │   │   │   │   │   │   # - Accessibility: accessibilityRole="tabpanel"
     │       │   │   │   │   │   │   # Props: value, index, children, keepMounted
-    │       │   │   │   │   │   ├── TabPanel.tsx  # ❌ CREATE - Base tab panel component
+    │       │   │   │   │   │   ├── TabPanel.tsx  # Base tab panel component
     │       │   │   │   │   │   │   # - Shared tab panel logic
     │       │   │   │   │   │   │   # - Visibility control
-    │       │   │   │   │   │   ├── TabPanel.types.ts  # ❌ CREATE - TabPanel type definitions
+    │       │   │   │   │   │   ├── TabPanel.types.ts  # TabPanel type definitions
     │       │   │   │   │   │   │   # - TabPanelProps interface
-    │       │   │   │   │   │   └── TabPanel.web.tsx  # ❌ CREATE - Web tab panel
+    │       │   │   │   │   │   └── TabPanel.web.tsx  # Web tab panel
     │       │   │   │   │   │       # - Div with role="tabpanel"
     │       │   │   │   │   │       # - Hidden attribute when inactive
     │       │   │   │   │   │       # - ARIA attributes (labelledby, hidden)
     │       │   │   │   │   │       # Props: value, index, children, keepMounted
     │       │   │   │   │   ├── Tabs/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
     │       │   │   │   │   │   ├── Tabs.native.tsx  # 🔧 ENHANCE - Mobile tabs
     │       │   │   │   │   │   │   # Enhancements
     │       │   │   │   │   │   │   # - Verify swipe gestures + lazy mounting
@@ -35893,69 +36003,75 @@ fe/
     │       │   │   │   │   │   │   # - Accessibility support
     │       │   │   │   │   │   │   # - Badge support for counts
     │       │   │   │   │   │   │   # BE: None (UI only)
-    │       │   │   │   │   │   │   # ❌ CREATE - Native tabs (if missing)
+    │       │   │   │   │   │   │   # Native tabs (if missing)
     │       │   │   │   │   │   │   # - Pressable tabs with indicator
     │       │   │   │   │   │   │   # - Scrollable tab bar for many tabs
     │       │   │   │   │   │   │   # - Content switching
     │       │   │   │   │   │   │   # Props: tabs, activeTab, onChange
-    │       │   │   │   │   │   ├── Tabs.tsx  # ❌ CREATE - Base tabs component
+    │       │   │   │   │   │   ├── Tabs.tsx  # Base tabs component
     │       │   │   │   │   │   │   # - Shared tabs logic
-    │       │   │   │   │   │   ├── Tabs.types.ts  # ❌ CREATE - Tabs types
+    │       │   │   │   │   │   ├── Tabs.types.ts  # Tabs types
     │       │   │   │   │   │   │   # - Tab interface
     │       │   │   │   │   │   │   # - TabsProps interface
-    │       │   │   │   │   │   └── Tabs.web.tsx  # ❌ CREATE - Web tabs (if missing)
+    │       │   │   │   │   │   └── Tabs.web.tsx  # Web tabs (if missing)
     │       │   │   │   │   │       # - Button tabs with indicator
     │       │   │   │   │   │       # - ARIA tabs pattern
     │       │   │   │   │   │       # Props: tabs, activeTab, onChange
     │       │   │   │   │   ├── TopBar/
-    │       │   │   │   │   │   ├── TopBar.native.tsx  # ❌ CREATE - Native top bar (header)
+    │       │   │   │   │   │   ├── TopBar.native.tsx  # Native top bar (header)
     │       │   │   │   │   │   │   # - View with back button, title, actions
     │       │   │   │   │   │   │   # - Safe area insets
     │       │   │   │   │   │   │   # Props: title, onBack, actions[]
-    │       │   │   │   │   │   ├── TopBar.tsx  # ❌ CREATE - Base top bar
+    │       │   │   │   │   │   ├── TopBar.tsx  # Base top bar
     │       │   │   │   │   │   │   # - Shared logic
-    │       │   │   │   │   │   ├── TopBar.types.ts  # ❌ CREATE - TopBar types
+    │       │   │   │   │   │   ├── TopBar.types.ts  # TopBar types
     │       │   │   │   │   │   │   # - TopBarAction interface
     │       │   │   │   │   │   │   # - TopBarProps interface
-    │       │   │   │   │   │   └── TopBar.web.tsx  # ❌ CREATE - Web top bar
+    │       │   │   │   │   │   └── TopBar.web.tsx  # Web top bar
     │       │   │   │   │   │       # - Header element
     │       │   │   │   │   │       # - Sticky positioning
     │       │   │   │   │   │       # Props: title, onBack, actions[]
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export for Navigation
+    │       │   │   │   │   ├── Wizard/
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── Wizard.native.tsx  # ❌ CREATE Native wizard with step navigation, back/next buttons, progress
+    │       │   │   │   │   │   ├── Wizard.tsx  # ❌ CREATE Base wizard logic, step validation, onComplete callback
+    │       │   │   │   │   │   ├── Wizard.types.ts  # ❌ CREATE WizardStep interface, WizardProps with steps[]/onComplete
+    │       │   │   │   │   │   └── Wizard.web.tsx  # ❌ CREATE Web wizard with form steps, keyboard shortcuts, auto-save drafts
+    │       │   │   │   │   └── index.ts  # Barrel export for Navigation
     │       │   │   │   └── Overlay/
     │       │   │   │       ├── BottomSheet/
-    │       │   │   │       │   ├── BottomSheet.native.tsx  # ❌ CREATE - Native bottom sheet
+    │       │   │   │       │   ├── BottomSheet.native.tsx  # Native bottom sheet
     │       │   │   │       │   │   # - react-native-bottom-sheet or @gorhom/bottom-sheet
     │       │   │   │       │   │   # - Snap points
     │       │   │   │       │   │   # - Drag handle
     │       │   │   │       │   │   # - Backdrop
     │       │   │   │       │   │   # Props: open, onClose, snapPoints[], children
-    │       │   │   │       │   ├── BottomSheet.tsx  # ❌ CREATE - Base bottom sheet
+    │       │   │   │       │   ├── BottomSheet.tsx  # Base bottom sheet
     │       │   │   │       │   │   # - Shared logic
-    │       │   │   │       │   ├── BottomSheet.types.ts  # ❌ CREATE - BottomSheet types
+    │       │   │   │       │   ├── BottomSheet.types.ts  # BottomSheet types
     │       │   │   │       │   │   # - BottomSheetProps interface
-    │       │   │   │       │   └── BottomSheet.web.tsx  # ❌ CREATE - Web bottom sheet (modal alternative)
+    │       │   │   │       │   └── BottomSheet.web.tsx  # Web bottom sheet (modal alternative)
     │       │   │   │       │       # - Fixed position modal from bottom
     │       │   │   │       │       # - Slide-up animation
     │       │   │   │       │       # Props: open, onClose, children
     │       │   │   │       ├── Modal/
-    │       │   │   │       │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │       │   ├── Modal.native.tsx  # ❌ CREATE - Native modal (if missing)
+    │       │   │   │       │   ├── index.ts  # Barrel export
+    │       │   │   │       │   ├── Modal.native.tsx  # Native modal (if missing)
     │       │   │   │       │   │   # - Modal from RN
     │       │   │   │       │   │   # - Animated entrance
     │       │   │   │       │   │   # - Backdrop press to close
     │       │   │   │       │   │   # Props: open, onClose, title, children
-    │       │   │   │       │   ├── Modal.tsx  # ❌ CREATE - Base modal
+    │       │   │   │       │   ├── Modal.tsx  # Base modal
     │       │   │   │       │   │   # - Shared modal logic
-    │       │   │   │       │   ├── Modal.types.ts  # ❌ CREATE - Modal types
+    │       │   │   │       │   ├── Modal.types.ts  # Modal types
     │       │   │   │       │   │   # - ModalProps interface
-    │       │   │   │       │   └── Modal.web.tsx  # ❌ CREATE - Web modal (if missing)
+    │       │   │   │       │   └── Modal.web.tsx  # Web modal (if missing)
     │       │   │   │       │       # - Fixed overlay with content
     │       │   │   │       │       # - Focus trap
     │       │   │   │       │       # - ESC to close
     │       │   │   │       │       # Props: open, onClose, title, children
     │       │   │   │       ├── Popover/
-    │       │   │   │       │   ├── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │       │   ├── index.ts  # Barrel export
     │       │   │   │       │   ├── Popover.native.tsx  # Mobile popover component
     │       │   │   │       │   │   # FEATURES:
     │       │   │   │       │   │   # - Modal-based implementation
@@ -35998,7 +36114,7 @@ fe/
     │       │   │   │       │   │   # - Arrow pointer to trigger
     │       │   │   │       │   │   # - Fade in/out animations
     │       │   │   │       │   │   # Props: placement, offset, showArrow
-    │       │   │   │       │   │   # ❌ CREATE - Native popover
+    │       │   │   │       │   │   # Native popover
     │       │   │   │       │   │   # - Modal positioned relative to trigger
     │       │   │   │       │   │   # - Arrow pointer
     │       │   │   │       │   │   # - Auto-dismiss on outside press
@@ -36007,16 +36123,16 @@ fe/
     │       │   │   │       │   │   # - Auto-positioning to stay on screen
     │       │   │   │       │   │   # Props: trigger, content, placement, open, onClose
     │       │   │   │       │   ├── Popover.tsx  # - Base component
-    │       │   │   │       │   │   # ❌ CREATE - Base popover
+    │       │   │   │       │   │   # Base popover
     │       │   │   │       │   │   # - Shared popover logic
     │       │   │   │       │   │   # - Position calculation
     │       │   │   │       │   ├── Popover.types.ts  # - Shared types
-    │       │   │   │       │   │   # ❌ CREATE - Popover types
+    │       │   │   │       │   │   # Popover types
     │       │   │   │       │   │   # - PopoverPosition type
     │       │   │   │       │   │   # - PopoverProps interface
     │       │   │   │       │   │   # - PopoverPlacement type
     │       │   │   │       │   └── Popover.web.tsx  # - Web implementation
-    │       │   │   │       │       # ❌ CREATE - Web popover
+    │       │   │   │       │       # Web popover
     │       │   │   │       │       # - Absolute positioned overlay
     │       │   │   │       │       # - Floating-UI for positioning
     │       │   │   │       │       # - ARIA attributes
@@ -36074,7 +36190,7 @@ fe/
     │       │   │   │       │   ├── Tooltip.tsx  # - Base component
     │       │   │   │       │   ├── Tooltip.types.ts  # - Shared types
     │       │   │   │       │   └── Tooltip.web.tsx  # - Web implementation
-    │       │   │   │       └── index.ts  # ❌ CREATE - Barrel export for Overlay
+    │       │   │   │       └── index.ts  # Barrel export for Overlay
     │       │   │   ├── Navigation/
     │       │   │   │   ├── Breadcrumb/
     │       │   │   │   │   ├── Breadcrumb.tsx
@@ -36103,6 +36219,12 @@ fe/
     │       │   │   │       └── SyncStatus.native.tsx  # Sync progress
     │       │   │   ├── organisms/
     │       │   │   │   ├── Charts/
+    │       │   │   │   │   ├── BarChart/
+    │       │   │   │   │   │   ├── BarChart.native.tsx  # ❌ CREATE Native bar chart using react-native-svg + animations
+    │       │   │   │   │   │   ├── BarChart.tsx  # ❌ CREATE Base bar chart logic, data processing, axis calculations
+    │       │   │   │   │   │   ├── BarChart.types.ts  # ❌ CREATE BarChartData interface, BarChartProps with data[]/xAxis/yAxis/colors
+    │       │   │   │   │   │   ├── BarChart.web.tsx  # ❌ CREATE Web bar chart using Recharts or D3, responsive, tooltips
+    │       │   │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
     │       │   │   │   │   ├── FunnelChart/
     │       │   │   │   │   │   └── FunnelChart.native.tsx  # Mobile funnel chart
     │       │   │   │   │   │       # Implementation
@@ -36137,25 +36259,37 @@ fe/
     │       │   │   │   │   │       # - Zoom/pan gestures
     │       │   │   │   │   │       # - Legend with color scale
     │       │   │   │   │   │       # BE: analytics-be
-    │       │   │   │   │   └── OrgChart/
-    │       │   │   │   │       └── OrgChart.native.tsx  # Mobile org chart
-    │       │   │   │   │           # Implementation
-    │       │   │   │   │           # - Hierarchical layout; pan/zoom
-    │       │   │   │   │           # - Collapsible nodes; search/highlight
-    │       │   │   │   │           # - Auto-fit to viewport
-    │       │   │   │   │           # BE: None (UI component)
-    │       │   │   │   │           # Tests: zoom + collapse behavior
-    │       │   │   │   │           # Mobile organization chart
-    │       │   │   │   │           # Hierarchical layout (react-native-svg); pan/zoom
-    │       │   │   │   │           # Collapsible nodes; search/highlight; auto-fit
-    │       │   │   │   │           # Props: data(tree), onNodePress
-    │       │   │   │   │           # BE: None (UI)
-    │       │   │   │   │           # - Uses react-native-svg
-    │       │   │   │   │           # - Pan/zoom for navigation
-    │       │   │   │   │           # - Expand/collapse branches
-    │       │   │   │   │           # - Touch to select node
-    │       │   │   │   │           # - Horizontal/vertical layouts
-    │       │   │   │   │           # BE: users-be/organization
+    │       │   │   │   │   ├── LineChart/
+    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── LineChart.native.tsx  # ❌ CREATE Native line chart with smooth curves, touch interaction
+    │       │   │   │   │   │   ├── LineChart.tsx  # ❌ CREATE Base line chart logic, multi-line support, date formatting
+    │       │   │   │   │   │   ├── LineChart.types.ts  # ❌ CREATE LineChartData interface, LineChartProps with series[]/xAxis/yAxis
+    │       │   │   │   │   │   └── LineChart.web.tsx  # ❌ CREATE Web line chart with zoom, pan, crosshair, legend
+    │       │   │   │   │   ├── OrgChart/
+    │       │   │   │   │   │   └── OrgChart.native.tsx  # Mobile org chart
+    │       │   │   │   │   │       # Implementation
+    │       │   │   │   │   │       # - Hierarchical layout; pan/zoom
+    │       │   │   │   │   │       # - Collapsible nodes; search/highlight
+    │       │   │   │   │   │       # - Auto-fit to viewport
+    │       │   │   │   │   │       # BE: None (UI component)
+    │       │   │   │   │   │       # Tests: zoom + collapse behavior
+    │       │   │   │   │   │       # Mobile organization chart
+    │       │   │   │   │   │       # Hierarchical layout (react-native-svg); pan/zoom
+    │       │   │   │   │   │       # Collapsible nodes; search/highlight; auto-fit
+    │       │   │   │   │   │       # Props: data(tree), onNodePress
+    │       │   │   │   │   │       # BE: None (UI)
+    │       │   │   │   │   │       # - Uses react-native-svg
+    │       │   │   │   │   │       # - Pan/zoom for navigation
+    │       │   │   │   │   │       # - Expand/collapse branches
+    │       │   │   │   │   │       # - Touch to select node
+    │       │   │   │   │   │       # - Horizontal/vertical layouts
+    │       │   │   │   │   │       # BE: users-be/organization
+    │       │   │   │   │   └── PieChart/
+    │       │   │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │       ├── PieChart.native.tsx  # ❌ CREATE Native pie chart with animated segments, center label
+    │       │   │   │   │       ├── PieChart.tsx  # ❌ CREATE Base pie chart logic, percentage calculation, color assignment
+    │       │   │   │   │       ├── PieChart.types.ts  # ❌ CREATE PieChartData interface, PieChartProps with data[]/showLegend/donut
+    │       │   │   │   │       └── PieChart.web.tsx  # ❌ CREATE Web pie chart with SVG, hover effects, click to filter
     │       │   │   │   ├── DataDisplay/
     │       │   │   │   │   ├── DataGrid/
     │       │   │   │   │   │   ├── DataGrid.native.tsx  # Mobile data grid component
@@ -36212,26 +36346,26 @@ fe/
     │       │   │   │   │   │   │   # - Fixed header row
     │       │   │   │   │   │   │   # - Pinch-to-zoom for readability
     │       │   │   │   │   │   │   # Props: columns[], data[], sortable
-    │       │   │   │   │   │   │   # ❌ CREATE - Native data grid
+    │       │   │   │   │   │   │   # Native data grid
     │       │   │   │   │   │   │   # - FlatList with columns
     │       │   │   │   │   │   │   # - Sort by column
     │       │   │   │   │   │   │   # - Row actions
     │       │   │   │   │   │   │   # Props: columns, data, onSort, onRowAction
     │       │   │   │   │   │   ├── DataGrid.tsx  # - Base component
-    │       │   │   │   │   │   │   # ❌ CREATE - Base data grid
+    │       │   │   │   │   │   │   # Base data grid
     │       │   │   │   │   │   │   # - Shared grid logic
     │       │   │   │   │   │   │   # - Sorting, filtering
     │       │   │   │   │   │   ├── DataGrid.types.ts  # - Shared types
-    │       │   │   │   │   │   │   # ❌ CREATE - DataGrid types
+    │       │   │   │   │   │   │   # DataGrid types
     │       │   │   │   │   │   │   # - Column interface
     │       │   │   │   │   │   │   # - DataGridProps interface
     │       │   │   │   │   │   └── DataGrid.web.tsx  # - Web implementation
-    │       │   │   │   │   │       # ❌ CREATE - Web data grid
+    │       │   │   │   │   │       # Web data grid
     │       │   │   │   │   │       # - Table with sortable columns
     │       │   │   │   │   │       # - Row selection
     │       │   │   │   │   │       # Props: columns, data, onSort, onRowAction
     │       │   │   │   │   ├── DataTable/
-    │       │   │   │   │   │   ├── DataTable.native.tsx  # ❌ CREATE - Native data table
+    │       │   │   │   │   │   ├── DataTable.native.tsx  # Native data table
     │       │   │   │   │   │   │   # - FlatList-based table with virtual scrolling
     │       │   │   │   │   │   │   # - Horizontal scroll for many columns
     │       │   │   │   │   │   │   # - Sticky header row
@@ -36242,18 +36376,18 @@ fe/
     │       │   │   │   │   │   │   # - Empty state
     │       │   │   │   │   │   │   # - Loading skeleton
     │       │   │   │   │   │   │   # Props: columns[], data[], onSort, onRowPress, pagination, loading
-    │       │   │   │   │   │   ├── DataTable.tsx  # ❌ CREATE - Base data table component
+    │       │   │   │   │   │   ├── DataTable.tsx  # Base data table component
     │       │   │   │   │   │   │   # - Shared table logic
     │       │   │   │   │   │   │   # - Sort state management
     │       │   │   │   │   │   │   # - Selection state
     │       │   │   │   │   │   │   # - Pagination state
     │       │   │   │   │   │   │   # - Search/filter integration
-    │       │   │   │   │   │   ├── DataTable.types.ts  # ❌ CREATE - DataTable type definitions
+    │       │   │   │   │   │   ├── DataTable.types.ts  # DataTable type definitions
     │       │   │   │   │   │   │   # - Column interface
     │       │   │   │   │   │   │   # - SortConfig interface
     │       │   │   │   │   │   │   # - PaginationConfig interface
     │       │   │   │   │   │   │   # - DataTableProps interface
-    │       │   │   │   │   │   └── DataTable.web.tsx  # ❌ CREATE - Web data table
+    │       │   │   │   │   │   └── DataTable.web.tsx  # Web data table
     │       │   │   │   │   │       # - Semantic HTML table
     │       │   │   │   │   │       # - Fixed header with CSS sticky
     │       │   │   │   │   │       # - Virtualized rows for large datasets
@@ -36268,7 +36402,7 @@ fe/
     │       │   │   │   │   │       # - ARIA attributes (grid, columnheader, row, cell)
     │       │   │   │   │   │       # Props: columns[], data[], onSort, onRowClick, pagination, loading
     │       │   │   │   │   ├── KanbanBoard/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
     │       │   │   │   │   │   ├── KanbanBoard.native.tsx  # Mobile kanban board component
     │       │   │   │   │   │   │   # FEATURES:
     │       │   │   │   │   │   │   # - Horizontal scrollable columns
@@ -36318,26 +36452,26 @@ fe/
     │       │   │   │   │   │   │   # - Drag and drop support
     │       │   │   │   │   │   │   # - Nested scrolling: vertical within columns
     │       │   │   │   │   │   │   # Props: columns[], onCardMove, onColumnMove
-    │       │   │   │   │   │   │   # ❌ CREATE - Native kanban
+    │       │   │   │   │   │   │   # Native kanban
     │       │   │   │   │   │   │   # - Drag-drop columns and cards
     │       │   │   │   │   │   │   # Props: columns, cards, onCardMove, onColumnMove
     │       │   │   │   │   │   ├── KanbanBoard.tsx  # - Base component
-    │       │   │   │   │   │   │   # ❌ CREATE - Base kanban
+    │       │   │   │   │   │   │   # Base kanban
     │       │   │   │   │   │   │   # - Shared kanban logic
     │       │   │   │   │   │   ├── KanbanBoard.types.ts  # - Shared types
-    │       │   │   │   │   │   │   # ❌ CREATE - Kanban types
+    │       │   │   │   │   │   │   # Kanban types
     │       │   │   │   │   │   │   # - KanbanColumn interface
     │       │   │   │   │   │   │   # - KanbanCard interface
     │       │   │   │   │   │   │   # - KanbanBoardProps interface
     │       │   │   │   │   │   └── KanbanBoard.web.tsx  # - Web implementation
-    │       │   │   │   │   │       # ❌ CREATE - Web kanban
+    │       │   │   │   │   │       # Web kanban
     │       │   │   │   │   │       # - react-beautiful-dnd or similar
     │       │   │   │   │   │       # - Drag-drop columns and cards
     │       │   │   │   │   │       # Props: columns, cards, onCardMove, onColumnMove
     │       │   │   │   │   ├── Popover/
     │       │   │   │   │   │   └── Popover.native.tsx  # Positioned overlay; arrow; fade+scale; portal
     │       │   │   │   │   ├── Table/
-    │       │   │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── index.ts  # Barrel export
     │       │   │   │   │   │   ├── Table.native.tsx  # Mobile responsive table component
     │       │   │   │   │   │   │   # FEATURES:
     │       │   │   │   │   │   │   # - FlashList for performance
@@ -36392,27 +36526,105 @@ fe/
     │       │   │   │   │   │   │   # - Card view fallback (< 600px)
     │       │   │   │   │   │   │   # - Sticky header
     │       │   │   │   │   │   │   # Props: columns[], data[], responsive
-    │       │   │   │   │   │   │   # ❌ CREATE - Native table
+    │       │   │   │   │   │   │   # Native table
     │       │   │   │   │   │   │   # - FlatList with row layout
     │       │   │   │   │   │   │   # - Sortable columns
     │       │   │   │   │   │   │   # Props: columns, data, sortable, selectable, onSort
     │       │   │   │   │   │   ├── Table.tsx  # - Base component
-    │       │   │   │   │   │   │   # ❌ CREATE - Base table
+    │       │   │   │   │   │   │   # Base table
     │       │   │   │   │   │   │   # - Shared table logic
     │       │   │   │   │   │   ├── Table.types.ts  # - Shared types
-    │       │   │   │   │   │   │   # ❌ CREATE - Table types
+    │       │   │   │   │   │   │   # Table types
     │       │   │   │   │   │   │   # - TableColumn interface
     │       │   │   │   │   │   │   # - TableProps interface
     │       │   │   │   │   │   └── Table.web.tsx  # - Web implementation
-    │       │   │   │   │   │       # ❌ CREATE - Web table
+    │       │   │   │   │   │       # Web table
     │       │   │   │   │   │       # - HTML table element
     │       │   │   │   │   │       # - Sortable headers
     │       │   │   │   │   │       # - Row selection
     │       │   │   │   │   │       # Props: columns, data, sortable, selectable, onSort
     │       │   │   │   │   ├── Tooltip/
     │       │   │   │   │   │   └── Tooltip.native.tsx  # Long press; auto-dismiss; a11y; simple text
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export for organisms/DataDisplay
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for organisms
+    │       │   │   │   │   └── index.ts  # Barrel export for organisms/DataDisplay
+    │       │   │   │   ├── DataTable/
+    │       │   │   │   │   ├── components/
+    │       │   │   │   │   │   ├── TableBody/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── TableBody.native.tsx  # ❌ CREATE Native table body using FlatList, row selection
+    │       │   │   │   │   │   │   ├── TableBody.tsx  # ❌ CREATE Base table body logic
+    │       │   │   │   │   │   │   └── TableBody.web.tsx  # ❌ CREATE Web tbody element
+    │       │   │   │   │   │   ├── TableCell/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── TableCell.native.tsx  # ❌ CREATE Native table cell with flex layout
+    │       │   │   │   │   │   │   ├── TableCell.tsx  # ❌ CREATE Base cell logic, cell formatting
+    │       │   │   │   │   │   │   ├── TableCell.types.ts  # ❌ CREATE TableCellProps with value/align/width/render
+    │       │   │   │   │   │   │   └── TableCell.web.tsx  # ❌ CREATE Web td element with text align
+    │       │   │   │   │   │   ├── TableHeader/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── TableHeader.native.tsx  # ❌ CREATE Native table header with sort arrows, sticky header
+    │       │   │   │   │   │   │   ├── TableHeader.tsx  # ❌ CREATE Base header logic, sort handling
+    │       │   │   │   │   │   │   ├── TableHeader.types.ts  # ❌ CREATE TableHeaderProps with columns[]/sortable/onSort
+    │       │   │   │   │   │   │   └── TableHeader.web.tsx  # ❌ CREATE Web thead with th, ARIA sort, sticky position
+    │       │   │   │   │   │   ├── TablePagination/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── TablePagination.native.tsx  # ❌ CREATE Native table pagination at bottom
+    │       │   │   │   │   │   │   ├── TablePagination.tsx  # ❌ CREATE Base pagination logic
+    │       │   │   │   │   │   │   ├── TablePagination.types.ts  # ❌ CREATE TablePaginationProps with page/pageSize/total/onPageChange
+    │       │   │   │   │   │   │   └── TablePagination.web.tsx  # ❌ CREATE Web pagination with page size selector
+    │       │   │   │   │   │   ├── TableRow/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── TableRow.native.tsx  # ❌ CREATE Native table row pressable, selected state
+    │       │   │   │   │   │   │   ├── TableRow.tsx  # ❌ CREATE Base row logic, selection handling
+    │       │   │   │   │   │   │   ├── TableRow.types.ts  # ❌ CREATE TableRowProps with data/selected/onPress
+    │       │   │   │   │   │   │   └── TableRow.web.tsx  # ❌ CREATE Web tr element, hover effect
+    │       │   │   │   │   │   └── TableToolbar/
+    │       │   │   │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │       ├── TableToolbar.native.tsx  # ❌ CREATE Native table toolbar with search, filter, actions
+    │       │   │   │   │   │       ├── TableToolbar.tsx  # ❌ CREATE Base toolbar logic, bulk actions
+    │       │   │   │   │   │       ├── TableToolbar.types.ts  # ❌ CREATE TableToolbarProps with selectedCount/actions[]/onSearch
+    │       │   │   │   │   │       └── TableToolbar.web.tsx  # ❌ CREATE Web toolbar with flexbox layout, icon buttons
+    │       │   │   │   │   ├── DataTable.native.tsx  # ❌ CREATE Native data table complete with all features
+    │       │   │   │   │   ├── DataTable.tsx  # ❌ CREATE Base data table logic, data processing, filtering, sorting
+    │       │   │   │   │   ├── DataTable.types.ts  # ❌ CREATE Column interface, DataTableProps with columns[]/data[]/loading/selectable
+    │       │   │   │   │   ├── DataTable.web.tsx  # ❌ CREATE Web data table with semantic table, responsive, virtualization for large datasets
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── ErrorBoundary/
+    │       │   │   │   │   ├── ErrorBoundary.tsx  # ❌ CREATE React error boundary with componentDidCatch, fallback UI
+    │       │   │   │   │   ├── ErrorBoundary.types.ts  # ❌ CREATE ErrorBoundaryProps with fallback/onError/resetKeys
+    │       │   │   │   │   ├── ErrorFallback.native.tsx  # ❌ CREATE Native error fallback UI with retry button
+    │       │   │   │   │   ├── ErrorFallback.tsx  # ❌ CREATE Base error fallback logic
+    │       │   │   │   │   ├── ErrorFallback.web.tsx  # ❌ CREATE Web error fallback UI with error details, report button
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── SkeletonLoader/
+    │       │   │   │   │   ├── components/
+    │       │   │   │   │   │   ├── SkeletonCard/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── SkeletonCard.native.tsx  # ❌ CREATE Native skeleton card with shimmer animation
+    │       │   │   │   │   │   │   ├── SkeletonCard.tsx  # ❌ CREATE Base skeleton card logic
+    │       │   │   │   │   │   │   └── SkeletonCard.web.tsx  # ❌ CREATE Web skeleton card with CSS animation
+    │       │   │   │   │   │   ├── SkeletonCircle/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── SkeletonCircle.native.tsx  # ❌ CREATE Native circular skeleton for avatars
+    │       │   │   │   │   │   │   ├── SkeletonCircle.tsx  # ❌ CREATE Base circle logic
+    │       │   │   │   │   │   │   └── SkeletonCircle.web.tsx  # ❌ CREATE Web circular skeleton
+    │       │   │   │   │   │   ├── SkeletonLine/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── SkeletonLine.native.tsx  # ❌ CREATE Native line skeleton with width prop
+    │       │   │   │   │   │   │   ├── SkeletonLine.tsx  # ❌ CREATE Base line logic
+    │       │   │   │   │   │   │   ├── SkeletonLine.types.ts  # ❌ CREATE SkeletonLineProps with width/height
+    │       │   │   │   │   │   │   └── SkeletonLine.web.tsx  # ❌ CREATE Web line skeleton
+    │       │   │   │   │   │   └── SkeletonText/
+    │       │   │   │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │       ├── SkeletonText.native.tsx  # ❌ CREATE Native text skeleton multiple lines
+    │       │   │   │   │   │       ├── SkeletonText.tsx  # ❌ CREATE Base text skeleton logic, line count
+    │       │   │   │   │   │       ├── SkeletonText.types.ts  # ❌ CREATE SkeletonTextProps with lines/spacing
+    │       │   │   │   │   │       └── SkeletonText.web.tsx  # ❌ CREATE Web text skeleton
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── SkeletonLoader.native.tsx  # ❌ CREATE Native skeleton loader container
+    │       │   │   │   │   ├── SkeletonLoader.tsx  # ❌ CREATE Base skeleton loader logic, variant handling
+    │       │   │   │   │   ├── SkeletonLoader.types.ts  # ❌ CREATE SkeletonVariant enum, SkeletonLoaderProps
+    │       │   │   │   │   └── SkeletonLoader.web.tsx  # ❌ CREATE Web skeleton loader container with wave animation
+    │       │   │   │   └── index.ts  # Barrel export for organisms
     │       │   │   ├── Overlay/
     │       │   │   │   ├── Popover/
     │       │   │   │   │   └── Popover.native.tsx  # Mobile popover component
@@ -36429,23 +36641,61 @@ fe/
     │       │   │   │           # Prevent multiple visible; aria-describedby
     │       │   │   │           # Props: content, delay, duration, placement
     │       │   │   │           # BE: None (UI)
+    │       │   │   ├── overlays/
+    │       │   │   │   ├── BottomSheet/
+    │       │   │   │   │   ├── BottomSheet.native.tsx  # ❌ CREATE Native bottom sheet (@gorhom/bottom-sheet)
+    │       │   │   │   │   │   # - Snap points
+    │       │   │   │   │   │   # - Backdrop
+    │       │   │   │   │   │   # - Drag to dismiss
+    │       │   │   │   │   │   # - Scrollable content
+    │       │   │   │   │   ├── BottomSheet.tsx  # ❌ CREATE Base bottom sheet logic
+    │       │   │   │   │   ├── BottomSheet.types.ts  # ❌ CREATE BottomSheetProps
+    │       │   │   │   │   ├── BottomSheet.web.tsx  # ❌ CREATE Web modal bottom sheet
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── Drawer/
+    │       │   │   │   │   ├── Drawer.native.tsx  # ❌ CREATE Native drawer (side menu)
+    │       │   │   │   │   │   # - Left/right position
+    │       │   │   │   │   │   # - Swipe to open
+    │       │   │   │   │   │   # - Overlay
+    │       │   │   │   │   ├── Drawer.tsx  # ❌ CREATE Base drawer logic
+    │       │   │   │   │   ├── Drawer.types.ts  # ❌ CREATE DrawerProps
+    │       │   │   │   │   ├── Drawer.web.tsx  # ❌ CREATE Web drawer with animation
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── Popover/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── Popover.native.tsx  # ❌ CREATE Native popover positioning
+    │       │   │   │   │   │   # - Anchor element
+    │       │   │   │   │   │   # - Position calculation
+    │       │   │   │   │   │   # - Auto-flip
+    │       │   │   │   │   ├── Popover.tsx  # ❌ CREATE Base popover logic
+    │       │   │   │   │   ├── Popover.types.ts  # ❌ CREATE PopoverProps
+    │       │   │   │   │   └── Popover.web.tsx  # ❌ CREATE Web popover (Floating UI)
+    │       │   │   │   └── Sheet/
+    │       │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │       ├── Sheet.native.tsx  # ❌ CREATE Native action sheet
+    │       │   │   │       │   # - Actions list
+    │       │   │   │       │   # - Cancel button
+    │       │   │   │       │   # - Destructive option
+    │       │   │   │       ├── Sheet.tsx  # ❌ CREATE Base sheet logic
+    │       │   │   │       ├── Sheet.types.ts  # ❌ CREATE SheetProps
+    │       │   │   │       └── Sheet.web.tsx  # ❌ CREATE Web action sheet modal
     │       │   │   ├── Pagination/
     │       │   │   ├── Popover/
     │       │   │   ├── Progress/
     │       │   │   ├── providers/
     │       │   │   │   ├── ThemeProvider/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── ThemeContext.tsx  # ❌ CREATE - Theme context
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── ThemeContext.tsx  # Theme context
     │       │   │   │   │   │   # - Current theme (light/dark)
     │       │   │   │   │   │   # - Toggle theme function
     │       │   │   │   │   │   # - Theme values
-    │       │   │   │   │   ├── ThemeProvider.tsx  # ❌ CREATE - Theme provider component
+    │       │   │   │   │   ├── ThemeProvider.tsx  # Theme provider component
     │       │   │   │   │   │   # - Wraps app with theme context
     │       │   │   │   │   │   # - Persists theme preference
-    │       │   │   │   │   └── ThemeProvider.types.ts  # ❌ CREATE - ThemeProvider types
+    │       │   │   │   │   └── ThemeProvider.types.ts  # ThemeProvider types
     │       │   │   │   │       # - Theme interface
     │       │   │   │   │       # - ThemeContextValue interface
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for providers
+    │       │   │   │   └── index.ts  # Barrel export for providers
     │       │   │   ├── QRCode/
     │       │   │   │   ├── QRCodeGenerator/
     │       │   │   │   │   └── QRCodeGenerator.native.tsx  # QR generator
@@ -36457,22 +36707,22 @@ fe/
     │       │   │   ├── Rating/
     │       │   │   ├── rating/
     │       │   │   │   ├── StarRating/
-    │       │   │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   │   ├── StarRating.native.tsx  # ❌ CREATE - Native star rating
+    │       │   │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   │   ├── StarRating.native.tsx  # Native star rating
     │       │   │   │   │   │   # - Pressable stars
     │       │   │   │   │   │   # - Half-star support
     │       │   │   │   │   │   # - Read-only or interactive
     │       │   │   │   │   │   # Props: value, max, onChange, readOnly, size
-    │       │   │   │   │   ├── StarRating.tsx  # ❌ CREATE - Base star rating
+    │       │   │   │   │   ├── StarRating.tsx  # Base star rating
     │       │   │   │   │   │   # - Shared rating logic
-    │       │   │   │   │   ├── StarRating.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── StarRating.types.ts  # Types
     │       │   │   │   │   │   # - StarRatingProps interface
-    │       │   │   │   │   └── StarRating.web.tsx  # ❌ CREATE - Web star rating
+    │       │   │   │   │   └── StarRating.web.tsx  # Web star rating
     │       │   │   │   │       # - Button stars
     │       │   │   │   │       # - Half-star support
     │       │   │   │   │       # - Keyboard navigation
     │       │   │   │   │       # Props: value, max, onChange, readOnly, size
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for rating
+    │       │   │   │   └── index.ts  # Barrel export for rating
     │       │   │   ├── referrals/  # ENTIRE SECTION
     │       │   │   │   ├── ReferralCard.native.tsx  # Referral card (native)
     │       │   │   │   │   # - Referral info card
@@ -36562,34 +36812,101 @@ fe/
     │       │   │   │   ├── WorkDiaryEntry.native.tsx
     │       │   │   │   ├── WorkDiaryEntry.tsx  # Work diary card
     │       │   │   │   └── WorkDiaryEntry.web.tsx
+    │       │   │   ├── transitions/
+    │       │   │   │   ├── Collapse/
+    │       │   │   │   │   ├── Collapse.native.tsx  # ❌ CREATE Native collapse animation
+    │       │   │   │   │   │   # - Animated height
+    │       │   │   │   │   │   # - Smooth transition
+    │       │   │   │   │   ├── Collapse.tsx  # ❌ CREATE Base collapse logic
+    │       │   │   │   │   ├── Collapse.types.ts  # ❌ CREATE CollapseProps
+    │       │   │   │   │   ├── Collapse.web.tsx  # ❌ CREATE Web collapse with CSS transition
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── Fade/
+    │       │   │   │   │   ├── Fade.native.tsx  # ❌ CREATE Native fade transition
+    │       │   │   │   │   ├── Fade.tsx  # ❌ CREATE Base fade logic
+    │       │   │   │   │   ├── Fade.types.ts  # ❌ CREATE FadeProps
+    │       │   │   │   │   ├── Fade.web.tsx  # ❌ CREATE Web fade transition
+    │       │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   ├── Slide/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── Slide.native.tsx  # ❌ CREATE Native slide transition
+    │       │   │   │   │   ├── Slide.tsx  # ❌ CREATE Base slide logic
+    │       │   │   │   │   ├── Slide.types.ts  # ❌ CREATE SlideProps
+    │       │   │   │   │   └── Slide.web.tsx  # ❌ CREATE Web slide transition
+    │       │   │   │   └── Zoom/
+    │       │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │       ├── Zoom.native.tsx  # ❌ CREATE Native zoom transition
+    │       │   │   │       ├── Zoom.tsx  # ❌ CREATE Base zoom logic
+    │       │   │   │       ├── Zoom.types.ts  # ❌ CREATE ZoomProps
+    │       │   │   │       └── Zoom.web.tsx  # ❌ CREATE Web zoom transition
     │       │   │   ├── validation/
     │       │   │   │   ├── ErrorMessage/
-    │       │   │   │   │   ├── ErrorMessage.native.tsx  # ❌ CREATE - Native error message
+    │       │   │   │   │   ├── ErrorMessage.native.tsx  # Native error message
     │       │   │   │   │   │   # - Red text with icon
     │       │   │   │   │   │   # - Animated entrance
     │       │   │   │   │   │   # Props: error, visible
-    │       │   │   │   │   ├── ErrorMessage.tsx  # ❌ CREATE - Base error message
+    │       │   │   │   │   ├── ErrorMessage.tsx  # Base error message
     │       │   │   │   │   │   # - Shared error display logic
-    │       │   │   │   │   ├── ErrorMessage.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── ErrorMessage.types.ts  # Types
     │       │   │   │   │   │   # - ErrorMessageProps interface
-    │       │   │   │   │   └── ErrorMessage.web.tsx  # ❌ CREATE - Web error message
+    │       │   │   │   │   └── ErrorMessage.web.tsx  # Web error message
     │       │   │   │   │       # - Red text with icon
     │       │   │   │   │       # - ARIA alert role
     │       │   │   │   │       # Props: error, visible
     │       │   │   │   ├── HelpText/
-    │       │   │   │   │   ├── HelpText.native.tsx  # ❌ CREATE - Native help text
+    │       │   │   │   │   ├── HelpText.native.tsx  # Native help text
     │       │   │   │   │   │   # - Muted text below input
     │       │   │   │   │   │   # Props: text
-    │       │   │   │   │   ├── HelpText.tsx  # ❌ CREATE - Base help text
+    │       │   │   │   │   ├── HelpText.tsx  # Base help text
     │       │   │   │   │   │   # - Shared help text logic
-    │       │   │   │   │   ├── HelpText.types.ts  # ❌ CREATE - Types
+    │       │   │   │   │   ├── HelpText.types.ts  # Types
     │       │   │   │   │   │   # - HelpTextProps interface
-    │       │   │   │   │   └── HelpText.web.tsx  # ❌ CREATE - Web help text
+    │       │   │   │   │   └── HelpText.web.tsx  # Web help text
     │       │   │   │   │       # - Small muted text
     │       │   │   │   │       # - Associated with input via aria-describedby
     │       │   │   │   │       # Props: text
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export for validation
+    │       │   │   │   └── index.ts  # Barrel export for validation
     │       │   │   ├── video/
+    │       │   │   │   ├── VideoCall/
+    │       │   │   │   │   ├── components/
+    │       │   │   │   │   │   ├── AudioControls/
+    │       │   │   │   │   │   │   ├── AudioControls.native.tsx  # ❌ CREATE Native audio mute/unmute controls
+    │       │   │   │   │   │   │   ├── AudioControls.tsx  # ❌ CREATE Base audio controls logic
+    │       │   │   │   │   │   │   ├── AudioControls.web.tsx  # ❌ CREATE Web audio controls
+    │       │   │   │   │   │   │   └── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   ├── ParticipantGrid/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── ParticipantGrid.native.tsx  # ❌ CREATE Native participant video grid
+    │       │   │   │   │   │   │   ├── ParticipantGrid.tsx  # ❌ CREATE Base grid layout logic
+    │       │   │   │   │   │   │   └── ParticipantGrid.web.tsx  # ❌ CREATE Web participant grid
+    │       │   │   │   │   │   ├── ScreenShare/
+    │       │   │   │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │   │   ├── ScreenShare.tsx  # ❌ CREATE Base screen share logic
+    │       │   │   │   │   │   │   └── ScreenShare.web.tsx  # ❌ CREATE Web screen share controls
+    │       │   │   │   │   │   └── VideoControls/
+    │       │   │   │   │   │       ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   │       ├── VideoControls.native.tsx  # ❌ CREATE Native video on/off controls
+    │       │   │   │   │   │       ├── VideoControls.tsx  # ❌ CREATE Base video controls logic
+    │       │   │   │   │   │       └── VideoControls.web.tsx  # ❌ CREATE Web video controls
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── VideoCall.native.tsx  # ❌ CREATE Native video call interface (Agora/Twilio)
+    │       │   │   │   │   │   # - Participant videos
+    │       │   │   │   │   │   # - Call controls
+    │       │   │   │   │   │   # - Connection status
+    │       │   │   │   │   │   # BE: communications-be/video
+    │       │   │   │   │   ├── VideoCall.tsx  # ❌ CREATE Base video call logic
+    │       │   │   │   │   ├── VideoCall.types.ts  # ❌ CREATE VideoCallProps
+    │       │   │   │   │   └── VideoCall.web.tsx  # ❌ CREATE Web video call interface
+    │       │   │   │   ├── VideoRecorder/
+    │       │   │   │   │   ├── index.ts  # ❌ CREATE Barrel export
+    │       │   │   │   │   ├── VideoRecorder.native.tsx  # ❌ CREATE Native video recorder (expo-camera)
+    │       │   │   │   │   │   # - Record video
+    │       │   │   │   │   │   # - Camera flip
+    │       │   │   │   │   │   # - Duration limit
+    │       │   │   │   │   │   # BE: storage-be (upload)
+    │       │   │   │   │   ├── VideoRecorder.tsx  # ❌ CREATE Base video recorder logic
+    │       │   │   │   │   ├── VideoRecorder.types.ts  # ❌ CREATE VideoRecorderProps
+    │       │   │   │   │   └── VideoRecorder.web.tsx  # ❌ CREATE Web video recorder (MediaRecorder API)
     │       │   │   │   ├── VideoPlayer.native.tsx
     │       │   │   │   ├── VideoPlayer.tsx  # Video player
     │       │   │   │   ├── VideoPlayer.web.tsx
@@ -36633,25 +36950,25 @@ fe/
     │       │   │   │       ├── TreeView.tsx
     │       │   │   │       ├── TreeView.types.ts
     │       │   │   │       └── TreeView.web.tsx
-    │       │   │   └── index.ts  # ❌ CREATE - Main barrel export for fe/packages/ui/src/components
+    │       │   │   └── index.ts  # Main barrel export for fe/packages/ui/src/components
     │       │   ├── constants/
-    │       │   │   ├── animations.ts  # ❌ CREATE - Animation constants
+    │       │   │   ├── animations.ts  # Animation constants
     │       │   │   │   # - DURATION_FAST, DURATION_NORMAL, DURATION_SLOW
     │       │   │   │   # - EASING_STANDARD, EASING_EMPHASIZED
     │       │   │   │   # - Spring configs
-    │       │   │   ├── breakpoints.ts  # ❌ CREATE - Responsive breakpoints
+    │       │   │   ├── breakpoints.ts  # Responsive breakpoints
     │       │   │   │   # - BREAKPOINT_XS = 0
     │       │   │   │   # - BREAKPOINT_SM = 640
     │       │   │   │   # - BREAKPOINT_MD = 768
     │       │   │   │   # - BREAKPOINT_LG = 1024
     │       │   │   │   # - BREAKPOINT_XL = 1280
     │       │   │   │   # - BREAKPOINT_2XL = 1536
-    │       │   │   ├── colors.ts  # ❌ CREATE - Color constants
+    │       │   │   ├── colors.ts  # Color constants
     │       │   │   │   # - COLOR_PRIMARY, COLOR_SECONDARY
     │       │   │   │   # - COLOR_SUCCESS, COLOR_WARNING, COLOR_ERROR, COLOR_INFO
     │       │   │   │   # - Shades for each color (50-900)
-    │       │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   ├── spacing.ts  # ❌ CREATE - Spacing scale
+    │       │   │   ├── index.ts  # Barrel export
+    │       │   │   ├── spacing.ts  # Spacing scale
     │       │   │   │   # - SPACING_XXS = 2
     │       │   │   │   # - SPACING_XS = 4
     │       │   │   │   # - SPACING_SM = 8
@@ -36659,12 +36976,12 @@ fe/
     │       │   │   │   # - SPACING_LG = 24
     │       │   │   │   # - SPACING_XL = 32
     │       │   │   │   # - SPACING_XXL = 48
-    │       │   │   ├── typography.ts  # ❌ CREATE - Typography constants
+    │       │   │   ├── typography.ts  # Typography constants
     │       │   │   │   # - FONT_FAMILY_BASE, FONT_FAMILY_HEADING, FONT_FAMILY_MONO
     │       │   │   │   # - FONT_SIZE_XS through FONT_SIZE_5XL
     │       │   │   │   # - FONT_WEIGHT_NORMAL, BOLD, etc.
     │       │   │   │   # - LINE_HEIGHT_TIGHT, NORMAL, RELAXED
-    │       │   │   └── z-index.ts  # ❌ CREATE - Z-index scale
+    │       │   │   └── z-index.ts  # Z-index scale
     │       │   │       # - Z_INDEX_DROPDOWN = 1000
     │       │   │       # - Z_INDEX_STICKY = 1020
     │       │   │       # - Z_INDEX_FIXED = 1030
@@ -36676,113 +36993,113 @@ fe/
     │       │   │   ├── accessibility/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── FocusTrap/
-    │       │   │   │   │   │   ├── FocusTrap.native.tsx  # ❌ CREATE - Native focus trap for modals
+    │       │   │   │   │   │   ├── FocusTrap.native.tsx  # Native focus trap for modals
     │       │   │   │   │   │   │   # - Traps focus within modal/dialog
     │       │   │   │   │   │   │   # - Focuses first focusable element on mount
     │       │   │   │   │   │   │   # - Returns focus on unmount
     │       │   │   │   │   │   │   # - Accessibility: manages focus ring
     │       │   │   │   │   │   │   # Props: active, children, initialFocus, returnFocus
-    │       │   │   │   │   │   ├── FocusTrap.tsx  # ❌ CREATE - Base focus trap
+    │       │   │   │   │   │   ├── FocusTrap.tsx  # Base focus trap
     │       │   │   │   │   │   │   # - Shared focus trap logic
     │       │   │   │   │   │   │   # - Focus element detection
-    │       │   │   │   │   │   ├── FocusTrap.types.ts  # ❌ CREATE - FocusTrap types
+    │       │   │   │   │   │   ├── FocusTrap.types.ts  # FocusTrap types
     │       │   │   │   │   │   │   # - FocusTrapProps interface
-    │       │   │   │   │   │   └── FocusTrap.web.tsx  # ❌ CREATE - Web focus trap
+    │       │   │   │   │   │   └── FocusTrap.web.tsx  # Web focus trap
     │       │   │   │   │   │       # - DOM focus management
     │       │   │   │   │   │       # - Tab key interception
     │       │   │   │   │   │       # - ARIA attributes
     │       │   │   │   │   │       # Props: active, children, initialFocus, returnFocus
     │       │   │   │   │   ├── LiveRegion/
-    │       │   │   │   │   │   ├── LiveRegion.native.tsx  # ❌ CREATE - Native live region
+    │       │   │   │   │   │   ├── LiveRegion.native.tsx  # Native live region
     │       │   │   │   │   │   │   # - View with accessibilityLiveRegion
     │       │   │   │   │   │   │   # - Screen reader announcements
     │       │   │   │   │   │   │   # - Politeness levels: polite, assertive
     │       │   │   │   │   │   │   # Props: politeness, children
-    │       │   │   │   │   │   ├── LiveRegion.tsx  # ❌ CREATE - Base live region
+    │       │   │   │   │   │   ├── LiveRegion.tsx  # Base live region
     │       │   │   │   │   │   │   # - Shared live region logic
-    │       │   │   │   │   │   ├── LiveRegion.types.ts  # ❌ CREATE - LiveRegion types
+    │       │   │   │   │   │   ├── LiveRegion.types.ts  # LiveRegion types
     │       │   │   │   │   │   │   # - Politeness type
     │       │   │   │   │   │   │   # - LiveRegionProps interface
-    │       │   │   │   │   │   └── LiveRegion.web.tsx  # ❌ CREATE - Web live region
+    │       │   │   │   │   │   └── LiveRegion.web.tsx  # Web live region
     │       │   │   │   │   │       # - Div with aria-live
     │       │   │   │   │   │       # - Polite/assertive modes
     │       │   │   │   │   │       # Props: politeness, children
     │       │   │   │   │   ├── SkipLink/
-    │       │   │   │   │   │   ├── SkipLink.native.tsx  # ❌ CREATE - Native skip link
+    │       │   │   │   │   │   ├── SkipLink.native.tsx  # Native skip link
     │       │   │   │   │   │   │   # - Hidden link to skip to main content
     │       │   │   │   │   │   │   # - Appears on focus
     │       │   │   │   │   │   │   # - Accessibility: proper focus management
     │       │   │   │   │   │   │   # Props: targetId, label
-    │       │   │   │   │   │   ├── SkipLink.tsx  # ❌ CREATE - Base skip link
+    │       │   │   │   │   │   ├── SkipLink.tsx  # Base skip link
     │       │   │   │   │   │   │   # - Shared skip link logic
-    │       │   │   │   │   │   ├── SkipLink.types.ts  # ❌ CREATE - SkipLink types
+    │       │   │   │   │   │   ├── SkipLink.types.ts  # SkipLink types
     │       │   │   │   │   │   │   # - SkipLinkProps interface
-    │       │   │   │   │   │   └── SkipLink.web.tsx  # ❌ CREATE - Web skip link
+    │       │   │   │   │   │   └── SkipLink.web.tsx  # Web skip link
     │       │   │   │   │   │       # - Visually hidden until focused
     │       │   │   │   │   │       # - Jumps to main content
     │       │   │   │   │   │       # - ARIA attributes
     │       │   │   │   │   │       # Props: targetId, label
     │       │   │   │   │   └── VisuallyHidden/
-    │       │   │   │   │       ├── VisuallyHidden.native.tsx  # ❌ CREATE - Native visually hidden
+    │       │   │   │   │       ├── VisuallyHidden.native.tsx  # Native visually hidden
     │       │   │   │   │       │   # - View with screen re...(truncated 2180 characters)... line chart
-    │       │   │   │   │       ├── VisuallyHidden.tsx  # ❌ CREATE - Base visually hidden
-    │       │   │   │   │       ├── VisuallyHidden.types.ts  # ❌ CREATE - VisuallyHidden types
-    │       │   │   │   │       └── VisuallyHidden.web.tsx  # ❌ CREATE - Web visually hidden
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │       ├── VisuallyHidden.tsx  # Base visually hidden
+    │       │   │   │   │       ├── VisuallyHidden.types.ts  # VisuallyHidden types
+    │       │   │   │   │       └── VisuallyHidden.web.tsx  # Web visually hidden
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── charts/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── BarChart/
-    │       │   │   │   │   │   ├── BarChart.native.tsx  # ❌ CREATE - Native bar chart
+    │       │   │   │   │   │   ├── BarChart.native.tsx  # Native bar chart
     │       │   │   │   │   │   │   # - SVG bars
     │       │   │   │   │   │   │   # - Animated bars
     │       │   │   │   │   │   │   # - Axis labels
     │       │   │   │   │   │   │   # - Tooltip on touch
     │       │   │   │   │   │   │   # Props: data[], config, onBarPress
-    │       │   │   │   │   │   ├── BarChart.tsx  # ❌ CREATE - Base bar chart
+    │       │   │   │   │   │   ├── BarChart.tsx  # Base bar chart
     │       │   │   │   │   │   │   # - Shared bar chart logic
     │       │   │   │   │   │   │   # - Scale calculations
-    │       │   │   │   │   │   ├── BarChart.types.ts  # ❌ CREATE - BarChart types
+    │       │   │   │   │   │   ├── BarChart.types.ts  # BarChart types
     │       │   │   │   │   │   │   # - BarChartConfig interface
     │       │   │   │   │   │   │   # - BarChartProps interface
-    │       │   │   │   │   │   └── BarChart.web.tsx  # ❌ CREATE - Web bar chart
+    │       │   │   │   │   │   └── BarChart.web.tsx  # Web bar chart
     │       │   │   │   │   │       # - SVG or Canvas bars
     │       │   │   │   │   │       # - Hover tooltips
     │       │   │   │   │   │       # Props: data[], config, onBarHover
     │       │   │   │   │   ├── LineChart/
-    │       │   │   │   │   │   ├── LineChart.native.tsx  # ❌ CREATE - Native line chart
+    │       │   │   │   │   │   ├── LineChart.native.tsx  # Native line chart
     │       │   │   │   │   │   │   # - SVG path for line
     │       │   │   │   │   │   │   # - Animated line
     │       │   │   │   │   │   │   # - Data points
     │       │   │   │   │   │   │   # - Tooltip on touch
     │       │   │   │   │   │   │   # Props: data[], config, onPointPress
-    │       │   │   │   │   │   ├── LineChart.tsx  # ❌ CREATE - Base line chart
+    │       │   │   │   │   │   ├── LineChart.tsx  # Base line chart
     │       │   │   │   │   │   │   # - Shared line chart logic
     │       │   │   │   │   │   │   # - Curve interpolation
-    │       │   │   │   │   │   ├── LineChart.types.ts  # ❌ CREATE - LineChart types
+    │       │   │   │   │   │   ├── LineChart.types.ts  # LineChart types
     │       │   │   │   │   │   │   # - LineChartConfig interface
     │       │   │   │   │   │   │   # - LineChartProps interface
-    │       │   │   │   │   │   └── LineChart.web.tsx  # ❌ CREATE - Web line chart
+    │       │   │   │   │   │   └── LineChart.web.tsx  # Web line chart
     │       │   │   │   │   │       # - SVG path rendering
     │       │   │   │   │   │       # - Interactive data points
     │       │   │   │   │   │       # Props: data[], config, onPointClick
     │       │   │   │   │   ├── PieChart/
-    │       │   │   │   │   │   ├── PieChart.native.tsx  # ❌ CREATE - Native pie chart
+    │       │   │   │   │   │   ├── PieChart.native.tsx  # Native pie chart
     │       │   │   │   │   │   │   # - SVG arc paths
     │       │   │   │   │   │   │   # - Animated segments
     │       │   │   │   │   │   │   # - Touch to select segment
     │       │   │   │   │   │   │   # Props: data[], config, onSegmentPress
-    │       │   │   │   │   │   ├── PieChart.tsx  # ❌ CREATE - Base pie chart
+    │       │   │   │   │   │   ├── PieChart.tsx  # Base pie chart
     │       │   │   │   │   │   │   # - Shared pie chart logic
     │       │   │   │   │   │   │   # - Segment angle calculation
-    │       │   │   │   │   │   ├── PieChart.types.ts  # ❌ CREATE - PieChart types
+    │       │   │   │   │   │   ├── PieChart.types.ts  # PieChart types
     │       │   │   │   │   │   │   # - PieChartConfig interface
     │       │   │   │   │   │   │   # - PieChartProps interface
-    │       │   │   │   │   │   └── PieChart.web.tsx  # ❌ CREATE - Web pie chart
+    │       │   │   │   │   │   └── PieChart.web.tsx  # Web pie chart
     │       │   │   │   │   │       # - SVG paths
     │       │   │   │   │   │       # - Hover effects
     │       │   │   │   │   │       # Props: data[], config, onSegmentClick
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── collaboration/
     │       │   │   │   └── components/
     │       │   │   │       ├── ActiveUsers/
@@ -36797,44 +37114,44 @@ fe/
     │       │   │   ├── error-boundary/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── ErrorFallback/
-    │       │   │   │   │   │   ├── ErrorFallback.native.tsx  # ❌ CREATE - Native error fallback UI
+    │       │   │   │   │   │   ├── ErrorFallback.native.tsx  # Native error fallback UI
     │       │   │   │   │   │   │   # - Error screen with icon, message, details
     │       │   │   │   │   │   │   # - Retry button
     │       │   │   │   │   │   │   # - Report error button
     │       │   │   │   │   │   │   # Props: error, resetError, showDetails
-    │       │   │   │   │   │   ├── ErrorFallback.tsx  # ❌ CREATE - Base error fallback
-    │       │   │   │   │   │   ├── ErrorFallback.types.ts  # ❌ CREATE - ErrorFallback types
-    │       │   │   │   │   │   └── ErrorFallback.web.tsx  # ❌ CREATE - Web error fallback UI
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   ├── ErrorBoundary.tsx  # ❌ CREATE - React Error Boundary
+    │       │   │   │   │   │   ├── ErrorFallback.tsx  # Base error fallback
+    │       │   │   │   │   │   ├── ErrorFallback.types.ts  # ErrorFallback types
+    │       │   │   │   │   │   └── ErrorFallback.web.tsx  # Web error fallback UI
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   ├── ErrorBoundary.tsx  # React Error Boundary
     │       │   │   │   │   # - Catches React errors
     │       │   │   │   │   # - Logs to error service (Sentry)
     │       │   │   │   │   # - Shows fallback UI
     │       │   │   │   │   # - Reset mechanism
     │       │   │   │   │   # Props: fallback, onError, children
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── FileUpload/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── FilePreview/
-    │       │   │   │   │   │   ├── FilePreview.native.tsx  # ❌ CREATE - Native file preview
+    │       │   │   │   │   │   ├── FilePreview.native.tsx  # Native file preview
     │       │   │   │   │   │   │   # - Image/video thumbnail
     │       │   │   │   │   │   │   # - File name and size
     │       │   │   │   │   │   │   # - Remove button
     │       │   │   │   │   │   │   # Props: file, onRemove
-    │       │   │   │   │   │   ├── FilePreview.tsx  # ❌ CREATE - Base file preview
-    │       │   │   │   │   │   ├── FilePreview.types.ts  # ❌ CREATE - FilePreview types
-    │       │   │   │   │   │   └── FilePreview.web.tsx  # ❌ CREATE - Web file preview
+    │       │   │   │   │   │   ├── FilePreview.tsx  # Base file preview
+    │       │   │   │   │   │   ├── FilePreview.types.ts  # FilePreview types
+    │       │   │   │   │   │   └── FilePreview.web.tsx  # Web file preview
     │       │   │   │   │   ├── UploadProgress/
-    │       │   │   │   │   │   ├── UploadProgress.native.tsx  # ❌ CREATE - Native upload progress
+    │       │   │   │   │   │   ├── UploadProgress.native.tsx  # Native upload progress
     │       │   │   │   │   │   │   # - Progress bar
     │       │   │   │   │   │   │   # - File name
     │       │   │   │   │   │   │   # - Cancel button
     │       │   │   │   │   │   │   # Props: file, progress, onCancel
-    │       │   │   │   │   │   ├── UploadProgress.tsx  # ❌ CREATE - Base upload progress
-    │       │   │   │   │   │   ├── UploadProgress.types.ts  # ❌ CREATE - UploadProgress types
-    │       │   │   │   │   │   └── UploadProgress.web.tsx  # ❌ CREATE - Web upload progress
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── UploadProgress.tsx  # Base upload progress
+    │       │   │   │   │   │   ├── UploadProgress.types.ts  # UploadProgress types
+    │       │   │   │   │   │   └── UploadProgress.web.tsx  # Web upload progress
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── gamification/
     │       │   │   │   └── components/
     │       │   │   │       ├── AchievementToast.tsx  # Achievement notification
@@ -36846,17 +37163,17 @@ fe/
     │       │   │   │   │   ├── FormattedMessage/
     │       │   │   │   │   │   └── FormattedMessage.tsx
     │       │   │   │   │   ├── LanguageSelector/
-    │       │   │   │   │   │   ├── LanguageSelector.native.tsx  # ❌ CREATE - Native language picker
+    │       │   │   │   │   │   ├── LanguageSelector.native.tsx  # Native language picker
     │       │   │   │   │   │   │   # - Picker or modal list
     │       │   │   │   │   │   │   # - Current language indicator
     │       │   │   │   │   │   │   # - Flag icons
     │       │   │   │   │   │   │   # Props: currentLanguage, languages[], onChange
-    │       │   │   │   │   │   ├── LanguageSelector.tsx  # ❌ CREATE - Base language selector
+    │       │   │   │   │   │   ├── LanguageSelector.tsx  # Base language selector
     │       │   │   │   │   │   │   # - Shared selector logic
-    │       │   │   │   │   │   ├── LanguageSelector.types.ts  # ❌ CREATE - LanguageSelector types
+    │       │   │   │   │   │   ├── LanguageSelector.types.ts  # LanguageSelector types
     │       │   │   │   │   │   │   # - Language interface
     │       │   │   │   │   │   │   # - LanguageSelectorProps interface
-    │       │   │   │   │   │   └── LanguageSelector.web.tsx  # ❌ CREATE - Web language selector
+    │       │   │   │   │   │   └── LanguageSelector.web.tsx  # Web language selector
     │       │   │   │   │   │       # - Dropdown menu
     │       │   │   │   │   │       # - Flags and language names
     │       │   │   │   │   │       # Props: currentLanguage, languages[], onChange
@@ -36865,38 +37182,38 @@ fe/
     │       │   │   │   │   │   ├── LocaleSwitcher.tsx
     │       │   │   │   │   │   └── LocaleSwitcher.web.tsx
     │       │   │   │   │   ├── TranslatedText/
-    │       │   │   │   │   │   ├── TranslatedText.native.tsx  # ❌ CREATE - Native translated text
+    │       │   │   │   │   │   ├── TranslatedText.native.tsx  # Native translated text
     │       │   │   │   │   │   │   # - Text component with i18n key
     │       │   │   │   │   │   │   # - Automatic translation
     │       │   │   │   │   │   │   # - Variable interpolation
     │       │   │   │   │   │   │   # Props: i18nKey, variables, fallback
-    │       │   │   │   │   │   ├── TranslatedText.tsx  # ❌ CREATE - Base translated text
+    │       │   │   │   │   │   ├── TranslatedText.tsx  # Base translated text
     │       │   │   │   │   │   │   # - Shared translation logic
-    │       │   │   │   │   │   ├── TranslatedText.types.ts  # ❌ CREATE - TranslatedText types
+    │       │   │   │   │   │   ├── TranslatedText.types.ts  # TranslatedText types
     │       │   │   │   │   │   │   # - TranslatedTextProps interface
-    │       │   │   │   │   │   └── TranslatedText.web.tsx  # ❌ CREATE - Web translated text
+    │       │   │   │   │   │   └── TranslatedText.web.tsx  # Web translated text
     │       │   │   │   │   │       # - Span with translated content
     │       │   │   │   │   │       # Props: i18nKey, variables, fallback
     │       │   │   │   │   └── TranslationProvider/
     │       │   │   │   │       └── TranslationProvider.tsx
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── infinite-scroll/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── InfiniteList/
-    │       │   │   │   │   │   ├── InfiniteList.native.tsx  # ❌ CREATE - Native infinite scroll list
+    │       │   │   │   │   │   ├── InfiniteList.native.tsx  # Native infinite scroll list
     │       │   │   │   │   │   │   # - FlatList with onEndReached
     │       │   │   │   │   │   │   # - Loading indicator
     │       │   │   │   │   │   │   # - Error retry
     │       │   │   │   │   │   │   # - Pull to refresh
     │       │   │   │   │   │   │   # Props: data[], loadMore, hasMore, loading, error
-    │       │   │   │   │   │   ├── InfiniteList.tsx  # ❌ CREATE - Base infinite list
-    │       │   │   │   │   │   ├── InfiniteList.types.ts  # ❌ CREATE - InfiniteList types
-    │       │   │   │   │   │   └── InfiniteList.web.tsx  # ❌ CREATE - Web infinite scroll
+    │       │   │   │   │   │   ├── InfiniteList.tsx  # Base infinite list
+    │       │   │   │   │   │   ├── InfiniteList.types.ts  # InfiniteList types
+    │       │   │   │   │   │   └── InfiniteList.web.tsx  # Web infinite scroll
     │       │   │   │   │   │       # - Intersection Observer
     │       │   │   │   │   │       # - Virtual scrolling (react-window)
     │       │   │   │   │   │       # Props: data[], loadMore, hasMore, loading, error
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── safety/
     │       │   │   │   └── components/
     │       │   │   │       ├── BlockConfirmation.tsx  # Block confirmation
@@ -36905,34 +37222,34 @@ fe/
     │       │   │   ├── SearchBar/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── RecentSearches/
-    │       │   │   │   │   │   ├── RecentSearches.native.tsx  # ❌ CREATE - Native recent searches list
+    │       │   │   │   │   │   ├── RecentSearches.native.tsx  # Native recent searches list
     │       │   │   │   │   │   │   # - FlatList of recent searches
     │       │   │   │   │   │   │   # - Clear history button
     │       │   │   │   │   │   │   # Props: searches[], onSelect, onClear
-    │       │   │   │   │   │   ├── RecentSearches.tsx  # ❌ CREATE - Base recent searches
-    │       │   │   │   │   │   ├── RecentSearches.types.ts  # ❌ CREATE - RecentSearches types
-    │       │   │   │   │   │   └── RecentSearches.web.tsx  # ❌ CREATE - Web recent searches
+    │       │   │   │   │   │   ├── RecentSearches.tsx  # Base recent searches
+    │       │   │   │   │   │   ├── RecentSearches.types.ts  # RecentSearches types
+    │       │   │   │   │   │   └── RecentSearches.web.tsx  # Web recent searches
     │       │   │   │   │   ├── SearchFilters/
-    │       │   │   │   │   │   ├── SearchFilters.native.tsx  # ❌ CREATE - Native search filters
+    │       │   │   │   │   │   ├── SearchFilters.native.tsx  # Native search filters
     │       │   │   │   │   │   │   # - Filter chips
     │       │   │   │   │   │   │   # - Filter modal
     │       │   │   │   │   │   │   # Props: filters[], activeFilters[], onChange
-    │       │   │   │   │   │   ├── SearchFilters.tsx  # ❌ CREATE - Base search filters
-    │       │   │   │   │   │   ├── SearchFilters.types.ts  # ❌ CREATE - SearchFilters types
+    │       │   │   │   │   │   ├── SearchFilters.tsx  # Base search filters
+    │       │   │   │   │   │   ├── SearchFilters.types.ts  # SearchFilters types
     │       │   │   │   │   │   │   # - Filter interface
     │       │   │   │   │   │   │   # - FilterType enum
     │       │   │   │   │   │   │   # - SearchFiltersProps interface
-    │       │   │   │   │   │   └── SearchFilters.web.tsx  # ❌ CREATE - Web search filters
+    │       │   │   │   │   │   └── SearchFilters.web.tsx  # Web search filters
     │       │   │   │   │   ├── SearchSuggestions/
-    │       │   │   │   │   │   ├── SearchSuggestions.native.tsx  # ❌ CREATE - Native search suggestions
+    │       │   │   │   │   │   ├── SearchSuggestions.native.tsx  # Native search suggestions
     │       │   │   │   │   │   │   # - FlatList of suggestions
     │       │   │   │   │   │   │   # - Highlighted query match
     │       │   │   │   │   │   │   # Props: suggestions[], query, onSelect
-    │       │   │   │   │   │   ├── SearchSuggestions.tsx  # ❌ CREATE - Base suggestions
-    │       │   │   │   │   │   ├── SearchSuggestions.types.ts  # ❌ CREATE - SearchSuggestions types
-    │       │   │   │   │   │   └── SearchSuggestions.web.tsx  # ❌ CREATE - Web search suggestions
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   │   ├── SearchSuggestions.tsx  # Base suggestions
+    │       │   │   │   │   │   ├── SearchSuggestions.types.ts  # SearchSuggestions types
+    │       │   │   │   │   │   └── SearchSuggestions.web.tsx  # Web search suggestions
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── video/
     │       │   │   │   └── components/
     │       │   │   │       ├── ParticipantGrid/
@@ -36949,27 +37266,27 @@ fe/
     │       │   │   ├── virtual-scroll/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── VirtualGrid/
-    │       │   │   │   │   │   ├── VirtualGrid.native.tsx  # ❌ CREATE - Native virtual grid
+    │       │   │   │   │   │   ├── VirtualGrid.native.tsx  # Native virtual grid
     │       │   │   │   │   │   │   # - FlatList with numColumns
     │       │   │   │   │   │   │   # - Optimized rendering
     │       │   │   │   │   │   │   # Props: data[], columns, renderItem
-    │       │   │   │   │   │   ├── VirtualGrid.tsx  # ❌ CREATE - Base virtual grid
-    │       │   │   │   │   │   ├── VirtualGrid.types.ts  # ❌ CREATE - VirtualGrid types
-    │       │   │   │   │   │   └── VirtualGrid.web.tsx  # ❌ CREATE - Web virtual grid
+    │       │   │   │   │   │   ├── VirtualGrid.tsx  # Base virtual grid
+    │       │   │   │   │   │   ├── VirtualGrid.types.ts  # VirtualGrid types
+    │       │   │   │   │   │   └── VirtualGrid.web.tsx  # Web virtual grid
     │       │   │   │   │   │       # - react-window FixedSizeGrid
     │       │   │   │   │   │       # Props: data[], columns, renderItem
     │       │   │   │   │   ├── VirtualList/
-    │       │   │   │   │   │   ├── VirtualList.native.tsx  # ❌ CREATE - Native virtual list
+    │       │   │   │   │   │   ├── VirtualList.native.tsx  # Native virtual list
     │       │   │   │   │   │   │   # - FlatList with optimizations
     │       │   │   │   │   │   │   # - getItemLayout for performance
     │       │   │   │   │   │   │   # Props: data[], renderItem, itemHeight
-    │       │   │   │   │   │   ├── VirtualList.tsx  # ❌ CREATE - Base virtual list
-    │       │   │   │   │   │   ├── VirtualList.types.ts  # ❌ CREATE - VirtualList types
-    │       │   │   │   │   │   └── VirtualList.web.tsx  # ❌ CREATE - Web virtual list
+    │       │   │   │   │   │   ├── VirtualList.tsx  # Base virtual list
+    │       │   │   │   │   │   ├── VirtualList.types.ts  # VirtualList types
+    │       │   │   │   │   │   └── VirtualList.web.tsx  # Web virtual list
     │       │   │   │   │   │       # - react-window FixedSizeList
     │       │   │   │   │   │       # Props: data[], renderItem, itemHeight
-    │       │   │   │   │   └── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   └── webhooks/
     │       │   │       └── components/
     │       │   │           ├── EventSelector/
@@ -37010,74 +37327,74 @@ fe/
     │       │   │       └── SignatureInput.web.tsx
     │       │   ├── hooks/
     │       │   │   ├── form/
-    │       │   │   │   ├── use-form-field.ts  # ❌ CREATE - Form field hook
+    │       │   │   │   ├── use-form-field.ts  # Form field hook
     │       │   │   │   │   # - Field value, onChange, error
     │       │   │   │   │   # - Validation on blur/change
     │       │   │   │   │   # - Touched state
-    │       │   │   │   ├── use-form-validation.ts  # ❌ CREATE - Form validation hook
+    │       │   │   │   ├── use-form-validation.ts  # Form validation hook
     │       │   │   │   │   # - Schema-based validation
     │       │   │   │   │   # - Field-level and form-level errors
     │       │   │   │   │   # - isValid state
-    │       │   │   │   └── use-multi-step-form.ts  # ❌ CREATE - Multi-step form hook
+    │       │   │   │   └── use-multi-step-form.ts  # Multi-step form hook
     │       │   │   │       # - currentStep, nextStep, prevStep
     │       │   │   │       # - Step validation
     │       │   │   │       # - Form data persistence across steps
     │       │   │   ├── ui/
-    │       │   │   │   ├── use-click-outside.ts  # ❌ CREATE - Click outside hook
+    │       │   │   │   ├── use-click-outside.ts  # Click outside hook
     │       │   │   │   │   # - Detect clicks outside element
     │       │   │   │   │   # - For closing dropdowns, modals
     │       │   │   │   │   # - Web: mousedown listener
     │       │   │   │   │   # - Native: Pressable wrapper
-    │       │   │   │   ├── use-clipboard.ts  # ❌ CREATE - Clipboard hook
+    │       │   │   │   ├── use-clipboard.ts  # Clipboard hook
     │       │   │   │   │   # - Copy to clipboard
     │       │   │   │   │   # - Paste from clipboard
     │       │   │   │   │   # - Success feedback
-    │       │   │   │   ├── use-debounce.ts  # ❌ CREATE - Debounce hook
+    │       │   │   │   ├── use-debounce.ts  # Debounce hook
     │       │   │   │   │   # - Debounce value changes
     │       │   │   │   │   # - Useful for search inputs
-    │       │   │   │   ├── use-disclosure.ts  # ❌ CREATE - Open/close state hook
+    │       │   │   │   ├── use-disclosure.ts  # Open/close state hook
     │       │   │   │   │   # - isOpen, onOpen, onClose, onToggle
     │       │   │   │   │   # - For modals, dropdowns, etc.
-    │       │   │   │   ├── use-hover.ts  # ❌ CREATE - Hover state hook (web only)
+    │       │   │   │   ├── use-hover.ts  # Hover state hook (web only)
     │       │   │   │   │   # - Track hover state
     │       │   │   │   │   # - Returns isHovered, hoverProps
-    │       │   │   │   ├── use-intersection-observer.ts  # ❌ CREATE - Intersection observer hook
+    │       │   │   │   ├── use-intersection-observer.ts  # Intersection observer hook
     │       │   │   │   │   # - Detect element visibility
     │       │   │   │   │   # - Lazy loading, infinite scroll
     │       │   │   │   │   # - Web: IntersectionObserver API
     │       │   │   │   │   # - Native: onLayout with scroll position
-    │       │   │   │   ├── use-local-storage.ts  # ❌ CREATE - Local storage hook
+    │       │   │   │   ├── use-local-storage.ts  # Local storage hook
     │       │   │   │   │   # - Persistent state in localStorage
     │       │   │   │   │   # - JSON serialization
     │       │   │   │   │   # - SSR-safe
-    │       │   │   │   ├── use-media-query.ts  # ❌ CREATE - Media query hook
+    │       │   │   │   ├── use-media-query.ts  # Media query hook
     │       │   │   │   │   # - Responsive breakpoints
     │       │   │   │   │   # - useMediaQuery('(min-width: 768px)')
     │       │   │   │   │   # - Web: matchMedia API
     │       │   │   │   │   # - Native: Dimensions API
-    │       │   │   │   ├── use-pagination.ts  # ❌ CREATE - Pagination hook
+    │       │   │   │   ├── use-pagination.ts  # Pagination hook
     │       │   │   │   │   # - page, setPage, nextPage, prevPage
     │       │   │   │   │   # - pageSize, total, totalPages
     │       │   │   │   │   # - canGoNext, canGoPrev
-    │       │   │   │   ├── use-previous.ts  # ❌ CREATE - Previous value hook
+    │       │   │   │   ├── use-previous.ts  # Previous value hook
     │       │   │   │   │   # - Track previous value of state
     │       │   │   │   │   # - Useful for animations, comparisons
-    │       │   │   │   ├── use-scroll-lock.ts  # ❌ CREATE - Scroll lock hook
+    │       │   │   │   ├── use-scroll-lock.ts  # Scroll lock hook
     │       │   │   │   │   # - Prevent body scroll (modals)
     │       │   │   │   │   # - Web: overflow hidden
     │       │   │   │   │   # - Native: disable ScrollView
-    │       │   │   │   ├── use-timeout.ts  # ❌ CREATE - Timeout hook
+    │       │   │   │   ├── use-timeout.ts  # Timeout hook
     │       │   │   │   │   # - Declarative setTimeout
     │       │   │   │   │   # - Auto-cleanup
-    │       │   │   │   ├── use-toggle.ts  # ❌ CREATE - Toggle hook
+    │       │   │   │   ├── use-toggle.ts  # Toggle hook
     │       │   │   │   │   # - Boolean state with toggle function
     │       │   │   │   │   # - [value, toggle, setTrue, setFalse]
-    │       │   │   │   └── use-window-size.ts  # ❌ CREATE - Window size hook
+    │       │   │   │   └── use-window-size.ts  # Window size hook
     │       │   │   │       # - Track window dimensions
     │       │   │   │       # - Web: window resize listener
     │       │   │   │       # - Native: Dimensions.addEventListener
     │       │   │   │       # - Returns { width, height, isMobile, isTablet, isDesktop }
-    │       │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   └── index.ts  # Barrel export
     │       │   ├── icons/  # Icon components
     │       │   │   └── index.ts  # Export all icons
     │       │   ├── layout/  # Layout components
@@ -37148,27 +37465,27 @@ fe/
     │       │   │           └── Table.web.tsx  # Web implementation
     │       │   ├── providers/
     │       │   │   ├── ThemeProvider/
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   ├── ThemeContext.tsx  # ❌ CREATE - Theme context
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   ├── ThemeContext.tsx  # Theme context
     │       │   │   │   │   # - Current theme (light/dark)
     │       │   │   │   │   # - Toggle theme function
     │       │   │   │   │   # - Theme values
-    │       │   │   │   ├── ThemeProvider.tsx  # ❌ CREATE - Theme provider
+    │       │   │   │   ├── ThemeProvider.tsx  # Theme provider
     │       │   │   │   │   # - Wraps app with theme context
     │       │   │   │   │   # - Persists theme preference
     │       │   │   │   │   # - System theme detection
-    │       │   │   │   └── ThemeProvider.types.ts  # ❌ CREATE - Types
+    │       │   │   │   └── ThemeProvider.types.ts  # Types
     │       │   │   ├── ToastProvider/
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   ├── ToastContext.tsx  # ❌ CREATE - Toast context
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   ├── ToastContext.tsx  # Toast context
     │       │   │   │   │   # - showToast(message, variant)
     │       │   │   │   │   # - hideToast(id)
     │       │   │   │   │   # - Toast queue management
-    │       │   │   │   ├── ToastProvider.tsx  # ❌ CREATE - Toast provider
+    │       │   │   │   ├── ToastProvider.tsx  # Toast provider
     │       │   │   │   │   # - Renders toast container
     │       │   │   │   │   # - Manages toast state
-    │       │   │   │   └── ToastProvider.types.ts  # ❌ CREATE - Types
-    │       │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   └── ToastProvider.types.ts  # Types
+    │       │   │   └── index.ts  # Barrel export
     │       │   ├── tracking/
     │       │   │   ├── TimesheetTable.native.tsx
     │       │   │   ├── TimesheetTable.tsx  # Timesheet grid
@@ -37181,102 +37498,102 @@ fe/
     │       │   │   └── WorkDiaryEntry.web.tsx
     │       │   ├── utils/
     │       │   │   ├── accessibility/
-    │       │   │   │   ├── a11y-helpers.ts  # ❌ CREATE - Accessibility helper functions
+    │       │   │   │   ├── a11y-helpers.ts  # Accessibility helper functions
     │       │   │   │   │   # - generateAriaLabel()
     │       │   │   │   │   # - getAriaDescribedBy()
     │       │   │   │   │   # - announceToScreenReader()
     │       │   │   │   │   # - focusElement()
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── platform-a11y.ts  # ❌ CREATE - Platform-specific a11y utilities
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   └── platform-a11y.ts  # Platform-specific a11y utilities
     │       │   │   │       # - Native: AccessibilityInfo API
     │       │   │   │       # - Web: ARIA attributes
     │       │   │   ├── animations/
-    │       │   │   │   ├── animation-presets.ts  # ❌ CREATE - Pre-defined animation configs
+    │       │   │   │   ├── animation-presets.ts  # Pre-defined animation configs
     │       │   │   │   │   # - fadeIn, fadeOut, slideIn, slideOut
     │       │   │   │   │   # - bounce, shake, pulse
     │       │   │   │   │   # - Platform-specific (reanimated vs CSS)
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── timing.ts  # ❌ CREATE - Animation timing constants
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   └── timing.ts  # Animation timing constants
     │       │   │   │       # - DURATION_FAST = 150ms
     │       │   │   │       # - DURATION_NORMAL = 300ms
     │       │   │   │       # - DURATION_SLOW = 500ms
     │       │   │   │       # - Easing curves
     │       │   │   ├── clipboard/
-    │       │   │   │   ├── clipboard.native.ts  # ❌ CREATE - Native clipboard
+    │       │   │   │   ├── clipboard.native.ts  # Native clipboard
     │       │   │   │   │   # - @react-native-clipboard/clipboard
     │       │   │   │   │   # - Copy/paste text
     │       │   │   │   │   # - Haptic feedback on copy
-    │       │   │   │   ├── clipboard.ts  # ❌ CREATE - Clipboard interface
-    │       │   │   │   ├── clipboard.web.ts  # ❌ CREATE - Web clipboard
+    │       │   │   │   ├── clipboard.ts  # Clipboard interface
+    │       │   │   │   ├── clipboard.web.ts  # Web clipboard
     │       │   │   │   │   # - navigator.clipboard API
     │       │   │   │   │   # - Fallback for older browsers
-    │       │   │   │   └── index.ts  # ❌ CREATE - Barrel export
+    │       │   │   │   └── index.ts  # Barrel export
     │       │   │   ├── debounce/
-    │       │   │   │   ├── debounce.ts  # ❌ CREATE - Debounce utility
+    │       │   │   │   ├── debounce.ts  # Debounce utility
     │       │   │   │   │   # - Debounce function calls
     │       │   │   │   │   # - Configurable delay
     │       │   │   │   │   # - Cancel support
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── throttle.ts  # ❌ CREATE - Throttle utility
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   └── throttle.ts  # Throttle utility
     │       │   │   │       # - Throttle function calls
     │       │   │   │       # - Leading/trailing execution
     │       │   │   ├── formatting/
-    │       │   │   │   ├── currency.ts  # ❌ CREATE - Currency formatting
+    │       │   │   │   ├── currency.ts  # Currency formatting
     │       │   │   │   │   # - formatCurrency(amount, currency, locale)
     │       │   │   │   │   # - parseCurrency()
     │       │   │   │   │   # - currencySymbol()
-    │       │   │   │   ├── date.ts  # ❌ CREATE - Date formatting
+    │       │   │   │   ├── date.ts  # Date formatting
     │       │   │   │   │   # - formatDate(), formatTime(), formatDateTime()
     │       │   │   │   │   # - relativeTime() (2 hours ago)
     │       │   │   │   │   # - dateRange()
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   ├── number.ts  # ❌ CREATE - Number formatting
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   ├── number.ts  # Number formatting
     │       │   │   │   │   # - formatNumber(1234567) → "1,234,567"
     │       │   │   │   │   # - abbreviateNumber(1500000) → "1.5M"
     │       │   │   │   │   # - formatPercentage()
     │       │   │   │   │   # - formatFileSize()
-    │       │   │   │   └── text.ts  # ❌ CREATE - Text formatting
+    │       │   │   │   └── text.ts  # Text formatting
     │       │   │   │       # - truncate(text, length)
     │       │   │   │       # - capitalize()
     │       │   │   │       # - slugify()
     │       │   │   │       # - stripHtml()
     │       │   │   ├── platform/
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   ├── platform-detect.ts  # ❌ CREATE - Platform detection
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   ├── platform-detect.ts  # Platform detection
     │       │   │   │   │   # - isWeb, isNative, isIOS, isAndroid
     │       │   │   │   │   # - Device type (phone, tablet, desktop)
     │       │   │   │   │   # - OS version
-    │       │   │   │   └── responsive.ts  # ❌ CREATE - Responsive utilities
+    │       │   │   │   └── responsive.ts  # Responsive utilities
     │       │   │   │       # - useBreakpoint()
     │       │   │   │       # - getResponsiveValue()
     │       │   │   │       # - isTablet(), isPhone()
     │       │   │   ├── storage/
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   ├── secure-storage.native.ts  # ❌ CREATE - Native secure storage
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   ├── secure-storage.native.ts  # Native secure storage
     │       │   │   │   │   # - expo-secure-store or react-native-keychain
     │       │   │   │   │   # - Encrypted storage for tokens
-    │       │   │   │   ├── secure-storage.ts  # ❌ CREATE - Storage interface
-    │       │   │   │   ├── secure-storage.web.ts  # ❌ CREATE - Web secure storage
+    │       │   │   │   ├── secure-storage.ts  # Storage interface
+    │       │   │   │   ├── secure-storage.web.ts  # Web secure storage
     │       │   │   │   │   # - localStorage with encryption
     │       │   │   │   │   # - Fallback to sessionStorage
-    │       │   │   │   ├── storage.native.ts  # ❌ CREATE - Native async storage
+    │       │   │   │   ├── storage.native.ts  # Native async storage
     │       │   │   │   │   # - @react-native-async-storage/async-storage
-    │       │   │   │   ├── storage.ts  # ❌ CREATE - Storage interface
-    │       │   │   │   └── storage.web.ts  # ❌ CREATE - Web storage
+    │       │   │   │   ├── storage.ts  # Storage interface
+    │       │   │   │   └── storage.web.ts  # Web storage
     │       │   │   │       # - localStorage API
     │       │   │   │       # - JSON serialization
     │       │   │   ├── validation/
-    │       │   │   │   ├── form-validators.ts  # ❌ CREATE - Form validation functions
+    │       │   │   │   ├── form-validators.ts  # Form validation functions
     │       │   │   │   │   # - validateEmail()
     │       │   │   │   │   # - validatePhone()
     │       │   │   │   │   # - validateUrl()
     │       │   │   │   │   # - validatePassword()
     │       │   │   │   │   # - validateCreditCard()
-    │       │   │   │   ├── index.ts  # ❌ CREATE - Barrel export
-    │       │   │   │   └── schema-validators.ts  # ❌ CREATE - Schema validation
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   └── schema-validators.ts  # Schema validation
     │       │   │   │       # - Zod or Yup integration
     │       │   │   │       # - Common schemas (user, job, contract)
-    │       │   │   └── index.ts  # ❌ CREATE - Main barrel export
+    │       │   │   └── index.ts  # Main barrel export
     │       │   ├── video/
     │       │   │   ├── VideoPlayer.native.tsx
     │       │   │   ├── VideoPlayer.tsx  # Video player
