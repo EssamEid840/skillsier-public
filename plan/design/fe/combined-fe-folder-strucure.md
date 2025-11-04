@@ -33294,11 +33294,14 @@ fe/
     |   │   │   │   │       │   # Dependencies: @simplewebauthn/browser
     |   │   │   │   │       └── │
     │   │   │   │   ├── Avatar/
-    │   │   │   │   |       └── Avatar.native.tsx  # Avatar component
+    │   │   │   │   │   ├── Avatar.tsx  # Web Avatar component
+    │   │   │   │   |   └── Avatar.native.tsx  # Mobile Avatar component
     │   │   │   │   ├── Badge/
-    |   │   │   │   |       └── Badge.native.tsx  # Badge component
+    │   │   │   │   │   ├── Badge.tsx  # Web Badge component
+    |   │   │   │   |   └── Badge.native.tsx  # Mobile Badge component
     │   │   │   │   ├── BottomSheet/
-    │   │   │   │   |       └── BottomSheet.native.tsx  # Bottom sheet modal
+    │   │   │   │   │   ├── BottomSheet.tsx  # Web Bottom sheet modal
+    │   │   │   │   |   └── BottomSheet.native.tsx  # Mobile Bottom sheet modal
     │   │   │   │   ├── Breadcrumb/
     │   │   │   │   ├── Button/
     │   │   │   │   │   ├── Button.native.tsx  # Native-specific overrides
@@ -33371,11 +33374,16 @@ fe/
     │   │   │   │   │   ├── MentorCard.tsx  # Mentor profile card
     │   │   │   │   │   └── MentorCard.web.tsx
     │   │   │   │   ├── Common/
-    │   │   │   │   │   ├── EmptyState.native.tsx  # Empty state component
-    │   │   │   │   │   ├── ErrorBoundary.native.tsx  # Error boundary
-    │   │   │   │   │   ├── Loading.native.tsx  # Loading spinner
-    │   │   │   │   │   ├── OptimizedFlashList.native.tsx  # Optimized list (FlashList)
-    │   │   │   │   │   └── PullToRefresh.native.tsx  # Pull to refresh
+    │   │   │   │   │   ├── EmptyState.tsx  # Web Empty state component
+    │   │   │   │   │   ├── EmptyState.native.tsx  # Mobile Empty state component
+    │   │   │   │   │   ├── ErrorBoundary.tsx  # Web Error boundary
+    │   │   │   │   │   ├── ErrorBoundary.native.tsx  # Mobile Error boundary
+    │   │   │   │   │   ├── Loading.tsx  # Web Loading spinner
+    │   │   │   │   │   ├── Loading.native.tsx  # Mobile Loading spinner
+    │   │   │   │   │   ├── OptimizedFlashList.native.tsx  # (mobile-only) Optimized list (FlashList)
+    │   │   │   │   │   └── PullToRefresh.tsx  # web Pull to refresh
+
+    │   │   │   │   │   └── PullToRefresh.native.tsx  # Mobile Pull to refresh
     │   │   │   │   ├── compliance/
     │   │   │   │   │   ├── DocumentUploader.native.tsx
     │   │   │   │   │   ├── DocumentUploader.tsx  # Compliance doc uploader
@@ -34447,6 +34455,7 @@ fe/
     │   │   │   │   │       # - Interactive charts
     │   │   │   │   │       # - Detailed analytics
     │   │   │   │   ├── Search/
+    |   │   │   │   │       │── SearchBar.tsx  # Search bar
     |   │   │   │   │       └── SearchBar.native.tsx  # Search bar
     │   │   │   │   ├── Select/
     │   │   │   │   ├── Skeleton/
@@ -34743,7 +34752,8 @@ fe/
     │   │   │           └── OrganizationChart.web.tsx
     │   │   ├── package.json
     │   │   ├── README.md
-    │   │   └── tsconfig.json
+    │   │   ├── tsconfig.json
+    │   │   └── index.ts                             # barrel exports
     │   └── │
     ├── public/  # Static assets
     │   ├── animations/  # Lottie/animation files
@@ -34932,7 +34942,6 @@ fe/
     │   # - Head meta tags
     │   # - Body layout
     │   # - Font loading
-    ├── loading.tsx  # Global loading state
     ├── middleware.ts  # Next.js middleware
     │   # - Security headers
     │   # - CSRF protection
@@ -34944,7 +34953,6 @@ fe/
     │   # - Bundle analyzer
     │   # - Security headers
     │   # - Rewrites/redirects
-    ├── not-found.tsx  # 404 page
     ├── package.json  # Root package (workspace manager)
     │   # Scripts: dev, build, test, lint, type-check
     │   # Web dependencies
