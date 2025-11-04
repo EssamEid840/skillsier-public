@@ -2533,9 +2533,6 @@ fe/
     │   │   │   │   └── │
     │   │   │   ├── (shared)/
     │   │   │   │   └── deliverables/
-    │   │   │   │       ├── components/
-    │   │   │   │       │   └── DeliverableCard.tsx  # BE: none (typed props), actions wired to mutations
-    │   │   │   │       │       # Typed UI component
     │   │   │   │       ├── mutations.ts  # BE: contracts-be/deliverable — POST /v1/contracts/{id}/deliverables
     │   │   │   │       │   # POST /v1/contracts/{id}/deliverables
     │   │   │   │       └── queries.ts  # BE: contracts-be/deliverable — GET /v1/contracts/{id}/deliverables
@@ -7776,7 +7773,9 @@ fe/
     │   │   │   │   ├── Contracts/
     │   │   │   │   │   ├── ContractCard.tsx  # Contract card
     │   │   │   │   │   ├── MilestoneItem.tsx  # Milestone list item
-    │   │   │   │   │   └── TimesheetEntry.tsx  # Timesheet entry
+    │   │   │   │   │   ├── TimesheetEntry.tsx  # Timesheet entry
+    │   │   │   │   │   └── DeliverableCard.tsx  # BE: none (typed props), actions wired to mutations
+    │   │   │   │   │                            # Typed UI component
     │   │   │   │   ├── Financial/
     │   │   │   │   │   ├── InvoiceCard.tsx  # Invoice card
     │   │   │   │   │   ├── TransactionItem.tsx  # Transaction list item
