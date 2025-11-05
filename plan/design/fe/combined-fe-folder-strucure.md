@@ -7687,6 +7687,25 @@ fe/
     │   │   │       # - Event check-in
     │   │   │       # - Profile sharing
     │   │   ├── src/
+    │   │   │   ├── app/
+    │   │   │   │   ├── (contracts)/
+    │   │   │   │   │   └── _layout.tsx  # ❌ CREATE Route group ErrorBoundary
+    │   │   │   │   │       # - react-error-boundary + Sentry
+    │   │   │   │   │       # - Fallback UI & reset
+    │   │   │   │   │       # BE: None (UI infra)
+    │   │   │   │   │       # :contentReference[oaicite:6]{index=6}
+    │   │   │   │   ├── (jobs)/
+    │   │   │   │   │   └── _layout.tsx  # ❌ CREATE ErrorBoundary (jobs)
+    │   │   │   │   │       # - Clears job filters on reset
+    │   │   │   │   │       # - Sentry logging
+    │   │   │   │   │       # BE: None (UI infra)
+    │   │   │   │   │       # :contentReference[oaicite:7]{index=7}
+    │   │   │   │   └── (proposals)/
+    │   │   │   │       └── _layout.tsx  # ❌ CREATE ErrorBoundary (proposals)
+    │   │   │   │           # - Draft-safe recovery on retry
+    │   │   │   │           # - Cache invalidation on reset
+    │   │   │   │           # BE: None (UI infra)
+    │   │   │   │           # :contentReference[oaicite:8]{index=8}
     │   │   │   ├── components/  # Mobile-specific components
     │   │   │   │   ├── accessibility/
     │   │   │   │   │   ├── FocusTrap.tsx  # Focus trap for modals/dialogs accessibility
@@ -7743,6 +7762,34 @@ fe/
     │   │   │   │   │   │   # Props: mode, onCapture, aspectRatio
     │   │   │   │   │   ├── CameraCapture.types.ts  # Types
     │   │   │   │   │   └── index.ts  # Barrel export
+    │   │   │   │   ├── common/
+    │   │   │   │   │   ├── AvatarPresence.native.tsx  # ❌ CREATE Avatar + online badge
+    │   │   │   │   │   │   # - Re-uses presence hooks
+    │   │   │   │   │   │   # BE: communications-be/presence
+    │   │   │   │   │   ├── EmptyState.native.tsx  # ❌ CREATE Mobile empty state wrapper
+    │   │   │   │   │   │   # - Uses packages/ui/EmptyState
+    │   │   │   │   │   │   # BE: None (UI helper)
+    │   │   │   │   │   ├── FilePickerButton.native.tsx  # ❌ CREATE RN doc/image picker
+    │   │   │   │   │   │   # - Calls storage upload
+    │   │   │   │   │   │   # BE: storage-be/asset
+    │   │   │   │   │   ├── FormField.native.tsx  # ❌ CREATE RN field wrapper (label/error/hint)
+    │   │   │   │   │   │   # - A11y roles, focus
+    │   │   │   │   │   │   # BE: None (forms)
+    │   │   │   │   │   ├── ModalSheet.native.tsx  # ❌ CREATE Bottom sheet wrapper
+    │   │   │   │   │   │   # - Mirrors packages/ui Sheet
+    │   │   │   │   │   │   # BE: None (overlay)
+    │   │   │   │   │   ├── RatingStars.native.tsx  # ❌ CREATE Touch-friendly rating
+    │   │   │   │   │   │   # - Large targets, haptics
+    │   │   │   │   │   │   # BE: reviews-be/rating
+    │   │   │   │   │   ├── SkeletonList.native.tsx  # ❌ CREATE FlashList skeleton scaffold
+    │   │   │   │   │   │   # - Items/placeholders
+    │   │   │   │   │   │   # BE: None (UI feedback)
+    │   │   │   │   │   ├── Tabs.native.tsx  # ❌ CREATE RN tabs (gesture-driven)
+    │   │   │   │   │   │   # - Reanimated integration
+    │   │   │   │   │   │   # BE: None (nav)
+    │   │   │   │   │   └── ToastProvider.native.tsx  # ❌ CREATE Root toast provider
+    │   │   │   │   │       # - Provides useToast to screens
+    │   │   │   │   │       # BE: None (feedback)
     │   │   │   │   ├── Contracts/
     │   │   │   │   │   ├── ContractCard.tsx  # Contract card
     │   │   │   │   │   ├── DeliverableCard.tsx  # BE: none (typed props), actions wired to mutations
@@ -7888,6 +7935,10 @@ fe/
     │   │   │   │   │   ├── MessageBubble.tsx  # Message bubble
     │   │   │   │   │   ├── MessageComposer.tsx  # Message input
     │   │   │   │   │   └── TypingIndicator.tsx  # Typing indicator
+    │   │   │   │   ├── messages/
+    │   │   │   │   │   └── TypingIndicator.native.tsx  # ❌ CREATE RN typing dots
+    │   │   │   │   │       # - Lottie/Reanimated option
+    │   │   │   │   │       # BE: communications-be/typing
     │   │   │   │   ├── messaging/
     │   │   │   │   │   └── VoiceMessage/  # Voice message recorder
     │   │   │   │   │       ├── index.tsx  # Barrel export
@@ -7942,9 +7993,9 @@ fe/
     │   │   │   │   │   └── OfflineBanner.types.ts  # Types
     │   │   │   │   │       # - OfflineBannerProps interface
     │   │   │   │   ├── OfflineIndicator/
-    │   │   │   │   │   ├── index.ts  # Barrel export #
-    │   │   │   │   │   ├── OfflineIndicator.tsx  # Offline mode banner #
-    │   │   │   │   │   └── OfflineIndicator.types.ts  # OfflineIndicatorProps #
+    │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │   │   │   │   │   ├── OfflineIndicator.tsx  # Offline mode banner # ❌ CREATE
+    │   │   │   │   │   └── OfflineIndicator.types.ts  # OfflineIndicatorProps # ❌ CREATE
     │   │   │   │   ├── performance/
     │   │   │   │   │   ├── ImageOptimizer.tsx  # Native Image component with caching
     │   │   │   │   │   │   # - Fast image library
@@ -7991,7 +8042,7 @@ fe/
     │   │   │   │   │           # BE: jobs-be/proposal
     │   │   │   │   ├── PullToRefresh/
     │   │   │   │   │   ├── index.ts  # Barrel export
-    │   │   │   │   │   │   # Barrel export #
+    │   │   │   │   │   │   # Barrel export # ❌ CREATE
     │   │   │   │   │   ├── PullToRefresh.tsx  # Pull to refresh wrapper
     │   │   │   │   │   │   # - ScrollView with RefreshControl
     │   │   │   │   │   │   # - Custom refresh indicator
@@ -7999,10 +8050,10 @@ fe/
     │   │   │   │   │   │   # Props: onRefresh, refreshing, children
     │   │   │   │   │   │   # Pull-to-refresh wrapper
     │   │   │   │   │   │   # - RefreshControl integration
-    │   │   │   │   │   │   # Custom pull-to-refresh component #
+    │   │   │   │   │   │   # Custom pull-to-refresh component # ❌ CREATE
     │   │   │   │   │   └── PullToRefresh.types.ts  # Types
     │   │   │   │   │       # - PullToRefreshProps interface
-    │   │   │   │   │       # PullToRefreshProps with onRefresh #
+    │   │   │   │   │       # PullToRefreshProps with onRefresh # ❌ CREATE
     │   │   │   │   ├── QRScanner/
     │   │   │   │   │   ├── index.ts  # Barrel export
     │   │   │   │   │   ├── QRScanner.tsx  # QR code scanner
@@ -9834,13 +9885,13 @@ fe/
     │       │   │   │   ├── (dashboard)/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── BulkActions/
-    │       │   │   │   │       │   ├── BulkActions.tsx  # Bulk selection and actions toolbar #
-    │       │   │   │   │       │   ├── BulkActions.types.ts  # BulkActionsProps with actions[] #
-    │       │   │   │   │       │   └── index.ts  # Barrel export #
+    │       │   │   │   │       │   ├── BulkActions.tsx  # Bulk selection and actions toolbar # ❌ CREATE
+    │       │   │   │   │       │   ├── BulkActions.types.ts  # BulkActionsProps with actions[] # ❌ CREATE
+    │       │   │   │   │       │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │       └── QuickStats/
-    │       │   │   │   │           ├── index.ts  # Barrel export #
-    │       │   │   │   │           ├── QuickStats.tsx  # Dashboard quick stats cards #
-    │       │   │   │   │           └── QuickStats.types.ts  # QuickStatsProps with metrics #
+    │       │   │   │   │           ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │           ├── QuickStats.tsx  # Dashboard quick stats cards # ❌ CREATE
+    │       │   │   │   │           └── QuickStats.types.ts  # QuickStatsProps with metrics # ❌ CREATE
     │       │   │   │   ├── client/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── JobPostingWizard/  # Multi-step job creation
@@ -14339,6 +14390,14 @@ fe/
     │       │   │   │   │   │   │   └── page.tsx  # Completed contracts
     │       │   │   │   │   │   │       # BE: contracts-be/contract
     │       │   │   │   │   │   │       # GET /v1/contracts?status=completed
+    │       │   │   │   │   │   ├── components/
+    │       │   │   │   │   │   │   ├── EscrowBadge.tsx  # ❌ CREATE Badge for escrow state (on/held/released)
+    │       │   │   │   │   │   │   │   # - Inline with amounts
+    │       │   │   │   │   │   │   │   # BE: financial-be/escrow
+    │       │   │   │   │   │   │   │   # GET /v1/contracts/{id}/escrow
+    │       │   │   │   │   │   │   └── MilestoneStatusPill.tsx  # ❌ CREATE Pill for milestone status
+    │       │   │   │   │   │   │       # - pending/approved/paid
+    │       │   │   │   │   │   │       # BE: financial-be/milestone
     │       │   │   │   │   │   ├── disputes/
     │       │   │   │   │   │   │   └── [disputeId]/
     │       │   │   │   │   │   │       └── page.tsx  # Dispute detail & submit evidence
@@ -15347,6 +15406,20 @@ fe/
     │       │   │   │   │   │   │       # - Subcategories
     │       │   │   │   │   │   │       # BE: jobs-be/categories
     │       │   │   │   │   │   │       # GET /v1/jobs/categories
+    │       │   │   │   │   │   ├── components/
+    │       │   │   │   │   │   │   ├── FilterChips.tsx  # ❌ CREATE Search/filter chips
+    │       │   │   │   │   │   │   │   # - Clear all, count badge
+    │       │   │   │   │   │   │   │   # BE: search-be/job
+    │       │   │   │   │   │   │   ├── JobCardSkeleton.tsx  # ❌ CREATE Card skeleton for jobs grid/list
+    │       │   │   │   │   │   │   │   # - Matches packages/ui Skeleton
+    │       │   │   │   │   │   │   │   # BE: None (UI feedback)
+    │       │   │   │   │   │   │   ├── JobsTableToolbar.tsx  # ❌ CREATE Table toolbar: search/filter/sort/export
+    │       │   │   │   │   │   │   │   # - Integrates Pagination
+    │       │   │   │   │   │   │   │   # BE: search-be/job
+    │       │   │   │   │   │   │   │   # GET /v1/jobs?...
+    │       │   │   │   │   │   │   └── TableEmptyState.tsx  # ❌ CREATE Empty state for tables
+    │       │   │   │   │   │   │       # - Uses packages/ui/EmptyState
+    │       │   │   │   │   │   │       # BE: None (UI helper)
     │       │   │   │   │   │   ├── drafts/
     │       │   │   │   │   │   │   ├── [draftId]/
     │       │   │   │   │   │   │   │   └── edit/
@@ -15736,6 +15809,21 @@ fe/
     │       │   │   │   │   │   │       # - Unarchive capability
     │       │   │   │   │   │   │       # BE: communications-be/conversation
     │       │   │   │   │   │   │       # Archived messages
+    │       │   │   │   │   │   ├── components/
+    │       │   │   │   │   │   │   ├── ComposerAttachmentBar.tsx  # ❌ CREATE Shows queued uploads
+    │       │   │   │   │   │   │   │   # - Retry/cancel
+    │       │   │   │   │   │   │   │   # BE: storage-be/asset
+    │       │   │   │   │   │   │   ├── MessageComposerToolbar.tsx  # ❌ CREATE Composer actions (emoji/file/mention)
+    │       │   │   │   │   │   │   │   # - Uses Uploader, Tooltip
+    │       │   │   │   │   │   │   │   # BE: communications-be/conversation
+    │       │   │   │   │   │   │   │   # POST /v1/conversations/{id}/messages
+    │       │   │   │   │   │   │   │   # :contentReference[oaicite:4]{index=4}
+    │       │   │   │   │   │   │   ├── ReadReceipt.tsx  # ❌ CREATE Read receipt dot/label
+    │       │   │   │   │   │   │   │   # - Seen/delivered states
+    │       │   │   │   │   │   │   │   # BE: communications-be/read-receipt
+    │       │   │   │   │   │   │   └── TypingIndicator.tsx  # ❌ CREATE Animated typing indicator
+    │       │   │   │   │   │   │       # - Debounced presence
+    │       │   │   │   │   │   │       # BE: communications-be/typing
     │       │   │   │   │   │   ├── compose/
     │       │   │   │   │   │   │   └── page.tsx  # Compose new message
     │       │   │   │   │   │   │       # - Recipient search
@@ -16607,6 +16695,18 @@ fe/
     │       │   │   │   │   │   │       # - Success factors
     │       │   │   │   │   │   │       # BE: proposals-be/analytics, search-be/trending
     │       │   │   │   │   │   │       # GET /v1/proposals/benchmarking
+    │       │   │   │   │   │   ├── components/
+    │       │   │   │   │   │   │   ├── PipelineStageChips.tsx  # ❌ CREATE Stage chips (Draft→Hired)
+    │       │   │   │   │   │   │   │   # - Mirrors pipeline stages
+    │       │   │   │   │   │   │   │   # BE: proposals-be/pipeline
+    │       │   │   │   │   │   │   │   # :contentReference[oaicite:9]{index=9}
+    │       │   │   │   │   │   │   ├── ProposalFormError.tsx  # ❌ CREATE Inline form error summary
+    │       │   │   │   │   │   │   │   # - Jumps to first error
+    │       │   │   │   │   │   │   │   # BE: None (UI helper)
+    │       │   │   │   │   │   │   └── ProposalStepper.tsx  # ❌ CREATE Multi-step wizard header
+    │       │   │   │   │   │   │       # - Draft/Submit/Review
+    │       │   │   │   │   │   │       # BE: proposals-be/pipeline
+    │       │   │   │   │   │   │       # :contentReference[oaicite:5]{index=5}
     │       │   │   │   │   │   ├── declined/  # (already listed above; kept once)
     │       │   │   │   │   │   │   └── page.tsx  # Declined proposals
     │       │   │   │   │   │   │       # - Feedback from client
@@ -33540,6 +33640,14 @@ fe/
     │       │   │   ├── VerificationStatus.tsx  # Verification status badge
     │       │   │   └── VerificationStatus.web.tsx
     │       │   ├── components/
+    │       │   │   ├── A11y/
+    │       │   │   │   ├── FocusRing.tsx  # ❌ CREATE Accessible focus ring wrapper
+    │       │   │   │   │   # - Handles :focus-visible & RN equivalents
+    │       │   │   │   │   # - High contrast mode support
+    │       │   │   │   │   # BE: None (a11y)
+    │       │   │   │   └── LiveRegion.web.tsx  # ❌ CREATE ARIA live region helper (web)
+    │       │   │   │       # - For async updates/toasts
+    │       │   │   │       # BE: None (a11y)
     │       │   │   ├── Accessibility/
     │       │   │   │   ├── FocusTrap/
     │       │   │   │   │   ├── FocusTrap.tsx
@@ -33847,7 +33955,7 @@ fe/
     │       │   │   │   │   │   │   # - Dot variant for presence indicator
     │       │   │   │   │   │   │   # - Positioned on parent: top-right, top-left, etc.
     │       │   │   │   │   │   │   # Props: content, variant, position, show, max
-    │       │   │   │   │   │   │   # Native badge with count, dot variant, color coding #
+    │       │   │   │   │   │   │   # Native badge with count, dot variant, color coding # ❌ CREATE
     │       │   │   │   │   │   ├── Badge.tsx  # Base badge component
     │       │   │   │   │   │   │   # - Shared badge logic
     │       │   │   │   │   │   │   # - Number formatting (1K, 1M)
@@ -33861,7 +33969,7 @@ fe/
     │       │   │   │   │   │   │   # BadgeVariant, BadgePosition, BadgeProps
     │       │   │   │   │   │   │   # - BadgeVariant: default, primary, success, warning, error, info, dot
     │       │   │   │   │   │   │   # - BadgePosition: top-right, top-left, bottom-right, bottom-left
-    │       │   │   │   │   │   │   # BadgeProps with count/variant/color/size #
+    │       │   │   │   │   │   │   # BadgeProps with count/variant/color/size # ❌ CREATE
     │       │   │   │   │   │   ├── Badge.web.tsx  # Web badge component
     │       │   │   │   │   │   │   # - Span element with absolute positioning
     │       │   │   │   │   │   │   # - CSS transforms for positioning
@@ -33951,11 +34059,11 @@ fe/
     │       │   │   │   │   │   │   # Web divider with hr/div semantic, vertical using border-left
     │       │   │   │   │   │   └── index.ts  # Barrel export
     │       │   │   │   │   ├── EmptyState/
-    │       │   │   │   │   │   ├── EmptyState.native.tsx  # Native empty state with icon, title, description, action button #
-    │       │   │   │   │   │   ├── EmptyState.tsx  # Base empty state logic, icon selection based on context #
-    │       │   │   │   │   │   ├── EmptyState.types.ts  # EmptyStateProps with icon/title/description/action/variant #
-    │       │   │   │   │   │   ├── EmptyState.web.tsx  # Web empty state with illustrations, animations #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── EmptyState.native.tsx  # Native empty state with icon, title, description, action button # ❌ CREATE
+    │       │   │   │   │   │   ├── EmptyState.tsx  # Base empty state logic, icon selection based on context # ❌ CREATE
+    │       │   │   │   │   │   ├── EmptyState.types.ts  # EmptyStateProps with icon/title/description/action/variant # ❌ CREATE
+    │       │   │   │   │   │   ├── EmptyState.web.tsx  # Web empty state with illustrations, animations # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── IconButton/
     │       │   │   │   │   │   ├── IconButton.native.tsx  # Native icon button
     │       │   │   │   │   │   │   # - Pressable with icon only
@@ -33977,11 +34085,11 @@ fe/
     │       │   │   │   │   │       # - Ripple effect with CSS
     │       │   │   │   │   │       # Props: icon, size, variant, onClick, ariaLabel
     │       │   │   │   │   ├── PresenceIndicator/
-    │       │   │   │   │   │   ├── index.ts  # Barrel export #
-    │       │   │   │   │   │   ├── PresenceIndicator.native.tsx  # Native online/offline/away status indicator #
-    │       │   │   │   │   │   ├── PresenceIndicator.tsx  # Base presence logic, status mapping #
-    │       │   │   │   │   │   ├── PresenceIndicator.types.ts  # PresenceStatus type, PresenceIndicatorProps #
-    │       │   │   │   │   │   └── PresenceIndicator.web.tsx  # Web presence dot with pulse animation #
+    │       │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │   ├── PresenceIndicator.native.tsx  # Native online/offline/away status indicator # ❌ CREATE
+    │       │   │   │   │   │   ├── PresenceIndicator.tsx  # Base presence logic, status mapping # ❌ CREATE
+    │       │   │   │   │   │   ├── PresenceIndicator.types.ts  # PresenceStatus type, PresenceIndicatorProps # ❌ CREATE
+    │       │   │   │   │   │   └── PresenceIndicator.web.tsx  # Web presence dot with pulse animation # ❌ CREATE
     │       │   │   │   │   ├── Radio/
     │       │   │   │   │   │   ├── Radio.native.tsx  # Native radio using Pressable
     │       │   │   │   │   │   │   # - Custom Pressable with circle indicator
@@ -34024,27 +34132,27 @@ fe/
     │       │   │   │   │   │       # BE: reviews-be/review
     │       │   │   │   │   ├── Skeleton/
     │       │   │   │   │   │   ├── index.ts  # Barrel export
-    │       │   │   │   │   │   │   # Barrel export #
+    │       │   │   │   │   │   │   # Barrel export # ❌ CREATE
     │       │   │   │   │   │   ├── Skeleton.native.tsx  # Native skeleton loader
     │       │   │   │   │   │   │   # - Animated gradient placeholder
     │       │   │   │   │   │   │   # - Variants: text, circle, rect, rounded
     │       │   │   │   │   │   │   # - Shimmer animation using Animated API
     │       │   │   │   │   │   │   # Props: variant, width, height, animation
-    │       │   │   │   │   │   │   # Native skeleton loader with shimmer animation #
+    │       │   │   │   │   │   │   # Native skeleton loader with shimmer animation # ❌ CREATE
     │       │   │   │   │   │   ├── Skeleton.tsx  # Base skeleton logic
     │       │   │   │   │   │   │   # - Shared skeleton state
     │       │   │   │   │   │   │   # - Animation timing
-    │       │   │   │   │   │   │   # Base skeleton logic, variant handling #
+    │       │   │   │   │   │   │   # Base skeleton logic, variant handling # ❌ CREATE
     │       │   │   │   │   │   ├── Skeleton.types.ts  # SkeletonVariant, SkeletonProps
     │       │   │   │   │   │   │   # - SkeletonVariant: text, circle, rect, rounded
     │       │   │   │   │   │   │   # - SkeletonProps interface
-    │       │   │   │   │   │   │   # SkeletonProps with variant/width/height/animation #
+    │       │   │   │   │   │   │   # SkeletonProps with variant/width/height/animation # ❌ CREATE
     │       │   │   │   │   │   └── Skeleton.web.tsx  # Web skeleton loader
     │       │   │   │   │   │       # - CSS gradient animation
     │       │   │   │   │   │       # - Responsive width/height
     │       │   │   │   │   │       # - Accessible with aria-busy
     │       │   │   │   │   │       # Props: variant, width, height, animation
-    │       │   │   │   │   │       # Web skeleton with CSS animations, multiple variants #
+    │       │   │   │   │   │       # Web skeleton with CSS animations, multiple variants # ❌ CREATE
     │       │   │   │   │   ├── Spinner/
     │       │   │   │   │   │   ├── Spinner.native.tsx  # Native spinner using ActivityIndicator
     │       │   │   │   │   │   │   # - React Native ActivityIndicator
@@ -34141,7 +34249,7 @@ fe/
     │       │   │   │   │   │   ├── Alert.types.ts  # AlertVariant, AlertProps
     │       │   │   │   │   │   │   # - AlertVariant: info, success, warning, error
     │       │   │   │   │   │   │   # - AlertProps interface
-    │       │   │   │   │   │   │   # AlertProps with severity/title/description/closable #
+    │       │   │   │   │   │   │   # AlertProps with severity/title/description/closable # ❌ CREATE
     │       │   │   │   │   │   ├── Alert.web.tsx  # Web alert component
     │       │   │   │   │   │   │   # - Div with ARIA role="alert"
     │       │   │   │   │   │   │   # - Slide-in animation
@@ -34155,14 +34263,14 @@ fe/
     │       │   │   │   │   │   │   # - Determinate and indeterminate modes
     │       │   │   │   │   │   │   # - Color variants
     │       │   │   │   │   │   │   # Props: value, max, variant, showLabel, indeterminate
-    │       │   │   │   │   │   │   # Native progress bar with animation #
+    │       │   │   │   │   │   │   # Native progress bar with animation # ❌ CREATE
     │       │   │   │   │   │   ├── ProgressBar.tsx  # Base progress bar logic
     │       │   │   │   │   │   │   # - Shared progress calculation
     │       │   │   │   │   │   │   # - Percentage formatting
     │       │   │   │   │   │   ├── ProgressBar.types.ts  # ProgressBarVariant, ProgressBarProps
     │       │   │   │   │   │   │   # - ProgressBarVariant: default, primary, success, warning, error
     │       │   │   │   │   │   │   # - ProgressBarProps interface
-    │       │   │   │   │   │   │   # ProgressBarProps with value/max/label/color #
+    │       │   │   │   │   │   │   # ProgressBarProps with value/max/label/color # ❌ CREATE
     │       │   │   │   │   │   └── ProgressBar.web.tsx  # Web progress bar
     │       │   │   │   │   │       # - HTML5 progress element or div
     │       │   │   │   │   │       # - CSS transition animation
@@ -34190,7 +34298,7 @@ fe/
     │       │   │   │   │   │       # Props: message, action, duration, variant, onClose
     │       │   │   │   │   └── Toast/
     │       │   │   │   │       ├── index.ts  # Barrel export
-    │       │   │   │   │       │   # Barrel export #
+    │       │   │   │   │       │   # Barrel export # ❌ CREATE
     │       │   │   │   │       ├── Toast.native.tsx  # Native toast notification
     │       │   │   │   │       │   # - Top/bottom positioned toast
     │       │   │   │   │       │   # - Fade + slide animation
@@ -34198,65 +34306,65 @@ fe/
     │       │   │   │   │       │   # - Icon per variant
     │       │   │   │   │       │   # - Swipe to dismiss
     │       │   │   │   │       │   # Props: message, variant, position, duration, onClose
-    │       │   │   │   │       │   # Native toast notification with swipe to dismiss #
+    │       │   │   │   │       │   # Native toast notification with swipe to dismiss # ❌ CREATE
     │       │   │   │   │       ├── Toast.tsx  # Base toast logic
     │       │   │   │   │       │   # - Shared toast queue management
     │       │   │   │   │       │   # - Position calculation
-    │       │   │   │   │       │   # Base toast logic, queue management, auto-dismiss #
+    │       │   │   │   │       │   # Base toast logic, queue management, auto-dismiss # ❌ CREATE
     │       │   │   │   │       ├── Toast.types.ts  # ToastVariant, ToastPosition, ToastProps
     │       │   │   │   │       │   # - ToastVariant: default, success, error, warning, info
     │       │   │   │   │       │   # - ToastPosition: top, bottom, top-left, top-right, bottom-left, bottom-right
     │       │   │   │   │       │   # - ToastProps interface
-    │       │   │   │   │       │   # ToastProps with message/severity/duration/action #
+    │       │   │   │   │       │   # ToastProps with message/severity/duration/action # ❌ CREATE
     │       │   │   │   │       └── Toast.web.tsx  # Web toast notification
     │       │   │   │   │           # - Fixed positioned notification
     │       │   │   │   │           # - CSS animation
     │       │   │   │   │           # - Portal for layering
     │       │   │   │   │           # Props: message, variant, position, duration, onClose
-    │       │   │   │   │           # Web toast with position options, stacking #
+    │       │   │   │   │           # Web toast with position options, stacking # ❌ CREATE
     │       │   │   │   ├── Forms/
     │       │   │   │   │   ├── Checkbox/
-    │       │   │   │   │   │   ├── Checkbox.native.tsx  # Native checkbox with animation #
-    │       │   │   │   │   │   └── Checkbox.types.ts  # CheckboxProps with checked/indeterminate/label #
+    │       │   │   │   │   │   ├── Checkbox.native.tsx  # Native checkbox with animation # ❌ CREATE
+    │       │   │   │   │   │   └── Checkbox.types.ts  # CheckboxProps with checked/indeterminate/label # ❌ CREATE
     │       │   │   │   │   ├── DatePicker/
-    │       │   │   │   │   │   ├── DatePicker.native.tsx  # Native date picker with calendar modal #
-    │       │   │   │   │   │   ├── DatePicker.tsx  # Base date logic, validation, formatting #
-    │       │   │   │   │   │   ├── DatePicker.types.ts  # DatePickerProps with min/max/format/locale #
-    │       │   │   │   │   │   ├── DatePicker.web.tsx  # Web date picker with calendar dropdown #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── DatePicker.native.tsx  # Native date picker with calendar modal # ❌ CREATE
+    │       │   │   │   │   │   ├── DatePicker.tsx  # Base date logic, validation, formatting # ❌ CREATE
+    │       │   │   │   │   │   ├── DatePicker.types.ts  # DatePickerProps with min/max/format/locale # ❌ CREATE
+    │       │   │   │   │   │   ├── DatePicker.web.tsx  # Web date picker with calendar dropdown # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── FilePicker/
-    │       │   │   │   │   │   ├── FilePicker.native.tsx  # Native file picker with camera/gallery options #
-    │       │   │   │   │   │   ├── FilePicker.tsx  # Base file validation, size limits, type checking #
-    │       │   │   │   │   │   ├── FilePicker.types.ts  # FilePickerProps with accept/multiple/maxSize #
-    │       │   │   │   │   │   ├── FilePicker.web.tsx  # Web drag-drop zone, file preview #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── FilePicker.native.tsx  # Native file picker with camera/gallery options # ❌ CREATE
+    │       │   │   │   │   │   ├── FilePicker.tsx  # Base file validation, size limits, type checking # ❌ CREATE
+    │       │   │   │   │   │   ├── FilePicker.types.ts  # FilePickerProps with accept/multiple/maxSize # ❌ CREATE
+    │       │   │   │   │   │   ├── FilePicker.web.tsx  # Web drag-drop zone, file preview # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── FormError/
-    │       │   │   │   │   │   ├── FormError.native.tsx  # Native form error text with icon #
-    │       │   │   │   │   │   ├── FormError.tsx  # Base error message formatting #
-    │       │   │   │   │   │   ├── FormError.types.ts  # FormErrorProps with message/fieldName #
-    │       │   │   │   │   │   ├── FormError.web.tsx  # Web error with ARIA live region #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── FormError.native.tsx  # Native form error text with icon # ❌ CREATE
+    │       │   │   │   │   │   ├── FormError.tsx  # Base error message formatting # ❌ CREATE
+    │       │   │   │   │   │   ├── FormError.types.ts  # FormErrorProps with message/fieldName # ❌ CREATE
+    │       │   │   │   │   │   ├── FormError.web.tsx  # Web error with ARIA live region # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── FormHelperText/
-    │       │   │   │   │   │   ├── FormHelperText.native.tsx  # Native helper text below inputs #
-    │       │   │   │   │   │   ├── FormHelperText.tsx  # Base helper text logic #
-    │       │   │   │   │   │   ├── FormHelperText.types.ts  # FormHelperTextProps with text/error #
-    │       │   │   │   │   │   ├── FormHelperText.web.tsx  # Web helper text with ARIA describedby #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── FormHelperText.native.tsx  # Native helper text below inputs # ❌ CREATE
+    │       │   │   │   │   │   ├── FormHelperText.tsx  # Base helper text logic # ❌ CREATE
+    │       │   │   │   │   │   ├── FormHelperText.types.ts  # FormHelperTextProps with text/error # ❌ CREATE
+    │       │   │   │   │   │   ├── FormHelperText.web.tsx  # Web helper text with ARIA describedby # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── RadioGroup/
-    │       │   │   │   │   │   ├── RadioGroup.native.tsx  # Native radio button group #
-    │       │   │   │   │   │   └── RadioGroup.types.ts  # RadioGroupProps with options/value/onChange #
+    │       │   │   │   │   │   ├── RadioGroup.native.tsx  # Native radio button group # ❌ CREATE
+    │       │   │   │   │   │   └── RadioGroup.types.ts  # RadioGroupProps with options/value/onChange # ❌ CREATE
     │       │   │   │   │   ├── RangeSlider/
-    │       │   │   │   │   │   ├── index.ts  # Barrel export #
-    │       │   │   │   │   │   ├── RangeSlider.native.tsx  # Native dual thumb slider for ranges #
-    │       │   │   │   │   │   ├── RangeSlider.tsx  # Base range logic, value constraints #
-    │       │   │   │   │   │   ├── RangeSlider.types.ts  # RangeSliderProps with min/max/step/values #
-    │       │   │   │   │   │   └── RangeSlider.web.tsx  # Web range slider with keyboard support #
+    │       │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │   ├── RangeSlider.native.tsx  # Native dual thumb slider for ranges # ❌ CREATE
+    │       │   │   │   │   │   ├── RangeSlider.tsx  # Base range logic, value constraints # ❌ CREATE
+    │       │   │   │   │   │   ├── RangeSlider.types.ts  # RangeSliderProps with min/max/step/values # ❌ CREATE
+    │       │   │   │   │   │   └── RangeSlider.web.tsx  # Web range slider with keyboard support # ❌ CREATE
     │       │   │   │   │   └── TimePicker/
-    │       │   │   │   │       ├── index.ts  # Barrel export #
-    │       │   │   │   │       ├── TimePicker.native.tsx  # Native time picker with scrollable wheels #
-    │       │   │   │   │       ├── TimePicker.tsx  # Base time validation, 12/24 hour format #
-    │       │   │   │   │       ├── TimePicker.types.ts  # TimePickerProps with format/min/max/step #
-    │       │   │   │   │       └── TimePicker.web.tsx  # Web time input with dropdown #
+    │       │   │   │   │       ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       ├── TimePicker.native.tsx  # Native time picker with scrollable wheels # ❌ CREATE
+    │       │   │   │   │       ├── TimePicker.tsx  # Base time validation, 12/24 hour format # ❌ CREATE
+    │       │   │   │   │       ├── TimePicker.types.ts  # TimePickerProps with format/min/max/step # ❌ CREATE
+    │       │   │   │   │       └── TimePicker.web.tsx  # Web time input with dropdown # ❌ CREATE
     │       │   │   │   ├── IconButton/
     │       │   │   │   │   ├── IconButton.native.tsx  # Native icon button
     │       │   │   │   │   │   # - Pressable with icon only
@@ -34393,17 +34501,17 @@ fe/
     │       │   │   │   │       # Props: href, children, external, onClick
     │       │   │   │   ├── Navigation/
     │       │   │   │   │   ├── Breadcrumb/
-    │       │   │   │   │   │   ├── Breadcrumb.native.tsx  # Native breadcrumb with horizontal scroll #
-    │       │   │   │   │   │   └── Breadcrumb.types.ts  # BreadcrumbProps with items/separator/maxItems #
+    │       │   │   │   │   │   ├── Breadcrumb.native.tsx  # Native breadcrumb with horizontal scroll # ❌ CREATE
+    │       │   │   │   │   │   └── Breadcrumb.types.ts  # BreadcrumbProps with items/separator/maxItems # ❌ CREATE
     │       │   │   │   │   ├── Stepper/
-    │       │   │   │   │   │   ├── index.ts  # Barrel export #
-    │       │   │   │   │   │   ├── Stepper.native.tsx  # Native step indicator for wizards #
-    │       │   │   │   │   │   ├── Stepper.tsx  # Base stepper logic, step validation #
-    │       │   │   │   │   │   ├── Stepper.types.ts  # StepperProps with steps/activeStep/orientation #
-    │       │   │   │   │   │   └── Stepper.web.tsx  # Web stepper with progress line #
+    │       │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │   ├── Stepper.native.tsx  # Native step indicator for wizards # ❌ CREATE
+    │       │   │   │   │   │   ├── Stepper.tsx  # Base stepper logic, step validation # ❌ CREATE
+    │       │   │   │   │   │   ├── Stepper.types.ts  # StepperProps with steps/activeStep/orientation # ❌ CREATE
+    │       │   │   │   │   │   └── Stepper.web.tsx  # Web stepper with progress line # ❌ CREATE
     │       │   │   │   │   └── TabBar/
-    │       │   │   │   │       ├── TabBar.native.tsx  # Native bottom tab bar for navigation #
-    │       │   │   │   │       └── TabBar.types.ts  # TabBarProps with tabs/activeTab/onTabChange #
+    │       │   │   │   │       ├── TabBar.native.tsx  # Native bottom tab bar for navigation # ❌ CREATE
+    │       │   │   │   │       └── TabBar.types.ts  # TabBarProps with tabs/activeTab/onTabChange # ❌ CREATE
     │       │   │   │   ├── Progress/
     │       │   │   │   │   ├── Progress.native.tsx  # Native progress bar
     │       │   │   │   │   │   # - Animated progress with react-native-reanimated
@@ -34588,6 +34696,9 @@ fe/
     │       │   │   ├── Avatar/
     │       │   │   │   ├── Avatar.native.tsx  # Mobile Avatar component
     │       │   │   │   └── Avatar.tsx  # Web Avatar component
+    │       │   │   ├── Backdrop/
+    │       │   │   │   └── Backdrop.tsx  # ❌ CREATE
+    │       │   │   │       # Reusable backdrop overlay (z-index, animation)
     │       │   │   ├── Badge/
     │       │   │   │   ├── Badge.native.tsx  # Mobile Badge component
     │       │   │   │   └── Badge.tsx  # Web Badge component
@@ -34595,6 +34706,20 @@ fe/
     │       │   │   │   ├── BottomSheet.native.tsx  # Mobile Bottom sheet modal
     │       │   │   │   └── BottomSheet.tsx  # Web Bottom sheet modal
     │       │   │   ├── Breadcrumb/
+    │       │   │   │   ├── Breadcrumb.native.tsx  # ❌ CREATE Cross-platform breadcrumb
+    │       │   │   │   │   # - Shared nav primitive for long hierarchies
+    │       │   │   │   │   # - ARIA roles / RN accessibility props
+    │       │   │   │   │   # BE: None (UI primitive)
+    │       │   │   │   ├── Breadcrumb.tsx  # ❌ CREATE Web implementation
+    │       │   │   │   │   # - Keyboard nav, overflow collapsing
+    │       │   │   │   │   # - Works with Next.js routing
+    │       │   │   │   │   # BE: None (UI primitive)
+    │       │   │   │   ├── Breadcrumb.types.ts  # ❌ CREATE Types for items, ellipsis strategy
+    │       │   │   │   │   # - { label, href, icon? }
+    │       │   │   │   │   # BE: None (types)
+    │       │   │   │   └── Breadcrumb.web.tsx  # ❌ CREATE Web-specific enhancements
+    │       │   │   │       # - Prefetch hints for Next links
+    │       │   │   │       # BE: None (UI primitive)
     │       │   │   ├── Button/
     │       │   │   │   ├── Button.native.tsx  # Native-specific overrides
     │       │   │   │   ├── Button.stories.tsx  # Storybook stories
@@ -34620,6 +34745,17 @@ fe/
     │       │   │   │   └── Calendar.web.tsx
     │       │   │   ├── Card/
     │       │   │   │   └── Card.native.tsx  # Card component
+    │       │   │   ├── Chart/
+    │       │   │   │   ├── AreaChart.tsx  # ❌ CREATE Headless chart wrapper
+    │       │   │   │   │   # - Recharts/Victory adapters
+    │       │   │   │   │   # - Light/dark aware
+    │       │   │   │   │   # BE: None (viz)
+    │       │   │   │   ├── BarChart.tsx  # ❌ CREATE Bar chart primitive
+    │       │   │   │   │   # - Responsive container
+    │       │   │   │   │   # BE: None (viz)
+    │       │   │   │   └── Sparkline.tsx  # ❌ CREATE Tiny sparkline for cards
+    │       │   │   │       # - Used in earnings metrics
+    │       │   │   │       # BE: None (viz)
     │       │   │   ├── charts/  # Enhanced chart components
     │       │   │   │   ├── AreaChart/
     │       │   │   │   │   ├── AreaChart.native.tsx  # Native area chart
@@ -34766,6 +34902,10 @@ fe/
     │       │   │   │   ├── VerificationStatus.native.tsx
     │       │   │   │   ├── VerificationStatus.tsx  # Verification status badge
     │       │   │   │   └── VerificationStatus.web.tsx
+    │       │   │   ├── ConfirmDialog/
+    │       │   │   │   ├── ConfirmDialog.native.tsx  # ❌ CREATE Confirmation dialog (destructive actions)
+    │       │   │   │   ├── ConfirmDialog.tsx  # ❌ CREATE Base confirm dialog logic (title, message, actions)
+    │       │   │   │   └── ConfirmDialog.web.tsx  # ❌ CREATE Web confirm modal (portal + backdrop)
     │       │   │   ├── contests/  # ENTIRE SECTION
     │       │   │   │   ├── ContestCard.native.tsx  # Contest card (native)
     │       │   │   │   │   # - Contest preview card
@@ -34834,7 +34974,21 @@ fe/
     │       │   │   │       ├── Timeline.types.ts
     │       │   │   │       └── Timeline.web.tsx
     │       │   │   ├── DataTable/
+    │       │   │   │   ├── DataTable.tsx  # ❌ CREATE Headless table (TanStack)
+    │       │   │   │   │   # - Sorting/filtering/row-select
+    │       │   │   │   │   # BE: None (table)
+    │       │   │   │   ├── DataTable.types.ts  # ❌ CREATE Table generics/types
+    │       │   │   │   │   # - ColumnDef<Row> helpers
+    │       │   │   │   │   # BE: None (types)
+    │       │   │   │   ├── DataTablePagination.tsx  # ❌ CREATE Table paginator binding
+    │       │   │   │   │   # - Wires to Pagination comp
+    │       │   │   │   │   # BE: None (table)
+    │       │   │   │   └── DataTableToolbar.tsx  # ❌ CREATE Actions: search, column toggle, export
+    │       │   │   │       # - Debounced query
+    │       │   │   │       # BE: None (table)
     │       │   │   ├── DatePicker/
+    │       │   │   ├── Drawer/
+    │       │   │   │   └── Drawer.native.tsx  # ❌ CREATE Mobile drawer (uses bottom sheet)
     │       │   │   ├── Dropdown/
     │       │   │   ├── Editor/
     │       │   │   │   ├── CodeEditor/
@@ -34849,6 +35003,18 @@ fe/
     │       │   │   │       ├── RichTextEditor.native.tsx  # Native implementation
     │       │   │   │       ├── RichTextEditor.tsx
     │       │   │   │       └── RichTextEditor.web.tsx  # Web (e.g., TipTap/Slate)
+    │       │   │   ├── EmptyState/
+    │       │   │   │   ├── EmptyState.native.tsx  # ❌ CREATE Mobile empty state
+    │       │   │   │   │   # - Title, description, CTA
+    │       │   │   │   │   # - Illustrations (SVG/PNG)
+    │       │   │   │   │   # BE: None (UI helper)
+    │       │   │   │   ├── EmptyState.tsx  # ❌ CREATE Base empty state component
+    │       │   │   │   │   # - Slots: icon, actions
+    │       │   │   │   │   # - Used across jobs/proposals
+    │       │   │   │   │   # BE: None (UI helper)
+    │       │   │   │   └── EmptyState.web.tsx  # ❌ CREATE Web variant with responsive layout
+    │       │   │   │       # - Grid-aware container
+    │       │   │   │       # BE: None (UI helper)
     │       │   │   ├── escrow/  # ENTIRE SECTION
     │       │   │   │   ├── EscrowStatus.native.tsx  # Escrow status (native)
     │       │   │   │   │   # - Escrow status display
@@ -34902,168 +35068,175 @@ fe/
     │       │   │   │   ├── accessibility/
     │       │   │   │   │   ├── components/
     │       │   │   │   │   │   ├── FocusTrap/
-    │       │   │   │   │   │   │   ├── FocusTrap.native.tsx  # Native focus management for modals #
-    │       │   │   │   │   │   │   ├── FocusTrap.tsx  # Base focus trap logic #
-    │       │   │   │   │   │   │   ├── FocusTrap.types.ts  # FocusTrapProps with active/returnFocus #
-    │       │   │   │   │   │   │   ├── FocusTrap.web.tsx  # Web focus trap with tab key handling #
-    │       │   │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   │   ├── FocusTrap.native.tsx  # Native focus management for modals # ❌ CREATE
+    │       │   │   │   │   │   │   ├── FocusTrap.tsx  # Base focus trap logic # ❌ CREATE
+    │       │   │   │   │   │   │   ├── FocusTrap.types.ts  # FocusTrapProps with active/returnFocus # ❌ CREATE
+    │       │   │   │   │   │   │   ├── FocusTrap.web.tsx  # Web focus trap with tab key handling # ❌ CREATE
+    │       │   │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   │   ├── LiveRegion/
-    │       │   │   │   │   │   │   ├── index.ts  # Barrel export #
-    │       │   │   │   │   │   │   ├── LiveRegion.native.tsx  # Native accessibility announcements #
-    │       │   │   │   │   │   │   ├── LiveRegion.tsx  # Base live region logic #
-    │       │   │   │   │   │   │   ├── LiveRegion.types.ts  # LiveRegionProps with politeness/atomic #
-    │       │   │   │   │   │   │   └── LiveRegion.web.tsx  # Web ARIA live regions #
+    │       │   │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │   │   ├── LiveRegion.native.tsx  # Native accessibility announcements # ❌ CREATE
+    │       │   │   │   │   │   │   ├── LiveRegion.tsx  # Base live region logic # ❌ CREATE
+    │       │   │   │   │   │   │   ├── LiveRegion.types.ts  # LiveRegionProps with politeness/atomic # ❌ CREATE
+    │       │   │   │   │   │   │   └── LiveRegion.web.tsx  # Web ARIA live regions # ❌ CREATE
     │       │   │   │   │   │   └── SkipLink/
-    │       │   │   │   │   │       ├── index.ts  # Barrel export #
-    │       │   │   │   │   │       ├── SkipLink.tsx  # Skip to main content link #
-    │       │   │   │   │   │       ├── SkipLink.types.ts  # SkipLinkProps with target/label #
-    │       │   │   │   │   │       └── SkipLink.web.tsx  # Web skip link with keyboard focus #
-    │       │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │       ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │       ├── SkipLink.tsx  # Skip to main content link # ❌ CREATE
+    │       │   │   │   │   │       ├── SkipLink.types.ts  # SkipLinkProps with target/label # ❌ CREATE
+    │       │   │   │   │   │       └── SkipLink.web.tsx  # Web skip link with keyboard focus # ❌ CREATE
+    │       │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   ├── analytics/
     │       │   │   │   │   ├── components/
     │       │   │   │   │   │   ├── AnalyticsChart/
-    │       │   │   │   │   │   │   ├── AnalyticsChart.native.tsx  # Native chart for earnings, job views #
-    │       │   │   │   │   │   │   ├── AnalyticsChart.tsx  # Base chart data processing #
-    │       │   │   │   │   │   │   ├── AnalyticsChart.types.ts  # ChartType, ChartData, AnalyticsChartProps #
-    │       │   │   │   │   │   │   ├── AnalyticsChart.web.tsx  # Web chart with Chart.js/D3 #
-    │       │   │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   │   ├── AnalyticsChart.native.tsx  # Native chart for earnings, job views # ❌ CREATE
+    │       │   │   │   │   │   │   ├── AnalyticsChart.tsx  # Base chart data processing # ❌ CREATE
+    │       │   │   │   │   │   │   ├── AnalyticsChart.types.ts  # ChartType, ChartData, AnalyticsChartProps # ❌ CREATE
+    │       │   │   │   │   │   │   ├── AnalyticsChart.web.tsx  # Web chart with Chart.js/D3 # ❌ CREATE
+    │       │   │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   │   └── MetricCard/
-    │       │   │   │   │   │       ├── index.ts  # Barrel export #
-    │       │   │   │   │   │       ├── MetricCard.native.tsx  # Native metric display card #
-    │       │   │   │   │   │       ├── MetricCard.tsx  # Base metric formatting, trend calculation #
-    │       │   │   │   │   │       ├── MetricCard.types.ts  # MetricCardProps with value/label/trend/icon #
-    │       │   │   │   │   │       └── MetricCard.web.tsx  # Web metric card with hover effects #
-    │       │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │       ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │       ├── MetricCard.native.tsx  # Native metric display card # ❌ CREATE
+    │       │   │   │   │   │       ├── MetricCard.tsx  # Base metric formatting, trend calculation # ❌ CREATE
+    │       │   │   │   │   │       ├── MetricCard.types.ts  # MetricCardProps with value/label/trend/icon # ❌ CREATE
+    │       │   │   │   │   │       └── MetricCard.web.tsx  # Web metric card with hover effects # ❌ CREATE
+    │       │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   ├── contracts/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── MilestoneTracker/
-    │       │   │   │   │       │   ├── index.ts  # Barrel export #
-    │       │   │   │   │       │   ├── MilestoneTracker.native.tsx  # Native milestone progress view #
-    │       │   │   │   │       │   ├── MilestoneTracker.tsx  # Base milestone state management #
-    │       │   │   │   │       │   ├── MilestoneTracker.types.ts  # Milestone interface, TrackerProps #
-    │       │   │   │   │       │   └── MilestoneTracker.web.tsx  # Web milestone timeline #
+    │       │   │   │   │       │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       │   ├── MilestoneTracker.native.tsx  # Native milestone progress view # ❌ CREATE
+    │       │   │   │   │       │   ├── MilestoneTracker.tsx  # Base milestone state management # ❌ CREATE
+    │       │   │   │   │       │   ├── MilestoneTracker.types.ts  # Milestone interface, TrackerProps # ❌ CREATE
+    │       │   │   │   │       │   └── MilestoneTracker.web.tsx  # Web milestone timeline # ❌ CREATE
     │       │   │   │   │       └── TimeTracker/
-    │       │   │   │   │           ├── index.ts  # Barrel export #
-    │       │   │   │   │           ├── TimeTracker.native.tsx  # Native time tracking widget #
-    │       │   │   │   │           ├── TimeTracker.tsx  # Base timer logic, pause/resume #
-    │       │   │   │   │           ├── TimeTracker.types.ts  # TimeEntry, TimeTrackerProps #
-    │       │   │   │   │           └── TimeTracker.web.tsx  # Web time tracker with keyboard shortcuts #
+    │       │   │   │   │           ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │           ├── TimeTracker.native.tsx  # Native time tracking widget # ❌ CREATE
+    │       │   │   │   │           ├── TimeTracker.tsx  # Base timer logic, pause/resume # ❌ CREATE
+    │       │   │   │   │           ├── TimeTracker.types.ts  # TimeEntry, TimeTrackerProps # ❌ CREATE
+    │       │   │   │   │           └── TimeTracker.web.tsx  # Web time tracker with keyboard shortcuts # ❌ CREATE
     │       │   │   │   ├── financial/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── InvoicePreview/
-    │       │   │   │   │       │   ├── index.ts  # Barrel export #
-    │       │   │   │   │       │   ├── InvoicePreview.native.tsx  # Native invoice PDF preview #
-    │       │   │   │   │       │   ├── InvoicePreview.tsx  # Base invoice data formatting #
-    │       │   │   │   │       │   ├── InvoicePreview.types.ts  # Invoice interface, PreviewProps #
-    │       │   │   │   │       │   └── InvoicePreview.web.tsx  # Web invoice with print styles #
+    │       │   │   │   │       │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       │   ├── InvoicePreview.native.tsx  # Native invoice PDF preview # ❌ CREATE
+    │       │   │   │   │       │   ├── InvoicePreview.tsx  # Base invoice data formatting # ❌ CREATE
+    │       │   │   │   │       │   ├── InvoicePreview.types.ts  # Invoice interface, PreviewProps # ❌ CREATE
+    │       │   │   │   │       │   └── InvoicePreview.web.tsx  # Web invoice with print styles # ❌ CREATE
     │       │   │   │   │       ├── PaymentMethodSelector/
-    │       │   │   │   │       │   ├── index.ts  # Barrel export #
-    │       │   │   │   │       │   ├── PaymentMethodSelector.native.tsx  # Native payment method picker #
-    │       │   │   │   │       │   ├── PaymentMethodSelector.tsx  # Base payment validation #
-    │       │   │   │   │       │   ├── PaymentMethodSelector.types.ts  # PaymentMethod type, SelectorProps #
-    │       │   │   │   │       │   └── PaymentMethodSelector.web.tsx  # Web payment form with icons #
+    │       │   │   │   │       │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       │   ├── PaymentMethodSelector.native.tsx  # Native payment method picker # ❌ CREATE
+    │       │   │   │   │       │   ├── PaymentMethodSelector.tsx  # Base payment validation # ❌ CREATE
+    │       │   │   │   │       │   ├── PaymentMethodSelector.types.ts  # PaymentMethod type, SelectorProps # ❌ CREATE
+    │       │   │   │   │       │   └── PaymentMethodSelector.web.tsx  # Web payment form with icons # ❌ CREATE
     │       │   │   │   │       └── TransactionHistory/
-    │       │   │   │   │           ├── index.ts  # Barrel export #
-    │       │   │   │   │           ├── TransactionHistory.native.tsx  # Native transaction list #
-    │       │   │   │   │           ├── TransactionHistory.tsx  # Base transaction filtering, sorting #
-    │       │   │   │   │           ├── TransactionHistory.types.ts  # Transaction interface, HistoryProps #
-    │       │   │   │   │           └── TransactionHistory.web.tsx  # Web transaction table with export #
+    │       │   │   │   │           ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │           ├── TransactionHistory.native.tsx  # Native transaction list # ❌ CREATE
+    │       │   │   │   │           ├── TransactionHistory.tsx  # Base transaction filtering, sorting # ❌ CREATE
+    │       │   │   │   │           ├── TransactionHistory.types.ts  # Transaction interface, HistoryProps # ❌ CREATE
+    │       │   │   │   │           └── TransactionHistory.web.tsx  # Web transaction table with export # ❌ CREATE
     │       │   │   │   ├── i18n/
     │       │   │   │   │   ├── components/
     │       │   │   │   │   │   ├── LanguageSelector/
-    │       │   │   │   │   │   │   ├── index.ts  # Barrel export #
-    │       │   │   │   │   │   │   ├── LanguageSelector.native.tsx  # Native language picker modal #
-    │       │   │   │   │   │   │   ├── LanguageSelector.tsx  # Base language list, current locale #
-    │       │   │   │   │   │   │   ├── LanguageSelector.types.ts  # Language interface, SelectorProps #
-    │       │   │   │   │   │   │   └── LanguageSelector.web.tsx  # Web language dropdown #
+    │       │   │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │   │   ├── LanguageSelector.native.tsx  # Native language picker modal # ❌ CREATE
+    │       │   │   │   │   │   │   ├── LanguageSelector.tsx  # Base language list, current locale # ❌ CREATE
+    │       │   │   │   │   │   │   ├── LanguageSelector.types.ts  # Language interface, SelectorProps # ❌ CREATE
+    │       │   │   │   │   │   │   └── LanguageSelector.web.tsx  # Web language dropdown # ❌ CREATE
     │       │   │   │   │   │   └── LocalizedDate/
-    │       │   │   │   │   │       ├── index.ts  # Barrel export #
-    │       │   │   │   │   │       ├── LocalizedDate.native.tsx  # Native localized date display #
-    │       │   │   │   │   │       ├── LocalizedDate.tsx  # Base date formatting with locale #
-    │       │   │   │   │   │       ├── LocalizedDate.types.ts  # LocalizedDateProps with format/locale #
-    │       │   │   │   │   │       └── LocalizedDate.web.tsx  # Web date with Intl.DateTimeFormat #
-    │       │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │       ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │       ├── LocalizedDate.native.tsx  # Native localized date display # ❌ CREATE
+    │       │   │   │   │   │       ├── LocalizedDate.tsx  # Base date formatting with locale # ❌ CREATE
+    │       │   │   │   │   │       ├── LocalizedDate.types.ts  # LocalizedDateProps with format/locale # ❌ CREATE
+    │       │   │   │   │   │       └── LocalizedDate.web.tsx  # Web date with Intl.DateTimeFormat # ❌ CREATE
+    │       │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   ├── notifications/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── NotificationBell/
-    │       │   │   │   │       │   ├── index.ts  # Barrel export #
-    │       │   │   │   │       │   ├── NotificationBell.native.tsx  # Native notification icon with badge #
-    │       │   │   │   │       │   ├── NotificationBell.tsx  # Base unread count, bell animation #
-    │       │   │   │   │       │   ├── NotificationBell.types.ts  # NotificationBellProps with count/onClick #
-    │       │   │   │   │       │   └── NotificationBell.web.tsx  # Web bell with dropdown preview #
+    │       │   │   │   │       │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       │   ├── NotificationBell.native.tsx  # Native notification icon with badge # ❌ CREATE
+    │       │   │   │   │       │   ├── NotificationBell.tsx  # Base unread count, bell animation # ❌ CREATE
+    │       │   │   │   │       │   ├── NotificationBell.types.ts  # NotificationBellProps with count/onClick # ❌ CREATE
+    │       │   │   │   │       │   └── NotificationBell.web.tsx  # Web bell with dropdown preview # ❌ CREATE
     │       │   │   │   │       └── NotificationPreferences/
-    │       │   │   │   │           ├── index.ts  # Barrel export #
-    │       │   │   │   │           ├── NotificationPreferences.native.tsx  # Native notification settings #
-    │       │   │   │   │           ├── NotificationPreferences.tsx  # Base preference categories #
-    │       │   │   │   │           ├── NotificationPreferences.types.ts  # Preference types, PreferencesProps #
-    │       │   │   │   │           └── NotificationPreferences.web.tsx  # Web preference checkboxes #
+    │       │   │   │   │           ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │           ├── NotificationPreferences.native.tsx  # Native notification settings # ❌ CREATE
+    │       │   │   │   │           ├── NotificationPreferences.tsx  # Base preference categories # ❌ CREATE
+    │       │   │   │   │           ├── NotificationPreferences.types.ts  # Preference types, PreferencesProps # ❌ CREATE
+    │       │   │   │   │           └── NotificationPreferences.web.tsx  # Web preference checkboxes # ❌ CREATE
     │       │   │   │   ├── ratings/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── RatingInput/
-    │       │   │   │   │       │   ├── index.ts  # Barrel export #
-    │       │   │   │   │       │   ├── RatingInput.native.tsx  # Native star rating input #
-    │       │   │   │   │       │   ├── RatingInput.tsx  # Base rating validation, half-stars #
-    │       │   │   │   │       │   ├── RatingInput.types.ts  # RatingInputProps with value/onChange/max #
-    │       │   │   │   │       │   └── RatingInput.web.tsx  # Web interactive stars with hover #
+    │       │   │   │   │       │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       │   ├── RatingInput.native.tsx  # Native star rating input # ❌ CREATE
+    │       │   │   │   │       │   ├── RatingInput.tsx  # Base rating validation, half-stars # ❌ CREATE
+    │       │   │   │   │       │   ├── RatingInput.types.ts  # RatingInputProps with value/onChange/max # ❌ CREATE
+    │       │   │   │   │       │   └── RatingInput.web.tsx  # Web interactive stars with hover # ❌ CREATE
     │       │   │   │   │       └── ReviewCard/
-    │       │   │   │   │           ├── index.ts  # Barrel export #
-    │       │   │   │   │           ├── ReviewCard.native.tsx  # Native review display card #
-    │       │   │   │   │           ├── ReviewCard.tsx  # Base review data, helpful count #
-    │       │   │   │   │           ├── ReviewCard.types.ts  # Review interface, ReviewCardProps #
-    │       │   │   │   │           └── ReviewCard.web.tsx  # Web review with expand/collapse #
+    │       │   │   │   │           ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │           ├── ReviewCard.native.tsx  # Native review display card # ❌ CREATE
+    │       │   │   │   │           ├── ReviewCard.tsx  # Base review data, helpful count # ❌ CREATE
+    │       │   │   │   │           ├── ReviewCard.types.ts  # Review interface, ReviewCardProps # ❌ CREATE
+    │       │   │   │   │           └── ReviewCard.web.tsx  # Web review with expand/collapse # ❌ CREATE
     │       │   │   │   ├── realtime/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── ConnectionStatus/
-    │       │   │   │   │       │   ├── ConnectionStatus.native.tsx  # Native connection indicator #
-    │       │   │   │   │       │   ├── ConnectionStatus.tsx  # Base connection state management #
-    │       │   │   │   │       │   ├── ConnectionStatus.types.ts  # ConnectionState, StatusProps #
-    │       │   │   │   │       │   ├── ConnectionStatus.web.tsx  # Web connection banner #
-    │       │   │   │   │       │   └── index.ts  # Barrel export #
+    │       │   │   │   │       │   ├── ConnectionStatus.native.tsx  # Native connection indicator # ❌ CREATE
+    │       │   │   │   │       │   ├── ConnectionStatus.tsx  # Base connection state management # ❌ CREATE
+    │       │   │   │   │       │   ├── ConnectionStatus.types.ts  # ConnectionState, StatusProps # ❌ CREATE
+    │       │   │   │   │       │   ├── ConnectionStatus.web.tsx  # Web connection banner # ❌ CREATE
+    │       │   │   │   │       │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │       └── TypingIndicator/
-    │       │   │   │   │           ├── index.ts  # Barrel export #
-    │       │   │   │   │           ├── TypingIndicator.native.tsx  # Native typing dots animation #
-    │       │   │   │   │           ├── TypingIndicator.tsx  # Base typing state logic #
-    │       │   │   │   │           ├── TypingIndicator.types.ts  # TypingIndicatorProps with users #
-    │       │   │   │   │           └── TypingIndicator.web.tsx  # Web typing indicator with names #
+    │       │   │   │   │           ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │           ├── TypingIndicator.native.tsx  # Native typing dots animation # ❌ CREATE
+    │       │   │   │   │           ├── TypingIndicator.tsx  # Base typing state logic # ❌ CREATE
+    │       │   │   │   │           ├── TypingIndicator.types.ts  # TypingIndicatorProps with users # ❌ CREATE
+    │       │   │   │   │           └── TypingIndicator.web.tsx  # Web typing indicator with names # ❌ CREATE
     │       │   │   │   ├── skills/
     │       │   │   │   │   └── components/
     │       │   │   │   │       ├── SkillBadge/
-    │       │   │   │   │       │   ├── index.ts  # Barrel export #
-    │       │   │   │   │       │   ├── SkillBadge.native.tsx  # Native skill badge with level #
-    │       │   │   │   │       │   ├── SkillBadge.tsx  # Base skill data, verification status #
-    │       │   │   │   │       │   ├── SkillBadge.types.ts  # Skill interface, SkillBadgeProps #
-    │       │   │   │   │       │   └── SkillBadge.web.tsx  # Web skill badge with tooltip #
+    │       │   │   │   │       │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       │   ├── SkillBadge.native.tsx  # Native skill badge with level # ❌ CREATE
+    │       │   │   │   │       │   ├── SkillBadge.tsx  # Base skill data, verification status # ❌ CREATE
+    │       │   │   │   │       │   ├── SkillBadge.types.ts  # Skill interface, SkillBadgeProps # ❌ CREATE
+    │       │   │   │   │       │   └── SkillBadge.web.tsx  # Web skill badge with tooltip # ❌ CREATE
     │       │   │   │   │       └── SkillSelector/
-    │       │   │   │   │           ├── index.ts  # Barrel export #
-    │       │   │   │   │           ├── SkillSelector.native.tsx  # Native multi-select skill picker #
-    │       │   │   │   │           ├── SkillSelector.tsx  # Base skill search, autocomplete #
-    │       │   │   │   │           ├── SkillSelector.types.ts  # SkillSelectorProps with suggestions #
-    │       │   │   │   │           └── SkillSelector.web.tsx  # Web skill tags with typeahead #
+    │       │   │   │   │           ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │           ├── SkillSelector.native.tsx  # Native multi-select skill picker # ❌ CREATE
+    │       │   │   │   │           ├── SkillSelector.tsx  # Base skill search, autocomplete # ❌ CREATE
+    │       │   │   │   │           ├── SkillSelector.types.ts  # SkillSelectorProps with suggestions # ❌ CREATE
+    │       │   │   │   │           └── SkillSelector.web.tsx  # Web skill tags with typeahead # ❌ CREATE
     │       │   │   │   └── verification/
     │       │   │   │       └── components/
     │       │   │   │           ├── IdentityVerification/
-    │       │   │   │           │   ├── IdentityVerification.native.tsx  # Native ID upload flow #
-    │       │   │   │           │   ├── IdentityVerification.tsx  # Base verification steps #
-    │       │   │   │           │   ├── IdentityVerification.types.ts  # VerificationStep, VerificationProps #
-    │       │   │   │           │   ├── IdentityVerification.web.tsx  # Web verification wizard #
-    │       │   │   │           │   └── index.ts  # Barrel export #
+    │       │   │   │           │   ├── IdentityVerification.native.tsx  # Native ID upload flow # ❌ CREATE
+    │       │   │   │           │   ├── IdentityVerification.tsx  # Base verification steps # ❌ CREATE
+    │       │   │   │           │   ├── IdentityVerification.types.ts  # VerificationStep, VerificationProps # ❌ CREATE
+    │       │   │   │           │   ├── IdentityVerification.web.tsx  # Web verification wizard # ❌ CREATE
+    │       │   │   │           │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │           └── VerificationBadge/
-    │       │   │   │               ├── index.ts  # Barrel export #
-    │       │   │   │               ├── VerificationBadge.native.tsx  # Native verified checkmark #
-    │       │   │   │               ├── VerificationBadge.tsx  # Base verification levels #
-    │       │   │   │               ├── VerificationBadge.types.ts  # VerificationLevel, BadgeProps #
-    │       │   │   │               └── VerificationBadge.web.tsx  # Web verification icon with tooltip #
+    │       │   │   │               ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │               ├── VerificationBadge.native.tsx  # Native verified checkmark # ❌ CREATE
+    │       │   │   │               ├── VerificationBadge.tsx  # Base verification levels # ❌ CREATE
+    │       │   │   │               ├── VerificationBadge.types.ts  # VerificationLevel, BadgeProps # ❌ CREATE
+    │       │   │   │               └── VerificationBadge.web.tsx  # Web verification icon with tooltip # ❌ CREATE
     │       │   │   ├── Feedback/
     │       │   │   │   ├── Alert/
     │       │   │   │   │   ├── Alert.native.tsx
     │       │   │   │   │   ├── Alert.tsx
     │       │   │   │   │   ├── Alert.types.ts
     │       │   │   │   │   └── Alert.web.tsx
+    │       │   │   │   ├── ConfirmDialog/
+    │       │   │   │   │   ├── ConfirmDialog.native.tsx  # ❌ CREATE Confirmation dialog (destructive actions)
+    │       │   │   │   │   ├── ConfirmDialog.tsx  # ❌ CREATE Base confirm dialog logic (title, message, actions)
+    │       │   │   │   │   └── ConfirmDialog.web.tsx  # ❌ CREATE Web confirm modal (portal + backdrop)
     │       │   │   │   ├── EmptyState/
     │       │   │   │   │   ├── EmptyState.native.tsx
     │       │   │   │   │   ├── EmptyState.tsx
     │       │   │   │   │   ├── EmptyState.types.ts
     │       │   │   │   │   └── EmptyState.web.tsx
+    │       │   │   │   ├── LoadingIndicator/
+    │       │   │   │   │   ├── LoadingIndicator.native.tsx  # ❌ CREATE Full-screen loading spinner overlay (mobile)
+    │       │   │   │   │   └── LoadingIndicator.web.tsx  # ❌ CREATE Full-page loading spinner overlay (web)
     │       │   │   │   ├── Notification/
     │       │   │   │   │   ├── Notification.native.tsx
     │       │   │   │   │   ├── Notification.tsx
@@ -35248,6 +35421,10 @@ fe/
     │       │   │   │   │       # - ARIA live region
     │       │   │   │   │       # Props: type, message, visible
     │       │   │   │   └── index.ts  # Barrel export for feedback
+    │       │   │   ├── FilePicker/
+    │       │   │   │   ├── FilePicker.native.tsx  # ❌ CREATE File picker button (launches native file dialog)
+    │       │   │   │   ├── FilePicker.tsx  # ❌ CREATE Base file picker logic (onSelect, accept types)
+    │       │   │   │   └── FilePicker.web.tsx  # ❌ CREATE Web drag-and-drop file dropzone
     │       │   │   ├── FileUpload/
     │       │   │   │   ├── DocumentScanner/
     │       │   │   │   │   └── DocumentScanner.native.tsx  # Document scanner
@@ -35320,12 +35497,22 @@ fe/
     │       │   │   │   │   ├── RichTextEditor.tsx  # Base editor
     │       │   │   │   │   ├── RichTextEditor.types.ts
     │       │   │   │   │   └── RichTextEditor.web.tsx  # Web (TipTap/Slate)
-    │       │   │   │   └── SignaturePad/
-    │       │   │   │       ├── SignaturePad.native.tsx  # React Native Canvas
-    │       │   │   │       │   # React Native Skia
-    │       │   │   │       ├── SignaturePad.tsx
-    │       │   │   │       ├── SignaturePad.types.ts
-    │       │   │   │       └── SignaturePad.web.tsx  # Canvas-based
+    │       │   │   │   ├── SignaturePad/
+    │       │   │   │   │   ├── SignaturePad.native.tsx  # React Native Canvas
+    │       │   │   │   │   │   # React Native Skia
+    │       │   │   │   │   ├── SignaturePad.tsx
+    │       │   │   │   │   ├── SignaturePad.types.ts
+    │       │   │   │   │   └── SignaturePad.web.tsx  # Canvas-based
+    │       │   │   │   ├── FormField.tsx  # ❌ CREATE Field wrapper (label, error, hint)
+    │       │   │   │   │   # - Works w/ RHF/Zod
+    │       │   │   │   │   # - A11y id/linking
+    │       │   │   │   │   # BE: None (forms)
+    │       │   │   │   ├── InputCurrency.tsx  # ❌ CREATE Currency input mask
+    │       │   │   │   │   # - Intl.NumberFormat
+    │       │   │   │   │   # BE: None (forms)
+    │       │   │   │   └── PhoneInput.tsx  # ❌ CREATE Phone input with country select
+    │       │   │   │       # - libphonenumber-js
+    │       │   │   │       # BE: None (forms)
     │       │   │   ├── Forms/
     │       │   │   │   ├── Checkbox/
     │       │   │   │   │   ├── Checkbox.native.tsx
@@ -35748,11 +35935,20 @@ fe/
     │       │   │   │   │       # - Plural handling
     │       │   │   │   │       # Props: i18nKey, values, count
     │       │   │   │   └── index.ts  # Barrel export for i18n
+    │       │   │   ├── Indicators/
+    │       │   │   │   └── OfflineBanner/
+    │       │   │   │       ├── OfflineBanner.native.tsx  # ❌ CREATE Banner for offline mode (RN NetInfo)
+    │       │   │   │       └── OfflineBanner.web.tsx  # ❌ CREATE Banner for offline mode (navigator.onLine)
     │       │   │   ├── Input/
     │       │   │   │   ├── Input.native.tsx
     │       │   │   │   ├── Input.test.tsx
     │       │   │   │   ├── Input.tsx
     │       │   │   │   └── Input.web.tsx
+    │       │   │   ├── Inputs/
+    │       │   │   │   └── FilePicker/
+    │       │   │   │       ├── FilePicker.native.tsx  # ❌ CREATE File picker button (launches native file dialog)
+    │       │   │   │       ├── FilePicker.tsx  # ❌ CREATE Base file picker logic (onSelect, accept types)
+    │       │   │   │       └── FilePicker.web.tsx  # ❌ CREATE Web drag-and-drop file dropzone
     │       │   │   ├── layout/
     │       │   │   │   ├── AspectRatio/
     │       │   │   │   │   ├── AspectRatio.native.tsx  # Native aspect ratio container
@@ -35889,6 +36085,9 @@ fe/
     │       │   │   │       # - Learning progress display
     │       │   │   │       # - Charts/graphs
     │       │   │   │       # - Detailed stats
+    │       │   │   ├── LoadingIndicator/
+    │       │   │   │   ├── LoadingIndicator.native.tsx  # ❌ CREATE Full-screen loading spinner overlay (mobile)
+    │       │   │   │   └── LoadingIndicator.web.tsx  # ❌ CREATE Full-page loading spinner overlay (web)
     │       │   │   ├── LoadingSpinner/
     │       │   │   │   ├── LoadingSpinner.native.tsx  # Spinner (native)
     │       │   │   │   ├── LoadingSpinner.tsx  # Spinner (shared)
@@ -35942,10 +36141,20 @@ fe/
     │       │   │   │   │       # Props: src, poster, controls, onEnd
     │       │   │   │   └── index.ts  # Barrel export for media
     │       │   │   ├── Modal/
+    │       │   │   │   ├── Dialog.tsx  # ❌ CREATE Headless dialog primitive
+    │       │   │   │   │   # - ARIA modal semantics
+    │       │   │   │   │   # - Focus trap
+    │       │   │   │   │   # BE: None (overlay)
+    │       │   │   │   ├── Dialog.web.tsx  # ❌ CREATE Web portal + scroll lock
+    │       │   │   │   │   # - Escape/Backdrop
+    │       │   │   │   │   # BE: None (overlay)
     │       │   │   │   ├── Modal.native.tsx  # Modal (native)
     │       │   │   │   ├── Modal.tsx  # Modal (shared)
-    │       │   │   │   └── Modal.web.tsx  # Modal (web)
-    │       │   │   │       # BE: none (presentational)
+    │       │   │   │   ├── Modal.web.tsx  # Modal (web)
+    │       │   │   │   │   # BE: none (presentational)
+    │       │   │   │   └── Sheet.native.tsx  # ❌ CREATE RN action sheet bottom drawer
+    │       │   │   │       # - Gestures/physics
+    │       │   │   │       # BE: None (overlay)
     │       │   │   ├── molecules/
     │       │   │   │   ├── DataDisplay/
     │       │   │   │   │   ├── Card/
@@ -36004,11 +36213,11 @@ fe/
     │       │   │   │   │   │   │   # Props: fallback, onError, onReset
     │       │   │   │   │   │   └── index.ts  # Barrel export
     │       │   │   │   │   ├── FilterChip/
-    │       │   │   │   │   │   ├── FilterChip.native.tsx  # Native filter chip with remove button #
-    │       │   │   │   │   │   ├── FilterChip.tsx  # Base filter state management #
-    │       │   │   │   │   │   ├── FilterChip.types.ts  # FilterChipProps with label/onRemove #
-    │       │   │   │   │   │   ├── FilterChip.web.tsx  # Web filter chip with hover state #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── FilterChip.native.tsx  # Native filter chip with remove button # ❌ CREATE
+    │       │   │   │   │   │   ├── FilterChip.tsx  # Base filter state management # ❌ CREATE
+    │       │   │   │   │   │   ├── FilterChip.types.ts  # FilterChipProps with label/onRemove # ❌ CREATE
+    │       │   │   │   │   │   ├── FilterChip.web.tsx  # Web filter chip with hover state # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── FilterChips/
     │       │   │   │   │   │   ├── FilterChips.native.tsx  # Native filter chips using horizontal FlatList, active state, clear all button
     │       │   │   │   │   │   ├── FilterChips.tsx  # Base filter chips logic, selection handling, filter remove callback
@@ -36187,25 +36396,25 @@ fe/
     │       │   │   │   │   │   └── StatusBanner.web.tsx  # Web status banner with sticky position, slide-in animation, ARIA live
     │       │   │   │   │   ├── StatusIndicator/
     │       │   │   │   │   │   ├── index.ts  # Barrel export
-    │       │   │   │   │   │   │   # Barrel export #
+    │       │   │   │   │   │   │   # Barrel export # ❌ CREATE
     │       │   │   │   │   │   ├── StatusIndicator.native.tsx  # Native status indicator
     │       │   │   │   │   │   │   # - Colored dot with label
     │       │   │   │   │   │   │   # - Pulse animation for active states
     │       │   │   │   │   │   │   # - Variants: online, offline, busy, away, success, error, warning, pending
     │       │   │   │   │   │   │   # Props: status, label, showLabel, animated
-    │       │   │   │   │   │   │   # Native status dot with label #
+    │       │   │   │   │   │   │   # Native status dot with label # ❌ CREATE
     │       │   │   │   │   │   ├── StatusIndicator.tsx  # Base status indicator logic
     │       │   │   │   │   │   │   # - Shared status color mapping
-    │       │   │   │   │   │   │   # Base status color mapping #
+    │       │   │   │   │   │   │   # Base status color mapping # ❌ CREATE
     │       │   │   │   │   │   ├── StatusIndicator.types.ts  # StatusIndicatorStatus, StatusIndicatorProps
     │       │   │   │   │   │   │   # - StatusIndicatorStatus enum
     │       │   │   │   │   │   │   # - StatusIndicatorProps interface
-    │       │   │   │   │   │   │   # Status type, StatusIndicatorProps #
+    │       │   │   │   │   │   │   # Status type, StatusIndicatorProps # ❌ CREATE
     │       │   │   │   │   │   └── StatusIndicator.web.tsx  # Web status indicator
     │       │   │   │   │   │       # - Span with CSS dot and label
     │       │   │   │   │   │       # - CSS animation for pulse
     │       │   │   │   │   │       # Props: status, label, showLabel, animated
-    │       │   │   │   │   │       # Web status with pulse animation #
+    │       │   │   │   │   │       # Web status with pulse animation # ❌ CREATE
     │       │   │   │   │   ├── Table/
     │       │   │   │   │   │   ├── Table.native.tsx  # Native table (FlatList-based)
     │       │   │   │   │   │   │   # - FlatList with custom row renderer
@@ -36770,11 +36979,11 @@ fe/
     │       │   │   │   │   │       │   # Props: label, required, optional, htmlFor
     │       │   │   │   │   │       └── index.ts  # Barrel export
     │       │   │   │   │   ├── FormSection/
-    │       │   │   │   │   │   ├── FormSection.native.tsx  # Native form section with title #
-    │       │   │   │   │   │   ├── FormSection.tsx  # Base section grouping logic #
-    │       │   │   │   │   │   ├── FormSection.types.ts  # FormSectionProps with title/description #
-    │       │   │   │   │   │   ├── FormSection.web.tsx  # Web fieldset with legend #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── FormSection.native.tsx  # Native form section with title # ❌ CREATE
+    │       │   │   │   │   │   ├── FormSection.tsx  # Base section grouping logic # ❌ CREATE
+    │       │   │   │   │   │   ├── FormSection.types.ts  # FormSectionProps with title/description # ❌ CREATE
+    │       │   │   │   │   │   ├── FormSection.web.tsx  # Web fieldset with legend # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── StepIndicator/
     │       │   │   │   │   │   ├── index.ts  # Barrel export
     │       │   │   │   │   │   ├── StepIndicator.native.tsx  # Native step indicator for forms
@@ -36794,11 +37003,11 @@ fe/
     │       │   │   │   │   │       # - Responsive: vertical on mobile
     │       │   │   │   │   │       # Props: steps[], currentStep, orientation
     │       │   │   │   │   └── ValidationMessage/
-    │       │   │   │   │       ├── index.ts  # Barrel export #
-    │       │   │   │   │       ├── ValidationMessage.native.tsx  # Native validation feedback #
-    │       │   │   │   │       ├── ValidationMessage.tsx  # Base validation state #
-    │       │   │   │   │       ├── ValidationMessage.types.ts  # ValidationMessageProps #
-    │       │   │   │   │       └── ValidationMessage.web.tsx  # Web validation with icons #
+    │       │   │   │   │       ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       ├── ValidationMessage.native.tsx  # Native validation feedback # ❌ CREATE
+    │       │   │   │   │       ├── ValidationMessage.tsx  # Base validation state # ❌ CREATE
+    │       │   │   │   │       ├── ValidationMessage.types.ts  # ValidationMessageProps # ❌ CREATE
+    │       │   │   │   │       └── ValidationMessage.web.tsx  # Web validation with icons # ❌ CREATE
     │       │   │   │   ├── Layout/
     │       │   │   │   │   ├── Card/
     │       │   │   │   │   │   ├── Card.native.tsx  # Native card component
@@ -37235,11 +37444,11 @@ fe/
     │       │   │   │   │   │   │   # - Keyboard Esc to close
     │       │   │   │   │   │   └── index.ts  # Barrel export
     │       │   │   │   │   ├── MenuBar/
-    │       │   │   │   │   │   ├── index.ts  # Barrel export #
-    │       │   │   │   │   │   ├── MenuBar.native.tsx  # Native horizontal menu bar #
-    │       │   │   │   │   │   ├── MenuBar.tsx  # Base menu structure #
-    │       │   │   │   │   │   ├── MenuBar.types.ts  # MenuItem interface, MenuBarProps #
-    │       │   │   │   │   │   └── MenuBar.web.tsx  # Web menu bar with dropdowns #
+    │       │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │   ├── MenuBar.native.tsx  # Native horizontal menu bar # ❌ CREATE
+    │       │   │   │   │   │   ├── MenuBar.tsx  # Base menu structure # ❌ CREATE
+    │       │   │   │   │   │   ├── MenuBar.types.ts  # MenuItem interface, MenuBarProps # ❌ CREATE
+    │       │   │   │   │   │   └── MenuBar.web.tsx  # Web menu bar with dropdowns # ❌ CREATE
     │       │   │   │   │   ├── Pagination/
     │       │   │   │   │   │   ├── index.ts  # Barrel export
     │       │   │   │   │   │   ├── Pagination.native.tsx  # Native pagination
@@ -37659,9 +37868,12 @@ fe/
     │       │   │   │               # BE: financial-be/payment-method
     │       │   │   ├── Navigation/
     │       │   │   │   ├── Breadcrumb/
+    │       │   │   │   │   ├── Breadcrumb.native.tsx  # ❌ CREATE Mobile breadcrumb navigation component
     │       │   │   │   │   ├── Breadcrumb.tsx
-    │       │   │   │   │   ├── Breadcrumb.types.ts
+    │       │   │   │   │   ├── Breadcrumb.types.ts  # ❌ CREATE BreadcrumbProps interface (mobile & web)
     │       │   │   │   │   └── Breadcrumb.web.tsx
+    │       │   │   │   ├── Drawer/
+    │       │   │   │   │   └── Drawer.native.tsx  # ❌ CREATE Mobile drawer (uses bottom sheet)
     │       │   │   │   ├── Pagination/
     │       │   │   │   │   ├── Pagination.native.tsx
     │       │   │   │   │   ├── Pagination.tsx
@@ -37675,7 +37887,7 @@ fe/
     │       │   │   │   └── Tabs/
     │       │   │   │       ├── Tabs.native.tsx
     │       │   │   │       ├── Tabs.tsx
-    │       │   │   │       ├── Tabs.types.ts
+    │       │   │   │       ├── Tabs.types.ts  # ❌ CREATE TabsProps (improve accessibility & ARIA roles)
     │       │   │   │       └── Tabs.web.tsx
     │       │   │   ├── Offline/
     │       │   │   │   ├── OfflineIndicator/
@@ -37683,6 +37895,9 @@ fe/
     │       │   │   │   │       # Dependencies: @react-native-community/netinfo
     │       │   │   │   └── SyncStatus/
     │       │   │   │       └── SyncStatus.native.tsx  # Sync progress
+    │       │   │   ├── OfflineBanner/
+    │       │   │   │   ├── OfflineBanner.native.tsx  # ❌ CREATE Banner for offline mode (RN NetInfo)
+    │       │   │   │   └── OfflineBanner.web.tsx  # ❌ CREATE Banner for offline mode (navigator.onLine)
     │       │   │   ├── organisms/
     │       │   │   │   ├── Charts/
     │       │   │   │   │   ├── BarChart/
@@ -37805,11 +38020,11 @@ fe/
     │       │   │   │   │           # BE: varies by use case
     │       │   │   │   ├── DataDisplay/
     │       │   │   │   │   ├── Calendar/
-    │       │   │   │   │   │   ├── Calendar.native.tsx  # Native calendar view for availability #
-    │       │   │   │   │   │   ├── Calendar.tsx  # Base calendar logic, event management #
-    │       │   │   │   │   │   ├── Calendar.types.ts  # CalendarEvent, CalendarProps #
-    │       │   │   │   │   │   ├── Calendar.web.tsx  # Web calendar with drag-drop events #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── Calendar.native.tsx  # Native calendar view for availability # ❌ CREATE
+    │       │   │   │   │   │   ├── Calendar.tsx  # Base calendar logic, event management # ❌ CREATE
+    │       │   │   │   │   │   ├── Calendar.types.ts  # CalendarEvent, CalendarProps # ❌ CREATE
+    │       │   │   │   │   │   ├── Calendar.web.tsx  # Web calendar with drag-drop events # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── DataGrid/
     │       │   │   │   │   │   ├── DataGrid.native.tsx  # Mobile data grid component
     │       │   │   │   │   │   │   # FEATURES:
@@ -37878,6 +38093,7 @@ fe/
     │       │   │   │   │   │   │   # - Swipe actions
     │       │   │   │   │   │   │   # Props: columns, data, sortable, selectable, onSort, onSelect
     │       │   │   │   │   │   │   # BE: varies by use case
+    │       │   │   │   │   │   │   # ❌ CREATE Mobile data grid (list substitute)
     │       │   │   │   │   │   ├── DataGrid.tsx  # - Base component
     │       │   │   │   │   │   │   # Base data grid
     │       │   │   │   │   │   │   # - Shared grid logic
@@ -38035,6 +38251,7 @@ fe/
     │       │   │   │   │   │   │   # Native kanban
     │       │   │   │   │   │   │   # - Drag-drop columns and cards
     │       │   │   │   │   │   │   # Props: columns, cards, onCardMove, onColumnMove
+    │       │   │   │   │   │   │   # ❌ CREATE Mobile kanban board (vertical list)
     │       │   │   │   │   │   ├── KanbanBoard.tsx  # - Base component
     │       │   │   │   │   │   │   # Base kanban
     │       │   │   │   │   │   │   # - Shared kanban logic
@@ -38110,6 +38327,7 @@ fe/
     │       │   │   │   │   │   │   # - FlatList with row layout
     │       │   │   │   │   │   │   # - Sortable columns
     │       │   │   │   │   │   │   # Props: columns, data, sortable, selectable, onSort
+    │       │   │   │   │   │   │   # ❌ CREATE Mobile table (FlashList-based)
     │       │   │   │   │   │   ├── Table.tsx  # - Base component
     │       │   │   │   │   │   │   # Base table
     │       │   │   │   │   │   │   # - Shared table logic
@@ -38138,34 +38356,34 @@ fe/
     │       │   │   │   │   │       # Props: searchValue, onSearch, filters, actions, selectedCount
     │       │   │   │   │   ├── Timeline/
     │       │   │   │   │   │   ├── index.ts  # Barrel export
-    │       │   │   │   │   │   │   # Barrel export #
+    │       │   │   │   │   │   │   # Barrel export # ❌ CREATE
     │       │   │   │   │   │   ├── Timeline.native.tsx  # Native timeline component
     │       │   │   │   │   │   │   # - Vertical timeline with items
     │       │   │   │   │   │   │   # - Icon/dot for each item
     │       │   │   │   │   │   │   # - Connecting lines
     │       │   │   │   │   │   │   # - Item content (title, description, timestamp)
     │       │   │   │   │   │   │   # Props: items[], variant
-    │       │   │   │   │   │   │   # Native vertical timeline #
+    │       │   │   │   │   │   │   # Native vertical timeline # ❌ CREATE
     │       │   │   │   │   │   ├── Timeline.tsx  # Base timeline logic
-    │       │   │   │   │   │   │   # Base timeline data structure #
+    │       │   │   │   │   │   │   # Base timeline data structure # ❌ CREATE
     │       │   │   │   │   │   ├── Timeline.types.ts  # TimelineItem, TimelineProps
     │       │   │   │   │   │   │   # - TimelineItem interface
     │       │   │   │   │   │   │   # - TimelineProps interface
-    │       │   │   │   │   │   │   # TimelineItem, TimelineProps #
+    │       │   │   │   │   │   │   # TimelineItem, TimelineProps # ❌ CREATE
     │       │   │   │   │   │   └── Timeline.web.tsx  # Web timeline component
     │       │   │   │   │   │       # - Vertical timeline with CSS
     │       │   │   │   │   │       # - Icon/dot for each item
     │       │   │   │   │   │       # - Connecting lines with pseudo-elements
     │       │   │   │   │   │       # Props: items[], variant
-    │       │   │   │   │   │       # Web timeline with animations #
+    │       │   │   │   │   │       # Web timeline with animations # ❌ CREATE
     │       │   │   │   │   ├── Tooltip/
     │       │   │   │   │   │   └── Tooltip.native.tsx  # Long press; auto-dismiss; a11y; simple text
     │       │   │   │   │   ├── VirtualList/
-    │       │   │   │   │   │   ├── index.ts  # Barrel export #
-    │       │   │   │   │   │   ├── VirtualList.native.tsx  # Native FlashList integration #
-    │       │   │   │   │   │   ├── VirtualList.tsx  # Base virtualization logic #
-    │       │   │   │   │   │   ├── VirtualList.types.ts  # VirtualListProps with rowHeight #
-    │       │   │   │   │   │   └── VirtualList.web.tsx  # Web react-window integration #
+    │       │   │   │   │   │   ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │   │   ├── VirtualList.native.tsx  # Native FlashList integration # ❌ CREATE
+    │       │   │   │   │   │   ├── VirtualList.tsx  # Base virtualization logic # ❌ CREATE
+    │       │   │   │   │   │   ├── VirtualList.types.ts  # VirtualListProps with rowHeight # ❌ CREATE
+    │       │   │   │   │   │   └── VirtualList.web.tsx  # Web react-window integration # ❌ CREATE
     │       │   │   │   │   └── index.ts  # Barrel export for organisms/DataDisplay
     │       │   │   │   ├── DataTable/
     │       │   │   │   │   ├── components/
@@ -38257,18 +38475,18 @@ fe/
     │       │   │   │   │   │       # Props: filters[], values, onChange, onApply, onReset
     │       │   │   │   │   │       # BE: varies by use case
     │       │   │   │   │   └── SearchForm/
-    │       │   │   │   │       ├── index.ts  # Barrel export #
-    │       │   │   │   │       ├── SearchForm.native.tsx  # Native advanced search form #
-    │       │   │   │   │       ├── SearchForm.tsx  # Base search logic, filters #
-    │       │   │   │   │       ├── SearchForm.types.ts  # SearchFilters, SearchFormProps #
-    │       │   │   │   │       └── SearchForm.web.tsx  # Web search with autocomplete #
+    │       │   │   │   │       ├── index.ts  # Barrel export # ❌ CREATE
+    │       │   │   │   │       ├── SearchForm.native.tsx  # Native advanced search form # ❌ CREATE
+    │       │   │   │   │       ├── SearchForm.tsx  # Base search logic, filters # ❌ CREATE
+    │       │   │   │   │       ├── SearchForm.types.ts  # SearchFilters, SearchFormProps # ❌ CREATE
+    │       │   │   │   │       └── SearchForm.web.tsx  # Web search with autocomplete # ❌ CREATE
     │       │   │   │   ├── Layouts/
     │       │   │   │   │   ├── DashboardLayout/
-    │       │   │   │   │   │   ├── DashboardLayout.native.tsx  # Native dashboard container #
-    │       │   │   │   │   │   ├── DashboardLayout.tsx  # Base dashboard structure #
-    │       │   │   │   │   │   ├── DashboardLayout.types.ts  # DashboardLayoutProps #
-    │       │   │   │   │   │   ├── DashboardLayout.web.tsx  # Web dashboard with sidebar #
-    │       │   │   │   │   │   └── index.ts  # Barrel export #
+    │       │   │   │   │   │   ├── DashboardLayout.native.tsx  # Native dashboard container # ❌ CREATE
+    │       │   │   │   │   │   ├── DashboardLayout.tsx  # Base dashboard structure # ❌ CREATE
+    │       │   │   │   │   │   ├── DashboardLayout.types.ts  # DashboardLayoutProps # ❌ CREATE
+    │       │   │   │   │   │   ├── DashboardLayout.web.tsx  # Web dashboard with sidebar # ❌ CREATE
+    │       │   │   │   │   │   └── index.ts  # Barrel export # ❌ CREATE
     │       │   │   │   │   ├── PageHeader/
     │       │   │   │   │   │   ├── index.ts  # Barrel export
     │       │   │   │   │   │   ├── PageHeader.native.tsx  # Native page header component
@@ -38402,6 +38620,8 @@ fe/
     │       │   │   │   │       # Props: steps, onComplete, onSaveDraft, validation
     │       │   │   │   └── index.ts  # Barrel export for organisms
     │       │   │   ├── Overlay/
+    │       │   │   │   ├── Backdrop/
+    │       │   │   │   │   └── Backdrop.tsx  # ❌ CREATE Reusable backdrop overlay (z-index, animation)
     │       │   │   │   ├── Popover/
     │       │   │   │   │   └── Popover.native.tsx  # Mobile popover component
     │       │   │   │   │       # Modal-based implementation with positioning
@@ -38410,13 +38630,17 @@ fe/
     │       │   │   │   │       # Props: anchor, placement, offset, onDismiss
     │       │   │   │   │       # Accessibility: role="dialog", focus management
     │       │   │   │   │       # BE: None (UI)
-    │       │   │   │   └── Tooltip/
-    │       │   │   │       └── Tooltip.native.tsx  # Mobile tooltip component
-    │       │   │   │           # Long-press trigger (onLongPress)
-    │       │   │   │           # Measure anchor; position overlay; auto-dismiss
-    │       │   │   │           # Prevent multiple visible; aria-describedby
-    │       │   │   │           # Props: content, delay, duration, placement
-    │       │   │   │           # BE: None (UI)
+    │       │   │   │   │       # ❌ CREATE Mobile popover component (dropdown menu)
+    │       │   │   │   ├── Tooltip/
+    │       │   │   │   │   └── Tooltip.native.tsx  # Mobile tooltip component
+    │       │   │   │   │       # Long-press trigger (onLongPress)
+    │       │   │   │   │       # Measure anchor; position overlay; auto-dismiss
+    │       │   │   │   │       # Prevent multiple visible; aria-describedby
+    │       │   │   │   │       # Props: content, delay, duration, placement
+    │       │   │   │   │       # BE: None (UI)
+    │       │   │   │   │       # ❌ CREATE Mobile tooltip (long-press trigger)
+    │       │   │   │   ├── Modal.native.tsx  # ❌ CREATE Native modal wrapper (uses React Native Modal)
+    │       │   │   │   └── Modal.web.tsx  # ❌ CREATE Web modal overlay (portal + backdrop)
     │       │   │   ├── overlays/
     │       │   │   │   ├── BottomSheet/
     │       │   │   │   │   ├── BottomSheet.native.tsx  # Native bottom sheet (@gorhom/bottom-sheet)
@@ -38456,7 +38680,29 @@ fe/
     │       │   │   │       ├── Sheet.types.ts  # SheetProps
     │       │   │   │       └── Sheet.web.tsx  # Web action sheet modal
     │       │   │   ├── Pagination/
+    │       │   │   │   ├── Pagination.native.tsx  # ❌ CREATE Mobile paginator
+    │       │   │   │   │   # - Prev/Next + page dots
+    │       │   │   │   │   # - Screen reader labels
+    │       │   │   │   │   # BE: None (UI primitive)
+    │       │   │   │   ├── Pagination.tsx  # ❌ CREATE Base paginator
+    │       │   │   │   │   # - Controlled/uncontrolled
+    │       │   │   │   │   # - Server + client modes
+    │       │   │   │   │   # BE: None (UI primitive)
+    │       │   │   │   └── Pagination.web.tsx  # ❌ CREATE Web paginator with page size selector
+    │       │   │   │       # - For tables/grids
+    │       │   │   │       # BE: None (UI primitive)
     │       │   │   ├── Popover/
+    │       │   │   │   └── Popover.native.tsx  # ❌ CREATE Mobile popover component (dropdown menu)
+    │       │   │   ├── Presence/
+    │       │   │   │   ├── Avatar.tsx  # ❌ CREATE Avatar with fallback initials
+    │       │   │   │   │   # - Sizes/shape variants
+    │       │   │   │   │   # BE: None (display)
+    │       │   │   │   ├── PresenceDot.tsx  # ❌ CREATE Online/away/busy dot
+    │       │   │   │   │   # - Color tokens
+    │       │   │   │   │   # BE: communications-be/presence
+    │       │   │   │   └── UserChip.tsx  # ❌ CREATE Compact user chip (avatar+name+presence)
+    │       │   │   │       # - Click to open profile
+    │       │   │   │       # BE: users-be/profile
     │       │   │   ├── Progress/
     │       │   │   ├── providers/
     │       │   │   │   ├── ThemeProvider/
@@ -38481,6 +38727,15 @@ fe/
     │       │   │   │           # Dependencies: react-native-qrcode-scanner
     │       │   │   ├── Radio/
     │       │   │   ├── Rating/
+    │       │   │   │   ├── RatingStars.native.tsx  # ❌ CREATE RN rating input/display
+    │       │   │   │   │   # - Pressable stars w/ a11y
+    │       │   │   │   │   # BE: reviews-be/rating
+    │       │   │   │   ├── RatingStars.tsx  # ❌ CREATE Base rating stars
+    │       │   │   │   │   # - Half precision, readonly/edit
+    │       │   │   │   │   # BE: reviews-be/rating
+    │       │   │   │   └── RatingStars.web.tsx  # ❌ CREATE Web hover/focus interactions
+    │       │   │   │       # - Keyboard input
+    │       │   │   │       # BE: reviews-be/rating
     │       │   │   ├── rating/
     │       │   │   │   ├── StarRating/
     │       │   │   │   │   ├── index.ts  # Barrel export
@@ -38528,6 +38783,17 @@ fe/
     │       │   │   │   └── SearchBar.native.tsx  # Search bar
     │       │   │   ├── Select/
     │       │   │   ├── Skeleton/
+    │       │   │   │   ├── Skeleton.native.tsx  # ❌ CREATE RN skeleton (animated)
+    │       │   │   │   │   # - Reanimated/LinearGradient
+    │       │   │   │   │   # - List/Card/Avatar presets
+    │       │   │   │   │   # BE: None (UI feedback)
+    │       │   │   │   ├── Skeleton.tsx  # ❌ CREATE Base skeleton block
+    │       │   │   │   │   # - width/height/shape
+    │       │   │   │   │   # - Accessible “busy” state
+    │       │   │   │   │   # BE: None (UI feedback)
+    │       │   │   │   └── Skeleton.web.tsx  # ❌ CREATE CSS keyframe shimmer
+    │       │   │   │       # - Reduced-motion safe
+    │       │   │   │       # BE: None (UI feedback)
     │       │   │   ├── skills-tests/  # ENTIRE SECTION
     │       │   │   │   ├── TestCard.native.tsx  # Test card (native)
     │       │   │   │   │   # - Skills test card
@@ -38567,17 +38833,56 @@ fe/
     │       │   │   │       # - Detailed breakdown
     │       │   │   ├── Slider/
     │       │   │   ├── Stepper/
+    │       │   │   │   ├── Stepper.tsx  # ❌ CREATE Wizard/steps primitive
+    │       │   │   │   │   # - Horizontal/vertical
+    │       │   │   │   │   # BE: None (workflow)
+    │       │   │   │   └── Stepper.types.ts  # ❌ CREATE Step/item definitions
+    │       │   │   │       # - Labels, states
+    │       │   │   │       # BE: None (workflow)
     │       │   │   ├── Switch/
+    │       │   │   ├── Table/
+    │       │   │   │   └── Table.native.tsx  # ❌ CREATE Mobile table (FlashList-based)
     │       │   │   ├── Tabs/
+    │       │   │   │   ├── Tabs.tsx  # ❌ CREATE Headless tabs
+    │       │   │   │   │   # - Roving tabindex
+    │       │   │   │   │   # - Keyboard nav
+    │       │   │   │   │   # BE: None (nav)
+    │       │   │   │   ├── Tabs.types.ts  # ❌ CREATE TabsProps (improve accessibility & ARIA roles)
+    │       │   │   │   └── Tabs.web.tsx  # ❌ CREATE Web tablist/tabpanel roles
+    │       │   │   │       # - SSR-safe id linking
+    │       │   │   │       # BE: None (nav)
     │       │   │   ├── Textarea/
     │       │   │   ├── Timeline/
     │       │   │   ├── TimePicker/
     │       │   │   ├── Toast/
     │       │   │   │   ├── Toast.native.tsx  # Toasts (native)
+    │       │   │   │   │   # ❌ CREATE RN toast portal
+    │       │   │   │   │   # - Success/Info/Error
+    │       │   │   │   │   # - Queue + auto-dismiss
+    │       │   │   │   │   # BE: None (UI feedback)
     │       │   │   │   ├── Toast.tsx  # Toasts (shared)
+    │       │   │   │   │   # ❌ CREATE Headless toast API
+    │       │   │   │   │   # - useToast() provider
+    │       │   │   │   │   # - Accessible live region
+    │       │   │   │   │   # BE: None (UI feedback)
     │       │   │   │   └── Toast.web.tsx  # Toasts (web)
     │       │   │   │       # BE: none (presentational)
+    │       │   │   │       # ❌ CREATE Web toast container
+    │       │   │   │       # - Focus management
+    │       │   │   │       # - Escape to dismiss
+    │       │   │   │       # BE: None (UI feedback)
     │       │   │   ├── Tooltip/
+    │       │   │   │   ├── Tooltip.native.tsx  # ❌ CREATE RN tooltip/sheet fallback
+    │       │   │   │   │   # - Long-press trigger
+    │       │   │   │   │   # - A11y label fallback
+    │       │   │   │   │   # BE: None (UI helper)
+    │       │   │   │   ├── Tooltip.tsx  # ❌ CREATE Headless tooltip logic
+    │       │   │   │   │   # - Delays, placement
+    │       │   │   │   │   # - Pointer/keyboard safe
+    │       │   │   │   │   # BE: None (UI helper)
+    │       │   │   │   └── Tooltip.web.tsx  # ❌ CREATE Web popper-based tooltip
+    │       │   │   │       # - Portals/z-index mgmt
+    │       │   │   │       # BE: None (UI helper)
     │       │   │   ├── tracking/
     │       │   │   │   ├── TimesheetTable.native.tsx
     │       │   │   │   ├── TimesheetTable.tsx  # Timesheet grid
@@ -38615,6 +38920,20 @@ fe/
     │       │   │   │       ├── Zoom.tsx  # Base zoom logic
     │       │   │   │       ├── Zoom.types.ts  # ZoomProps
     │       │   │   │       └── Zoom.web.tsx  # Web zoom transition
+    │       │   │   ├── Uploader/
+    │       │   │   │   ├── FileUploader.native.tsx  # ❌ CREATE RN file picker
+    │       │   │   │   │   # - Doc/image/video
+    │       │   │   │   │   # - Progress + cancel
+    │       │   │   │   │   # BE: storage-be/asset
+    │       │   │   │   │   # POST /v1/storage/upload
+    │       │   │   │   ├── FileUploader.tsx  # ❌ CREATE Headless uploader
+    │       │   │   │   │   # - Dropzone adapter
+    │       │   │   │   │   # - Chunked uploads hook
+    │       │   │   │   │   # BE: storage-be/asset
+    │       │   │   │   └── FileUploader.web.tsx  # ❌ CREATE Web drag-and-drop
+    │       │   │   │       # - Multi + size limits
+    │       │   │   │       # - Virus scan status badge
+    │       │   │   │       # BE: storage-be/asset
     │       │   │   ├── validation/
     │       │   │   │   ├── ErrorMessage/
     │       │   │   │   │   ├── ErrorMessage.native.tsx  # Native error message
@@ -38642,6 +38961,14 @@ fe/
     │       │   │   │   │       # - Associated with input via aria-describedby
     │       │   │   │   │       # Props: text
     │       │   │   │   └── index.ts  # Barrel export for validation
+    │       │   │   ├── Validation/
+    │       │   │   │   ├── FieldError.tsx  # ❌ CREATE Field error text
+    │       │   │   │   │   # - id/aria-describedby
+    │       │   │   │   │   # - Form libs friendly
+    │       │   │   │   │   # BE: None (UI helper)
+    │       │   │   │   └── HelperText.tsx  # ❌ CREATE Subtle helper text
+    │       │   │   │       # - For guidance/hints
+    │       │   │   │       # BE: None (UI helper)
     │       │   │   ├── video/
     │       │   │   │   ├── VideoCall/
     │       │   │   │   │   ├── components/
@@ -38727,6 +39054,9 @@ fe/
     │       │   │   │       ├── TreeView.types.ts
     │       │   │   │       └── TreeView.web.tsx
     │       │   │   └── index.ts  # Main barrel export for fe/packages/ui/src/components
+    │       │   │       # ❌ CREATE Barrel export for new primitives
+    │       │   │       # - export * from './Breadcrumb' ...
+    │       │   │       # BE: None (barrel)
     │       │   ├── constants/
     │       │   │   ├── animations.ts  # Animation constants
     │       │   │   │   # - DURATION_FAST, DURATION_NORMAL, DURATION_SLOW
@@ -39013,7 +39343,12 @@ fe/
     │       │   │   │   │       # - Hook: useTranslation(namespace?)
     │       │   │   │   │       # - Returns: { t, locale, changeLocale }
     │       │   │   │   │       # - Key-based translations
-    │       │   │   │   └── index.ts  # Barrel export
+    │       │   │   │   ├── index.ts  # Barrel export
+    │       │   │   │   └── Trans.tsx  # ❌ CREATE Simple <Trans> wrapper
+    │       │   │   │       # - Uses shared i18n config
+    │       │   │   │       # - ICU message parts
+    │       │   │   │       # BE: None (i18n)
+    │       │   │   │       # :contentReference[oaicite:3]{index=3}
     │       │   │   ├── infinite-scroll/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── InfiniteList/
@@ -39122,19 +39457,22 @@ fe/
     │       │   │   │   │           # - Participant name overlay
     │       │   │   │   │           # - Audio/video indicators
     │       │   │   │   │           # Props: participant, stream, isMuted, isActive
-    │       │   │   │   └── hooks/
-    │       │   │   │       ├── use-agora-call.ts  # Agora video call hook (if using Agora)
-    │       │   │   │       │   # - Hook: useAgoraCall(channelName, token)
-    │       │   │   │       │   # - Returns: { localStream, remoteStreams, joinCall, leaveCall, toggleAudio, toggleVideo }
-    │       │   │   │       │   # - Manages Agora RTC connection
-    │       │   │   │       ├── use-local-stream.ts  # Local media stream hook
-    │       │   │   │       │   # - Hook: useLocalStream()
-    │       │   │   │       │   # - Returns: { stream, audioEnabled, videoEnabled, toggleAudio, toggleVideo, stopStream }
-    │       │   │   │       │   # - Manages local camera/microphone
-    │       │   │   │       └── use-webrtc.ts  # WebRTC connection hook
-    │       │   │   │           # - Hook: useWebRTC(roomId, userId)
-    │       │   │   │           # - Returns: { localStream, remoteStreams, connect, disconnect, sendData }
-    │       │   │   │           # - Generic WebRTC connection management
+    │       │   │   │   ├── hooks/
+    │       │   │   │   │   ├── use-agora-call.ts  # Agora video call hook (if using Agora)
+    │       │   │   │   │   │   # - Hook: useAgoraCall(channelName, token)
+    │       │   │   │   │   │   # - Returns: { localStream, remoteStreams, joinCall, leaveCall, toggleAudio, toggleVideo }
+    │       │   │   │   │   │   # - Manages Agora RTC connection
+    │       │   │   │   │   ├── use-local-stream.ts  # Local media stream hook
+    │       │   │   │   │   │   # - Hook: useLocalStream()
+    │       │   │   │   │   │   # - Returns: { stream, audioEnabled, videoEnabled, toggleAudio, toggleVideo, stopStream }
+    │       │   │   │   │   │   # - Manages local camera/microphone
+    │       │   │   │   │   └── use-webrtc.ts  # WebRTC connection hook
+    │       │   │   │   │       # - Hook: useWebRTC(roomId, userId)
+    │       │   │   │   │       # - Returns: { localStream, remoteStreams, connect, disconnect, sendData }
+    │       │   │   │   │       # - Generic WebRTC connection management
+    │       │   │   │   └── Controls.tsx  # ❌ CREATE Play/Pause/Mic/Camera controls
+    │       │   │   │       # - Shared across calls/interviews
+    │       │   │   │       # BE: communications-be/call
     │       │   │   ├── virtual-scroll/
     │       │   │   │   ├── components/
     │       │   │   │   │   ├── VirtualGrid/
