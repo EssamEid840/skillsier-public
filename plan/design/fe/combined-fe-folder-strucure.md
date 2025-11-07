@@ -144,246 +144,19 @@ fe/
     ├── apps/  # Application workspaces
     │   ├── mobile/  # React Native/Expo application
     │   │   # React Native/Expo app
-    │   │   ├── (contracts)/
-    │   │   │   └── _layout.tsx  # ErrorBoundary (react-error-boundary / Sentry)
-    │   │   │       # ErrorBoundary wrapper
-    │   │   │       # CURRENT: Missing error boundary
-    │   │   │       # REQUIRED: Wrap with react-error-boundary
-    │   │   │       # import { ErrorBoundary } from 'react-error-boundary';
-    │   │   │       # Prevents crashes, shows fallback UI
-    │   │   │       # Error boundary wrapper
-    │   │   │       # Fallback UI; retry/home; Sentry logging; onReset preserves nav
-    │   │   │       # - Wraps entire contracts section with ErrorBoundary
-    │   │   │       # - Fallback UI: error message + retry button + go home button
-    │   │   │       # - Logs errors to Sentry with full context
-    │   │   │       # - onReset: clears cache, resets navigation stack
-    │   │   │       # - Preserves navigation state when possible
-    │   │   │       # - User-friendly error messages (no stack traces)
-    │   │   │       # import * as Sentry from '@sentry/react-native';
-    │   │   │       # ErrorBoundary
-    │   │   │       # Wrap with react-error-boundary; Sentry logging; retry/go-home
-    │   │   │       # onReset clears cache & resets nav; friendly messages
-    │   │   │       # Error boundary for contracts route group
-    │   │   │       # Dependencies: react-error-boundary, @sentry/react-native
-    │   │   │       # import { Stack } from 'expo-router';
-    │   │   │       # FALLBACK UI:
-    │   │   │       # - Error icon + message
-    │   │   │       # - "Retry" button → reset()
-    │   │   │       # - "Go Home" button → router.push('/')
-    │   │   │       # - "Report Issue" button → open support
-    │   │   │       # ERROR HANDLER:
-    │   │   │       # - Log to Sentry with full context
-    │   │   │       # - Include route, user, device info
-    │   │   │       # ON RESET:
-    │   │   │       # - Clear React Query cache for contracts
-    │   │   │       # - Reset navigation stack
-    │   │   │       # - Reload route
-    │   │   │       # export default function ContractsLayout() {
-    │   │   │       # return (
-    │   │   │       # <ErrorBoundary
-    │   │   │       # FallbackComponent={ContractsErrorFallback}
-    │   │   │       # onError={(error, info) => {
-    │   │   │       # Sentry.captureException(error, {
-    │   │   │       # contexts: { react: { componentStack: info.componentStack } }
-    │   │   │       # });
-    │   │   │       # }}
-    │   │   │       # onReset={() => {
-    │   │   │       # queryClient.invalidateQueries({ queryKey: ['contracts'] });
-    │   │   │       # >
-    │   │   │       # <Stack />
-    │   │   │       # </ErrorBoundary>
-    │   │   │       # );
-    │   │   │       # }
-    │   │   │       # BE: None (UI component)
-    │   │   ├── (jobs)/
-    │   │   │   └── _layout.tsx  # ErrorBoundary
-    │   │   │       # ErrorBoundary wrapper
-    │   │   │       # CURRENT: Missing error boundary
-    │   │   │       # REQUIRED: Wrap with react-error-boundary
-    │   │   │       # Prevents crashes in jobs section
-    │   │   │       # Error boundary wrapper
-    │   │   │       # Same pattern; clear filters/state on reset
-    │   │   │       # - Same pattern as contracts error boundary
-    │   │   │       # - Clears job filters/state on reset
-    │   │   │       # - Offers "search again" action
-    │   │   │       # - Tracks error frequency per user
-    │   │   │       # Same as contracts; also clears job filters/state
-    │   │   │       # Error boundary for jobs route group
-    │   │   │       # Same implementation as contracts error boundary
-    │   │   │       # - Custom fallback for jobs context
-    │   │   │       # - Clear jobs cache on reset
-    │   │   │       # - Log jobs-specific errors
-    │   │   │       # BE: None (UI component)
-    │   │   ├── (proposals)/
-    │   │   │   └── _layout.tsx  # ErrorBoundary
-    │   │   │       # ErrorBoundary wrapper
-    │   │   │       # CURRENT: Missing error boundary
-    │   │   │       # REQUIRED: Wrap with react-error-boundary
-    │   │   │       # Prevents crashes in proposals section
-    │   │   │       # Error boundary wrapper
-    │   │   │       # Same pattern; draft-safe recovery on retry
-    │   │   │       # - Same pattern as contracts error boundary
-    │   │   │       # - Draft-safe recovery (preserves unsaved proposals)
-    │   │   │       # - Offers "save draft" before retry
-    │   │   │       # - Warns about data loss if present
-    │   │   │       # Same pattern; preserve unsaved drafts; warn on data loss
-    │   │   │       # Error boundary for proposals route group
-    │   │   │       # Same implementation as contracts error boundary
-    │   │   │       # - Custom fallback for proposals context
-    │   │   │       # - Clear proposals cache on reset
-    │   │   │       # - Log proposals-specific errors
-    │   │   │       # BE: None (UI component)
-    │   │   ├── (public)/  # ENTIRE SECTION - Public/marketing pages
-    │   │   │   # Public pages accessible without authentication
-    │   │   │   # Native implementation for better UX and deep linking
-    │   │   │   # Shares same API endpoints as web app
-    │   │   │   # ADR-006: Public Pages Mobile Strategy
-    │   │   │   # Deep links: skillsier://public/{route}
-    │   │   │   # Offline: Cache static content
-    │   │   │   ├── about/
-    │   │   │   │   └── index.tsx  # About page (mobile)
-    │   │   │   │       # About page
-    │   │   │   │       # Content:
-    │   │   │   │       # - Company story (ScrollView)
-    │   │   │   │       # - Mission & values
-    │   │   │   │       # - Team section (horizontal scroll)
-    │   │   │   │       # - "Join Us" CTA
-    │   │   │   │       # BE: None (static content / CMS)
-    │   │   │   │       # Deep link: skillsier://public/about
-    │   │   │   ├── blog/
-    │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # Blog post detail
-    │   │   │   │   │       # Blog post detail (mobile)
-    │   │   │   │   │       # Content:
-    │   │   │   │   │       # - Blog post content (markdown rendered)
-    │   │   │   │   │       # - Author info
-    │   │   │   │   │       # - Share buttons
-    │   │   │   │   │       # - Related posts
-    │   │   │   │   │       # BE: communications-be/content
-    │   │   │   │   │       # GET /v1/content/blog/:slug
-    │   │   │   │   │       # Dependencies: react-native-markdown-display
-    │   │   │   │   └── index.tsx  # Blog list
-    │   │   │   │       # Blog list (mobile)
-    │   │   │   │       # Content:
-    │   │   │   │       # - Featured posts (carousel)
-    │   │   │   │       # - Recent posts (FlashList)
-    │   │   │   │       # - Categories filter
-    │   │   │   │       # - Search
-    │   │   │   │       # BE: communications-be/content
-    │   │   │   │       # GET /v1/content/blog
-    │   │   │   ├── case-studies/
-    │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # Case study detail
-    │   │   │   │   │       # Case study detail (mobile)
-    │   │   │   │   │       # Content:
-    │   │   │   │   │       # - Client name & logo
-    │   │   │   │   │       # - Challenge, solution, results
-    │   │   │   │   │       # - Metrics visualization
-    │   │   │   │   │       # - CTA: "Start your project"
-    │   │   │   │   │       # BE: None (static / CMS)
-    │   │   │   │   └── index.tsx  # Case studies list
-    │   │   │   │       # Case studies list (mobile)
-    │   │   │   │       # Content:
-    │   │   │   │       # - Featured case studies
-    │   │   │   │       # - Industry filter (pills)
-    │   │   │   │       # - Results filter (by ROI, timeline)
-    │   │   │   │       # BE: None (static / CMS)
-    │   │   │   ├── contact/
-    │   │   │   │   └── index.tsx  # Contact page
-    │   │   │   │       # Contact page (mobile)
-    │   │   │   │       # Content:
-    │   │   │   │       # - Contact form
-    │   │   │   │       # - Support email/phone
-    │   │   │   │       # - Social links
-    │   │   │   │       # - Live chat trigger
-    │   │   │   │       # BE: communications-be/contact
-    │   │   │   │       # POST /v1/contact
-    │   │   │   ├── developer/
-    │   │   │   │   ├── docs/
-    │   │   │   │   │   └── index.tsx  # Developer docs
-    │   │   │   │   │       # Developer docs (mobile)
-    │   │   │   │   │       # Content:
-    │   │   │   │   │       # - Getting started guide
-    │   │   │   │   │       # - API reference (categories)
-    │   │   │   │   │       # - Code examples link
-    │   │   │   │   │       # BE: None (static)
-    │   │   │   │   ├── examples/
-    │   │   │   │   │   └── index.tsx  # Code examples
-    │   │   │   │   │       # Code examples (mobile)
-    │   │   │   │   │       # Content:
-    │   │   │   │   │       # - Code snippets gallery
-    │   │   │   │   │       # - Copy button
-    │   │   │   │   │       # - Syntax highlighting
-    │   │   │   │   │       # BE: None (static / CMS)
-    │   │   │   │   └── index.tsx  # Developer hub
-    │   │   │   │       # Developer hub (mobile)
-    │   │   │   │       # Content:
-    │   │   │   │       # - Developer hub overview
-    │   │   │   │       # - Quick links
-    │   │   │   │       # BE: None (static)
-    │   │   │   ├── help/
-    │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # Help article detail
-    │   │   │   │   │       # Help article detail (mobile)
-    │   │   │   │   │       # Content:
-    │   │   │   │   │       # - Help article content
-    │   │   │   │   │       # - Helpful? feedback
-    │   │   │   │   │       # - Related articles
-    │   │   │   │   │       # BE: communications-be/kb
-    │   │   │   │   │       # GET /v1/kb/articles/:slug
-    │   │   │   │   └── index.tsx  # Help center
-    │   │   │   │       # Help center (mobile)
-    │   │   │   │       # Content:
-    │   │   │   │       # - Search bar
-    │   │   │   │       # - Popular articles
-    │   │   │   │       # - Categories
-    │   │   │   │       # - Contact support CTA
-    │   │   │   │       # BE: communications-be/kb
-    │   │   │   │       # GET /v1/kb/articles
-    │   │   │   ├── legal/
-    │   │   │   │   ├── cookies/
-    │   │   │   │   │   └── index.tsx  # Cookie policy
-    │   │   │   │   │       # Cookie policy (mobile)
-    │   │   │   │   │       # Content: Cookie policy (ScrollView)
-    │   │   │   │   │       # BE: None (static)
-    │   │   │   │   ├── privacy/
-    │   │   │   │   │   └── index.tsx  # Privacy policy
-    │   │   │   │   │       # Privacy policy (mobile)
-    │   │   │   │   │       # Content: Privacy policy (ScrollView)
-    │   │   │   │   │       # BE: None (static)
-    │   │   │   │   └── terms/
-    │   │   │   │       └── index.tsx  # Terms of service
-    │   │   │   │           # Terms of service (mobile)
-    │   │   │   │           # Content: Terms of service (ScrollView)
-    │   │   │   │           # BE: None (static)
-    │   │   │   ├── pricing/
-    │   │   │   │   └── index.tsx  # Pricing page
-    │   │   │   │       # Pricing page (mobile)
-    │   │   │   │       # Content:
-    │   │   │   │       # - Pricing tiers (cards)
-    │   │   │   │       # - Feature comparison
-    │   │   │   │       # - FAQ accordion
-    │   │   │   │       # - "Get Started" CTA
-    │   │   │   │       # BE: None (static / CMS)
-    │   │   │   │       # Deep link: skillsier://public/pricing
-    │   │   │   └── _layout.tsx  # Public routes layout
-    │   │   │       # - No auth required
-    │   │   │       # - Minimal header
-    │   │   │       # - Deep linking support
-    │   │   │       # BE: None (layout)
     │   │   ├── app/  # Expo Router file-based routing
-    │   │   │   ├── (admin)/  # Optional mobile admin area (if enabled later)
+    │   │   │   └── (admin)/  # Mobile admin area (ENABLED).
     │   │   │   │   # Admin portal (now available on mobile)
-    │   │   │   │   # ENTIRE ADMIN SECTION (optional)
-    │   │   │   │   # NOTE: Decision required - should admin features be available on mobile?
-    │   │   │   │   # RECOMMENDATION: Keep admin portal web-only for security and UX reasons
+    │   │   │   │   # ENTIRE ADMIN SECTION (ENABLED ON MOBILE)
+    │   │   │   │   # DECISION: Admin features are available on mobile (enabled).
+    │   │   │   │   # NOTE: Original recommendation was web-only; mobile admin is enabled with safeguards.
     │   │   │   │   # Document this decision in ADR (Architecture Decision Record)
     │   │   │   │   # ENTIRE SECTION - Read-only admin views for mobile
     │   │   │   │   # ENTIRE SECTION - Admin portal (mobile)
-    │   │   │   │   # NOTE: Decision required - should admin features be mobile-accessible?
+    │   │   │   │   # DECISION: Admin features are mobile-accessible.
     │   │   │   │   # This mirrors apps/web/src/app/[locale]/(dashboard)/admin/**
     │   │   │   │   # ENTIRE SECTION (OPTIONAL)
-    │   │   │   │   # NOTE: Decision required - ADR-005 recommends web-only admin
+    │   │   │   │   # NOTE: ADR-005 recommendation overridden by decision to support mobile admin.
     │   │   │   │   # IF implementing mobile admin, include these routes:
     │   │   │   │   ├── analytics/
     │   │   │   │   │   ├── billing/
@@ -569,6 +342,233 @@ fe/
     │   │   │   │   │   │   ├── [payoutId]/
     │   │   │   │   │   │   │   └── index.tsx  # Payout detail (mobile)
     │   │   │   │   │   │   │       # - Payout details (user, amount, method)
+    │   │   │   ├── (contracts)/
+    │   │   │   │   └── _layout.tsx  # ErrorBoundary (react-error-boundary / Sentry)
+    │   │   │   │       # ErrorBoundary wrapper
+    │   │   │   │       # CURRENT: Missing error boundary
+    │   │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │   │       # import { ErrorBoundary } from 'react-error-boundary';
+    │   │   │   │       # Prevents crashes, shows fallback UI
+    │   │   │   │       # Error boundary wrapper
+    │   │   │   │       # Fallback UI; retry/home; Sentry logging; onReset preserves nav
+    │   │   │   │       # - Wraps entire contracts section with ErrorBoundary
+    │   │   │   │       # - Fallback UI: error message + retry button + go home button
+    │   │   │   │       # - Logs errors to Sentry with full context
+    │   │   │   │       # - onReset: clears cache, resets navigation stack
+    │   │   │   │       # - Preserves navigation state when possible
+    │   │   │   │       # - User-friendly error messages (no stack traces)
+    │   │   │   │       # import * as Sentry from '@sentry/react-native';
+    │   │   │   │       # ErrorBoundary
+    │   │   │   │       # Wrap with react-error-boundary; Sentry logging; retry/go-home
+    │   │   │   │       # onReset clears cache & resets nav; friendly messages
+    │   │   │   │       # Error boundary for contracts route group
+    │   │   │   │       # Dependencies: react-error-boundary, @sentry/react-native
+    │   │   │   │       # import { Stack } from 'expo-router';
+    │   │   │   │       # FALLBACK UI:
+    │   │   │   │       # - Error icon + message
+    │   │   │   │       # - "Retry" button → reset()
+    │   │   │   │       # - "Go Home" button → router.push('/')
+    │   │   │   │       # - "Report Issue" button → open support
+    │   │   │   │       # ERROR HANDLER:
+    │   │   │   │       # - Log to Sentry with full context
+    │   │   │   │       # - Include route, user, device info
+    │   │   │   │       # ON RESET:
+    │   │   │   │       # - Clear React Query cache for contracts
+    │   │   │   │       # - Reset navigation stack
+    │   │   │   │       # - Reload route
+    │   │   │   │       # export default function ContractsLayout() {
+    │   │   │   │       # return (
+    │   │   │   │       # <ErrorBoundary
+    │   │   │   │       # FallbackComponent={ContractsErrorFallback}
+    │   │   │   │       # onError={(error, info) => {
+    │   │   │   │       # Sentry.captureException(error, {
+    │   │   │   │       # contexts: { react: { componentStack: info.componentStack } }
+    │   │   │   │       # });
+    │   │   │   │       # }}
+    │   │   │   │       # onReset={() => {
+    │   │   │   │       # queryClient.invalidateQueries({ queryKey: ['contracts'] });
+    │   │   │   │       # >
+    │   │   │   │       # <Stack />
+    │   │   │   │       # </ErrorBoundary>
+    │   │   │   │       # );
+    │   │   │   │       # }
+    │   │   │   │       # BE: None (UI component)
+    │   │   │   ├── (jobs)/
+    │   │   │   │   └── _layout.tsx  # ErrorBoundary
+    │   │   │   │       # ErrorBoundary wrapper
+    │   │   │   │       # CURRENT: Missing error boundary
+    │   │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │   │       # Prevents crashes in jobs section
+    │   │   │   │       # Error boundary wrapper
+    │   │   │   │       # Same pattern; clear filters/state on reset
+    │   │   │   │       # - Same pattern as contracts error boundary
+    │   │   │   │       # - Clears job filters/state on reset
+    │   │   │   │       # - Offers "search again" action
+    │   │   │   │       # - Tracks error frequency per user
+    │   │   │   │       # Same as contracts; also clears job filters/state
+    │   │   │   │       # Error boundary for jobs route group
+    │   │   │   │       # Same implementation as contracts error boundary
+    │   │   │   │       # - Custom fallback for jobs context
+    │   │   │   │       # - Clear jobs cache on reset
+    │   │   │   │       # - Log jobs-specific errors
+    │   │   │   │       # BE: None (UI component)
+    │   │   │   ├── (proposals)/
+    │   │   │   │   └── _layout.tsx  # ErrorBoundary
+    │   │   │   │       # ErrorBoundary wrapper
+    │   │   │   │       # CURRENT: Missing error boundary
+    │   │   │   │       # REQUIRED: Wrap with react-error-boundary
+    │   │   │   │       # Prevents crashes in proposals section
+    │   │   │   │       # Error boundary wrapper
+    │   │   │   │       # Same pattern; draft-safe recovery on retry
+    │   │   │   │       # - Same pattern as contracts error boundary
+    │   │   │   │       # - Draft-safe recovery (preserves unsaved proposals)
+    │   │   │   │       # - Offers "save draft" before retry
+    │   │   │   │       # - Warns about data loss if present
+    │   │   │   │       # Same pattern; preserve unsaved drafts; warn on data loss
+    │   │   │   │       # Error boundary for proposals route group
+    │   │   │   │       # Same implementation as contracts error boundary
+    │   │   │   │       # - Custom fallback for proposals context
+    │   │   │   │       # - Clear proposals cache on reset
+    │   │   │   │       # - Log proposals-specific errors
+    │   │   │   │       # BE: None (UI component)
+    │   │   │   ├── (public)/  # ENTIRE SECTION - Public/marketing pages
+    │   │   │   │   # Public pages accessible without authentication
+    │   │   │   │   # Native implementation for better UX and deep linking
+    │   │   │   │   # Shares same API endpoints as web app
+    │   │   │   │   # ADR-006: Public Pages Mobile Strategy
+    │   │   │   │   # Deep links: skillsier://public/{route}
+    │   │   │   │   # Offline: Cache static content
+    │   │   │   │   ├── about/
+    │   │   │   │   │   └── index.tsx  # About page (mobile)
+    │   │   │   │   │       # About page
+    │   │   │   │   │       # Content:
+    │   │   │   │   │       # - Company story (ScrollView)
+    │   │   │   │   │       # - Mission & values
+    │   │   │   │   │       # - Team section (horizontal scroll)
+    │   │   │   │   │       # - "Join Us" CTA
+    │   │   │   │   │       # BE: None (static content / CMS)
+    │   │   │   │   │       # Deep link: skillsier://public/about
+    │   │   │   │   ├── blog/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # Blog post detail
+    │   │   │   │   │   │       # Blog post detail (mobile)
+    │   │   │   │   │   │       # Content:
+    │   │   │   │   │   │       # - Blog post content (markdown rendered)
+    │   │   │   │   │   │       # - Author info
+    │   │   │   │   │   │       # - Share buttons
+    │   │   │   │   │   │       # - Related posts
+    │   │   │   │   │   │       # BE: communications-be/content
+    │   │   │   │   │   │       # GET /v1/content/blog/:slug
+    │   │   │   │   │   │       # Dependencies: react-native-markdown-display
+    │   │   │   │   │   └── index.tsx  # Blog list
+    │   │   │   │   │       # Blog list (mobile)
+    │   │   │   │   │       # Content:
+    │   │   │   │   │       # - Featured posts (carousel)
+    │   │   │   │   │       # - Recent posts (FlashList)
+    │   │   │   │   │       # - Categories filter
+    │   │   │   │   │       # - Search
+    │   │   │   │   │       # BE: communications-be/content
+    │   │   │   │   │       # GET /v1/content/blog
+    │   │   │   │   ├── case-studies/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # Case study detail
+    │   │   │   │   │   │       # Case study detail (mobile)
+    │   │   │   │   │   │       # Content:
+    │   │   │   │   │   │       # - Client name & logo
+    │   │   │   │   │   │       # - Challenge, solution, results
+    │   │   │   │   │   │       # - Metrics visualization
+    │   │   │   │   │   │       # - CTA: "Start your project"
+    │   │   │   │   │   │       # BE: None (static / CMS)
+    │   │   │   │   │   └── index.tsx  # Case studies list
+    │   │   │   │   │       # Case studies list (mobile)
+    │   │   │   │   │       # Content:
+    │   │   │   │   │       # - Featured case studies
+    │   │   │   │   │       # - Industry filter (pills)
+    │   │   │   │   │       # - Results filter (by ROI, timeline)
+    │   │   │   │   │       # BE: None (static / CMS)
+    │   │   │   │   ├── contact/
+    │   │   │   │   │   └── index.tsx  # Contact page
+    │   │   │   │   │       # Contact page (mobile)
+    │   │   │   │   │       # Content:
+    │   │   │   │   │       # - Contact form
+    │   │   │   │   │       # - Support email/phone
+    │   │   │   │   │       # - Social links
+    │   │   │   │   │       # - Live chat trigger
+    │   │   │   │   │       # BE: communications-be/contact
+    │   │   │   │   │       # POST /v1/contact
+    │   │   │   │   ├── developer/
+    │   │   │   │   │   ├── docs/
+    │   │   │   │   │   │   └── index.tsx  # Developer docs
+    │   │   │   │   │   │       # Developer docs (mobile)
+    │   │   │   │   │   │       # Content:
+    │   │   │   │   │   │       # - Getting started guide
+    │   │   │   │   │   │       # - API reference (categories)
+    │   │   │   │   │   │       # - Code examples link
+    │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   ├── examples/
+    │   │   │   │   │   │   └── index.tsx  # Code examples
+    │   │   │   │   │   │       # Code examples (mobile)
+    │   │   │   │   │   │       # Content:
+    │   │   │   │   │   │       # - Code snippets gallery
+    │   │   │   │   │   │       # - Copy button
+    │   │   │   │   │   │       # - Syntax highlighting
+    │   │   │   │   │   │       # BE: None (static / CMS)
+    │   │   │   │   │   └── index.tsx  # Developer hub
+    │   │   │   │   │       # Developer hub (mobile)
+    │   │   │   │   │       # Content:
+    │   │   │   │   │       # - Developer hub overview
+    │   │   │   │   │       # - Quick links
+    │   │   │   │   │       # BE: None (static)
+    │   │   │   │   ├── help/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # Help article detail
+    │   │   │   │   │   │       # Help article detail (mobile)
+    │   │   │   │   │   │       # Content:
+    │   │   │   │   │   │       # - Help article content
+    │   │   │   │   │   │       # - Helpful? feedback
+    │   │   │   │   │   │       # - Related articles
+    │   │   │   │   │   │       # BE: communications-be/kb
+    │   │   │   │   │   │       # GET /v1/kb/articles/:slug
+    │   │   │   │   │   └── index.tsx  # Help center
+    │   │   │   │   │       # Help center (mobile)
+    │   │   │   │   │       # Content:
+    │   │   │   │   │       # - Search bar
+    │   │   │   │   │       # - Popular articles
+    │   │   │   │   │       # - Categories
+    │   │   │   │   │       # - Contact support CTA
+    │   │   │   │   │       # BE: communications-be/kb
+    │   │   │   │   │       # GET /v1/kb/articles
+    │   │   │   │   ├── legal/
+    │   │   │   │   │   ├── cookies/
+    │   │   │   │   │   │   └── index.tsx  # Cookie policy
+    │   │   │   │   │   │       # Cookie policy (mobile)
+    │   │   │   │   │   │       # Content: Cookie policy (ScrollView)
+    │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   ├── privacy/
+    │   │   │   │   │   │   └── index.tsx  # Privacy policy
+    │   │   │   │   │   │       # Privacy policy (mobile)
+    │   │   │   │   │   │       # Content: Privacy policy (ScrollView)
+    │   │   │   │   │   │       # BE: None (static)
+    │   │   │   │   │   └── terms/
+    │   │   │   │   │       └── index.tsx  # Terms of service
+    │   │   │   │   │           # Terms of service (mobile)
+    │   │   │   │   │           # Content: Terms of service (ScrollView)
+    │   │   │   │   │           # BE: None (static)
+    │   │   │   │   ├── pricing/
+    │   │   │   │   │   └── index.tsx  # Pricing page
+    │   │   │   │   │       # Pricing page (mobile)
+    │   │   │   │   │       # Content:
+    │   │   │   │   │       # - Pricing tiers (cards)
+    │   │   │   │   │       # - Feature comparison
+    │   │   │   │   │       # - FAQ accordion
+    │   │   │   │   │       # - "Get Started" CTA
+    │   │   │   │   │       # BE: None (static / CMS)
+    │   │   │   │   │       # Deep link: skillsier://public/pricing
+    │   │   │   │   └── _layout.tsx  # Public routes layout
+    │   │   │   │       # - No auth required
+    │   │   │   │       # - Minimal header
+    │   │   │   │       # - Deep linking support
+    │   │   │   │       # BE: None (layout)
     │   │   │   │   │   │   │       # - User verification status
     │   │   │   │   │   │   │       # - Transaction history
     │   │   │   │   │   │   │       # - Approve/reject buttons
@@ -2503,6 +2503,25 @@ fe/
     │   │   │   ├── (tabs)/  # Bottom tabs navigation
     │   │   │   │   # Main mobile app tabs (authenticated)
     │   │   │   │   ├── (authenticated)/
+    │   │   │   │   │   │   │   ├── preview.tsx  # Invoice preview (mobile)
+    │   │   │   │   │   │   │   ├── send.tsx  # Send invoice (mobile)
+    │   │   │   │   │   │   │   ├── duplicate.tsx  # Duplicate invoice (mobile)
+    │   │   │   │   │   │   │   ├── void.tsx  # Void invoice (mobile)
+    │   │   │   │   │   │   │   └── [id]/
+    │   │   │   │   │   │   │       ├── edit.tsx  # Edit invoice (mobile)
+    │   │   │   │   │   │   │       └── refund.tsx  # Refund invoice (mobile)
+    │   │   │   │   │   │   └── payment-methods/
+    │   │   │   │   │   │       ├── default.tsx  # Set default payment method (mobile)
+    │   │   │   │   │   │       └── verify.tsx  # Verify (microdeposits) (mobile)
+    │   │   │   │   │   │       │   ├── w-9.tsx  # W-9 form (mobile)
+    │   │   │   │   │   │       │   ├── 1099.tsx  # 1099 form (mobile)
+    │   │   │   │   │   │       │   └── vat.tsx  # VAT form (mobile)
+    │   │   │   │   │   │       └── settings/
+    │   │   │   │   │   │           └── index.tsx  # Tax settings (mobile)
+    │   │   │   │   │   │       ├── search.tsx  # Help search (mobile)
+    │   │   │   │   │   │       └── author/
+    │   │   │   │   │   │           └── [authorId]/
+    │   │   │   │   │   │               └── index.tsx  # Author profile (mobile)
     │   │   │   │   │   ├── admin/  # EXPAND THIS
     │   │   │   │   │   │   # Mobile admin features
     │   │   │   │   │   │   ├── financial-ops/  # THIS
@@ -4490,6 +4509,16 @@ fe/
     │   │   │   │   │       # BE: certifications-be/certification
     │   │   │   │   │       # GET /v1/certifications
     │   │   │   │   ├── contests/  # ENTIRE FEATURE
+    │   │   │   │   │   ├── rules.tsx  # Contest rules (mobile)
+    │   │   │   │   │   ├── prizes.tsx  # Contest prizes (mobile)
+    │   │   │   │   │   ├── judges.tsx  # Contest judges (mobile)
+    │   │   │   │   │   ├── qna.tsx  # Contest Q&A (mobile)
+    │   │   │   │   │   └── [contestId]/
+    │   │   │   │   │       ├── discussion.tsx  # Contest discussion (mobile)
+    │   │   │   │   │       ├── edit-submission.tsx  # Edit my submission (mobile)
+    │   │   │   │   │       ├── my-submissions.tsx  # My submissions (mobile)
+    │   │   │   │   │       ├── rules.tsx  # Contest-specific rules (mobile)
+    │   │   │   │   │       └── timeline.tsx  # Contest timeline (mobile)
     │   │   │   │   │   ├── [contestId]/
     │   │   │   │   │   │   ├── details.tsx  # Contest details (mobile)
     │   │   │   │   │   │   │   # - Contest title, description, rules
@@ -4721,6 +4750,13 @@ fe/
     │   │   │   │   │       # GET /v1/users/me/devices
     │   │   │   │   │       # POST /v1/users/me/devices/revoke-all-others
     │   │   │   │   ├── escrow/  # ENTIRE FEATURE
+    │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   └── index.tsx  # Create escrow (mobile)
+    │   │   │   │   │   ├── [escrowId]/
+    │   │   │   │   │   │   ├── attachments.tsx  # Escrow attachments (mobile)
+    │   │   │   │   │   │   ├── messages.tsx  # Escrow messages (mobile)
+    │   │   │   │   │   │   ├── timeline.tsx  # Escrow timeline (mobile)
+    │   │   │   │   │   │   └── terms.tsx  # Escrow terms (mobile)
     │   │   │   │   │   ├── [escrowId]/
     │   │   │   │   │   │   ├── details.tsx  # Escrow details (mobile)
     │   │   │   │   │   │   │   # - Escrow information
@@ -4869,6 +4905,24 @@ fe/
     │   │   │   │   │       # BE: financial-be/wallet
     │   │   │   │   │       # GET /v1/wallet
     │   │   │   │   ├── groups/  # ENTIRE FEATURE
+    │   │   │   │   │   ├── [groupId]/
+    │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   └── index.tsx  # Group settings (mobile)
+    │   │   │   │   │   │   ├── invites/
+    │   │   │   │   │   │   │   ├── index.tsx  # Group invites (mobile)
+    │   │   │   │   │   │   │   └── [inviteId]/
+    │   │   │   │   │   │   │       └── index.tsx  # Invite detail (mobile)
+    │   │   │   │   │   │   ├── requests/
+    │   │   │   │   │   │   │   └── index.tsx  # Join requests list (mobile)
+    │   │   │   │   │   │   ├── posts/
+    │   │   │   │   │   │   │   ├── create.tsx  # Create group post (mobile)
+    │   │   │   │   │   │   │   ├── [postId]/
+    │   │   │   │   │   │   │   │   ├── edit.tsx  # Edit post (mobile)
+    │   │   │   │   │   │   │   │   └── comments/
+    │   │   │   │   │   │   │   │       └── index.tsx  # Post comments (mobile)
+    │   │   │   │   │   │   └── events/
+    │   │   │   │   │   │       ├── [eventId]/
+    │   │   │   │   │   │       └── index.tsx  # Group events list (mobile)
     │   │   │   │   │   ├── [groupId]/
     │   │   │   │   │   │   ├── events/
     │   │   │   │   │   │   │   └── index.tsx  # Group events (mobile)
@@ -5081,6 +5135,13 @@ fe/
     │   │   │   │   │       # BE: communications-be/conversation
     │   │   │   │   │       # GET /v1/conversations
     │   │   │   │   ├── milestones/  # ENTIRE FEATURE (as separate tab)
+    │   │   │   │   │   ├── [milestoneId]/
+    │   │   │   │   │   │   ├── attachments/
+    │   │   │   │   │   │   │   └── index.tsx  # Milestone attachments (mobile)
+    │   │   │   │   │   │   ├── deliverables/
+    │   │   │   │   │   │   │   └── index.tsx  # Milestone deliverables (mobile)
+    │   │   │   │   │   │   └── payments/
+    │   │   │   │   │   │       └── index.tsx  # Milestone payments (mobile)
     │   │   │   │   │   ├── [milestoneId]/
     │   │   │   │   │   │   ├── approve.tsx  # Approve milestone (mobile)
     │   │   │   │   │   │   │   # - Review deliverable
@@ -6759,6 +6820,20 @@ fe/
     │   │   │   │   ├── talent-cloud/  # ENTIRE FEATURE
     │   │   │   │   │   ├── agencies/
     │   │   │   │   │   │   ├── [agencyId]/
+    │   │   │   │   │   │   │   ├── invites.tsx  # Agency invites (mobile)
+    │   │   │   │   │   │   │   ├── roles.tsx  # Agency roles (mobile)
+    │   │   │   │   │   │   │   └── settings.tsx  # Agency settings (mobile)
+    │   │   │   │   │   │   └── applications/
+    │   │   │   │   │   │       └── index.tsx  # Agency applications (mobile)
+    │   │   │   │   │   ├── teams/
+    │   │   │   │   │   │   ├── [teamId]/
+    │   │   │   │   │   │   │   ├── invites.tsx  # Team invites (mobile)
+    │   │   │   │   │   │   │   ├── roles.tsx  # Team roles (mobile)
+    │   │   │   │   │   │   │   └── settings.tsx  # Team settings (mobile)
+    │   │   │   │   │   └── invites/
+    │   │   │   │   │       └── index.tsx  # All team/agency invites (mobile)
+    │   │   │   │   │   ├── agencies/
+    │   │   │   │   │   │   ├── [agencyId]/
     │   │   │   │   │   │   │   └── details.tsx  # Agency details (mobile)
     │   │   │   │   │   │   │       # - Agency profile
     │   │   │   │   │   │   │       # - Team members
@@ -6816,6 +6891,12 @@ fe/
     │   │   │   │   │           # BE: talent-cloud-be/team
     │   │   │   │   │           # GET /v1/teams
     │   │   │   │   ├── timesheet/  # ENTIRE FEATURE (as separate tab)
+    │   │   │   │   │   ├── approvals/
+    │   │   │   │   │   │   └── index.tsx  # Timesheet approvals (mobile)
+    │   │   │   │   │   ├── day/
+    │   │   │   │   │   │   └── [date].tsx  # Day view (mobile)
+    │   │   │   │   │   └── export/
+    │   │   │   │   │       └── index.tsx  # Export timesheets (mobile)
     │   │   │   │   │   ├── [timesheetId]/
     │   │   │   │   │   │   ├── details.tsx  # Timesheet details (mobile)
     │   │   │   │   │   │   │   # - Timesheet information

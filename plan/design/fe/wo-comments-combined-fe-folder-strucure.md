@@ -77,47 +77,8 @@ fe/
     │   └── settings.json  # Workspace settings
     ├── apps/  # Application workspaces
     │   ├── mobile/  # React Native/Expo application
-    │   │   ├── (contracts)/
-    │   │   │   └── _layout.tsx  # ErrorBoundary (react-error-boundary / Sentry)
-    │   │   ├── (jobs)/
-    │   │   │   └── _layout.tsx  # ErrorBoundary
-    │   │   ├── (proposals)/
-    │   │   │   └── _layout.tsx  # ErrorBoundary
-    │   │   ├── (public)/  # ENTIRE SECTION - Public/marketing pages
-    │   │   │   ├── about/
-    │   │   │   │   └── index.tsx  # About page (mobile)
-    │   │   │   ├── blog/
-    │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # Blog post detail
-    │   │   │   │   └── index.tsx  # Blog list
-    │   │   │   ├── case-studies/
-    │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # Case study detail
-    │   │   │   │   └── index.tsx  # Case studies list
-    │   │   │   ├── contact/
-    │   │   │   │   └── index.tsx  # Contact page
-    │   │   │   ├── developer/
-    │   │   │   │   ├── docs/
-    │   │   │   │   │   └── index.tsx  # Developer docs
-    │   │   │   │   ├── examples/
-    │   │   │   │   │   └── index.tsx  # Code examples
-    │   │   │   │   └── index.tsx  # Developer hub
-    │   │   │   ├── help/
-    │   │   │   │   ├── [slug]/
-    │   │   │   │   │   └── index.tsx  # Help article detail
-    │   │   │   │   └── index.tsx  # Help center
-    │   │   │   ├── legal/
-    │   │   │   │   ├── cookies/
-    │   │   │   │   │   └── index.tsx  # Cookie policy
-    │   │   │   │   ├── privacy/
-    │   │   │   │   │   └── index.tsx  # Privacy policy
-    │   │   │   │   └── terms/
-    │   │   │   │       └── index.tsx  # Terms of service
-    │   │   │   ├── pricing/
-    │   │   │   │   └── index.tsx  # Pricing page
-    │   │   │   └── _layout.tsx  # Public routes layout
     │   │   ├── app/  # Expo Router file-based routing
-    │   │   │   ├── (admin)/  # Optional mobile admin area (if enabled later)
+    │   │   │   └── (admin)/  # Mobile admin area (ENABLED).
     │   │   │   │   ├── analytics/
     │   │   │   │   │   ├── billing/
     │   │   │   │   │   │   └── page.tsx  # Billing analytics  # BE: admin-be/analytics
@@ -204,6 +165,45 @@ fe/
     │   │   │   │   │   ├── payouts/
     │   │   │   │   │   │   ├── [payoutId]/
     │   │   │   │   │   │   │   └── index.tsx  # Payout detail (mobile)
+    │   │   │   ├── (contracts)/
+    │   │   │   │   └── _layout.tsx  # ErrorBoundary (react-error-boundary / Sentry)
+    │   │   │   ├── (jobs)/
+    │   │   │   │   └── _layout.tsx  # ErrorBoundary
+    │   │   │   ├── (proposals)/
+    │   │   │   │   └── _layout.tsx  # ErrorBoundary
+    │   │   │   ├── (public)/  # ENTIRE SECTION - Public/marketing pages
+    │   │   │   │   ├── about/
+    │   │   │   │   │   └── index.tsx  # About page (mobile)
+    │   │   │   │   ├── blog/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # Blog post detail
+    │   │   │   │   │   └── index.tsx  # Blog list
+    │   │   │   │   ├── case-studies/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # Case study detail
+    │   │   │   │   │   └── index.tsx  # Case studies list
+    │   │   │   │   ├── contact/
+    │   │   │   │   │   └── index.tsx  # Contact page
+    │   │   │   │   ├── developer/
+    │   │   │   │   │   ├── docs/
+    │   │   │   │   │   │   └── index.tsx  # Developer docs
+    │   │   │   │   │   ├── examples/
+    │   │   │   │   │   │   └── index.tsx  # Code examples
+    │   │   │   │   │   └── index.tsx  # Developer hub
+    │   │   │   │   ├── help/
+    │   │   │   │   │   ├── [slug]/
+    │   │   │   │   │   │   └── index.tsx  # Help article detail
+    │   │   │   │   │   └── index.tsx  # Help center
+    │   │   │   │   ├── legal/
+    │   │   │   │   │   ├── cookies/
+    │   │   │   │   │   │   └── index.tsx  # Cookie policy
+    │   │   │   │   │   ├── privacy/
+    │   │   │   │   │   │   └── index.tsx  # Privacy policy
+    │   │   │   │   │   └── terms/
+    │   │   │   │   │       └── index.tsx  # Terms of service
+    │   │   │   │   ├── pricing/
+    │   │   │   │   │   └── index.tsx  # Pricing page
+    │   │   │   │   └── _layout.tsx  # Public routes layout
     │   │   │   │   │   │   └── index.tsx  # Payout approvals (mobile)
     │   │   │   │   │   ├── refunds/
     │   │   │   │   │   │   ├── [refundId]/
@@ -741,6 +741,25 @@ fe/
     │   │   │   │       └── queries.ts  # BE: contracts-be/deliverable — GET /v1/contracts/{id}/deliverables
     │   │   │   ├── (tabs)/  # Bottom tabs navigation
     │   │   │   │   ├── (authenticated)/
+    │   │   │   │   │   │   │   ├── preview.tsx  # Invoice preview (mobile)
+    │   │   │   │   │   │   │   ├── send.tsx  # Send invoice (mobile)
+    │   │   │   │   │   │   │   ├── duplicate.tsx  # Duplicate invoice (mobile)
+    │   │   │   │   │   │   │   ├── void.tsx  # Void invoice (mobile)
+    │   │   │   │   │   │   │   └── [id]/
+    │   │   │   │   │   │   │       ├── edit.tsx  # Edit invoice (mobile)
+    │   │   │   │   │   │   │       └── refund.tsx  # Refund invoice (mobile)
+    │   │   │   │   │   │   └── payment-methods/
+    │   │   │   │   │   │       ├── default.tsx  # Set default payment method (mobile)
+    │   │   │   │   │   │       └── verify.tsx  # Verify (microdeposits) (mobile)
+    │   │   │   │   │   │       │   ├── w-9.tsx  # W-9 form (mobile)
+    │   │   │   │   │   │       │   ├── 1099.tsx  # 1099 form (mobile)
+    │   │   │   │   │   │       │   └── vat.tsx  # VAT form (mobile)
+    │   │   │   │   │   │       └── settings/
+    │   │   │   │   │   │           └── index.tsx  # Tax settings (mobile)
+    │   │   │   │   │   │       ├── search.tsx  # Help search (mobile)
+    │   │   │   │   │   │       └── author/
+    │   │   │   │   │   │           └── [authorId]/
+    │   │   │   │   │   │               └── index.tsx  # Author profile (mobile)
     │   │   │   │   │   ├── admin/  # EXPAND THIS
     │   │   │   │   │   │   ├── financial-ops/  # THIS
     │   │   │   │   │   │   │   ├── chargebacks/
@@ -1572,6 +1591,16 @@ fe/
     │   │   │   │   │   │   └── index.tsx  # Pending verification (mobile)
     │   │   │   │   │   └── index.tsx  # Certifications overview (mobile)
     │   │   │   │   ├── contests/  # ENTIRE FEATURE
+    │   │   │   │   │   ├── rules.tsx  # Contest rules (mobile)
+    │   │   │   │   │   ├── prizes.tsx  # Contest prizes (mobile)
+    │   │   │   │   │   ├── judges.tsx  # Contest judges (mobile)
+    │   │   │   │   │   ├── qna.tsx  # Contest Q&A (mobile)
+    │   │   │   │   │   └── [contestId]/
+    │   │   │   │   │       ├── discussion.tsx  # Contest discussion (mobile)
+    │   │   │   │   │       ├── edit-submission.tsx  # Edit my submission (mobile)
+    │   │   │   │   │       ├── my-submissions.tsx  # My submissions (mobile)
+    │   │   │   │   │       ├── rules.tsx  # Contest-specific rules (mobile)
+    │   │   │   │   │       └── timeline.tsx  # Contest timeline (mobile)
     │   │   │   │   │   ├── [contestId]/
     │   │   │   │   │   │   ├── details.tsx  # Contest details (mobile)
     │   │   │   │   │   │   ├── entries.tsx  # Contest entries list (mobile)
@@ -1628,6 +1657,13 @@ fe/
     │   │   │   │   │   │   └── index.tsx  # Device detail (mobile)
     │   │   │   │   │   └── index.tsx  # Devices list (mobile)
     │   │   │   │   ├── escrow/  # ENTIRE FEATURE
+    │   │   │   │   │   ├── create/
+    │   │   │   │   │   │   └── index.tsx  # Create escrow (mobile)
+    │   │   │   │   │   ├── [escrowId]/
+    │   │   │   │   │   │   ├── attachments.tsx  # Escrow attachments (mobile)
+    │   │   │   │   │   │   ├── messages.tsx  # Escrow messages (mobile)
+    │   │   │   │   │   │   ├── timeline.tsx  # Escrow timeline (mobile)
+    │   │   │   │   │   │   └── terms.tsx  # Escrow terms (mobile)
     │   │   │   │   │   ├── [escrowId]/
     │   │   │   │   │   │   ├── details.tsx  # Escrow details (mobile)
     │   │   │   │   │   │   ├── dispute.tsx  # File escrow dispute (mobile)
@@ -1667,6 +1703,24 @@ fe/
     │   │   │   │   │   ├── transactions.tsx  # Transaction history (mobile)
     │   │   │   │   │   └── wallet.tsx  # Wallet (mobile)
     │   │   │   │   ├── groups/  # ENTIRE FEATURE
+    │   │   │   │   │   ├── [groupId]/
+    │   │   │   │   │   │   ├── settings/
+    │   │   │   │   │   │   │   └── index.tsx  # Group settings (mobile)
+    │   │   │   │   │   │   ├── invites/
+    │   │   │   │   │   │   │   ├── index.tsx  # Group invites (mobile)
+    │   │   │   │   │   │   │   └── [inviteId]/
+    │   │   │   │   │   │   │       └── index.tsx  # Invite detail (mobile)
+    │   │   │   │   │   │   ├── requests/
+    │   │   │   │   │   │   │   └── index.tsx  # Join requests list (mobile)
+    │   │   │   │   │   │   ├── posts/
+    │   │   │   │   │   │   │   ├── create.tsx  # Create group post (mobile)
+    │   │   │   │   │   │   │   ├── [postId]/
+    │   │   │   │   │   │   │   │   ├── edit.tsx  # Edit post (mobile)
+    │   │   │   │   │   │   │   │   └── comments/
+    │   │   │   │   │   │   │   │       └── index.tsx  # Post comments (mobile)
+    │   │   │   │   │   │   └── events/
+    │   │   │   │   │   │       ├── [eventId]/
+    │   │   │   │   │   │       └── index.tsx  # Group events list (mobile)
     │   │   │   │   │   ├── [groupId]/
     │   │   │   │   │   │   ├── events/
     │   │   │   │   │   │   │   └── index.tsx  # Group events (mobile)
@@ -1722,6 +1776,13 @@ fe/
     │   │   │   │   │   ├── compose.tsx  # New message (mobile)
     │   │   │   │   │   └── index.tsx  # Conversations list (mobile)
     │   │   │   │   ├── milestones/  # ENTIRE FEATURE (as separate tab)
+    │   │   │   │   │   ├── [milestoneId]/
+    │   │   │   │   │   │   ├── attachments/
+    │   │   │   │   │   │   │   └── index.tsx  # Milestone attachments (mobile)
+    │   │   │   │   │   │   ├── deliverables/
+    │   │   │   │   │   │   │   └── index.tsx  # Milestone deliverables (mobile)
+    │   │   │   │   │   │   └── payments/
+    │   │   │   │   │   │       └── index.tsx  # Milestone payments (mobile)
     │   │   │   │   │   ├── [milestoneId]/
     │   │   │   │   │   │   ├── approve.tsx  # Approve milestone (mobile)
     │   │   │   │   │   │   ├── details.tsx  # Milestone details (mobile)
@@ -2079,6 +2140,20 @@ fe/
     │   │   │   │   ├── talent-cloud/  # ENTIRE FEATURE
     │   │   │   │   │   ├── agencies/
     │   │   │   │   │   │   ├── [agencyId]/
+    │   │   │   │   │   │   │   ├── invites.tsx  # Agency invites (mobile)
+    │   │   │   │   │   │   │   ├── roles.tsx  # Agency roles (mobile)
+    │   │   │   │   │   │   │   └── settings.tsx  # Agency settings (mobile)
+    │   │   │   │   │   │   └── applications/
+    │   │   │   │   │   │       └── index.tsx  # Agency applications (mobile)
+    │   │   │   │   │   ├── teams/
+    │   │   │   │   │   │   ├── [teamId]/
+    │   │   │   │   │   │   │   ├── invites.tsx  # Team invites (mobile)
+    │   │   │   │   │   │   │   ├── roles.tsx  # Team roles (mobile)
+    │   │   │   │   │   │   │   └── settings.tsx  # Team settings (mobile)
+    │   │   │   │   │   └── invites/
+    │   │   │   │   │       └── index.tsx  # All team/agency invites (mobile)
+    │   │   │   │   │   ├── agencies/
+    │   │   │   │   │   │   ├── [agencyId]/
     │   │   │   │   │   │   │   └── details.tsx  # Agency details (mobile)
     │   │   │   │   │   │   └── index.tsx  # Agencies list (mobile)
     │   │   │   │   │   ├── projects/
@@ -2091,6 +2166,12 @@ fe/
     │   │   │   │   │       │   └── members.tsx  # Team members (mobile)
     │   │   │   │   │       └── index.tsx  # Teams list (mobile)
     │   │   │   │   ├── timesheet/  # ENTIRE FEATURE (as separate tab)
+    │   │   │   │   │   ├── approvals/
+    │   │   │   │   │   │   └── index.tsx  # Timesheet approvals (mobile)
+    │   │   │   │   │   ├── day/
+    │   │   │   │   │   │   └── [date].tsx  # Day view (mobile)
+    │   │   │   │   │   └── export/
+    │   │   │   │   │       └── index.tsx  # Export timesheets (mobile)
     │   │   │   │   │   ├── [timesheetId]/
     │   │   │   │   │   │   ├── details.tsx  # Timesheet details (mobile)
     │   │   │   │   │   │   └── edit.tsx  # Edit timesheet (mobile)
