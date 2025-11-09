@@ -14378,13 +14378,7 @@ track('conversation_attachment_uploaded', {
 
 ---
 
-
-
-
-
-
-
-## E) Contracts & Workroom
+# Section E) Contracts & Workroom
 
 ### CTR-1 — Contract Lifecycle
 
@@ -19485,7 +19479,7 @@ track('conversation_attachment_uploaded', {
 
 ---
 
-## **G) REVIEWS & REPUTATION**
+# SECTION G) REVIEWS & REPUTATION
 
 This section covers the complete double-blind review system, reputation scoring, badges, owner responses, flagging, and private feedback mechanisms.
 
@@ -21118,7 +21112,7 @@ This section covers the complete double-blind review system, reputation scoring,
 
 ---
 
-## SECTION H: STORAGE & DOCUMENTS
+# SECTION H: STORAGE & DOCUMENTS
 
 This section covers file management, uploads, downloads, sharing, virus scanning, and document organization across the Skillsier platform.
 
@@ -22987,7 +22981,7 @@ This section covers file management, uploads, downloads, sharing, virus scanning
 
 ---
 
-## **I) SEARCH & DISCOVERY**
+# SECTION I) SEARCH & DISCOVERY
 
 This section covers the comprehensive search system including job search, talent discovery, saved searches, search personalization, and recommendations.
 
@@ -25076,7 +25070,7 @@ This section covers the comprehensive search system including job search, talent
 
 ---
 
-## **SECTION J: SETTINGS, SECURITY & ACCOUNT**
+# SECTION J: SETTINGS, SECURITY & ACCOUNT
 
 ### ACC-1 — Profile & Account Settings
 
@@ -28383,7 +28377,7 @@ This section covers the comprehensive search system including job search, talent
 
 ---
 
-## **SECTION K: DEVELOPER PLATFORM**
+# SECTION K: DEVELOPER PLATFORM
 
 ### DEV-1 — API Keys Management
 
@@ -31558,7 +31552,7 @@ This section covers the comprehensive search system including job search, talent
 
 ---
 
-## **Section L: Admin / Moderation**
+# Section L: Admin / Moderation
 
 ---
 
@@ -34558,7 +34552,7 @@ This section covers the comprehensive search system including job search, talent
 
 ---
 
-## **SECTION M: SUBSCRIPTIONS & FEATURE GATING**
+# SECTION M: SUBSCRIPTIONS & FEATURE GATING
 
 ### **SUB-1: VIEW & COMPARE PLANS**
 
@@ -35774,7 +35768,7 @@ This section covers the comprehensive search system including job search, talent
 
 ---
 
-## **SECTION N: AGENCIES & TEAMS**
+# SECTION N: AGENCIES & TEAMS
 
 ### **AG-1: CREATE AGENCY / TEAM ACCOUNT**
 
@@ -37261,7 +37255,7 @@ This section covers the comprehensive search system including job search, talent
 
 ---
 
-# **SECTION O: COMPLIANCE, POLICY & SCREENING**
+# SECTION O: COMPLIANCE, POLICY & SCREENING
 
 ## **CPL-1: Identity Verification (KYC/KYB)**
 
@@ -38642,7 +38636,7 @@ This section covers the comprehensive search system including job search, talent
 
 ---
 
-# **SECTION P: MOBILE-SPECIFIC FEATURES**
+# SECTION P: MOBILE-SPECIFIC FEATURES
 
 ## **MOB-1: Biometric Authentication**
 
