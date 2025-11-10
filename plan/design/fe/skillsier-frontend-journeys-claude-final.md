@@ -157,7 +157,7 @@ Table of Contents
 
 # Section A: AUTHENTICATION & ONBOARDING
 
-## **SECTION A: AUTHENTICATION & ONBOARDING**
+## Section A.1 Authentication (AUTH)
 
 ### Journey: AUTH-1 (User Registration)
 
@@ -185,7 +185,7 @@ Table of Contents
 
 ---
 
-### Flow Steps
+#### Flow Steps
 
 **Step 1: Navigate to Registration Page**
 - User clicks "Sign Up" button from:
@@ -751,7 +751,7 @@ Table of Contents
 
 ---
 
-### Notifications
+#### Notifications
 
 **Registration Success:**
 - **Email:** "Welcome to Skillsier!" (HTML template)
@@ -779,7 +779,7 @@ Table of Contents
 
 ---
 
-### Analytics
+#### Analytics
 
 - `auth.registration.started` (user_type, registration_method)
 - `auth.registration.completed` (user_type, registration_method, duration_seconds)
@@ -795,7 +795,7 @@ Table of Contents
 
 ---
 
-### Sources
+#### Sources
 
 **Frontend:**
 - `apps/web/app/(auth)/register/page.tsx`
@@ -840,7 +840,7 @@ Table of Contents
 
 ---
 
-### Flow Steps
+#### Flow Steps
 
 **Step 1: Navigate to Login Page**
 - User clicks "Login" button from:
@@ -3411,6 +3411,7968 @@ Table of Contents
 - users-be.user-stories.md: Security/session domain
 
 ---
+## SECTION A.2: ONBOARDING (ONB)
+
+### Journey: ONB-1 (Sign Up → Verify → Choose Roles)
+
+**Goal:** Guide new users through account creation, email/phone verification, and role selection to establish their primary use case on the platform  
+
+**Actor:** Anonymous User → New Registered User  
+
+**Trigger:** User completes AUTH-1 (User Registration) and needs to verify account and choose roles  
+
+**Preconditions:**  
+- User has completed registration (AUTH-1)  
+- User has received verification email/SMS  
+- User account exists in users table with account_status = 'PENDING_VERIFICATION'  
+- User has valid JWT token from registration  
+
+**Primary Screens:**  
+**Web Routes:**  
+- `/auth/verify` — Email/SMS verification page  
+- `/app/(onboarding)/role-selection` — Role selection interface  
+- `/app/(onboarding)/welcome` — Welcome screen with next steps  
+- `/app/(onboarding)/profile-setup` — Initial profile seed form  
+
+**Mobile Routes:**  
+- `app/(auth)/verify-email.tsx` — Email verification screen  
+- `app/(tabs)/(authenticated)/(onboarding)/user-type.tsx` — Role selection  
+- `app/(tabs)/(authenticated)/(onboarding)/welcome.tsx` — Welcome screen  
+- `app/(tabs)/(authenticated)/(onboarding)/profile-setup.tsx` — Profile setup  
+
+**System Touchpoints:**  
+- **users-be:** User verification, role assignment, profile initialization  
+  - `POST /v1/users/{id}/verify-email` — Verify email token  
+  - `POST /v1/users/{id}/verify-phone` — Verify phone OTP  
+  - `POST /v1/users/{id}/resend-verification` — Resend verification code  
+  - `PATCH /v1/users/{id}/roles` — Update user roles  
+  - `PATCH /v1/users/{id}/profile` — Initialize profile data  
+  - `GET /v1/users/{id}/onboarding-status` — Get onboarding progress  
+- **communications-be:** Send verification codes and welcome messages  
+  - `POST /v1/notifications/send` — Send verification email/SMS  
+  - `POST /v1/notifications/welcome` — Send welcome email  
+- **admin-be:** Policy gates and registration rules  
+  - `GET /v1/policies/registration` — Get registration policies  
+  - `GET /v1/policies/restricted-regions` — Check geographic restrictions  
+
+**Key Components:**  
+- **Shared Components:**  
+  - `packages/lib/src/features/auth/hooks/use-verify-email.ts` — Email verification logic  
+  - `packages/lib/src/features/auth/hooks/use-verify-phone.ts` — Phone verification logic  
+  - `packages/lib/src/features/onboarding/hooks/use-role-selection.ts` — Role selection logic  
+  - `packages/lib/src/features/onboarding/hooks/use-onboarding-progress.ts` — Track progress  
+  - `packages/lib/src/features/onboarding/components/VerificationForm.tsx` — Verification form  
+  - `packages/lib/src/features/onboarding/components/RoleSelectionCard.tsx` — Role cards  
+  - `packages/lib/src/features/onboarding/components/ProfileSeedForm.tsx` — Initial profile form  
+- **Web-Specific:**  
+  - `apps/web/app/(auth)/verify/page.tsx` — Web verification page  
+  - `apps/web/app/(onboarding)/role-selection/page.tsx` — Web role selection  
+  - `apps/web/app/(onboarding)/welcome/page.tsx` — Web welcome screen  
+- **Mobile-Specific:**  
+  - `apps/mobile/app/(auth)/verify-email.tsx` — Mobile verification  
+  - `apps/mobile/app/(tabs)/(authenticated)/(onboarding)/user-type.tsx` — Mobile role selection  
+  - `apps/mobile/app/(tabs)/(authenticated)/(onboarding)/welcome.tsx` — Mobile welcome  
+
+---
+
+#### Flow Steps
+
+**Step 1: Email/SMS Verification (Completing AUTH-4)**  
+Note: This step completes the email verification flow started in AUTH-4. Users land here after clicking the verification link in their email or entering the OTP code.  
+
+**1.1 Email Verification via Link (Web)**  
+- User clicks verification link from email  
+- Link format: https://skillsier.com/auth/verify?token={verification_token}&email={email}  
+- Frontend extracts token and email from URL query parameters  
+- Page displays:  
+  - Logo and branding  
+  - Loading spinner: "Verifying your email..."  
+  - Progress indicator  
+- Frontend automatically calls verification API:  
+```typescript
+// Auto-verify on page load  
+POST https://api.skillsier.com/v1/users/verify-email  
+Headers: {  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "email": "user@example.com",  
+  "verification_token": "abc123xyz",  
+  "client_type": "web"  
+}  
+```
+
+**1.2 Email Verification via OTP Code**  
+- If user navigates to /auth/verify directly without token:  
+  - Display email input: "Enter your email address"  
+  - Display OTP input: "Enter 6-digit code"  
+  - "Resend Code" button (disabled for 60 seconds)  
+  - "Verify" button  
+- User enters email and 6-digit OTP code  
+- Frontend validates:  
+  - Email format is valid  
+  - OTP is exactly 6 digits  
+  - OTP contains only numbers  
+- User clicks "Verify" button  
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/users/verify-email  
+Body: {  
+  "email": "user@example.com",  
+  "otp_code": "123456",  
+  "client_type": "web"  
+}  
+```
+
+**1.3 Phone Verification (Optional but Recommended)**  
+- After email verification, system checks if phone verification is required/recommended  
+- Display screen:  
+  - Title: "Verify Your Phone Number"  
+  - Subtitle: "Add an extra layer of security"  
+  - Phone number input (with country code dropdown)  
+  - "Send Code" button  
+  - "Skip for Now" link  
+- If user enters phone and clicks "Send Code":  
+```typescript
+POST https://api.skillsier.com/v1/users/{user_id}/verify-phone/send  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}"  
+}  
+Body: {  
+  "phone": "+1234567890",  
+  "country_code": "US"  
+}  
+```
+- Backend validates phone format and sends SMS  
+- Frontend displays OTP input screen:  
+  - "Enter 6-digit code sent to +1 (234) 567-890"  
+  - 6 separate input boxes for OTP digits  
+  - "Resend Code" (60-second cooldown)  
+  - "Verify" button  
+- User enters OTP and clicks "Verify":  
+```typescript
+POST https://api.skillsier.com/v1/users/{user_id}/verify-phone  
+Body: {  
+  "phone": "+1234567890",  
+  "otp_code": "654321"  
+}  
+```
+
+**1.4 Backend Verification Processing**  
+- Backend receives verification request  
+- Validates token/OTP:  
+  - Check if token/OTP exists in database  
+  - Check if token/OTP is not expired (10 minutes for email, 5 minutes for SMS)  
+  - Check if token/OTP has not been used  
+  - Match email/phone with user record  
+- If validation succeeds:  
+  - Update user record:  
+    - email_verified = true or phone_verified = true  
+    - account_status = 'ACTIVE'  
+    - email_verification_token = NULL  
+    - onboarding_step = 1  
+  - Generate new JWT token with updated claims  
+  - Store verification event in audit log  
+  - Publish event:  
+```json
+{  
+  "event_type": "user.verified.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "verification_type": "email|phone",  
+    "verified_at": "2025-11-10T14:30:00Z"  
+  }  
+}  
+```
+  - Return success response:  
+```json
+{  
+  "success": true,  
+  "message": "Email verified successfully",  
+  "data": {  
+    "user_id": "user-uuid",  
+    "email_verified": true,  
+    "phone_verified": false,  
+    "access_token": "new-jwt-token",  
+    "next_step": "role_selection"  
+  }  
+}  
+```
+
+**1.5 Frontend Success Handling**  
+- Frontend receives success response  
+- Store new JWT token in secure storage  
+- Display success animation:  
+  - Checkmark animation  
+  - "Email Verified!" message  
+  - Brief celebration (confetti/lottie animation)  
+- Auto-redirect after 2 seconds to role selection  
+- Update app state:  
+  - isEmailVerified = true  
+  - onboardingStep = 1  
+
+**Step 2: Role Selection**  
+**2.1 Navigate to Role Selection**  
+- After successful verification, user is redirected to /app/(onboarding)/role-selection  
+- Mobile: Navigate to app/(tabs)/(authenticated)/(onboarding)/user-type.tsx  
+- Frontend calls:  
+```typescript
+GET https://api.skillsier.com/v1/users/{user_id}/onboarding-status  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}"  
+}  
+```
+- Response:  
+```json
+{  
+  "user_id": "user-uuid",  
+  "current_step": 1,  
+  "completed_steps": ["email_verification"],  
+  "pending_steps": ["role_selection", "profile_seed", "role_specific_onboarding"],  
+  "progress_percentage": 25  
+}  
+```
+
+**2.2 Display Role Selection Screen**  
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [Skillsier Logo]                                            │
+│                                                             │
+│ Tell us how you'll use Skillsier                            │
+│ You can always change this later in settings                │
+│                                                             │
+│ ┌────────────────────────┐ ┌────────────────────────┐     │
+│ │                        │ │                        │     │
+│ │ [Briefcase Icon]       │ │ [Search Icon]          │     │
+│ │                        │ │                        │     │
+│ │ Work as a Freelancer   │ │ Hire Talent            │     │
+│ │                        │ │                        │     │
+│ │ Find projects and      │ │ Find the perfect       │     │
+│ │ build your business    │ │ freelancer for your    │     │
+│ │                        │ │ project                │     │
+│ │                        │ │                        │     │
+│ │ [Select as Freelancer] │ │ [Select as Client]     │     │
+│ │                        │ │                        │     │
+│ └────────────────────────┘ └────────────────────────┘     │
+│                                                             │
+│ ☑ I want to do both                                         │
+│                                                             │
+│ [Continue →]                                                │
+│                                                             │
+│ Already have an account? Sign In                            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Mobile Layout:**  
+```
+┌───────────────────────────────┐
+│ [←] Choose Your Role [?]      │
+├───────────────────────────────┤
+│                               │
+│ Tell us how you'll use        │
+│ Skillsier                     │
+│                               │
+│ You can change this later     │
+│                               │
+│ ┌───────────────────────────┐ │
+│ │                           │ │
+│ │ [💼 Briefcase Icon]       │ │
+│ │                           │ │
+│ │ Work as a Freelancer      │ │
+│ │                           │ │
+│ │ Find projects and         │ │
+│ │ build your business       │ │
+│ │                           │ │
+│ │ [✓ Select Freelancer]     │ │
+│ │                           │ │
+│ └───────────────────────────┘ │
+│                               │
+│ ┌───────────────────────────┐ │
+│ │                           │ │
+│ │ [🔍 Search Icon]          │ │
+│ │                           │ │
+│ │ Hire Talent               │ │
+│ │                           │ │
+│ │ Find the perfect          │ │
+│ │ freelancer for your       │ │
+│ │ project                   │ │
+│ │                           │ │
+│ │ [Select Client]           │ │
+│ │                           │ │
+│ └───────────────────────────┘ │
+│                               │
+│ ☑ I want to do both           │
+│                               │
+│ [Continue →]                  │
+│                               │
+└───────────────────────────────┘
+```
+
+**2.3 User Selects Role(s)**  
+- User clicks one of the role cards:  
+  - Freelancer: Border highlights, checkmark appears  
+  - Client: Border highlights, checkmark appears  
+- Both: Checkbox at bottom selected, both cards highlight  
+- User can toggle between roles:  
+  - Single role: Only one card highlighted at a time  
+  - Both roles: Checkbox checked, both cards highlighted  
+- "Continue" button becomes enabled when at least one role is selected  
+- Frontend tracks selection in local state:  
+```typescript
+const [selectedRoles, setSelectedRoles] = useState<string[]>([]);  
+// Possible values: ['FREELANCER'], ['CLIENT'], or ['FREELANCER', 'CLIENT']  
+```
+
+**2.4 Submit Role Selection**  
+- User clicks "Continue" button  
+- Frontend validates selection (at least one role selected)  
+- Show loading state on button: "Saving..."  
+- Frontend calls:  
+```typescript
+PATCH https://api.skillsier.com/v1/users/{user_id}/roles  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "roles": ["FREELANCER", "CLIENT"],  
+  "primary_role": "FREELANCER"  
+}  
+```
+
+**2.5 Backend Role Processing**  
+- Backend receives role update request  
+- Validates:  
+  - User is authenticated (valid JWT)  
+  - User owns the account (user_id matches JWT claim)  
+  - Roles are valid enum values: ['CLIENT', 'FREELANCER', 'HYBRID']  
+  - At least one role is selected  
+- If user selected both roles:  
+  - Set user_type = 'HYBRID'  
+  - Store primary_role in preferences  
+  - Create onboarding checklists for both roles  
+- If user selected one role:  
+  - Set user_type = 'CLIENT' or user_type = 'FREELANCER'  
+  - Create role-specific onboarding checklist  
+- Update database:  
+  - users.user_type = selected type  
+  - users.onboarding_step = 2  
+- Publish event:  
+```json
+{  
+  "event_type": "user.role_selected.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "user_type": "HYBRID",  
+    "selected_roles": ["FREELANCER", "CLIENT"],  
+    "primary_role": "FREELANCER",  
+    "selected_at": "2025-11-10T14:35:00Z"  
+  }  
+}  
+```
+- Return response:  
+```json
+{  
+  "success": true,  
+  "message": "Roles updated successfully",  
+  "data": {  
+    "user_id": "user-uuid",  
+    "user_type": "HYBRID",  
+    "roles": ["FREELANCER", "CLIENT"],  
+    "primary_role": "FREELANCER",  
+    "next_step": "profile_seed"  
+  }  
+}  
+```
+
+**Step 3: Minimal Profile Seed**  
+**3.1 Navigate to Profile Setup**  
+- After role selection, user is redirected to /app/(onboarding)/profile-setup  
+- Mobile: app/(tabs)/(authenticated)/(onboarding)/profile-setup.tsx  
+- Screen displays basic profile information form  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Let's set up your profile [2/5]                   │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 40%    │
+│                                                             │
+│ Tell us a bit about yourself                                │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ First Name *                                          │   │
+│ │ [John ]                                               │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Last Name *                                           │   │
+│ │ [Doe ]                                                │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Country/Region *                                      │   │
+│ │ [🇺🇸 United States ▼]                                 │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Time Zone *                                           │   │
+│ │ [🌐 (GMT-5:00) Eastern Time (US & Canada) ▼]         │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Preferred Language *                                  │   │
+│ │ [🌐 English ▼]                                        │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Currency Preference *                                 │   │
+│ │ [💵 USD - US Dollar ▼]                               │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│                                                             │
+│ [Skip for Now] [Continue →]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Mobile Layout:**  
+```
+┌───────────────────────────────┐
+│ [←] Profile Setup 2/5        │
+├───────────────────────────────┤
+│ ████████░░░░░░░░ 40%         │
+├───────────────────────────────┤
+│                               │
+│ Tell us a bit about yourself  │
+│                               │
+│ First Name *                  │
+│ ┌───────────────────────────┐ │
+│ │ John                      │ │
+│ └───────────────────────────┘ │
+│                               │
+│ Last Name *                   │
+│ ┌───────────────────────────┐ │
+│ │ Doe                       │ │
+│ └───────────────────────────┘ │
+│                               │
+│ Country/Region *              │
+│ ┌───────────────────────────┐ │
+│ │ 🇺🇸 United States ▼       │ │
+│ └───────────────────────────┘ │
+│                               │
+│ Time Zone *                   │
+│ ┌───────────────────────────┐ │
+│ │ 🌐 Eastern Time (US) ▼    │ │
+│ └───────────────────────────┘ │
+│                               │
+│ Language *                    │
+│ ┌───────────────────────────┐ │
+│ │ 🌐 English ▼              │ │
+│ └───────────────────────────┘ │
+│                               │
+│ Currency *                    │
+│ ┌───────────────────────────┐ │
+│ │ 💵 USD ▼                  │ │
+│ └───────────────────────────┘ │
+│                               │
+│ [Skip for Now] [Continue →]   │
+│                               │
+└───────────────────────────────┘
+```
+
+**3.2 Form Validation Rules**  
+- First Name:  
+  - Required  
+  - Min 2 characters, Max 50 characters  
+  - Letters, spaces, hyphens, apostrophes only  
+  - Real-time validation on blur  
+- Last Name:  
+  - Required  
+  - Min 2 characters, Max 50 characters  
+  - Letters, spaces, hyphens, apostrophes only  
+- Country:  
+  - Required  
+  - Select from dropdown list of 195+ countries  
+  - Determines locale-specific features (tax forms, payment methods)  
+- Time Zone:  
+  - Required  
+  - Auto-populated based on country selection  
+  - Can be manually changed  
+  - Format: "(GMT±X:XX) Zone Name"  
+- Language:  
+  - Required  
+  - Available: English, Spanish, French, German, Portuguese, Arabic, Chinese, Japanese, etc.  
+  - Determines UI language  
+- Currency:  
+  - Required  
+  - Auto-populated based on country  
+  - Can be manually changed  
+  - Used for displaying rates, invoices, payments  
+
+**3.3 Submit Profile Data**  
+- User fills form and clicks "Continue"  
+- Frontend validates all required fields  
+- If validation fails:  
+  - Highlight fields with errors  
+  - Show error messages below each field  
+  - Scroll to first error  
+- If validation passes:  
+  - Show loading state: "Saving profile..."  
+- Frontend calls:  
+```typescript
+PATCH https://api.skillsier.com/v1/users/{user_id}/profile  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "first_name": "John",  
+  "last_name": "Doe",  
+  "country": "US",  
+  "timezone": "America/New_York",  
+  "locale": "en-US",  
+  "currency": "USD"  
+}  
+```
+
+**3.4 Backend Profile Processing**  
+- Backend validates request:  
+  - All required fields present  
+  - Country code is valid ISO 3166-1 alpha-2  
+  - Timezone is valid IANA timezone  
+  - Locale is valid BCP 47 language tag  
+  - Currency is valid ISO 4217 code  
+- Check for geographic restrictions:  
+  - Query admin-be for restricted regions  
+  - If country is restricted:  
+    - Return error response  
+    - Block account creation  
+    - Log restriction attempt  
+```typescript
+GET https://api.skillsier.com/admin/v1/policies/restricted-regions  
+Response: {  
+  "restricted_countries": ["KP", "IR", "SY"],  
+  "restricted_reason": "sanctions"  
+}  
+```
+- Update database:  
+  - users.first_name = "John"  
+  - users.last_name = "Doe"  
+  - users.country = "US"  
+  - users.timezone = "America/New_York"  
+  - users.locale = "en-US"  
+  - users.currency = "USD"  
+  - users.onboarding_step = 3  
+  - users.profile_completion_score = 35 (basic info completed)  
+- Publish event:  
+```json
+{  
+  "event_type": "profile.initialized.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "country": "US",  
+    "timezone": "America/New_York",  
+    "locale": "en-US",  
+    "currency": "USD",  
+    "initialized_at": "2025-11-10T14:40:00Z"  
+  }  
+}  
+```
+- Return response:  
+```json
+{  
+  "success": true,  
+  "message": "Profile updated successfully",  
+  "data": {  
+    "user_id": "user-uuid",  
+    "profile_completion_score": 35,  
+    "next_step": "role_specific_onboarding"  
+  }  
+}  
+```
+
+**3.5 Skip Option**  
+- If user clicks "Skip for Now":  
+  - Store current progress  
+  - Mark step as skipped in onboarding_data  
+  - Allow continuation to next step  
+  - Show reminder banner on dashboard: "Complete your profile to unlock all features"  
+
+**Step 4: Role-Aware Onboarding Checklist Creation**  
+**4.1 Generate Onboarding Checklist**  
+- After profile seed completion, backend creates role-specific checklist  
+- Checklist items vary based on user role(s)  
+- For FREELANCER Role:  
+```json
+{  
+  "user_id": "user-uuid",  
+  "user_type": "FREELANCER",  
+  "checklist": [  
+    {  
+      "item_id": "professional_profile",  
+      "title": "Complete professional profile",  
+      "description": "Add headline, summary, and professional photo",  
+      "status": "pending",  
+      "priority": "high",  
+      "points": 20,  
+      "route": "/app/profile/edit"  
+    },  
+    {  
+      "item_id": "skills",  
+      "title": "Add your skills",  
+      "description": "Add at least 5 skills with proficiency levels",  
+      "status": "pending",  
+      "priority": "high",  
+      "points": 15,  
+      "route": "/app/profile/edit?section=skills"  
+    },  
+    {  
+      "item_id": "portfolio",  
+      "title": "Upload portfolio items",  
+      "description": "Showcase 3-10 work samples",  
+      "status": "pending",  
+      "priority": "medium",  
+      "points": 15,  
+      "route": "/app/profile/portfolio"  
+    },  
+    {  
+      "item_id": "hourly_rate",  
+      "title": "Set your hourly rate",  
+      "description": "Define your pricing",  
+      "status": "pending",  
+      "priority": "high",  
+      "points": 10,  
+      "route": "/app/profile/edit?section=rates"  
+    },  
+    {  
+      "item_id": "payout_method",  
+      "title": "Add payout method",  
+      "description": "Set up how you'll receive payments",  
+      "status": "pending",  
+      "priority": "high",  
+      "points": 10,  
+      "route": "/app/billing/payout-methods"  
+    },  
+    {  
+      "item_id": "job_alerts",  
+      "title": "Create job alerts",  
+      "description": "Get notified about relevant opportunities",  
+      "status": "pending",  
+      "priority": "low",  
+      "points": 10,  
+      "route": "/app/market/alerts"  
+    },  
+    {  
+      "item_id": "kyc_verification",  
+      "title": "Verify your identity (if required)",  
+      "description": "Complete KYC verification to unlock higher limits",  
+      "status": "pending",  
+      "priority": "medium",  
+      "points": 20,  
+      "route": "/app/auth/kyc"  
+    }  
+  ],  
+  "total_points": 100,  
+  "current_points": 0,  
+  "completion_percentage": 0  
+}  
+```
+- For CLIENT Role:  
+```json
+{  
+  "user_id": "user-uuid",  
+  "user_type": "CLIENT",  
+  "checklist": [  
+    {  
+      "item_id": "company_info",  
+      "title": "Add company information",  
+      "description": "Tell freelancers about your business",  
+      "status": "pending",  
+      "priority": "high",  
+      "points": 15,  
+      "route": "/app/settings/organization"  
+    },  
+    {  
+      "item_id": "payment_method",  
+      "title": "Add payment method",  
+      "description": "Add credit card or bank account",  
+      "status": "pending",  
+      "priority": "high",  
+      "points": 20,  
+      "route": "/app/billing/payment-methods"  
+    },  
+    {  
+      "item_id": "first_job",  
+      "title": "Post your first job",  
+      "description": "Create a job posting to find talent",  
+      "status": "pending",  
+      "priority": "high",  
+      "points": 30,  
+      "route": "/app/jobs/new"  
+    },  
+    {  
+      "item_id": "plan_selection",  
+      "title": "Choose your plan",  
+      "description": "Select the plan that fits your hiring needs",  
+      "status": "pending",  
+      "priority": "medium",  
+      "points": 10,  
+      "route": "/app/billing/plans"  
+    },  
+    {  
+      "item_id": "profile_photo",  
+      "title": "Add profile photo",  
+      "description": "Help freelancers recognize you",  
+      "status": "pending",  
+      "priority": "low",  
+      "points": 10,  
+      "route": "/app/profile/edit"  
+    },  
+    {  
+      "item_id": "browse_talent",  
+      "title": "Browse talent",  
+      "description": "Explore freelancer profiles",  
+      "status": "pending",  
+      "priority": "low",  
+      "points": 5,  
+      "route": "/app/talent/search"  
+    },  
+    {  
+      "item_id": "saved_searches",  
+      "title": "Create saved searches",  
+      "description": "Save your talent search criteria",  
+      "status": "pending",  
+      "priority": "low",  
+      "points": 10,  
+      "route": "/app/talent/saved-searches"  
+    }  
+  ],  
+  "total_points": 100,  
+  "current_points": 0,  
+  "completion_percentage": 0  
+}  
+```
+- For HYBRID Role (Both):  
+  - Combines both checklists  
+  - Total 200 points available  
+  - Prioritizes most critical items from each role  
+
+**4.2 Store Checklist in Database**  
+- Backend stores checklist in onboarding table:  
+```sql
+INSERT INTO onboarding (  
+  user_id,  
+  user_type,  
+  checklist_data,  
+  total_points,  
+  current_points,  
+  completion_percentage,  
+  created_at,  
+  updated_at  
+) VALUES (  
+  'user-uuid',  
+  'FREELANCER',  
+  '{...checklist JSON...}',  
+  100,  
+  0,  
+  0,  
+  NOW(),  
+  NOW()  
+);  
+```
+
+**Step 5: Redirect to Role-Specific Onboarding**  
+**5.1 Determine Next Step**  
+- Based on user_type, redirect to appropriate onboarding flow:  
+  - FREELANCER → Redirect to ONB-3 (Freelancer Fast-Start)  
+  - CLIENT → Redirect to ONB-2 (Client Fast-Start)  
+  - HYBRID → Show selection screen: "Which would you like to set up first?"  
+
+**5.2 Redirect Execution**  
+```typescript
+// Frontend routing logic  
+if (userType === 'FREELANCER') {  
+  router.push('/app/onboarding/freelancer');  
+} else if (userType === 'CLIENT') {  
+  router.push('/app/onboarding/client');  
+} else if (userType === 'HYBRID') {  
+  router.push('/app/onboarding/choose-path');  
+}  
+```
+
+---
+
+#### Branches & Edge Cases
+
+**Email Verification Failures**  
+- Expired Token:  
+  - Error: "This verification link has expired"  
+  - Display message: "Your verification link has expired. Please request a new one."  
+  - Show "Resend Verification Email" button  
+  - On click:  
+```typescript
+POST https://api.skillsier.com/v1/users/{user_id}/resend-verification  
+Body: {  
+  "email": "user@example.com",  
+  "method": "email"  
+}  
+```
+- Invalid Token:  
+  - Error: "Invalid verification link"  
+  - Display message: "This verification link is invalid. Please check your email for the correct link."  
+  - Show "Resend Verification Email" button  
+- Already Verified:  
+  - Check if email is already verified  
+  - Display success message: "Your email is already verified!"  
+  - Auto-redirect to dashboard or next onboarding step  
+- Rate Limiting:  
+  - Max 5 verification attempts per hour  
+  - Max 3 resend requests per hour  
+  - If exceeded:  
+    - Error: "Too many attempts. Please try again in 1 hour."  
+    - Display cooldown timer  
+- Wrong OTP Code:  
+  - Allow 5 attempts before locking  
+  - Display attempts remaining: "4 attempts remaining"  
+  - After 5 failed attempts:  
+    - Lock verification for 15 minutes  
+    - Display: "Too many failed attempts. Please try again in 15 minutes."  
+
+**Phone Verification Edge Cases**  
+- Invalid Phone Number:  
+  - Validate format using libphonenumber  
+  - Error: "Please enter a valid phone number"  
+  - Suggest correct format: "+1 (234) 567-8900"  
+- Phone Already in Use:  
+  - Check if phone exists in database  
+  - Error: "This phone number is already registered"  
+  - Suggest: "Sign in to your existing account"  
+- SMS Delivery Failure:  
+  - Retry automatically (3 attempts)  
+  - If all fail:  
+    - Error: "Unable to send SMS. Please try again later."  
+    - Offer alternative: "Verify via email instead"  
+- Unsupported Country:  
+  - Some countries don't support SMS  
+  - Display: "SMS verification not available in your country"  
+  - Offer: "You can skip this step and verify later"  
+
+**Role Selection Edge Cases**  
+- No Role Selected:  
+  - Disable "Continue" button  
+  - Show validation: "Please select at least one role"  
+- API Failure:  
+  - Network error or 500 response  
+  - Display error: "Unable to save your selection. Please try again."  
+  - Retry button available  
+  - Data persists in local state  
+- User Changes Mind:  
+  - Allow going back to change role  
+  - Previous selection is preserved  
+  - Confirm: "Are you sure you want to change your role?"  
+
+**Profile Setup Edge Cases**  
+- Country-Specific Requirements:  
+  - EU Users:  
+    - Show GDPR consent checkbox (required)  
+    - "I agree to the processing of my personal data"  
+    - Link to Privacy Policy  
+  - US Users:  
+    - Optional: "Add state/province for tax purposes"  
+- Restricted Countries:  
+  - Error: "We're unable to serve users in your country at this time"  
+  - Block registration  
+  - Display support contact  
+- Auto-Detection Failures:  
+  - If timezone/currency can't be auto-detected:  
+    - Show manual selection  
+    - Provide search functionality  
+- Special Characters in Names:  
+  - Support international characters (UTF-8)  
+  - Allow: letters, spaces, hyphens, apostrophes, accents  
+  - Block: numbers, special symbols  
+- Skip Too Many Steps:  
+  - Track number of skipped steps  
+  - If user skips >3 steps:  
+    - Show modal: "Completing your profile helps you get better matches"  
+    - Encourage completion  
+    - Still allow skip  
+
+---
+
+#### Notifications
+
+**Email Notifications**  
+- **Welcome Email (After Email Verification):**  
+  - Trigger: Email successfully verified  
+  - Subject: "Welcome to Skillsier! 🎉"  
+  - Content:  
+    - Personalized greeting: "Hi {first_name},"  
+    - "Your email has been verified. Welcome to Skillsier!"  
+    - Next steps based on role:  
+      - Freelancer: "Complete your profile to start finding work"  
+      - Client: "Post your first job to find talent"  
+    - Quick links:  
+      - [Complete Profile]  
+      - [Browse Jobs/Talent]  
+      - [Help Center]  
+    - Tips for getting started  
+    - Support contact information  
+- **Phone Verification Code (SMS):**  
+  - Trigger: User requests phone verification  
+  - Subject: N/A (SMS)  
+  - Content:  
+    - "Your Skillsier verification code is: {code}"  
+    - "This code expires in 5 minutes"  
+    - "If you didn't request this, ignore this message"  
+- **Role Selection Confirmation:**  
+  - Trigger: Role(s) successfully selected  
+  - Subject: "Your Skillsier account is ready"  
+  - Content:  
+    - "Hi {first_name},"  
+    - "You've selected to join Skillsier as a {role}"  
+    - Next steps checklist preview  
+    - "Complete your profile to unlock all features"  
+    - [Continue Setup]  
+- **Profile Incomplete Reminder:**  
+  - Trigger: User hasn't completed profile after 24 hours  
+  - Subject: "Complete your Skillsier profile"  
+  - Content:  
+    - "Hi {first_name},"  
+    - "You're {completion_percentage}% complete!"  
+    - Benefits of completing profile:  
+      - Higher visibility in search  
+      - More opportunities  
+      - Trust badges  
+    - [Complete Your Profile]  
+  - Frequency: Max 3 reminders (Day 1, Day 3, Day 7)  
+
+**In-App Notifications**  
+- **Onboarding Progress:**  
+  - Trigger: User completes each step  
+  - Type: Toast notification (success)  
+  - Message:  
+    - "Email verified! ✓"  
+    - "Role selected! ✓"  
+    - "Profile updated! ✓"  
+- **Step Completion:**  
+  - Trigger: Checklist item completed  
+  - Type: Celebration animation + toast  
+  - Message:  
+    - "Great job! {item_title} completed"  
+    - "You earned {points} points"  
+    - "{remaining} items remaining"  
+- **Profile Completion Milestones:**  
+  - Trigger: 25%, 50%, 75%, 100% completion  
+  - Type: Modal with confetti animation  
+  - Message:  
+    - "You're {percentage}% complete!"  
+    - "Keep going to unlock all features"  
+  - Show progress bar  
+  - List next items to complete  
+
+**Push Notifications (Mobile)**  
+- **Verification Reminder:**  
+  - Trigger: User registered but didn't verify within 6 hours  
+  - Message: "Verify your email to access Skillsier"  
+  - Action: Opens email verification screen  
+- **Onboarding Progress:**  
+  - Trigger: User hasn't completed onboarding in 48 hours  
+  - Message: "Complete your profile to start {working/hiring}"  
+  - Action: Opens onboarding checklist  
+
+---
+
+#### Analytics
+
+Track the following events for onboarding analytics:  
+```typescript
+// Email Verification  
+- onboarding.email_verification.started  
+  - { user_id, method: 'link'|'otp' }  
+- onboarding.email_verification.completed  
+  - { user_id, method, time_to_verify_minutes, attempts }  
+- onboarding.email_verification.failed  
+  - { user_id, error_code, error_message, attempts }  
+- onboarding.verification_resent  
+  - { user_id, resend_count }  
+// Phone Verification  
+- onboarding.phone_verification.started  
+  - { user_id, country_code }  
+- onboarding.phone_verification.completed  
+  - { user_id, time_to_verify_minutes, attempts }  
+- onboarding.phone_verification.skipped  
+  - { user_id, skip_reason }  
+// Role Selection  
+- onboarding.role_selection.viewed  
+  - { user_id }  
+- onboarding.role_selection.selected  
+  - { user_id, role: 'FREELANCER'|'CLIENT'|'HYBRID', selection_time_seconds }  
+- onboarding.role_selection.changed  
+  - { user_id, from_role, to_role }  
+// Profile Setup  
+- onboarding.profile_setup.started  
+  - { user_id, user_type }  
+- onboarding.profile_setup.field_completed  
+  - { user_id, field_name }  
+- onboarding.profile_setup.completed  
+  - { user_id, completion_time_seconds, skipped_fields }  
+- onboarding.profile_setup.skipped  
+  - { user_id, skipped_fields, skip_reason }  
+// Geographic Data  
+- onboarding.country_selected  
+  - { user_id, country_code, is_restricted }  
+- onboarding.timezone_changed  
+  - { user_id, from_timezone, to_timezone }  
+// Checklist  
+- onboarding.checklist_generated  
+  - { user_id, user_type, total_items }  
+- onboarding.checklist_item_viewed  
+  - { user_id, item_id }  
+- onboarding.checklist_item_started  
+  - { user_id, item_id }  
+- onboarding.checklist_item_completed  
+  - { user_id, item_id, time_to_complete_minutes }  
+// Overall Progress  
+- onboarding.step_completed  
+  - { user_id, step_name, step_number, total_steps }  
+- onboarding.flow_completed  
+  - { user_id, total_time_minutes, completion_rate }  
+- onboarding.flow_abandoned  
+  - { user_id, last_step, abandon_reason }  
+```
+
+---
+
+#### Accessibility
+
+**Keyboard Navigation**  
+- Email Verification:  
+  - Tab order: Email input → OTP inputs → Resend button → Verify button  
+  - Enter key: Submit form  
+  - Escape key: Close any modals  
+- Role Selection:  
+  - Tab order: Freelancer card → Client card → Both checkbox → Continue button  
+  - Space/Enter: Select card  
+  - Arrow keys: Navigate between cards  
+- Profile Setup:  
+  - Tab order: All form fields in logical order → Skip → Continue  
+  - Tab traps in dropdowns  
+  - Enter key: Submit form  
+
+**Screen Reader Support**  
+- ARIA Labels:  
+```html
+<!-- Email Verification -->  
+<input  
+  type="text"  
+  aria-label="Enter 6-digit verification code"  
+  aria-required="true"  
+  aria-invalid="false"  
+  aria-describedby="otp-error"  
+/>  
+<!-- Role Selection -->  
+<button  
+  role="button"  
+  aria-pressed="false"  
+  aria-label="Select Freelancer role. Find projects and build your business."  
+>  
+  Work as a Freelancer  
+</button>  
+<!-- Profile Form -->  
+<select  
+  aria-label="Select your country or region"  
+  aria-required="true"  
+  aria-describedby="country-help"  
+>  
+  <option>United States</option>  
+</select>  
+```
+- Live Regions:  
+```html
+<!-- Success messages -->  
+<div role="status" aria-live="polite" aria-atomic="true">  
+  Email verified successfully!  
+</div>  
+<!-- Error messages -->  
+<div role="alert" aria-live="assertive" aria-atomic="true">  
+  Invalid verification code. Please try again.  
+</div>  
+<!-- Progress updates -->  
+<div role="status" aria-live="polite">  
+  Step 2 of 5 completed. Profile setup in progress.  
+</div>  
+```
+
+**Visual Accessibility**  
+- Focus Indicators:  
+  - 2px solid border around focused elements  
+  - High contrast color: #0066CC  
+  - Visible on all interactive elements  
+- Color Contrast:  
+  - Text: Minimum 4.5:1 ratio for normal text  
+  - Large text: Minimum 3:1 ratio  
+  - Interactive elements: 3:1 minimum  
+- Error States:  
+  - Don't rely on color alone  
+  - Include icon indicators (❌)  
+  - Descriptive error messages below fields  
+- Loading States:  
+  - Skeleton screens for content loading  
+  - Spinner with aria-label="Loading"  
+  - Disable buttons during submission  
+
+---
+
+#### Performance
+
+**Page Load Optimization**  
+- Critical Path:  
+  - Initial HTML: < 100KB  
+  - Critical CSS: < 50KB inline  
+  - Defer non-critical JavaScript  
+  - Lazy load images  
+- Target Metrics:  
+  - FCP (First Contentful Paint): < 1.0s  
+  - LCP (Largest Contentful Paint): < 2.0s  
+  - TTI (Time to Interactive): < 3.0s  
+  - CLS (Cumulative Layout Shift): < 0.1  
+- Mobile Optimization:  
+  - Adaptive images based on viewport  
+  - Touch target minimum: 44x44px  
+  - Reduced motion support  
+
+**API Performance**  
+- Response Time SLOs:  
+  - Email verification: P95 < 200ms  
+  - Role selection: P95 < 150ms  
+  - Profile update: P95 < 200ms  
+- Caching Strategy:  
+  - Country/timezone lists: Cache for 7 days  
+  - User preferences: Cache for 1 hour  
+  - Onboarding checklist: Cache for 30 minutes  
+- Optimistic Updates:  
+  - Update UI immediately on user action  
+  - Show loading state while API processes  
+  - Rollback on error  
+- Network Resilience  
+  - Retry Logic:  
+    - Automatic retry for 5xx errors  
+    - Exponential backoff: 1s, 2s, 4s  
+    - Max 3 retries  
+  - Offline Support (Mobile):  
+    - Queue actions when offline  
+    - Show offline indicator  
+    - Sync when connection restored  
+  - Error Recovery:  
+    - Save form data to localStorage every 30 seconds  
+    - Restore on page reload  
+    - Clear on successful submission  
+
+---
+
+#### Security
+
+**Input Validation**  
+- Client-Side:  
+  - Email format: RFC 5322 compliant  
+  - Phone: E.164 format  
+  - Names: Max 50 chars, no special characters  
+  - Real-time validation on blur  
+- Server-Side:  
+  - Sanitize all inputs  
+  - Validate against strict schemas  
+  - Reject invalid formats  
+
+**Rate Limiting**  
+- Verification Endpoints:  
+  - Email verification: 5 attempts/hour per email  
+  - Phone verification: 3 attempts/hour per phone  
+  - Resend requests: 3 requests/hour per user  
+- Profile Updates:  
+  - 10 updates/hour per user  
+  - Implement token bucket algorithm  
+- Blocked on Exceeded:  
+  - HTTP 429 response  
+  - Include Retry-After header  
+  - Log for abuse monitoring  
+
+**Token Security**  
+- Verification Tokens:  
+  - Cryptographically secure random (32 bytes)  
+  - Hashed before storage (bcrypt)  
+  - Single-use only  
+  - Expire after 10 minutes (email) / 5 minutes (SMS)  
+- JWT Tokens:  
+  - Signed with RS256  
+  - Include claims: user_id, email, roles, exp  
+  - Refresh every 15 minutes  
+  - Validate on every API call  
+
+**Data Protection**  
+- PII Handling:  
+  - Encrypt sensitive data at rest (AES-256)  
+  - Use HTTPS for all transmission  
+  - Mask data in logs  
+  - Redact in error messages  
+- GDPR Compliance:  
+  - Explicit consent for data processing  
+  - Right to access data  
+  - Right to deletion  
+  - Data portability support  
+
+---
+
+#### Sources
+
+**Backend:**  
+- `users-be.user-stories.md` — User creation, verification, role management  
+- `users-be.database-design.md` — Users, onboarding tables  
+- `admin-be.user-stories.md` — Policy checks, geographic restrictions  
+- `communications-be.user-stories.md` — Email/SMS notifications  
+
+**Frontend:**  
+- `combined-fe-folder-structure.md` — Route structure  
+- `apps/web/app/(auth)/verify/page.tsx`  
+- `apps/web/app/(onboarding)/role-selection/page.tsx`  
+- `apps/web/app/(onboarding)/profile-setup/page.tsx`  
+- `apps/mobile/app/(auth)/verify-email.tsx`  
+- `apps/mobile/app/(tabs)/(authenticated)/(onboarding)/user-type.tsx`  
+- `packages/lib/src/features/auth/hooks/use-verify-email.ts`  
+- `packages/lib/src/features/onboarding/hooks/use-role-selection.ts`  
+
+**Events:**  
+- `user.verified.v1`  
+- `user.role_selected.v1`  
+- `profile.initialized.v1`  
+- `onboarding.checklist_generated.v1`  
+
+---
+
+### Journey: ONB-2 (Client Fast-Start)
+
+**Goal:** Help new clients quickly set up their organization, add payment methods, select a plan, and post their first job  
+
+**Actor:** New Client (User who selected CLIENT or HYBRID role in ONB-1)  
+
+**Trigger:** User completes ONB-1 and is redirected to client onboarding flow  
+
+**Preconditions:**  
+- User has verified email  
+- User has selected CLIENT or HYBRID role  
+- User has completed basic profile seed (name, country, timezone)  
+- User account status is ACTIVE  
+
+**Primary Screens:**  
+**Web Routes:**  
+- `/app/(onboarding)/client/company` — Company/organization setup  
+- `/app/(onboarding)/client/billing` — Payment method addition  
+- `/app/(onboarding)/client/team` — Team setup (optional)  
+- `/app/(onboarding)/client/verification` — Business verification (if required)  
+- `/app/(onboarding)/client/plan` — Plan selection  
+- `/app/(onboarding)/client/first-job` — Guided job posting  
+- `/app/(onboarding)/client/complete` — Completion screen  
+
+**Mobile Routes:**  
+- `app/(tabs)/(authenticated)/(onboarding)/client/company.tsx`  
+- `app/(tabs)/(authenticated)/(onboarding)/client/billing.tsx`  
+- `app/(tabs)/(authenticated)/(onboarding)/client/team.tsx`  
+- `app/(tabs)/(authenticated)/(onboarding)/client/plan.tsx`  
+- `app/(tabs)/(authenticated)/(onboarding)/client/first-job.tsx`  
+- `app/(tabs)/(authenticated)/(onboarding)/client/complete.tsx`  
+
+**System Touchpoints:**  
+- **users-be:** Organization profile management  
+  - `POST /v1/organizations` — Create organization  
+  - `PATCH /v1/organizations/{id}` — Update organization  
+  - `POST /v1/organizations/{id}/members` — Add team members  
+- **financial-be:** Payment method management  
+  - `POST /v1/payment-methods` — Add payment method  
+  - `POST /v1/payment-methods/{id}/verify` — Verify payment method  
+  - `GET /v1/payment-methods/supported` — Get supported methods  
+- **subscriptions-be:** Plan selection and management  
+  - `GET /v1/plans` — Get available plans  
+  - `POST /v1/subscriptions` — Create subscription  
+  - `GET /v1/subscriptions/{id}/connects` — Get connects allocation  
+- **jobs-be:** Job posting creation  
+  - `POST /v1/jobs/draft` — Create draft job  
+  - `PATCH /v1/jobs/{id}` — Update job  
+  - `POST /v1/jobs/{id}/publish` — Publish job  
+- **search-be:** Job indexing and talent recommendations  
+  - `POST /v1/index/jobs` — Index published job  
+  - `GET /v1/recommendations/talent` — Get talent recommendations  
+- **admin-be:** Business verification (KYB)  
+  - `POST /v1/kyb/submit` — Submit business documents  
+  - `GET /v1/kyb/{id}/status` — Check KYB status  
+
+**Key Components:**  
+- **Shared:**  
+  - `packages/lib/src/features/onboarding/hooks/use-client-onboarding.ts`  
+  - `packages/lib/src/features/organizations/hooks/use-organization.ts`  
+  - `packages/lib/src/features/billing/hooks/use-payment-methods.ts`  
+  - `packages/lib/src/features/subscriptions/hooks/use-plan-selection.ts`  
+  - `packages/lib/src/features/jobs/hooks/use-job-creation.ts`  
+- **Web:**  
+  - `apps/web/app/(onboarding)/client/company/page.tsx`  
+  - `apps/web/app/(onboarding)/client/billing/page.tsx`  
+  - `apps/web/app/(onboarding)/client/first-job/page.tsx`  
+- **Mobile:**  
+  - `apps/mobile/app/(tabs)/(authenticated)/(onboarding)/client/company.tsx`  
+  - `apps/mobile/app/(tabs)/(authenticated)/(onboarding)/client/billing.tsx`  
+
+---
+
+#### Flow Steps
+
+**Step 1: Company/Organization Setup**  
+**1.1 Navigate to Company Setup**  
+- User is redirected from ONB-1 to /app/(onboarding)/client/company  
+- Frontend displays onboarding progress: "Step 1 of 5"  
+- Progress bar: 20% complete  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Set up your organization [1/5]                    │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 20%    │
+│                                                             │
+│ Tell us about your company                                  │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Company/Organization Name *                           │   │
+│ │ [Acme Corporation ]                                   │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Company Size *                                        │   │
+│ │ [○ 1-10 ○ 11-50 ● 51-200 ○ 201-500 ○ 500+]           │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Industry *                                            │   │
+│ │ [Technology ▼]                                        │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Website (Optional)                                    │   │
+│ │ [https://acmecorp.com ]                               │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Company Description (Optional)                        │   │
+│ │ [Tell freelancers about your company... ]             │   │
+│ │ [ ]                                                   │   │
+│ │ [ ]                                                   │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ 0/500 characters                                            │
+│                                                             │
+│ Upload Company Logo (Optional)                              │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │ [📁 Drop image here or click to upload]               │   │
+│ │ PNG, JPG up to 2MB                                    │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ VAT/Tax ID (Required for business accounts)                 │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [US123456789 ]                                        │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Billing Address                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Street Address *                                      │   │
+│ │ [123 Main Street ]                                    │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌──────────────────────────┐ ┌──────────────────────────┐   │
+│ │ City *                   │ │ State/Province *         │   │
+│ │ [New York ]              │ │ [New York ▼]             │   │
+│ └──────────────────────────┘ └──────────────────────────┘   │
+│                                                             │
+│ ┌──────────────────────────┐ ┌──────────────────────────┐   │
+│ │ ZIP/Postal Code *        │ │ Country                  │   │
+│ │ [10001 ]                 │ │ [🇺🇸 United States ]     │   │
+│ └──────────────────────────┘ └──────────────────────────┘   │
+│                                                             │
+│                                                             │
+│ [Skip for Now] [Continue →]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**1.2 Form Validation**  
+- Company Name:  
+  - Required  
+  - Min 2 characters, Max 100 characters  
+  - Letters, numbers, spaces, hyphens, ampersands, periods  
+  - Check for profanity  
+  - Check if name already exists (soft warning, not blocking)  
+- Company Size:  
+  - Required  
+  - Radio button selection  
+  - Options: 1-10, 11-50, 51-200, 201-500, 500+  
+- Industry:  
+  - Required  
+  - Dropdown with 50+ industries  
+  - Common options: Technology, Marketing, Design, Writing, Finance, Healthcare, Education, etc.  
+- Website:  
+  - Optional  
+  - Must be valid URL format  
+  - Automatically add https:// if missing  
+- Company Description:  
+  - Optional  
+  - Max 500 characters  
+  - Show character count  
+  - Allow markdown formatting  
+- Company Logo:  
+  - Optional  
+  - Accepted formats: PNG, JPG, JPEG, WebP  
+  - Max size: 2MB  
+  - Min dimensions: 200x200px  
+  - Square ratio recommended  
+  - Auto-crop/resize if needed  
+- VAT/Tax ID:  
+  - Required for business accounts (>$10k spending/year)  
+  - Optional for individual clients  
+  - Format validation based on country:  
+    - US: EIN format (XX-XXXXXXX)  
+    - EU: VAT format (EUXXXXXXXXX)  
+    - UK: UTR format  
+  - Real-time validation via API  
+- Billing Address:  
+  - All fields required  
+  - Street: Max 100 characters  
+  - City: Max 50 characters  
+  - State: Dropdown based on country  
+  - ZIP: Format validation based on country  
+  - Country: Auto-filled from user profile, can be changed  
+
+**1.3 Submit Organization Data**  
+- User fills form and clicks "Continue"  
+- Frontend validates all required fields  
+- If validation fails:  
+  - Show inline error messages  
+  - Scroll to first error  
+  - Highlight fields with errors  
+- If validation passes:  
+  - Show loading state: "Creating organization..."  
+- Upload logo first (if provided):  
+```typescript
+POST https://api.skillsier.com/v1/storage/upload  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "multipart/form-data"  
+}  
+Body: FormData {  
+  file: <logo_file>,  
+  folder: "organizations/logos",  
+  public: true  
+}  
+Response: {  
+  "file_id": "file-uuid",  
+  "url": "https://cdn.skillsier.com/organizations/logos/file-uuid.png",  
+  "size": 245678,  
+  "mime_type": "image/png"  
+}  
+```
+- Then create organization:  
+```typescript
+POST https://api.skillsier.com/v1/organizations  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "name": "Acme Corporation",  
+  "size": "51-200",  
+  "industry": "Technology",  
+  "website": "https://acmecorp.com",  
+  "description": "Leading technology company...",  
+  "logo_url": "https://cdn.skillsier.com/organizations/logos/file-uuid.png",  
+  "tax_id": "US123456789",  
+  "billing_address": {  
+    "street": "123 Main Street",  
+    "city": "New York",  
+    "state": "NY",  
+    "zip": "10001",  
+    "country": "US"  
+  },  
+  "owner_user_id": "user-uuid"  
+}  
+```
+
+**1.4 Backend Organization Processing**  
+- Backend validates request:  
+  - All required fields present  
+  - Company name not profane  
+  - Tax ID format valid for country  
+  - Billing address complete  
+- Create organization record:  
+  - Generate organization UUID  
+  - Store in organizations table  
+  - Link to user via organization_members table  
+  - Set user as owner (role: OWNER)  
+```sql
+INSERT INTO organizations (  
+  id,  
+  name,  
+  size,  
+  industry,  
+  website,  
+  description,  
+  logo_url,  
+  tax_id,  
+  billing_address,  
+  owner_user_id,  
+  status,  
+  created_at,  
+  updated_at  
+) VALUES (  
+  'org-uuid',  
+  'Acme Corporation',  
+  '51-200',  
+  'Technology',  
+  'https://acmecorp.com',  
+  'Leading technology company...',  
+  'https://cdn.skillsier.com/...',  
+  'US123456789',  
+  '{"street": "123 Main St", ...}',  
+  'user-uuid',  
+  'ACTIVE',  
+  NOW(),  
+  NOW()  
+);  
+INSERT INTO organization_members (  
+  organization_id,  
+  user_id,  
+  role,  
+  permissions,  
+  joined_at  
+) VALUES (  
+  'org-uuid',  
+  'user-uuid',  
+  'OWNER',  
+  '["all"]',  
+  NOW()  
+);  
+```
+- Update user record:  
+  - Link organization_id  
+  - Update onboarding_step = 4  
+- Publish event:  
+```json
+{  
+  "event_type": "organization.created.v1",  
+  "aggregate_id": "org-uuid",  
+  "payload": {  
+    "organization_id": "org-uuid",  
+    "owner_user_id": "user-uuid",  
+    "name": "Acme Corporation",  
+    "industry": "Technology",  
+    "size": "51-200",  
+    "created_at": "2025-11-10T15:00:00Z"  
+  }  
+}  
+```
+- Return response:  
+```json
+{  
+  "success": true,  
+  "message": "Organization created successfully",  
+  "data": {  
+    "organization_id": "org-uuid",  
+    "name": "Acme Corporation",  
+    "status": "ACTIVE",  
+    "next_step": "payment_method"  
+  }  
+}  
+```
+
+**Step 2: Payment Method Addition**  
+**2.1 Navigate to Payment Setup**  
+- After organization creation, redirect to /app/(onboarding)/client/billing  
+- Progress: "Step 2 of 5" (40% complete)  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Add a payment method [2/5]                        │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░ 40%    │
+│                                                             │
+│ How would you like to pay freelancers?                      │
+│                                                             │
+│ ┌──────────────────┐ ┌──────────────────┐ ┌────────────┐   │
+│ │                  │ │                  │ │            │   │
+│ │ [💳 Card Icon]   │ │ [🏦 Bank Icon]   │ │ [P PayPal] │   │
+│ │                  │ │                  │ │            │   │
+│ │ Credit/Debit     │ │ Bank Transfer    │ │ PayPal     │   │
+│ │ Card             │ │ (ACH)            │ │            │   │
+│ │                  │ │                  │ │            │   │
+│ │ Instant setup    │ │ 2-3 days verify  │ │ Instant    │   │
+│ │                  │ │                  │ │            │   │
+│ │ [Select]         │ │ [Select]         │ │ [Select]   │   │
+│ │                  │ │                  │ │            │   │
+│ └──────────────────┘ └──────────────────┘ └────────────┘   │
+│                                                             │
+│ ┌──────────────────┐                                        │
+│ │                  │                                        │
+│ │ [₿ Crypto]      │                                        │
+│ │                  │                                        │
+│ │ Cryptocurrency   │                                        │
+│ │                  │                                        │
+│ │ Advanced users   │                                        │
+│ │                  │                                        │
+│ │ [Select]         │                                        │
+│ │                  │                                        │
+│ └──────────────────┘                                        │
+│                                                             │
+│ 🔒 Your payment information is secure and encrypted         │
+│                                                             │
+│ [Skip for Now] [Continue →]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**2.2 Credit/Debit Card Flow (Stripe)**  
+- User selects "Credit/Debit Card"  
+- Frontend displays Stripe payment form:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ Add Credit or Debit Card                                    │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Card Number *                                         │   │
+│ │ [1234 5678 9012 3456 ] [💳]                          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌──────────────────────────┐ ┌──────────────────────────┐   │
+│ │ Expiry Date *            │ │ CVV *                    │   │
+│ │ [MM / YY ]               │ │ [123 ] [?]               │   │
+│ └──────────────────────────┘ └──────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Cardholder Name *                                     │   │
+│ │ [John Doe ]                                           │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Billing ZIP/Postal Code *                             │   │
+│ │ [10001 ]                                              │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ☑ Save this card as my default payment method               │
+│                                                             │
+│ By adding a payment method, you agree to our                │
+│ [Terms of Service] and [Payment Terms]                      │
+│                                                             │
+│ 🔒 Secured by Stripe                                        │
+│                                                             │
+│ [Add Payment Method]                                        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+- User fills card information  
+- Frontend uses Stripe.js for tokenization (PCI compliant)  
+- Card data never touches Skillsier servers  
+```typescript
+// Stripe tokenization  
+const stripe = await loadStripe(STRIPE_PUBLIC_KEY);  
+const cardElement = elements.create('card');  
+const {token, error} = await stripe.createToken(cardElement, {  
+  name: 'John Doe',  
+  address_zip: '10001'  
+});  
+if (error) {  
+  // Show error  
+  console.error(error.message);  
+} else {  
+  // Send token to backend  
+  addPaymentMethod(token.id);  
+}  
+```
+- Frontend sends token to backend:  
+```typescript
+POST https://api.skillsier.com/v1/payment-methods  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "type": "CREDIT_CARD",  
+  "provider": "STRIPE",  
+  "token": "tok_1234567890abcdef",  
+  "card_details": {  
+    "last4": "3456",  
+    "brand": "VISA",  
+    "exp_month": 12,  
+    "exp_year": 2028  
+  },  
+  "billing_zip": "10001",  
+  "is_default": true,  
+  "organization_id": "org-uuid"  
+}  
+```
+
+**2.3 Backend Payment Method Processing**  
+- Backend receives payment method request  
+- Validate token with Stripe:  
+```go
+// Create customer in Stripe (if not exists)  
+customer, err := stripe.Customer.New(&stripe.CustomerParams{  
+  Email: "user@example.com",  
+  Name: "John Doe",  
+  Metadata: map[string]string{  
+    "user_id": "user-uuid",  
+    "org_id": "org-uuid",  
+  },  
+})  
+// Attach payment method to customer  
+paymentMethod, err := stripe.PaymentMethod.Attach(  
+  token,  
+  &stripe.PaymentMethodAttachParams{  
+    Customer: customer.ID,  
+  },  
+)  
+// Set as default if requested  
+if isDefault {  
+  stripe.Customer.Update(customer.ID, &stripe.CustomerParams{  
+    InvoiceSettings: &stripe.CustomerInvoiceSettingsParams{  
+      DefaultPaymentMethod: paymentMethod.ID,  
+    },  
+  })  
+}  
+```
+- Store payment method in database:  
+```sql
+INSERT INTO payment_methods (  
+  id,  
+  user_id,  
+  organization_id,  
+  type,  
+  provider,  
+  provider_payment_method_id,  
+  provider_customer_id,  
+  last4,  
+  brand,  
+  exp_month,  
+  exp_year,  
+  billing_zip,  
+  is_default,  
+  status,  
+  created_at,  
+  updated_at  
+) VALUES (  
+  'pm-uuid',  
+  'user-uuid',  
+  'org-uuid',  
+  'CREDIT_CARD',  
+  'STRIPE',  
+  'pm_1234567890abcdef',  
+  'cus_1234567890abcdef',  
+  '3456',  
+  'VISA',  
+  12,  
+  2028,  
+  '10001',  
+  true,  
+  'ACTIVE',  
+  NOW(),  
+  NOW()  
+);  
+```
+- Update user onboarding:  
+  - onboarding_step = 5  
+- Update checklist: payment_method = completed  
+- Publish event:  
+```json
+{  
+  "event_type": "payment_method.added.v1",  
+  "aggregate_id": "pm-uuid",  
+  "payload": {  
+    "payment_method_id": "pm-uuid",  
+    "user_id": "user-uuid",  
+    "organization_id": "org-uuid",  
+    "type": "CREDIT_CARD",  
+    "provider": "STRIPE",  
+    "last4": "3456",  
+    "brand": "VISA",  
+    "is_default": true,  
+    "added_at": "2025-11-10T15:10:00Z"  
+  }  
+}  
+```
+- Return response:  
+```json
+{  
+  "success": true,  
+  "message": "Payment method added successfully",  
+  "data": {  
+    "payment_method_id": "pm-uuid",  
+    "type": "CREDIT_CARD",  
+    "last4": "3456",  
+    "brand": "VISA",  
+    "is_default": true,  
+    "status": "ACTIVE",  
+    "next_step": "plan_selection"  
+  }  
+}  
+```
+
+**2.4 ACH/Bank Transfer Flow**  
+- User selects "Bank Transfer (ACH)"  
+- Frontend displays bank account form:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ Add Bank Account (ACH)                                      │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Account Holder Name *                                 │   │
+│ │ [John Doe ]                                           │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Routing Number *                                      │   │
+│ │ [021000021 ]                                          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Account Number *                                      │   │
+│ │ [123456789 ]                                          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Confirm Account Number *                              │   │
+│ │ [123456789 ]                                          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Account Type *                                        │   │
+│ │ [● Checking ○ Savings]                               │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ℹ️ We'll send 2 small deposits (< $1) to verify your      │
+│ account. This takes 2-3 business days.                     │
+│                                                             │
+│ ☑ Save this account as my default payment method           │
+│                                                             │
+│ [Add Bank Account]                                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+- User submits bank details  
+- Frontend validates:  
+  - Routing number is 9 digits  
+  - Account number is 4-17 digits  
+  - Account numbers match  
+  - Account type selected  
+- Backend creates bank account in Stripe:  
+```go
+bankAccount, err := stripe.BankAccount.New(&stripe.BankAccountParams{  
+  Customer: customer.ID,  
+  Source: &stripe.SourceParams{  
+    Type: stripe.SourceTypeBankAccount,  
+    Token: bankToken,  
+  },  
+})  
+// Initiate micro-deposits for verification  
+stripe.BankAccount.Verify(bankAccount.ID, &stripe.BankAccountVerifyParams{  
+  Customer: customer.ID,  
+})  
+```
+- Store in database with status = 'PENDING_VERIFICATION'  
+- User receives notification: "We've sent 2 small deposits to your account"  
+- After 2-3 days, user enters deposit amounts to verify:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ Verify Your Bank Account                                    │
+│                                                             │
+│ We've sent 2 small deposits to your account ending in 6789. │
+│ Please enter the amounts below to verify:                   │
+│                                                             │
+│ ┌──────────────────────────┐ ┌──────────────────────────┐   │
+│ │ First Deposit Amount     │ │ Second Deposit Amount    │   │
+│ │ [$0.32 ]                 │ │ [$0.45 ]                 │   │
+│ └──────────────────────────┘ └──────────────────────────┘   │
+│                                                             │
+│ [Verify Account]                                            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+- Backend verifies amounts with Stripe  
+- If correct: Update status to 'ACTIVE'  
+- If incorrect: Allow 3 attempts, then lock for 24 hours  
+
+**2.5 PayPal Flow**  
+- User selects "PayPal"  
+- Frontend redirects to PayPal OAuth:  
+```typescript
+window.location.href = `https://www.paypal.com/connect/?flowEntry=static&client_id=${PAYPAL_CLIENT_ID}&scope=openid+profile+email&redirect_uri=${REDIRECT_URI}`;  
+```
+- After authorization, PayPal redirects back with auth code  
+- Backend exchanges code for access token  
+- Store PayPal account reference  
+- No verification needed (instant)  
+
+**2.6 Cryptocurrency Flow (Advanced)**  
+- User selects "Cryptocurrency"  
+- Display supported cryptocurrencies:  
+  - Bitcoin (BTC)  
+  - Ethereum (ETH)  
+  - USDC (Stablecoin)  
+  - USDT (Stablecoin)  
+- Generate crypto wallet address via payment processor (e.g., Coinbase Commerce)  
+- User sends small amount (~$1) to verify ownership  
+- Monitor blockchain for transaction  
+- Verify and activate after confirmation  
+
+**Step 3: Plan Selection**  
+**3.1 Navigate to Plan Selection**  
+- After payment method is added, redirect to /app/(onboarding)/client/plan  
+- Progress: "Step 3 of 5" (60% complete)  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Choose your plan [3/5]                            │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████████████████████████████░░░░░░░░░░░░░░ 60%    │
+│                                                             │
+│ Select the plan that fits your hiring needs                 │
+│                                                             │
+│ [○ Monthly] [● Annual (Save 20%)]                           │
+│                                                             │
+│ ┌──────────────┐ ┌──────────────┐ ┌────────────────────┐   │
+│ │ FREE         │ │ PRO          │ │ ENTERPRISE         │   │
+│ │              │ │              │ │                    │   │
+│ │ $0/mo        │ │ $49/mo       │ │ Custom pricing     │   │
+│ │              │ │ $39/mo       │ │                    │   │
+│ │              │ │ annual       │ │                    │   │
+│ │              │ │              │ │                    │   │
+│ │ ✓ 10 connects│ │ ✓ 100 connects│ │ ✓ Unlimited        │   │
+│ │ ✓ 1 job post │ │ ✓ Unlimited  │ │ connects           │   │
+│ │ ✓ Basic feat.│ │ jobs         │ │ ✓ Unlimited jobs   │   │
+│ │              │ │ ✓ Featured   │ │ ✓ Dedicated        │   │
+│ │              │ │ listings     │ │ support            │   │
+│ │              │ │ ✓ Analytics  │ │ ✓ Custom terms     │   │
+│ │              │ │ ✓ Priority   │ │ ✓ API access       │   │
+│ │              │ │ support      │ │ ✓ White-label      │   │
+│ │              │ │              │ │                    │   │
+│ │ [Start Free] │ │ [Select Pro] │ │ [Contact Sales]    │   │
+│ │              │ │ Popular!     │ │                    │   │
+│ └──────────────┘ └──────────────┘ └────────────────────┘   │
+│                                                             │
+│ [Compare all features]                                      │
+│                                                             │
+│ 💡 You can change or cancel your plan anytime               │
+│                                                             │
+│ [Continue →]                                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**3.2 Plan Details**  
+- **FREE Plan:**  
+  - Price: $0/month  
+  - 10 connects/month (replenishes monthly)  
+  - 1 active job posting  
+  - Basic job posting features  
+  - Standard support  
+  - 3.5% + $0.50 payment processing fee  
+  - Best for: Occasional hiring, testing platform  
+- **PRO Plan:**  
+  - Price: $49/month or $468/year ($39/mo equivalent, save 20%)  
+  - 100 connects/month  
+  - Unlimited job postings  
+  - Featured job listings (3/month)  
+  - Advanced search filters  
+  - Analytics dashboard  
+  - Priority support  
+  - 2.9% + $0.30 processing fee  
+  - Best for: Regular hiring, growing teams  
+- **ENTERPRISE Plan:**  
+  - Custom pricing (starts at $500/month)  
+  - Unlimited connects  
+  - Unlimited job postings  
+  - Dedicated account manager  
+  - Custom contract terms  
+  - API access  
+  - White-label options  
+  - Volume discounts  
+  - Best for: Large organizations, agencies  
+
+**3.3 Select Plan**  
+- User clicks plan button  
+- If FREE: Skip payment, create free subscription  
+- If PRO: Show payment confirmation modal  
+- If ENTERPRISE: Open contact sales form  
+- PRO Plan Confirmation:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Confirm Your Subscription [×]                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Skillsier Pro - Annual                                      │
+│                                                             │
+│ $468.00 / year                                              │
+│ ($39.00 / month)                                            │
+│                                                             │
+│ What's included:                                            │
+│ ✓ 100 connects per month                                    │
+│ ✓ Unlimited job postings                                    │
+│ ✓ Featured listings (3/month)                               │
+│ ✓ Advanced analytics                                        │
+│ ✓ Priority support                                          │
+│                                                             │
+│ Payment method:                                             │
+│ VISA ending in 3456 [Change]                                │
+│                                                             │
+│ Billing starts today: Nov 10, 2025                          │
+│ Next billing date: Nov 10, 2026                            │
+│                                                             │
+│ ☑ I agree to the [Terms of Service] and [Billing Terms]    │
+│                                                             │
+│ [Cancel] [Confirm Subscription]                             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+- User confirms subscription  
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/subscriptions  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "plan_id": "pro-annual",  
+  "payment_method_id": "pm-uuid",  
+  "organization_id": "org-uuid",  
+  "billing_cycle": "annual",  
+  "auto_renew": true  
+}  
+```
+
+**3.4 Backend Subscription Processing**  
+- Create subscription in Stripe:  
+```go
+subscription, err := stripe.Subscription.New(&stripe.SubscriptionParams{  
+  Customer: customer.ID,  
+  Items: []*stripe.SubscriptionItemsParams{  
+    {  
+      Price: "price_pro_annual",  
+    },  
+  },  
+  PaymentBehavior: stripe.SubscriptionPaymentBehaviorDefaultIncomplete,  
+  DefaultPaymentMethod: paymentMethodID,  
+})  
+// Charge immediately  
+invoice, err := stripe.Invoice.Pay(subscription.LatestInvoice.ID, nil)  
+```
+- Store subscription in database:  
+```sql
+INSERT INTO subscriptions (  
+  id,  
+  user_id,  
+  organization_id,  
+  plan_id,  
+  provider_subscription_id,  
+  status,  
+  current_period_start,  
+  current_period_end,  
+  connects_limit,  
+  connects_used,  
+  connects_remaining,  
+  auto_renew,  
+  created_at,  
+  updated_at  
+) VALUES (  
+  'sub-uuid',  
+  'user-uuid',  
+  'org-uuid',  
+  'pro-annual',  
+  'sub_1234567890abcdef',  
+  'ACTIVE',  
+  '2025-11-10',  
+  '2026-11-10',  
+  100,  
+  0,  
+  100,  
+  true,  
+  NOW(),  
+  NOW()  
+);  
+```
+- Publish event:  
+```json
+{  
+  "event_type": "subscription.created.v1",  
+  "aggregate_id": "sub-uuid",  
+  "payload": {  
+    "subscription_id": "sub-uuid",  
+    "user_id": "user-uuid",  
+    "organization_id": "org-uuid",  
+    "plan_id": "pro-annual",  
+    "status": "ACTIVE",  
+    "connects_limit": 100,  
+    "period_start": "2025-11-10",  
+    "period_end": "2026-11-10",  
+    "created_at": "2025-11-10T15:20:00Z"  
+  }  
+}  
+```
+- Update onboarding: onboarding_step = 6  
+
+**3.5 FREE Plan Flow**  
+- If user selects FREE plan:  
+  - No payment required  
+  - Create free subscription immediately  
+  - Allocate 10 connects  
+  - Proceed to next step  
+```typescript
+POST https://api.skillsier.com/v1/subscriptions  
+Body: {  
+  "plan_id": "free",  
+  "organization_id": "org-uuid",  
+  "billing_cycle": "monthly"  
+}  
+```
+
+**Step 4: First Job Posting (Guided)**  
+**4.1 Navigate to Job Creation**  
+- After plan selection, redirect to /app/(onboarding)/client/first-job  
+- Progress: "Step 4 of 5" (80% complete)  
+- Display: "Let's post your first job!"  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Post your first job [4/5]                         │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████████████████████████████████████████░░ 80%    │
+│                                                             │
+│ What do you need help with?                                 │
+│                                                             │
+│ [Use Template ▼] or [Start from Scratch]                    │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Job Title *                                           │   │
+│ │ [Senior Full-Stack Developer ]                        │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Category * [🎨 Suggested]                             │   │
+│ │ [Web Development ▼]                                   │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Subcategory                                           │   │
+│ │ [Full-Stack Development ▼]                            │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Skills Required * (Add at least 3)                          │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [React ×] [Node.js ×] [TypeScript ×]                 │   │
+│ │ [PostgreSQL ×] [AWS ×]                                │   │
+│ │                                                       │   │
+│ │ [Search skills or add new... ]                        │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Experience Level *                                          │
+│ [○ Entry] [● Intermediate] [○ Expert]                       │
+│                                                             │
+│ Job Description *                                           │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [B] [I] [U] [Link] [•] [1.]                          │   │
+│ ├───────────────────────────────────────────────────────┤   │
+│ │ We're looking for an experienced full-stack          │   │
+│ │ developer to build...                                 │   │
+│ │                                                       │   │
+│ │                                                       │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ 234/5000 characters                                         │
+│                                                             │
+│ Project Duration                                            │
+│ [● Less than 1 month] [○ 1-3 months] [○ 3-6 months]        │
+│ [○ More than 6 months]                                      │
+│                                                             │
+│ Budget                                                      │
+│ [● Hourly Rate] [○ Fixed Price]                             │
+│                                                             │
+│ ┌──────────────────────────┐ ┌──────────────────────────┐   │
+│ │ From                     │ │ To                       │   │
+│ │ [$50 /hr]                │ │ [$100 /hr]               │   │
+│ └──────────────────────────┘ └──────────────────────────┘   │
+│                                                             │
+│ 💡 Average rate for these skills: $75/hr                   │
+│                                                             │
+│ [Save as Draft] [Preview] [Publish Job →]                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4.2 Job Template Selection (Optional)**  
+- User clicks "Use Template" dropdown  
+- Show common templates:  
+  - "Website Development"  
+  - "Mobile App Development"  
+  - "Logo Design"  
+  - "Content Writing"  
+  - "Data Entry"  
+  - "Virtual Assistant"  
+  - "Social Media Marketing"  
+- User selects template  
+- Pre-fill form with template data  
+- User can edit all fields  
+
+**4.3 Form Validation**  
+- Job Title:  
+  - Required  
+  - Min 10 characters, Max 100 characters  
+  - Clear and descriptive  
+  - No ALL CAPS (suggest title case)  
+  - No special characters except: - , . ( )  
+  - Real-time validation with inline error messages  
+
+- Category & Subcategory:  
+  - Required  
+  - Must select from predefined list  
+  - Subcategory options filtered by category  
+  - AI suggestion based on job title (shown with 🎨 icon)  
+
+- Skills:  
+  - Required: minimum 3, maximum 15  
+  - Autocomplete from skills database  
+  - Option to add custom skills (requires approval)  
+  - Show skill popularity: "123 jobs using this skill"  
+  - Warn if combination unusual: "These skills are rarely combined"  
+
+- Experience Level:  
+  - Required  
+  - Entry: 0-2 years  
+  - Intermediate: 3-5 years  
+  - Expert: 6+ years  
+
+- Description:  
+  - Required  
+  - Min 50 characters, Max 5000 characters  
+  - Rich text editor with formatting options  
+  - Real-time character count  
+  - AI writing assistance (optional): "Improve with AI"  
+  - Plagiarism check for duplicate job posts  
+
+- Duration:  
+  - Required  
+  - Options: < 1 month, 1-3 months, 3-6 months, > 6 months  
+
+- Budget:  
+  - Required  
+  - Type: Hourly or Fixed  
+  - For Hourly:  
+    - Min rate: $5/hr  
+    - Max rate: $500/hr  
+    - Show market average for skills  
+    - Warning if rate is 30%+ below market average  
+  - For Fixed:  
+    - Min budget: $100  
+    - Max budget: $100,000  
+    - Option to break into milestones later  
+
+**4.4 Additional Options (Optional)**  
+Display advanced settings accordion:  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ ▼ Additional Options (Optional)                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Visibility                                                  │
+│ ● Public (Recommended for most jobs)                        │
+│   Search results, browse, recommendations                   │
+│                                                             │
+│ ○ Invite-Only                                               │
+│   Only invited freelancers can apply                        │
+│                                                             │
+│ ○ Private Link                                              │
+│   Anyone with link can apply (not in search)                │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Screening Questions                                         │
+│ [Add Question +]                                            │
+│                                                             │
+│ 1. Why are you a good fit for this project?                │
+│    Type: Text (500 char max)                                │
+│    Required: Yes  [Edit] [Remove]                           │
+│                                                             │
+│ [+ Add from Template]                                       │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Attachments                                                 │
+│ [Upload File] [Drag files here]                             │
+│ ☑ Requirements document                                     │
+│ ☑ Brand guidelines                                          │
+│ Supported: PDF, DOC, DOCX, XLS, XLSX, PNG, JPG (max 25MB)  │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Location Preference                                         │
+│ ● Worldwide                                                 │
+│ ○ Specific countries: [Select countries ▼]                 │
+│ ○ Same timezone (±2 hours)                                  │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Freelancer Type                                             │
+│ ☑ Independent freelancers                                   │
+│ ☑ Agencies                                                  │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4.5 Preview Job**  
+- User clicks "Preview" button  
+- Frontend renders job preview modal:  
+```typescript
+// Generate preview without saving
+const preview = {
+  title: formData.title,
+  category: formData.category,
+  skills: formData.skills,
+  description: formData.description,
+  budget: formData.budget,
+  duration: formData.duration,
+  created_at: new Date(),
+  client: {
+    name: currentUser.display_name,
+    avatar: currentUser.avatar_url,
+    organization: currentUser.organization?.name,
+    verification: {
+      payment_verified: true,
+      email_verified: true
+    }
+  }
+};
+```
+
+**Preview Modal:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ [X] Job Preview - How it will appear to freelancers        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Senior Full-Stack Developer                                 │
+│                                                             │
+│ $50-$100/hr · Hourly · 1-3 months                          │
+│ Posted just now by Acme Corp                                │
+│ ✓ Payment verified · ✓ Email verified                      │
+│                                                             │
+│ [React] [Node.js] [TypeScript] [PostgreSQL] [AWS]          │
+│                                                             │
+│ We're looking for an experienced full-stack developer       │
+│ to build a modern web application using React and Node.js.  │
+│ The project involves...                                     │
+│                                                             │
+│ Experience Level: Intermediate                              │
+│ Project Duration: 1-3 months                                │
+│                                                             │
+│ Screening Questions:                                        │
+│ • Why are you a good fit for this project?                 │
+│                                                             │
+│ Attachments:                                                │
+│ 📄 requirements.pdf (2.3 MB)                                │
+│ 📄 brand-guidelines.pdf (1.8 MB)                            │
+│                                                             │
+│ [← Edit Job] [Publish Job →]                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4.6 Publish Job**  
+- User clicks "Publish Job" from preview or main form  
+- Show confirmation modal if first job:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Ready to publish your first job?                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ ✓ Your job will be visible to thousands of freelancers     │
+│ ✓ You'll receive proposals within 24 hours                  │
+│ ✓ You can edit or close the job anytime                     │
+│                                                             │
+│ This job will cost 2 Connects                               │
+│ Remaining balance: 98 Connects                              │
+│                                                             │
+│ [Cancel] [Publish Job]                                      │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/jobs  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "title": "Senior Full-Stack Developer",  
+  "description": "We're looking for...",  
+  "description_html": "<p>We're looking for...</p>",  
+  "category_id": "web-development",  
+  "subcategory_id": "full-stack",  
+  "skills": [  
+    {"id": "react", "required": true},  
+    {"id": "nodejs", "required": true},  
+    {"id": "typescript", "required": true},  
+    {"id": "postgresql", "required": false},  
+    {"id": "aws", "required": false}  
+  ],  
+  "experience_level": "INTERMEDIATE",  
+  "duration": "1-3 months",  
+  "budget_type": "HOURLY",  
+  "hourly_rate": {  
+    "min": 50.00,  
+    "max": 100.00,  
+    "currency": "USD"  
+  },  
+  "visibility": "PUBLIC",  
+  "screening_questions": [  
+    {  
+      "question": "Why are you a good fit for this project?",  
+      "type": "TEXT",  
+      "required": true,  
+      "max_length": 500  
+    }  
+  ],  
+  "attachments": [  
+    {  
+      "file_id": "file-uuid-1",  
+      "filename": "requirements.pdf",  
+      "size": 2411520  
+    },  
+    {  
+      "file_id": "file-uuid-2",  
+      "filename": "brand-guidelines.pdf",  
+      "size": 1887436  
+    }  
+  ],  
+  "location_restriction": "WORLDWIDE",  
+  "allows_agencies": true,  
+  "organization_id": "org-uuid",  
+  "is_first_job": true  
+}  
+```
+
+**4.7 Backend Job Creation Processing**  
+- Validate job data:  
+  - Check user has sufficient connects (deduct 2)  
+  - Validate all required fields  
+  - Check for duplicate jobs (same title + client within 7 days)  
+  - Run content moderation (check for prohibited content)  
+  - Verify skills exist in skills database  
+  - Validate budget range (min < max, within platform limits)  
+
+- Create job record:  
+```sql
+INSERT INTO jobs (  
+  id,  
+  client_id,  
+  organization_id,  
+  title,  
+  description,  
+  description_html,  
+  category_id,  
+  subcategory_id,  
+  experience_level,  
+  duration,  
+  budget_type,  
+  hourly_rate_min,  
+  hourly_rate_max,  
+  currency,  
+  visibility,  
+  status,  
+  location_restriction,  
+  allows_agencies,  
+  connects_cost,  
+  views_count,  
+  proposals_count,  
+  created_at,  
+  updated_at,  
+  indexed_at  
+) VALUES (  
+  'job-uuid',  
+  'user-uuid',  
+  'org-uuid',  
+  'Senior Full-Stack Developer',  
+  'We''re looking for...',  
+  '<p>We''re looking for...</p>',  
+  'web-development',  
+  'full-stack',  
+  'INTERMEDIATE',  
+  '1-3 months',  
+  'HOURLY',  
+  50.00,  
+  100.00,  
+  'USD',  
+  'PUBLIC',  
+  'OPEN',  
+  'WORLDWIDE',  
+  true,  
+  2,  
+  0,  
+  0,  
+  NOW(),  
+  NOW(),  
+  NULL  
+);  
+
+-- Insert job skills  
+INSERT INTO job_skills (job_id, skill_id, required, display_order)  
+VALUES  
+  ('job-uuid', 'react', true, 1),  
+  ('job-uuid', 'nodejs', true, 2),  
+  ('job-uuid', 'typescript', true, 3),  
+  ('job-uuid', 'postgresql', false, 4),  
+  ('job-uuid', 'aws', false, 5);  
+
+-- Insert screening questions  
+INSERT INTO job_screening_questions (job_id, question, type, required, max_length, display_order)  
+VALUES  
+  ('job-uuid', 'Why are you a good fit for this project?', 'TEXT', true, 500, 1);  
+
+-- Insert attachments  
+INSERT INTO job_attachments (job_id, file_id, filename, file_size, mime_type, display_order)  
+VALUES  
+  ('job-uuid', 'file-uuid-1', 'requirements.pdf', 2411520, 'application/pdf', 1),  
+  ('job-uuid', 'file-uuid-2', 'brand-guidelines.pdf', 1887436, 'application/pdf', 2);  
+
+-- Deduct connects  
+UPDATE subscriptions  
+SET connects_used = connects_used + 2,  
+    connects_remaining = connects_remaining - 2,  
+    updated_at = NOW()  
+WHERE user_id = 'user-uuid' AND status = 'ACTIVE';  
+```
+
+- Publish events:  
+```json
+{  
+  "event_type": "job.created.v1",  
+  "aggregate_id": "job-uuid",  
+  "payload": {  
+    "job_id": "job-uuid",  
+    "client_id": "user-uuid",  
+    "organization_id": "org-uuid",  
+    "title": "Senior Full-Stack Developer",  
+    "category_id": "web-development",  
+    "skills": ["react", "nodejs", "typescript", "postgresql", "aws"],  
+    "budget_type": "HOURLY",  
+    "hourly_rate_min": 50.00,  
+    "hourly_rate_max": 100.00,  
+    "visibility": "PUBLIC",  
+    "is_first_job": true,  
+    "created_at": "2025-11-10T16:00:00Z"  
+  }  
+}  
+```
+
+- Trigger search indexing:  
+```json
+{  
+  "event_type": "job.index_requested.v1",  
+  "aggregate_id": "job-uuid",  
+  "payload": {  
+    "job_id": "job-uuid",  
+    "priority": "HIGH"  
+  }  
+}  
+```
+
+- Update onboarding progress:  
+```sql
+UPDATE users  
+SET onboarding_step = 7,  
+    onboarding_data = jsonb_set(  
+      onboarding_data,  
+      '{client,first_job_posted}',  
+      'true'::jsonb  
+    ),  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+**4.8 Success Response**  
+Backend returns:  
+```json
+{  
+  "success": true,  
+  "data": {  
+    "job_id": "job-uuid",  
+    "title": "Senior Full-Stack Developer",  
+    "status": "OPEN",  
+    "visibility": "PUBLIC",  
+    "connects_charged": 2,  
+    "connects_remaining": 98,  
+    "created_at": "2025-11-10T16:00:00Z",  
+    "job_url": "https://skillsier.com/jobs/job-uuid",  
+    "indexing_status": "PENDING",  
+    "estimated_proposals": "5-15 within 24 hours"  
+  },  
+  "message": "Your job has been published successfully!"  
+}  
+```
+
+**4.9 Frontend Success Handling**  
+- Show success modal:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 🎉 Your job is live!                                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ "Senior Full-Stack Developer" is now visible to thousands   │
+│ of qualified freelancers.                                   │
+│                                                             │
+│ What happens next?                                          │
+│                                                             │
+│ ✓ Your job will appear in search results within minutes    │
+│ ✓ Freelancers can start sending proposals immediately       │
+│ ✓ You'll receive email notifications for new proposals      │
+│                                                             │
+│ Expected timeline:                                          │
+│ • First proposals: Within 2-4 hours                         │
+│ • Average proposals: 5-15 within 24 hours                   │
+│                                                             │
+│ [View Job] [Manage Job] [Continue Onboarding →]            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Auto-redirect to next step after 5 seconds (or user clicks Continue)  
+
+---
+
+### Step 5: Talent Recommendations & Invites
+
+**5.1 Receive AI-Powered Recommendations**  
+- After job is indexed, search-be generates talent recommendations  
+- Recommendation algorithm considers:  
+  - Skills match (required and optional)  
+  - Experience level  
+  - Hourly rate compatibility  
+  - Availability  
+  - Success rate  
+  - Location (if specified)  
+  - Previous work quality  
+  - Client reviews  
+  - Response time  
+
+- Backend calls:  
+```typescript
+POST https://api.skillsier.com/v1/search/recommendations  
+Body: {  
+  "job_id": "job-uuid",  
+  "limit": 10,  
+  "criteria": {  
+    "skills_match_min": 80,  
+    "rate_range_multiplier": 1.2,  
+    "availability_required": true,  
+    "min_success_rate": 85  
+  }  
+}  
+```
+
+**5.2 Display Recommendations**  
+Frontend redirects to: `/app/(onboarding)/client/recommendations`  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Top talent for your job [5/5]                     │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████████████████████████████████████████████ 100%  │
+│                                                             │
+│ We found 10 highly-qualified freelancers for your job      │
+│ "Senior Full-Stack Developer"                               │
+│                                                             │
+│ [✓ Select All] [Filters ▼] [Sort: Best Match ▼]            │
+│                                                             │
+│ ┌─────────────────────────────────────────────────────────┐ │
+│ │ [☑]  ●  Sarah M.                         $75/hr          │ │
+│ │          Senior Full-Stack Developer     ⭐ 5.0 (24)     │ │
+│ │                                                           │ │
+│ │          Skills: React · Node.js · TypeScript · AWS      │ │
+│ │          95% match · Available now · USA                 │ │
+│ │                                                           │ │
+│ │          "10+ years building scalable web applications   │ │
+│ │           with React and Node.js. Recently completed..."  │ │
+│ │                                                           │ │
+│ │          [View Profile] [Send Message] [Invite to Apply] │ │
+│ └─────────────────────────────────────────────────────────┘ │
+│                                                             │
+│ ┌─────────────────────────────────────────────────────────┐ │
+│ │ [☑]  ●  John K.                          $85/hr          │ │
+│ │          Full-Stack Engineer             ⭐ 4.9 (18)     │ │
+│ │                                                           │ │
+│ │          Skills: React · Node.js · PostgreSQL · Docker   │ │
+│ │          90% match · Available in 2 days · UK            │ │
+│ │                                                           │ │
+│ │          "Specialized in enterprise React applications   │ │
+│ │           and Node.js microservices. Experience with..." │ │
+│ │                                                           │ │
+│ │          [View Profile] [Send Message] [Invite to Apply] │ │
+│ └─────────────────────────────────────────────────────────┘ │
+│                                                             │
+│ [More talent available in search →]                         │
+│                                                             │
+│ [Skip this step] [Invite Selected (2) →]                    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**5.3 Invite Freelancers**  
+- User selects freelancers to invite (checkboxes)  
+- User clicks "Invite Selected" button  
+- Show invite message modal:  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Invite 2 freelancers to apply                               │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Add a personal message (optional)                           │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Hi,                                                   │   │
+│ │                                                       │   │
+│ │ I came across your profile and I think you'd be a    │   │
+│ │ great fit for my project. Please review the job      │   │
+│ │ details and submit a proposal if interested.          │   │
+│ │                                                       │   │
+│ │ Looking forward to hearing from you!                  │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ 0/1000 characters                                           │
+│                                                             │
+│ Your job will be attached to this invitation                │
+│                                                             │
+│ [Cancel] [Send Invitations]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/jobs/job-uuid/invitations  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "freelancer_ids": [  
+    "freelancer-uuid-1",  
+    "freelancer-uuid-2"  
+  ],  
+  "message": "Hi, I came across your profile...",  
+  "job_id": "job-uuid"  
+}  
+```
+
+**5.4 Backend Invitation Processing**  
+- Validate invitations:  
+  - Check freelancers exist and are active  
+  - Check job is still open  
+  - Check no duplicate invitations  
+  - Validate message length (max 1000 chars)  
+
+- Create invitation records:  
+```sql
+INSERT INTO job_invitations (  
+  id,  
+  job_id,  
+  client_id,  
+  freelancer_id,  
+  message,  
+  status,  
+  invited_at,  
+  expires_at  
+) VALUES  
+  ('inv-uuid-1', 'job-uuid', 'user-uuid', 'freelancer-uuid-1', 'Hi, I came across...', 'SENT', NOW(), NOW() + INTERVAL '14 days'),  
+  ('inv-uuid-2', 'job-uuid', 'user-uuid', 'freelancer-uuid-2', 'Hi, I came across...', 'SENT', NOW(), NOW() + INTERVAL '14 days');  
+```
+
+- Publish events:  
+```json
+{  
+  "event_type": "job.invitation.sent.v1",  
+  "aggregate_id": "inv-uuid-1",  
+  "payload": {  
+    "invitation_id": "inv-uuid-1",  
+    "job_id": "job-uuid",  
+    "client_id": "user-uuid",  
+    "freelancer_id": "freelancer-uuid-1",  
+    "invited_at": "2025-11-10T16:30:00Z"  
+  }  
+}  
+```
+
+- Trigger notifications (via communications-be):  
+```typescript
+// Email notification
+POST https://api.skillsier.com/v1/notifications/send  
+Body: {  
+  "user_id": "freelancer-uuid-1",  
+  "type": "JOB_INVITATION",  
+  "channels": ["EMAIL", "PUSH", "IN_APP"],  
+  "data": {  
+    "job_id": "job-uuid",  
+    "job_title": "Senior Full-Stack Developer",  
+    "client_name": "John Doe",  
+    "organization_name": "Acme Corp",  
+    "message": "Hi, I came across...",  
+    "invitation_url": "https://skillsier.com/jobs/job-uuid?invitation=inv-uuid-1"  
+  }  
+}  
+```
+
+**5.5 Success Response**  
+```json
+{  
+  "success": true,  
+  "data": {  
+    "invitations_sent": 2,  
+    "freelancers": [  
+      {  
+        "id": "freelancer-uuid-1",  
+        "name": "Sarah M.",  
+        "invitation_id": "inv-uuid-1"  
+      },  
+      {  
+        "id": "freelancer-uuid-2",  
+        "name": "John K.",  
+        "invitation_id": "inv-uuid-2"  
+      }  
+    ]  
+  },  
+  "message": "Invitations sent successfully!"  
+}  
+```
+
+**5.6 Completion**  
+- Show success message:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ ✓ Invitations sent!                                         │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ You've invited 2 freelancers to apply for your job.         │
+│ They'll receive notifications and can submit proposals.     │
+│                                                             │
+│ [Done] [View Job Dashboard →]                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Update onboarding completion:  
+```sql
+UPDATE users  
+SET onboarding_completed = true,  
+    onboarding_step = 8,  
+    onboarding_data = jsonb_set(  
+      onboarding_data,  
+      '{client,invitations_sent}',  
+      '2'::jsonb  
+    ),  
+    profile_completion_score = GREATEST(profile_completion_score, 70),  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+- Redirect to client dashboard: `/app/(dashboard)`  
+
+---
+
+#### Branches & Edge Cases
+
+**Organization Setup:**  
+- **Skip company setup:** User can skip and complete later from settings  
+  - Profile completion score reduced by 10 points  
+  - Organization name defaults to "User's Organization"  
+  - Can be prompted to complete in dashboard widget  
+
+- **VAT/Tax ID validation fails:**  
+  - For EU businesses, VAT ID validated against VIES database  
+  - If invalid, show: "VAT ID could not be verified. Please check and try again."  
+  - Option to proceed without VAT ID (marked as unverified)  
+  - Can verify later from billing settings  
+
+- **Logo upload issues:**  
+  - Max file size: 5MB  
+  - Accepted formats: JPG, PNG, SVG  
+  - If too large: "Image too large. Please upload a file under 5MB."  
+  - Automatic compression and resizing to 500x500px  
+  - Fallback to initials avatar if no logo  
+
+**Payment Method:**  
+- **Card declined:**  
+  - Show specific error: "Your card was declined. Please check the details or try a different card."  
+  - Errors: insufficient_funds, card_expired, incorrect_cvc, processing_error  
+  - Option to try different payment method  
+  - Can skip and add later (limited to free plan)  
+
+- **Bank account verification timeout:**  
+  - Micro-deposits take 1-2 business days  
+  - Status: "Verification pending"  
+  - Email notification when micro-deposits arrive  
+  - User returns to verify amounts  
+  - Max 3 verification attempts  
+
+- **PayPal connection fails:**  
+  - Redirect to PayPal OAuth flow  
+  - If user cancels: Return to payment method selection  
+  - If connection fails: "Could not connect PayPal. Please try again."  
+  - Support link for PayPal connection issues  
+
+- **Crypto wallet:**  
+  - Show supported networks: Ethereum, Polygon, BSC  
+  - User enters wallet address  
+  - Verify ownership via signed message  
+  - Warning: "Crypto payments are irreversible"  
+
+**Plan Selection:**  
+- **Downgrade from free trial:**  
+  - If user had trial period, can't select free plan  
+  - Must choose Pro or Enterprise  
+  - Show: "Trial users must select a paid plan"  
+
+- **Enterprise plan request:**  
+  - Click "Contact Sales" button  
+  - Show form: Company name, size, requirements  
+  - Sales team notified  
+  - User can proceed with Pro plan temporarily  
+
+- **Subscription payment fails:**  
+  - Retry payment 3 times over 7 days  
+  - Email notifications on each retry  
+  - If all fail: Downgrade to free plan  
+  - Connects purchased separately are preserved  
+
+**Job Posting:**  
+- **Draft auto-save:**  
+  - Form auto-saves every 30 seconds  
+  - Saved to local storage and backend  
+  - Toast notification: "Draft saved"  
+  - Can resume from drafts list  
+
+- **Content moderation flags:**  
+  - AI detects prohibited content: Adult content, weapons, illegal services, hate speech  
+  - Job held for manual review  
+  - Status: "Under Review - typically approved within 2 hours"  
+  - Email notification on approval/rejection  
+  - If rejected: Specific reasons provided, can resubmit  
+
+- **Budget validation warnings:**  
+  - If budget 30%+ below market average:  
+    - ⚠️ "Your budget is below the market average for these skills ($75/hr). You may receive fewer quality proposals."  
+    - Option to adjust or proceed  
+  - If budget 2x+ above market average:  
+    - 💡 "Your budget is higher than typical. Consider starting lower to attract competitive pricing."  
+
+- **Duplicate job detection:**  
+  - Same title + client within 7 days triggers warning  
+  - "You posted a similar job recently. Are you sure you want to post this?"  
+  - Option to view previous job or proceed  
+
+- **Insufficient connects:**  
+  - Jobs cost 2-5 connects based on job type  
+  - If insufficient: "You need 2 more connects to post this job"  
+  - Link to: "Buy Connects" or "Upgrade Plan"  
+  - Can save as draft and post later  
+
+**Talent Recommendations:**  
+- **No matches found:**  
+  - If search-be returns <3 recommendations:  
+    - "We're still building your talent pool. Check back in a few hours."  
+    - Option to browse all freelancers  
+    - Suggestion to adjust job requirements (skills, budget)  
+
+- **All invited freelancers decline:**  
+  - Track invitation acceptance rate  
+  - After 3+ declines, suggest:  
+    - Increase budget  
+    - Adjust project scope  
+    - Modify requirements  
+  - Auto-recommend new talent  
+
+- **Invitation limit reached:**  
+  - Free plan: 5 invitations per job  
+  - Pro plan: 20 invitations per job  
+  - Enterprise: Unlimited  
+  - Show: "You've reached your invitation limit for this job. Upgrade to invite more freelancers."  
+
+**General:**  
+- **Network errors:**  
+  - All API calls have 3 retry attempts with exponential backoff  
+  - If fails: "Connection error. Please check your internet and try again."  
+  - Draft saved locally to prevent data loss  
+
+- **Session timeout:**  
+  - JWT expires after 1 hour  
+  - Auto-refresh token if <10 minutes remaining  
+  - If expired: "Your session has expired. Please log in again."  
+  - Draft preserved, can resume after re-login  
+
+- **Mobile experience:**  
+  - Simplified forms for smaller screens  
+  - One section at a time with clear progress  
+  - Camera integration for logo upload  
+  - Bottom sheet modals for selections  
+  - Swipe gestures for navigation  
+
+- **Exit onboarding:**  
+  - User can exit at any step  
+  - Progress saved automatically  
+  - Resume link in dashboard: "Complete your onboarding (70% done)"  
+  - Email reminder after 24 hours if incomplete  
+  - Max 3 email reminders over 7 days  
+
+---
+
+### UI Components
+
+**Mobile Layout (React Native):**  
+
+```
+┌─────────────────────────────────────────────┐
+│  <  Post Your First Job         [4/5] 80%  │
+├─────────────────────────────────────────────┤
+│                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   │
+│ ████████████████████████████████░░░        │
+│                                             │
+│ Job Title *                                 │
+│ ┌─────────────────────────────────────────┐ │
+│ │ Senior Full-Stack Developer             │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ Category *                                  │
+│ ┌─────────────────────────────────────────┐ │
+│ │ Web Development               ▼         │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ Skills * (3 required)                       │
+│ ┌─────────────────────────────────────────┐ │
+│ │ [React ×] [Node.js ×] [TypeScript ×]   │ │
+│ │ [+ Add more skills]                     │ │
+│ └─────────────────────────────────────────┘ │
+│                                             │
+│ Budget                                      │
+│ ┌──────────────────┐ ┌──────────────────┐  │
+│ │ From             │ │ To               │  │
+│ │ [$50/hr]         │ │ [$100/hr]        │  │
+│ └──────────────────┘ └──────────────────┘  │
+│                                             │
+│ 💡 Avg: $75/hr for these skills            │
+│                                             │
+│ [Description (50+ chars required) →]        │
+│                                             │
+├─────────────────────────────────────────────┤
+│ [Save Draft]              [Continue →]     │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+#### Notifications
+
+**Organization Created:**  
+- **Email:** "Your organization 'Acme Corp' is ready. Complete your billing setup to start hiring."  
+- **In-app:** Toast notification  
+
+**Payment Method Added:**  
+- **Email:** "Payment method ending in •••• 1234 has been added to your account."  
+- **In-app:** "✓ Payment method verified"  
+- **Push:** "Payment method added successfully"  
+
+**Subscription Activated:**  
+- **Email:** "Welcome to Skillsier Pro! Your 100 connects are ready to use."  
+  - Benefits summary  
+  - Getting started guide  
+  - Support contact info  
+- **In-app:** Celebration modal with confetti animation  
+
+**Job Published:**  
+- **Email:** "Your job 'Senior Full-Stack Developer' is now live!"  
+  - Job URL  
+  - Tips for getting quality proposals  
+  - Link to job dashboard  
+- **In-app:** Success banner with CTA: "View job"  
+- **Push:** "Your job is live and visible to freelancers"  
+
+**Job Indexed:**  
+- **In-app:** "Your job is now appearing in search results"  
+
+**First Proposal Received:**  
+- **Email:** "You received your first proposal! Review it now."  
+  - Freelancer preview  
+  - Proposal summary  
+  - Link to view full proposal  
+- **In-app:** Badge on Jobs icon, notification card  
+- **Push:** "New proposal received for 'Senior Full-Stack Developer'"  
+- **SMS (if enabled):** "You have 1 new proposal. View at skillsier.com"  
+
+**Invitation Sent:**  
+- **In-app:** "Invitations sent to 2 freelancers"  
+
+**Invitation Accepted:**  
+- **Email:** "Sarah M. accepted your invitation and submitted a proposal"  
+- **In-app:** Notification with link to proposal  
+- **Push:** "Sarah M. applied to your job"  
+
+**Onboarding Incomplete (24h later):**  
+- **Email:** "You're almost there! Complete your setup and post your first job."  
+  - Progress: 60% complete  
+  - Missing steps highlighted  
+  - CTA: "Continue Setup"  
+
+**Welcome Series (Day 1, 3, 7 after first job):**  
+- **Email Day 1:** "Tips for reviewing proposals"  
+- **Email Day 3:** "How to interview freelancers"  
+- **Email Day 7:** "Making the most of Skillsier"  
+
+---
+
+#### Analytics
+
+**Events to Track:**  
+- `onboarding.client.started` (user_id, timestamp)  
+- `onboarding.client.step_completed` (user_id, step: org_setup | payment | plan | job | recommendations)  
+- `organization.created` (org_id, user_id, org_size, industry)  
+- `payment_method.added` (user_id, method_type: card | bank | paypal | crypto, is_first)  
+- `payment_method.verified` (user_id, method_type, verification_time_seconds)  
+- `subscription.selected` (user_id, plan_id, billing_cycle, is_first)  
+- `subscription.payment.succeeded` (user_id, subscription_id, amount, currency)  
+- `subscription.payment.failed` (user_id, reason, retry_count)  
+- `job.draft.created` (user_id, job_id)  
+- `job.draft.autosaved` (user_id, job_id, field_count)  
+- `job.template.used` (user_id, template_id)  
+- `job.preview.viewed` (user_id, job_id)  
+- `job.published` (user_id, job_id, visibility, budget_type, skills_count, is_first)  
+- `job.moderation.flagged` (job_id, flags: string[])  
+- `job.moderation.approved` (job_id, review_time_minutes)  
+- `job.indexed` (job_id, indexing_time_seconds)  
+- `recommendations.generated` (job_id, count, algorithm_version)  
+- `recommendations.viewed` (user_id, job_id, freelancer_ids)  
+- `invitation.sent` (job_id, freelancer_id, has_custom_message)  
+- `invitation.batch_sent` (job_id, count)  
+- `onboarding.client.completed` (user_id, duration_minutes, steps_skipped: string[])  
+- `onboarding.client.abandoned` (user_id, last_step, completion_percent)  
+
+**Metrics to Track:**  
+- Onboarding completion rate (by step)  
+- Average time to complete onboarding  
+- Drop-off rate by step  
+- Payment method adoption (by type)  
+- Plan selection distribution  
+- Job publish success rate  
+- Job moderation flag rate  
+- Time to first job published  
+- Time to first proposal received  
+- Invitation acceptance rate  
+- Connects usage in first 30 days  
+
+**Funnels:**  
+1. Registration → Org Setup → Payment → Plan → Job Posted → Proposal Received  
+2. Job Created → Job Preview → Job Published → Job Indexed  
+3. Recommendations Viewed → Invitations Sent → Invitations Accepted  
+
+---
+
+### Accessibility
+
+**Keyboard Navigation:**  
+- Tab order follows visual flow  
+- All form fields keyboard accessible  
+- Enter key submits forms  
+- Escape key closes modals  
+- Arrow keys navigate dropdowns  
+- Space selects checkboxes/radio buttons  
+- Shortcuts: Cmd/Ctrl+S saves draft  
+
+**Screen Reader Support:**  
+- All form labels properly associated with inputs  
+- Error messages announced immediately  
+- Progress bar state announced  
+- Success/failure notifications announced  
+- Button states (loading, disabled) announced  
+- Dropdown selections announced  
+- File upload status announced  
+
+**ARIA Attributes:**  
+```jsx
+<form aria-label="Post new job">
+  <div role="progressbar" aria-valuenow={80} aria-valuemin={0} aria-valuemax={100}>
+    <span aria-live="polite">Step 4 of 5 - 80% complete</span>
+  </div>
+  
+  <input
+    type="text"
+    aria-label="Job title"
+    aria-required="true"
+    aria-invalid={errors.title ? "true" : "false"}
+    aria-describedby={errors.title ? "title-error" : undefined}
+  />
+  {errors.title && (
+    <span id="title-error" role="alert">{errors.title}</span>
+  )}
+  
+  <select
+    aria-label="Category"
+    aria-required="true"
+    aria-describedby="category-hint"
+  >
+    <option value="">Select category</option>
+  </select>
+  <span id="category-hint">Choose the category that best fits your project</span>
+</form>
+```
+
+**Visual Accessibility:**  
+- Color contrast ratio ≥ 4.5:1 for text  
+- Focus indicators visible (2px blue outline)  
+- Error states use icon + text (not color alone)  
+- Required fields marked with asterisk + "required" label  
+- Touch targets ≥ 44x44px (mobile)  
+- Text resizable up to 200% without loss of functionality  
+- No content flashing more than 3 times per second  
+
+**Cognitive Accessibility:**  
+- Clear, simple language  
+- One task per screen  
+- Progress indicators throughout  
+- Consistent UI patterns  
+- Inline help text and tooltips  
+- Examples for complex fields  
+- Confirmation for destructive actions  
+- Auto-save to prevent data loss  
+
+---
+
+### Performance
+
+**Optimization Strategies:**  
+- **Form state management:**  
+  - Local state for form fields (no unnecessary re-renders)  
+  - Debounced auto-save (300ms delay)  
+  - Local storage for draft persistence  
+
+- **Skills autocomplete:**  
+  - Virtualized list for 10,000+ skills  
+  - Debounced search (200ms)  
+  - Client-side caching of skill results  
+  - Fuzzy search with Fuse.js  
+
+- **File uploads:**  
+  - Client-side image compression (80% quality)  
+  - Progressive upload with retry logic  
+  - Multipart upload for files >5MB  
+  - Upload progress indicator  
+
+- **API calls:**  
+  - Request deduplication  
+  - Optimistic UI updates  
+  - Retry logic with exponential backoff  
+  - Request cancellation on unmount  
+
+**SLO Targets:**  
+- Page load time: <2s (p95)  
+- Form interaction to feedback: <100ms (p95)  
+- API calls (save draft, publish): <500ms (p95)  
+- File upload (5MB): <10s (p95)  
+- Skills search results: <300ms (p95)  
+- Recommendations generation: <5s (p95)  
+
+**Caching Strategy:**  
+```typescript
+// Skills cache (1 hour TTL)
+const skillsCache = useQuery({
+  queryKey: ['skills'],
+  queryFn: fetchSkills,
+  staleTime: 3600000,
+  cacheTime: 3600000
+});
+
+// User organization (session cache)
+const orgCache = useQuery({
+  queryKey: ['organization', userId],
+  queryFn: fetchOrganization,
+  staleTime: Infinity
+});
+
+// Job templates (local storage)
+const templatesCache = useLocalStorage('job_templates', []);
+```
+
+**Code Splitting:**  
+- Lazy load rich text editor (100KB)  
+- Lazy load payment form (stripe.js)  
+- Lazy load file uploader  
+- Route-based code splitting  
+
+**Bundle Size:**  
+- Initial bundle: <150KB (gzip)  
+- Onboarding bundle: <300KB (gzip)  
+- Total JavaScript: <500KB (gzip)  
+
+---
+
+### Security
+
+**Input Validation:**  
+- **Job title:**  
+  - XSS prevention: Sanitize input, escape HTML  
+  - Max length: 100 characters  
+  - No special characters except: - , . ( )  
+  - Pattern: `/^[a-zA-Z0-9\s\-,.()\u00C0-\u017F]+$/`  
+
+- **Description:**  
+  - Rich text sanitization (DOMPurify)  
+  - Allowed tags: p, strong, em, u, ul, ol, li, a  
+  - No script tags, no iframes, no embedded objects  
+  - Max length: 5000 characters  
+
+- **Budget:**  
+  - Server-side validation  
+  - Min: $5/hr or $100 fixed  
+  - Max: $500/hr or $100,000 fixed  
+  - Must be positive numbers  
+  - Max 2 decimal places  
+
+**Rate Limiting:**  
+- Draft auto-save: Max 1 request per 30 seconds per user  
+- Job publish: Max 5 jobs per hour per user (free), unlimited (pro)  
+- Invitation send: Max 20 per hour per user  
+- API endpoints: 100 requests per minute per user  
+- File upload: Max 10 files per minute per user  
+
+**Access Control:**  
+- Only CLIENT role can access client onboarding  
+- Only authenticated users can post jobs  
+- Only job owner can edit/delete job  
+- Payment methods encrypted at rest and in transit  
+- PCI DSS compliance for card data (handled by Stripe)  
+
+**Data Protection:**  
+- HTTPS only (TLS 1.3)  
+- JWT tokens HttpOnly cookies  
+- CSRF tokens for state-changing operations  
+- Payment tokens (not raw card numbers) stored  
+- File uploads scanned for malware (ClamAV)  
+- Sensitive data (VAT ID) encrypted in database  
+
+**Audit Logging:**  
+```sql
+INSERT INTO audit_logs (
+  event_type,
+  user_id,
+  resource_type,
+  resource_id,
+  action,
+  changes,
+  ip_address,
+  user_agent,
+  created_at
+) VALUES (
+  'JOB_PUBLISHED',
+  'user-uuid',
+  'JOB',
+  'job-uuid',
+  'CREATE',
+  jsonb_build_object(
+    'title', 'Senior Full-Stack Developer',
+    'budget_type', 'HOURLY',
+    'visibility', 'PUBLIC'
+  ),
+  '192.168.1.1',
+  'Mozilla/5.0...',
+  NOW()
+);
+```
+
+---
+
+#### Sources
+
+**Backend:**  
+- `users-be.user-stories.md` — User management, organization setup  
+- `users-be.database-design.md` — Users, organizations tables  
+- `financial-be.user-stories.md` — Payment methods, subscriptions  
+- `financial-be.database-design.md` — Payment methods, subscriptions tables  
+- `jobs-be.user-stories.md` — Job creation, management  
+- `jobs-be.database-design.md` — Jobs, job_skills, job_invitations tables  
+- `search-be.user-stories.md` — Job indexing, talent recommendations  
+- `subscriptions-be.user-stories.md` — Plan selection, connects allocation  
+- `communications-be.user-stories.md` — Email, SMS, push notifications  
+
+**Frontend:**  
+- `combined-fe-folder-structure.md` — Route paths and component structure  
+  - `/app/(onboarding)/client/*` routes  
+  - `/app/(settings)/organization` routes  
+  - `/app/(billing)/payment-methods` routes  
+  - `/app/(jobs)/new` routes  
+- `packages/lib/src/features/onboarding/` — Shared onboarding logic  
+- `packages/lib/src/features/jobs/` — Job creation logic  
+- `packages/lib/src/features/billing/` — Payment method management  
+- `packages/ui/src/components/` — Reusable UI components  
+
+**External Services:**  
+- Stripe API — Payment processing, subscriptions  
+- Stripe Elements — Card input UI  
+- Plaid — Bank account verification  
+- PayPal SDK — PayPal integration  
+
+---
+
+---
+
+## Journey: ONB-3 (Freelancer Fast-Start)
+
+**Goal:** Guide new freelancers through profile completion, KYC verification, payout setup, portfolio creation, and job alert configuration  
+
+**Actor:** New Registered User (Freelancer role)  
+
+**Trigger:** User completes ONB-1 with Freelancer role selected  
+
+**Preconditions:**  
+- User has completed ONB-1 (Sign Up → Verify → Choose Roles)  
+- User selected "Freelancer" role (or "Both")  
+- User account status = 'ACTIVE', email_verified = true  
+- User has valid JWT token with freelancer role claims  
+
+**Primary Screens:**  
+**Web Routes:**  
+- `/app/(onboarding)/freelancer/profile` — Professional profile wizard  
+- `/app/(onboarding)/freelancer/skills` — Skills selection  
+- `/app/(onboarding)/freelancer/rates` — Rate setting  
+- `/app/(onboarding)/freelancer/experience` — Work experience  
+- `/app/(onboarding)/freelancer/portfolio` — Portfolio upload  
+- `/app/(onboarding)/freelancer/kyc` — Identity verification  
+- `/app/(onboarding)/freelancer/payout` — Payout method setup  
+- `/app/(onboarding)/freelancer/preferences` — Job preferences  
+- `/app/(dashboard)` — Freelancer dashboard (completion)  
+
+**Mobile Routes:**  
+- `app/(tabs)/(authenticated)/(onboarding)/profile-setup/basic-info.tsx` — Basic profile  
+- `app/(tabs)/(authenticated)/(onboarding)/profile-setup/skills.tsx` — Skills  
+- `app/(tabs)/(authenticated)/(onboarding)/profile-setup/rates.tsx` — Rates  
+- `app/(tabs)/(authenticated)/(onboarding)/portfolio-items.tsx` — Portfolio  
+- `app/(auth)/kyc/index.tsx` — KYC intro  
+- `app/(auth)/kyc/personal-info.tsx` — Personal info  
+- `app/(auth)/kyc/identity-verification.tsx` — ID upload  
+- `app/(auth)/kyc/address-proof.tsx` — Address verification  
+- `app/(auth)/kyc/review.tsx` — KYC review  
+- `app/(tabs)/(authenticated)/(billing)/payout-methods/index.tsx` — Payout setup  
+- `app/(tabs)/(authenticated)/(onboarding)/profile-setup/preferences.tsx` — Preferences  
+
+**System Touchpoints:**  
+- **users-be:** Profile management, freelancer data  
+  - `PATCH /v1/users/{id}/freelancer/profile` — Update professional profile  
+  - `POST /v1/users/{id}/skills` — Add skills  
+  - `PATCH /v1/users/{id}/freelancer/rates` — Set hourly rate  
+  - `POST /v1/users/{id}/experience` — Add work experience  
+  - `POST /v1/users/{id}/portfolio` — Add portfolio items  
+  - `GET /v1/users/{id}/onboarding-status` — Get onboarding progress  
+- **admin-be:** KYC/KYB processing, identity verification  
+  - `POST /v1/kyc/individual` — Submit KYC documents  
+  - `GET /v1/kyc/{id}/status` — Check verification status  
+  - `POST /v1/kyc/{id}/documents` — Upload verification documents  
+- **financial-be:** Payout method management  
+  - `POST /v1/payout-methods` — Add payout method  
+  - `POST /v1/payout-methods/{id}/verify` — Verify bank account  
+  - `GET /v1/payout-methods` — List payout methods  
+- **search-be:** Profile indexing, skill recommendations  
+  - `POST /v1/search/profiles/index` — Index freelancer profile  
+  - `GET /v1/search/skills/suggestions` — Get skill suggestions  
+- **communications-be:** Notifications, alerts  
+  - `POST /v1/notifications/send` — Send verification notifications  
+  - `POST /v1/alerts/create` — Create job alerts  
+- **storage-be:** File uploads (portfolio, documents)  
+  - `POST /v1/files/upload` — Upload files  
+  - `GET /v1/files/{id}` — Get file URL  
+
+**Key Components:**  
+- **Shared Components:**  
+  - `packages/lib/src/features/onboarding/hooks/use-freelancer-onboarding.ts`  
+  - `packages/lib/src/features/profile/hooks/use-update-profile.ts`  
+  - `packages/lib/src/features/profile/hooks/use-skills-autocomplete.ts`  
+  - `packages/lib/src/features/profile/components/ProfileCompletionWidget.tsx`  
+  - `packages/lib/src/features/profile/components/SkillsSelector.tsx`  
+  - `packages/lib/src/features/profile/components/RateCalculator.tsx`  
+  - `packages/lib/src/features/portfolio/components/PortfolioUploader.tsx`  
+  - `packages/lib/src/features/kyc/hooks/use-kyc-submission.ts`  
+  - `packages/lib/src/features/kyc/components/DocumentUploader.tsx`  
+  - `packages/lib/src/features/billing/hooks/use-payout-methods.ts`  
+  - `packages/lib/src/features/billing/components/PayoutMethodForm.tsx`  
+- **Web-Specific:**  
+  - `apps/web/app/(onboarding)/freelancer/*/*.tsx` — Web onboarding pages  
+- **Mobile-Specific:**  
+  - `apps/mobile/app/(tabs)/(authenticated)/(onboarding)/*/*.tsx` — Mobile onboarding screens  
+
+---
+
+#### Flow Steps
+
+### Step 1: Professional Profile Wizard
+
+**1.1 Navigate to Profile Setup**  
+- After completing ONB-1, user is redirected to: `/app/(onboarding)/freelancer/profile`  
+- Progress indicator: "Step 1 of 8" (12.5% complete)  
+- Display welcome message:  
+  - Title: "Build Your Professional Profile"  
+  - Subtitle: "Stand out to clients with a complete profile"  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Build Your Professional Profile [1/8]             │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 12.5%      │
+│                                                             │
+│ First, let's create your professional headline              │
+│                                                             │
+│ Professional Headline *                                     │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Full-Stack Developer | React & Node.js Expert          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ 52/80 characters                                            │
+│ 💡 Tip: Include your top skills and experience level       │
+│                                                             │
+│ Example headlines:                                          │
+│ • "Senior UX Designer specializing in SaaS applications"   │
+│ • "Certified AWS Solutions Architect | Cloud Expert"       │
+│ • "Full-Stack Developer | 10+ years | React & Python"      │
+│                                                             │
+│ Professional Summary *                                      │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [B] [I] [U] [• List] [1. Numbered]                    │   │
+│ ├───────────────────────────────────────────────────────┤   │
+│ │ I'm a passionate full-stack developer with 8 years    │   │
+│ │ of experience building scalable web applications.     │   │
+│ │ My expertise includes:                                 │   │
+│ │                                                       │   │
+│ │ • Frontend: React, TypeScript, Next.js                │   │
+│ │ • Backend: Node.js, Python, Go                        │   │
+│ │ • Cloud: AWS, Docker, Kubernetes                      │   │
+│ │                                                       │   │
+│ │ I specialize in building high-performance SaaS        │   │
+│ │ applications and have successfully delivered 50+      │   │
+│ │ projects for startups and enterprises.                │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ 425/5000 characters · [AI Writing Assistant]               │
+│                                                             │
+│ Languages                                                   │
+│ ┌─────────────────────────────┐ ┌─────────────────────┐    │
+│ │ [English ▼]                 │ │ [Native ▼]          │    │
+│ └─────────────────────────────┘ └─────────────────────┘    │
+│ [+ Add Language]                                            │
+│                                                             │
+│ Location                                                    │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [🔍 City, Country]                                    │   │
+│ │ Suggestions: New York, USA · London, UK · Remote      │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Timezone                                                    │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [(UTC-05:00) Eastern Time - US & Canada ▼]           │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Video Introduction (Optional)                               │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [📹 Record Video] or [📎 Upload Video]                │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ Max 60 seconds · Accepted: MP4, MOV, WebM (max 50MB)       │
+│ 💡 Videos increase profile views by 40%                    │
+│                                                             │
+│ [Save as Draft] [Continue →]                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**1.2 Form Validation**  
+- **Professional Headline:**  
+  - Required  
+  - Min 20 characters, Max 80 characters  
+  - Clear and concise  
+  - Include key skills or specialization  
+  - No special characters except: & | , . -  
+  - Real-time character counter  
+  - Suggestions based on selected skills (later step)  
+
+- **Professional Summary:**  
+  - Required  
+  - Min 100 characters, Max 5000 characters  
+  - Rich text formatting supported  
+  - Highlight experience, skills, achievements  
+  - AI writing assistant available:  
+    - Click "AI Writing Assistant" button  
+    - Show modal with AI-generated suggestions  
+    - User can accept, edit, or regenerate  
+  - Real-time character counter  
+  - Plagiarism check (warn if 80%+ similar to other profiles)  
+
+- **Languages:**  
+  - Required: At least 1 language  
+  - Autocomplete from supported languages list (150+ languages)  
+  - Proficiency levels: Native, Fluent, Conversational, Basic  
+  - Can add multiple languages  
+  - Default: User's locale language  
+
+- **Location:**  
+  - Required  
+  - Autocomplete from cities database (50,000+ cities)  
+  - Format: City, Country (e.g., "New York, USA")  
+  - Option: "Remote" or "Worldwide"  
+  - Validates against geo database  
+
+- **Timezone:**  
+  - Required  
+  - Dropdown of all standard timezones  
+  - Auto-detected from browser (can override)  
+  - Format: "(UTC+XX:XX) Region/City"  
+
+- **Video Introduction:**  
+  - Optional  
+  - Max duration: 60 seconds  
+  - Max file size: 50MB  
+  - Accepted formats: MP4, MOV, WebM, AVI  
+  - Can record via webcam (web only) or upload  
+  - Thumbnail auto-generated  
+  - Preview before saving  
+
+**1.3 AI Writing Assistant**  
+- User clicks "AI Writing Assistant" button  
+- Show modal:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ AI Writing Assistant                                [X]     │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Tell us about yourself and we'll generate a professional    │
+│ summary for you.                                            │
+│                                                             │
+│ Your Role                                                   │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [Full-Stack Developer ▼]                              │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Years of Experience                                         │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [8 years]                                             │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Top Skills (Select 3-5)                                     │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [React ×] [Node.js ×] [TypeScript ×] [AWS ×]         │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Key Achievements (Optional)                                 │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Built 50+ applications for startups and enterprises   │   │
+│ │ Specialized in high-performance SaaS products         │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ [Generate Summary]                                          │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Generated Summary:                                          │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ I'm a results-driven full-stack developer with 8     │   │
+│ │ years of experience specializing in React, Node.js,   │   │
+│ │ TypeScript, and AWS. I've successfully built 50+      │   │
+│ │ applications for startups and enterprises, focusing   │   │
+│ │ on high-performance SaaS products that scale.         │   │
+│ │                                                       │   │
+│ │ My expertise spans the entire development lifecycle,  │   │
+│ │ from architecting robust backends to crafting         │   │
+│ │ intuitive user interfaces. I'm passionate about       │   │
+│ │ writing clean, maintainable code and staying current  │   │
+│ │ with the latest technologies and best practices.      │   │
+│ │                                                       │   │
+│ │ Whether you need a scalable API, a responsive         │   │
+│ │ frontend, or end-to-end application development,      │   │
+│ │ I bring technical excellence and a commitment to      │   │
+│ │ delivering solutions that exceed expectations.        │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ [Regenerate] [Edit] [Use This Summary]                     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Backend calls AI service:  
+```typescript
+POST https://api.skillsier.com/v1/ai/generate-summary  
+Body: {  
+  "role": "Full-Stack Developer",  
+  "years_experience": 8,  
+  "skills": ["React", "Node.js", "TypeScript", "AWS"],  
+  "achievements": "Built 50+ applications...",  
+  "tone": "professional"  
+}  
+```
+
+- User can regenerate, edit, or use the summary  
+
+**1.4 Save Profile Data**  
+- User clicks "Continue" button  
+- Frontend validates all required fields  
+- Frontend calls:  
+```typescript
+PATCH https://api.skillsier.com/v1/users/{user_id}/freelancer/profile  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "professional_headline": "Full-Stack Developer | React & Node.js Expert",  
+  "professional_summary": "I'm a passionate full-stack developer...",  
+  "professional_summary_html": "<p>I'm a passionate full-stack developer...</p>",  
+  "languages": [  
+    {  
+      "language": "English",  
+      "proficiency": "NATIVE"  
+    },  
+    {  
+      "language": "Spanish",  
+      "proficiency": "CONVERSATIONAL"  
+    }  
+  ],  
+  "location": {  
+    "city": "New York",  
+    "country": "USA",  
+    "country_code": "US",  
+    "latitude": 40.7128,  
+    "longitude": -74.0060  
+  },  
+  "timezone": "America/New_York",  
+  "video_intro_url": "https://cdn.skillsier.com/videos/video-uuid.mp4"  
+}  
+```
+
+**1.5 Backend Processing**  
+- Validate and sanitize input  
+- Update freelancer profile:  
+```sql
+UPDATE users  
+SET professional_headline = 'Full-Stack Developer | React & Node.js Expert',  
+    professional_summary = 'I''m a passionate full-stack developer...',  
+    professional_summary_html = '<p>I''m a passionate full-stack developer...</p>',  
+    location_city = 'New York',  
+    location_country = 'USA',  
+    location_country_code = 'US',  
+    location_coordinates = POINT(40.7128, -74.0060),  
+    timezone = 'America/New_York',  
+    video_intro_url = 'https://cdn.skillsier.com/videos/video-uuid.mp4',  
+    onboarding_step = 2,  
+    profile_completion_score = 20,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+
+-- Insert languages  
+INSERT INTO user_languages (user_id, language, proficiency, display_order)  
+VALUES  
+  ('user-uuid', 'English', 'NATIVE', 1),  
+  ('user-uuid', 'Spanish', 'CONVERSATIONAL', 2);  
+```
+
+- Publish event:  
+```json
+{  
+  "event_type": "freelancer.profile.updated.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "updated_fields": ["headline", "summary", "languages", "location", "timezone", "video"],  
+    "completion_score": 20,  
+    "updated_at": "2025-11-10T14:00:00Z"  
+  }  
+}  
+```
+
+- Response:  
+```json
+{  
+  "success": true,  
+  "data": {  
+    "profile_completion_score": 20,  
+    "next_step": "skills"  
+  }  
+}  
+```
+
+---
+
+### Step 2: Skills Selection
+
+**2.1 Navigate to Skills Setup**  
+- User continues to: `/app/(onboarding)/freelancer/skills`  
+- Progress: "Step 2 of 8" (25% complete)  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Select Your Skills [2/8]                          │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 25%       │
+│                                                             │
+│ Add skills to showcase your expertise (min 3, max 15)       │
+│                                                             │
+│ Primary Skills * (3-5 skills)                               │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [🔍 Search for skills]                                │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Popular Skills:                                             │
+│ [React] [Node.js] [Python] [JavaScript] [TypeScript]       │
+│ [AWS] [Docker] [PostgreSQL] [MongoDB] [GraphQL]            │
+│                                                             │
+│ Selected Skills:                                            │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ 1. [React ×]           Proficiency: [Expert ▼]       │   │
+│ │ 2. [Node.js ×]         Proficiency: [Expert ▼]       │   │
+│ │ 3. [TypeScript ×]      Proficiency: [Intermediate ▼] │   │
+│ │ 4. [PostgreSQL ×]      Proficiency: [Intermediate ▼] │   │
+│ │ 5. [AWS ×]             Proficiency: [Intermediate ▼] │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ 5 of 15 skills added                                        │
+│                                                             │
+│ 💡 Skills with certifications stand out more               │
+│ [+ Add Certification]                                       │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Additional Skills (Optional)                                │
+│ Add more skills to increase your visibility                 │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [Docker ×]           Proficiency: [Beginner ▼]       │   │
+│ │ [Kubernetes ×]       Proficiency: [Beginner ▼]       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ [Skip for Now] [Continue →]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**2.2 Skills Autocomplete**  
+- User types in search box  
+- Frontend calls:  
+```typescript
+GET https://api.skillsier.com/v1/search/skills?q=reac&limit=10  
+```
+
+- Backend returns:  
+```json
+{  
+  "results": [  
+    {  
+      "id": "react",  
+      "name": "React",  
+      "category": "Frontend Frameworks",  
+      "popularity": 95,  
+      "avg_hourly_rate": 75,  
+      "jobs_count": 12543  
+    },  
+    {  
+      "id": "react-native",  
+      "name": "React Native",  
+      "category": "Mobile Development",  
+      "popularity": 88,  
+      "avg_hourly_rate": 80,  
+      "jobs_count": 5432  
+    }  
+  ]  
+}  
+```
+
+- Display results with:  
+  - Skill name  
+  - Category  
+  - Popularity indicator  
+  - Jobs available count  
+
+**2.3 Skill Proficiency Levels**  
+- **Beginner:** 0-1 year experience  
+- **Intermediate:** 2-4 years experience  
+- **Advanced:** 5-7 years experience  
+- **Expert:** 8+ years experience  
+
+**2.4 Certification Upload (Optional)**  
+- User clicks "+ Add Certification"  
+- Show modal:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Add Certification                                    [X]    │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Skill                                                       │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [AWS ▼]                                               │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Certification Name                                          │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ AWS Certified Solutions Architect - Associate          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Issuing Organization                                        │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Amazon Web Services                                    │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Credential ID (Optional)                                    │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ ABC123XYZ789                                           │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Credential URL (Optional)                                   │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ https://aws.amazon.com/verification/ABC123XYZ789       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Issue Date                                                  │
+│ ┌───────────┐  Expiration Date (if applicable)              │
+│ │ [10/2023] │  ┌───────────┐                               │
+│ └───────────┘  │ [10/2026] │                               │
+│                └───────────┘                               │
+│                                                             │
+│ Upload Certificate (Optional)                               │
+│ [📎 Upload File]                                            │
+│                                                             │
+│ [Cancel] [Add Certification]                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**2.5 Save Skills**  
+- User clicks "Continue"  
+- Frontend validates:  
+  - Minimum 3 skills selected  
+  - Each skill has proficiency level  
+  - No duplicate skills  
+
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/users/{user_id}/skills  
+Body: {  
+  "skills": [  
+    {  
+      "skill_id": "react",  
+      "proficiency": "EXPERT",  
+      "years_experience": 8,  
+      "is_primary": true,  
+      "display_order": 1  
+    },  
+    {  
+      "skill_id": "nodejs",  
+      "proficiency": "EXPERT",  
+      "years_experience": 7,  
+      "is_primary": true,  
+      "display_order": 2  
+    },  
+    {  
+      "skill_id": "typescript",  
+      "proficiency": "INTERMEDIATE",  
+      "years_experience": 4,  
+      "is_primary": true,  
+      "display_order": 3  
+    }  
+  ],  
+  "certifications": [  
+    {  
+      "skill_id": "aws",  
+      "name": "AWS Certified Solutions Architect - Associate",  
+      "issuer": "Amazon Web Services",  
+      "credential_id": "ABC123XYZ789",  
+      "credential_url": "https://aws.amazon.com/verification/ABC123XYZ789",  
+      "issue_date": "2023-10-15",  
+      "expiration_date": "2026-10-15",  
+      "certificate_file_id": "file-uuid"  
+    }  
+  ]  
+}  
+```
+
+**2.6 Backend Processing**  
+```sql
+-- Insert user skills  
+INSERT INTO user_skills (user_id, skill_id, proficiency, years_experience, is_primary, display_order, created_at)  
+VALUES  
+  ('user-uuid', 'react', 'EXPERT', 8, true, 1, NOW()),  
+  ('user-uuid', 'nodejs', 'EXPERT', 7, true, 2, NOW()),  
+  ('user-uuid', 'typescript', 'INTERMEDIATE', 4, true, 3, NOW()),  
+  ('user-uuid', 'postgresql', 'INTERMEDIATE', 5, false, 4, NOW()),  
+  ('user-uuid', 'aws', 'INTERMEDIATE', 3, false, 5, NOW());  
+
+-- Insert certifications  
+INSERT INTO user_certifications (user_id, skill_id, name, issuer, credential_id, credential_url, issue_date, expiration_date, certificate_file_id, created_at)  
+VALUES  
+  ('user-uuid', 'aws', 'AWS Certified Solutions Architect - Associate', 'Amazon Web Services', 'ABC123XYZ789', 'https://aws.amazon.com/verification/ABC123XYZ789', '2023-10-15', '2026-10-15', 'file-uuid', NOW());  
+
+-- Update profile completion  
+UPDATE users  
+SET onboarding_step = 3,  
+    profile_completion_score = 40,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+- Publish event:  
+```json
+{  
+  "event_type": "freelancer.skills.updated.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "skills_count": 5,  
+    "primary_skills": ["react", "nodejs", "typescript"],  
+    "certifications_count": 1,  
+    "completion_score": 40  
+  }  
+}  
+```
+
+---
+
+### Step 3: Rate Setting
+
+**3.1 Navigate to Rate Setup**  
+- User continues to: `/app/(onboarding)/freelancer/rates`  
+- Progress: "Step 3 of 8" (37.5% complete)  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Set Your Hourly Rate [3/8]                        │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ███████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 37.5%       │
+│                                                             │
+│ Set your rate to start receiving job opportunities          │
+│                                                             │
+│ Market Insights for Your Skills:                            │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Based on React, Node.js, TypeScript expertise          │   │
+│ │                                                         │   │
+│ │ Average Rate:  $75/hr                                  │   │
+│ │ Range:         $50-$150/hr                             │   │
+│ │ Your Experience (8 years): $70-$110/hr recommended     │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Your Hourly Rate *                                          │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [$] [85] / hour                                        │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ │----▓---|--------|----|-------|----------|-------│    │   │
+│ │ $20    $50      $75   $100     $150      $200+         │   │
+│ │         Low     Avg    High                            │   │
+│ │                                                         │   │
+│ │        Your rate: $85/hr (Above Average)               │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ 💡 You can always adjust your rate later                   │
+│                                                             │
+│ Fixed-Price Preference (Optional)                           │
+│ ☑ Also accept fixed-price projects                         │
+│                                                             │
+│ Minimum Project Budget                                      │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [$] [2000] minimum                                     │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Discounts (Optional)                                        │
+│ Offer discounts to attract more clients                    │
+│                                                             │
+│ ☐ Long-term contracts (3+ months): [10%] off               │
+│ ☐ Bulk hours (40+ hours/week): [5%] off                    │
+│                                                             │
+│ [Skip for Now] [Continue →]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**3.2 Rate Calculator**  
+- Interactive slider shows rate positioning  
+- Real-time feedback:  
+  - $20-$40/hr: "Below market average - may indicate less experience"  
+  - $40-$60/hr: "Competitive for intermediate developers"  
+  - $60-$100/hr: "Above average - matches your experience"  
+  - $100-$150/hr: "Premium rate - ensure portfolio justifies this"  
+  - $150+/hr: "Expert-level pricing - strong portfolio required"  
+
+**3.3 Save Rate**  
+- User clicks "Continue"  
+- Frontend validates:  
+  - Rate between $5 and $500/hr  
+  - Minimum budget ≥ $100 (if fixed-price enabled)  
+  - Discount percentages 0-50%  
+
+- Frontend calls:  
+```typescript
+PATCH https://api.skillsier.com/v1/users/{user_id}/freelancer/rates  
+Body: {  
+  "hourly_rate": 85.00,  
+  "currency": "USD",  
+  "accepts_fixed_price": true,  
+  "minimum_project_budget": 2000.00,  
+  "discounts": {  
+    "long_term": {  
+      "enabled": true,  
+      "percentage": 10,  
+      "min_duration_months": 3  
+    },  
+    "bulk_hours": {  
+      "enabled": true,  
+      "percentage": 5,  
+      "min_hours_per_week": 40  
+    }  
+  }  
+}  
+```
+
+**3.4 Backend Processing**  
+```sql
+UPDATE users  
+SET hourly_rate = 85.00,  
+    currency = 'USD',  
+    accepts_fixed_price = true,  
+    minimum_project_budget = 2000.00,  
+    rate_discounts = jsonb_build_object(  
+      'long_term', jsonb_build_object('enabled', true, 'percentage', 10, 'min_duration_months', 3),  
+      'bulk_hours', jsonb_build_object('enabled', true, 'percentage', 5, 'min_hours_per_week', 40)  
+    ),  
+    onboarding_step = 4,  
+    profile_completion_score = 50,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+- Publish event:  
+```json
+{  
+  "event_type": "freelancer.rates.updated.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "hourly_rate": 85.00,  
+    "currency": "USD",  
+    "accepts_fixed_price": true,  
+    "minimum_budget": 2000.00,  
+    "completion_score": 50  
+  }  
+}  
+```
+---
+
+### Step 4: Portfolio Creation
+
+**4.1 Navigate to Portfolio Setup**  
+- User continues to: `/app/(onboarding)/freelancer/portfolio`  
+- Progress: "Step 4 of 8" (50% complete)  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Showcase Your Work [4/8]                          │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████████████████░░░░░░░░░░░░░░░░░░░░░░ 50%        │
+│                                                             │
+│ Add 3-10 portfolio items to demonstrate your expertise      │
+│                                                             │
+│ [+ Add Project] [📎 Upload Work Sample] [🔗 Link External] │
+│                                                             │
+│ Portfolio Items (0/10)                                      │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ 📸 Drag images here or click to upload                │   │
+│ │                                                       │   │
+│ │    [Upload Files]                                     │   │
+│ │                                                       │   │
+│ │ Accepted: Images (JPG, PNG, GIF), PDFs, Videos       │   │
+│ │ Max 25MB per file                                     │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ External Links                                              │
+│ ☑ Link to your GitHub profile                              │
+│ ☑ Link to your personal website                            │
+│ ☑ Link to Behance, Dribbble, etc.                          │
+│                                                             │
+│ GitHub Profile                                              │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ https://github.com/johndoe                             │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ [Verify GitHub Account]                                     │
+│                                                             │
+│ 💡 Profiles with portfolios get 5x more job invitations    │
+│                                                             │
+│ [Skip for Now] [Continue →]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4.2 Add Portfolio Item**  
+- User clicks "+ Add Project" button  
+- Show modal:  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Add Portfolio Item                                   [X]    │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Project Title *                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ E-commerce Platform for Fashion Startup                │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Project Type *                                              │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [Web Application ▼]                                   │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ Options: Web App, Mobile App, Design, Writing, etc.        │
+│                                                             │
+│ Client (Optional)                                           │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Fashion Startup Inc.                                   │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ ☑ Client has given permission to showcase this project     │
+│                                                             │
+│ Description *                                               │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [B] [I] [U] [Link] [•]                                │   │
+│ ├───────────────────────────────────────────────────────┤   │
+│ │ Built a full-featured e-commerce platform with:       │   │
+│ │ • Product catalog with search & filters               │   │
+│ │ • Shopping cart & checkout                            │   │
+│ │ • Payment integration (Stripe)                        │   │
+│ │ • Order management system                             │   │
+│ │ • Admin dashboard                                      │   │
+│ │                                                       │   │
+│ │ Technologies: React, Node.js, PostgreSQL, Stripe      │   │
+│ │                                                       │   │
+│ │ Results: Processed $500K+ in first 6 months          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ 245/2000 characters                                         │
+│                                                             │
+│ Skills Used *                                               │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [React ×] [Node.js ×] [PostgreSQL ×] [Stripe ×]      │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Project Images/Videos                                       │
+│ ┌─────────┐ ┌─────────┐ ┌─────────┐                        │
+│ │ [+ Add] │ │ [+ Add] │ │ [+ Add] │                        │
+│ └─────────┘ └─────────┘ └─────────┘                        │
+│ Upload up to 10 images/videos                              │
+│                                                             │
+│ Project URL (Optional)                                      │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ https://fashionstartup.com                             │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Completion Date                                             │
+│ ┌───────────┐                                               │
+│ │ [06/2024] │                                               │
+│ └───────────┘                                               │
+│                                                             │
+│ [Cancel] [Save Portfolio Item]                              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4.3 Upload Portfolio Files**  
+- User uploads images/videos/PDFs  
+- Frontend validates:  
+  - Max file size: 25MB per file  
+  - Max 10 files per portfolio item  
+  - Accepted formats: JPG, PNG, GIF, MP4, MOV, PDF  
+  - Total portfolio storage: 500MB (free), 2GB (pro)  
+
+- Upload flow:  
+```typescript
+// 1. Request upload URL  
+POST https://api.skillsier.com/v1/files/upload/request  
+Body: {  
+  "filename": "screenshot-1.png",  
+  "content_type": "image/png",  
+  "size": 2048576,  
+  "folder": "portfolio"  
+}  
+
+// 2. Backend returns pre-signed URL  
+{  
+  "file_id": "file-uuid",  
+  "upload_url": "https://storage.skillsier.com/upload/presigned-url",  
+  "max_age": 3600  
+}  
+
+// 3. Upload file directly to storage (S3/CloudStorage)  
+PUT https://storage.skillsier.com/upload/presigned-url  
+Body: <file_binary>  
+
+// 4. Confirm upload  
+POST https://api.skillsier.com/v1/files/file-uuid/confirm  
+```
+
+**4.4 GitHub Integration (Optional)**  
+- User clicks "Verify GitHub Account"  
+- Redirect to GitHub OAuth:  
+```
+GET https://github.com/login/oauth/authorize?  
+  client_id=skillsier_github_client_id&  
+  redirect_uri=https://skillsier.com/auth/github/callback&  
+  scope=user:email,read:user,repo&  
+  state=random_state_token  
+```
+
+- After authorization, GitHub redirects back:  
+```
+GET https://skillsier.com/auth/github/callback?code=auth_code&state=state_token  
+```
+
+- Exchange code for access token:  
+```typescript
+POST https://api.skillsier.com/v1/integrations/github/connect  
+Body: {  
+  "code": "auth_code",  
+  "state": "state_token"  
+}  
+```
+
+- Backend fetches GitHub profile:  
+```typescript
+// GitHub API calls  
+GET https://api.github.com/user  
+GET https://api.github.com/user/repos?sort=updated&per_page=10  
+```
+
+- Store GitHub data:  
+```sql
+INSERT INTO user_integrations (  
+  user_id,  
+  platform,  
+  platform_user_id,  
+  username,  
+  profile_url,  
+  access_token_encrypted,  
+  metadata,  
+  connected_at  
+) VALUES (  
+  'user-uuid',  
+  'GITHUB',  
+  '12345678',  
+  'johndoe',  
+  'https://github.com/johndoe',  
+  pgp_sym_encrypt('github_access_token', 'encryption_key'),  
+  jsonb_build_object(  
+    'repositories_count', 42,  
+    'followers', 150,  
+    'public_repos', jsonb_build_array(...)  
+  ),  
+  NOW()  
+);  
+```
+
+**4.5 Save Portfolio**  
+- User clicks "Save Portfolio Item"  
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/users/{user_id}/portfolio  
+Body: {  
+  "title": "E-commerce Platform for Fashion Startup",  
+  "project_type": "WEB_APPLICATION",  
+  "client_name": "Fashion Startup Inc.",  
+  "client_permission": true,  
+  "description": "Built a full-featured e-commerce platform...",  
+  "description_html": "<p>Built a full-featured e-commerce platform...</p>",  
+  "skills": ["react", "nodejs", "postgresql", "stripe"],  
+  "images": [  
+    {  
+      "file_id": "file-uuid-1",  
+      "caption": "Homepage design",  
+      "display_order": 1  
+    },  
+    {  
+      "file_id": "file-uuid-2",  
+      "caption": "Product listing page",  
+      "display_order": 2  
+    }  
+  ],  
+  "project_url": "https://fashionstartup.com",  
+  "completion_date": "2024-06-15"  
+}  
+```
+
+**4.6 Backend Processing**  
+```sql
+-- Insert portfolio item  
+INSERT INTO portfolio_items (  
+  id,  
+  user_id,  
+  title,  
+  project_type,  
+  client_name,  
+  client_permission,  
+  description,  
+  description_html,  
+  project_url,  
+  completion_date,  
+  display_order,  
+  created_at  
+) VALUES (  
+  'portfolio-uuid',  
+  'user-uuid',  
+  'E-commerce Platform for Fashion Startup',  
+  'WEB_APPLICATION',  
+  'Fashion Startup Inc.',  
+  true,  
+  'Built a full-featured e-commerce platform...',  
+  '<p>Built a full-featured e-commerce platform...</p>',  
+  'https://fashionstartup.com',  
+  '2024-06-15',  
+  1,  
+  NOW()  
+);  
+
+-- Link skills  
+INSERT INTO portfolio_item_skills (portfolio_item_id, skill_id, display_order)  
+VALUES  
+  ('portfolio-uuid', 'react', 1),  
+  ('portfolio-uuid', 'nodejs', 2),  
+  ('portfolio-uuid', 'postgresql', 3),  
+  ('portfolio-uuid', 'stripe', 4);  
+
+-- Link images  
+INSERT INTO portfolio_item_files (portfolio_item_id, file_id, caption, display_order)  
+VALUES  
+  ('portfolio-uuid', 'file-uuid-1', 'Homepage design', 1),  
+  ('portfolio-uuid', 'file-uuid-2', 'Product listing page', 2);  
+
+-- Update profile completion  
+UPDATE users  
+SET onboarding_step = 5,  
+    profile_completion_score = 65,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+- User can add more portfolio items (3-10 recommended)  
+- After adding sufficient items, click "Continue"  
+
+---
+
+### Step 5: KYC/Identity Verification
+
+**5.1 Navigate to KYC Setup**  
+- User continues to: `/app/(onboarding)/freelancer/kyc`  
+- Progress: "Step 5 of 8" (62.5% complete)  
+
+Note: KYC may be required immediately for certain countries (e.g., USA, EU) or deferred until first withdrawal (other countries). This flow shows immediate verification.
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Verify Your Identity [5/8]                        │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ █████████████████████████░░░░░░░░░░░░░░░░░░░░ 62.5%       │
+│                                                             │
+│ Verify your identity to access all platform features        │
+│                                                             │
+│ Why verify?                                                 │
+│ ✓ Build trust with clients                                 │
+│ ✓ Access higher-value projects                             │
+│ ✓ Faster payment processing                                │
+│ ✓ Verified badge on your profile                           │
+│                                                             │
+│ Required Documents:                                         │
+│ 1. Government-issued ID (Passport, Driver's License, etc.)  │
+│ 2. Proof of address (Utility bill, Bank statement)         │
+│ 3. Selfie for identity confirmation                        │
+│                                                             │
+│ Your information is encrypted and secure 🔒                │
+│                                                             │
+│ [Skip for Now] [Start Verification →]                      │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**5.2 Personal Information**  
+- User clicks "Start Verification"  
+- Navigate to: `/app/(onboarding)/freelancer/kyc/personal-info`  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Personal Information [Step 1 of 4]                │
+│                                                             │
+│ Full Legal Name *                                           │
+│ ┌──────────────────────────┐ ┌──────────────────────────┐   │
+│ │ First Name               │ │ Last Name                │   │
+│ │ [John]                   │ │ [Doe]                    │   │
+│ └──────────────────────────┘ └──────────────────────────┘   │
+│                                                             │
+│ ┌────────────────────────────────────────────────────────┐  │
+│ │ Middle Name (Optional)                                 │  │
+│ │ []                                                     │  │
+│ └────────────────────────────────────────────────────────┘  │
+│                                                             │
+│ Date of Birth *                                             │
+│ ┌──────┐ ┌──────┐ ┌──────────┐                             │
+│ │ [MM] │ │ [DD] │ │ [YYYY]   │                             │
+│ └──────┘ └──────┘ └──────────┘                             │
+│                                                             │
+│ Nationality *                                               │
+│ ┌────────────────────────────────────────────────────────┐  │
+│ │ [United States ▼]                                      │  │
+│ └────────────────────────────────────────────────────────┘  │
+│                                                             │
+│ ID Document Type *                                          │
+│ ● Passport  ○ Driver's License  ○ National ID Card         │
+│                                                             │
+│ ID Number *                                                 │
+│ ┌────────────────────────────────────────────────────────┐  │
+│ │ [123456789]                                            │  │
+│ └────────────────────────────────────────────────────────┘  │
+│                                                             │
+│ Address *                                                   │
+│ ┌────────────────────────────────────────────────────────┐  │
+│ │ Street Address                                         │  │
+│ │ [123 Main Street]                                      │  │
+│ └────────────────────────────────────────────────────────┘  │
+│                                                             │
+│ ┌──────────────────────────┐ ┌─────────────────────────┐   │
+│ │ City                     │ │ State/Province          │   │
+│ │ [New York]               │ │ [NY ▼]                  │   │
+│ └──────────────────────────┘ └─────────────────────────┘   │
+│                                                             │
+│ ┌──────────────────────────┐ ┌─────────────────────────┐   │
+│ │ ZIP/Postal Code          │ │ Country                 │   │
+│ │ [10001]                  │ │ [USA ▼]                 │   │
+│ └──────────────────────────┘ └─────────────────────────┘   │
+│                                                             │
+│ [Back] [Continue →]                                         │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**5.3 Document Upload**  
+- Navigate to: `/app/(onboarding)/freelancer/kyc/identity-verification`  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Upload Identity Documents [Step 2 of 4]           │
+│                                                             │
+│ Upload Passport (Front Page)                                │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │           [📷 Upload Photo]                           │   │
+│ │                                                       │   │
+│ │     or drag and drop here                             │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Requirements:                                               │
+│ ✓ Clear, readable photo                                     │
+│ ✓ All corners visible                                       │
+│ ✓ No glare or shadows                                       │
+│ ✓ Color image (not black & white)                          │
+│ ✓ Valid document (not expired)                              │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Take a Selfie                                               │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │           [📸 Take Selfie]                            │   │
+│ │                                                       │   │
+│ │     Ensure good lighting                              │   │
+│ │     Remove glasses and hats                           │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ [Back] [Continue →]                                         │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Mobile-Specific (React Native):**  
+- Use device camera for document capture  
+- Real-time document edge detection  
+- Automatic image quality validation  
+- Guidance overlay for proper framing  
+
+```jsx
+// Mobile camera component
+<Camera
+  onCapture={handleImageCapture}
+  overlayType="passport"
+  autoFocus={true}
+  guidance={{
+    message: "Align passport within frame",
+    showEdgeDetection: true
+  }}
+/>
+```
+
+**5.4 Address Proof Upload**  
+- Navigate to: `/app/(onboarding)/freelancer/kyc/address-proof`  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Proof of Address [Step 3 of 4]                    │
+│                                                             │
+│ Upload a recent document showing your address               │
+│                                                             │
+│ Accepted Documents:                                         │
+│ • Utility bill (electricity, water, gas, internet)         │
+│ • Bank statement                                            │
+│ • Government correspondence                                 │
+│ • Tax document                                              │
+│                                                             │
+│ Document must be:                                           │
+│ ✓ Issued within last 3 months                              │
+│ ✓ Show your full name                                       │
+│ ✓ Show complete address (matching your profile)             │
+│ ✓ Be an official document (not a screenshot)               │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │           [📎 Upload Document]                        │   │
+│ │                                                       │   │
+│ │     PDF, JPG, PNG accepted (max 10MB)                 │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Document Type                                               │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [Utility Bill ▼]                                      │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Issue Date                                                  │
+│ ┌───────────┐                                               │
+│ │ [10/2024] │                                               │
+│ └───────────┘                                               │
+│                                                             │
+│ [Back] [Continue →]                                         │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**5.5 Review and Submit**  
+- Navigate to: `/app/(onboarding)/freelancer/kyc/review`  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Review Your Information [Step 4 of 4]             │
+│                                                             │
+│ Please review your information before submitting            │
+│                                                             │
+│ Personal Information                        [Edit]          │
+│ ├─ Name: John Doe                                          │
+│ ├─ Date of Birth: 01/15/1990                               │
+│ ├─ Nationality: United States                              │
+│ └─ Address: 123 Main St, New York, NY 10001, USA           │
+│                                                             │
+│ Identity Document                           [Edit]          │
+│ ├─ Type: Passport                                          │
+│ ├─ Number: 123456789                                       │
+│ ├─ Status: ✓ Uploaded                                      │
+│ └─ Selfie: ✓ Uploaded                                      │
+│                                                             │
+│ Proof of Address                            [Edit]          │
+│ ├─ Type: Utility Bill                                      │
+│ ├─ Issue Date: October 2024                                │
+│ └─ Status: ✓ Uploaded                                      │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Terms & Consent                                             │
+│                                                             │
+│ ☑ I confirm that all information provided is accurate      │
+│   and truthful                                              │
+│                                                             │
+│ ☑ I consent to Skillsier verifying my identity and         │
+│   storing my documents securely                             │
+│                                                             │
+│ ☑ I understand that providing false information may        │
+│   result in account suspension                              │
+│                                                             │
+│ Processing Time: 24-48 hours (usually faster)               │
+│                                                             │
+│ [Back] [Submit for Verification]                            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**5.6 Submit KYC**  
+- User clicks "Submit for Verification"  
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/kyc/individual  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}",  
+  "Content-Type": "application/json"  
+}  
+Body: {  
+  "user_id": "user-uuid",  
+  "type": "INDIVIDUAL",  
+  "personal_info": {  
+    "first_name": "John",  
+    "last_name": "Doe",  
+    "middle_name": null,  
+    "date_of_birth": "1990-01-15",  
+    "nationality": "US",  
+    "address": {  
+      "street": "123 Main Street",  
+      "city": "New York",  
+      "state": "NY",  
+      "postal_code": "10001",  
+      "country": "US"  
+    }  
+  },  
+  "identity_document": {  
+    "type": "PASSPORT",  
+    "number": "123456789",  
+    "issue_date": "2020-01-01",  
+    "expiry_date": "2030-01-01",  
+    "file_id": "file-uuid-passport"  
+  },  
+  "selfie_file_id": "file-uuid-selfie",  
+  "address_proof": {  
+    "type": "UTILITY_BILL",  
+    "issue_date": "2024-10-15",  
+    "file_id": "file-uuid-address-proof"  
+  },  
+  "consents": {  
+    "information_accurate": true,  
+    "verification_consent": true,  
+    "understand_consequences": true  
+  }  
+}  
+```
+
+**5.7 Backend KYC Processing**  
+```sql
+-- Insert KYC submission  
+INSERT INTO identity_verifications (  
+  id,  
+  user_id,  
+  type,  
+  status,  
+  personal_info_encrypted,  
+  identity_document_id,  
+  selfie_file_id,  
+  address_proof_id,  
+  submitted_at,  
+  created_at  
+) VALUES (  
+  'kyc-uuid',  
+  'user-uuid',  
+  'INDIVIDUAL',  
+  'PENDING',  
+  pgp_sym_encrypt(jsonb_build_object(...)::text, 'encryption_key'),  
+  'file-uuid-passport',  
+  'file-uuid-selfie',  
+  'file-uuid-address-proof',  
+  NOW(),  
+  NOW()  
+);  
+
+-- Update user status  
+UPDATE users  
+SET kyc_status = 'PENDING',  
+    kyc_submitted_at = NOW(),  
+    onboarding_step = 6,  
+    profile_completion_score = 75,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+- Publish event:  
+```json
+{  
+  "event_type": "kyc.submitted.v1",  
+  "aggregate_id": "kyc-uuid",  
+  "payload": {  
+    "verification_id": "kyc-uuid",  
+    "user_id": "user-uuid",  
+    "type": "INDIVIDUAL",  
+    "status": "PENDING",  
+    "submitted_at": "2025-11-10T16:00:00Z"  
+  }  
+}  
+```
+
+- Trigger automated verification (if integrated with third-party):  
+  - Onfido, Jumio, or Veriff API call  
+  - Liveness detection  
+  - Document authenticity check  
+  - Face matching  
+  - Address validation  
+
+**5.8 Verification Status**  
+- Show pending screen:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ Verification Submitted! ✓                                   │
+│                                                             │
+│ Your documents are being reviewed.                          │
+│                                                             │
+│ Status: ⏳ Pending Review                                   │
+│ Expected completion: 24-48 hours                            │
+│                                                             │
+│ What happens next?                                          │
+│ 1. Our team reviews your documents                         │
+│ 2. You'll receive an email notification                     │
+│ 3. Approved users get a verified badge                      │
+│                                                             │
+│ You can continue setting up your profile while we review.   │
+│                                                             │
+│ [Track Status] [Continue Setup →]                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- User can skip to next step while verification is pending  
+
+---
+
+### Step 6: Payout Method Setup
+
+**6.1 Navigate to Payout Setup**  
+- User continues to: `/app/(onboarding)/freelancer/payout`  
+- Progress: "Step 6 of 8" (75% complete)  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Set Up Payouts [6/8]                              │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ██████████████████████████████░░░░░░░░░░░░░░░░ 75%        │
+│                                                             │
+│ Choose how you want to receive payments                     │
+│                                                             │
+│ Available Payout Methods:                                   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │ 🏦 Bank Transfer (ACH)                                │   │
+│ │                                                       │   │
+│ │ Receive payments directly to your bank account        │   │
+│ │ • Processing time: 2-5 business days                  │   │
+│ │ • Fee: Free for USD transfers                         │   │
+│ │ • Available in: USA, Canada, EU, UK, Australia        │   │
+│ │                                                       │   │
+│ │ [Select]                                              │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │ 💳 PayPal                                             │   │
+│ │                                                       │   │
+│ │ Fast and convenient for international payments        │   │
+│ │ • Processing time: 1-2 business days                  │   │
+│ │ • Fee: 2% per transaction                             │   │
+│ │ • Available worldwide                                 │   │
+│ │                                                       │   │
+│ │ [Select]                                              │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │ 🌍 Payoneer                                           │   │
+│ │                                                       │   │
+│ │ Best for international freelancers                    │   │
+│ │ • Processing time: 2-3 business days                  │   │
+│ │ • Fee: 1% per transaction                             │   │
+│ │ • Available in 200+ countries                         │   │
+│ │                                                       │   │
+│ │ [Select]                                              │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │ ₿ Cryptocurrency                                      │   │
+│ │                                                       │   │
+│ │ Receive payments in USDC, USDT, or other crypto      │   │
+│ │ • Processing time: Near instant                       │   │
+│ │ • Fee: Network gas fees only                          │   │
+│ │ • Available worldwide                                 │   │
+│ │                                                       │   │
+│ │ [Select]                                              │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ [Skip for Now] [Continue →]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**6.2 Bank Transfer Setup**  
+- User selects "Bank Transfer"  
+- Show form:  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Bank Account Details                              │
+│                                                             │
+│ Country *                                                   │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [United States ▼]                                     │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Account Holder Name *                                       │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [John Doe]                                            │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ Must match your verified identity                           │
+│                                                             │
+│ Routing Number * (9 digits)                                 │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [021000021]                                           │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ [What's this?]                                              │
+│                                                             │
+│ Account Number * (6-17 digits)                              │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [1234567890]                                          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Confirm Account Number *                                    │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [1234567890]                                          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Account Type *                                              │
+│ ● Checking  ○ Savings                                       │
+│                                                             │
+│ Bank Name                                                   │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ Chase Bank                                            │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ Auto-detected from routing number                           │
+│                                                             │
+│ Verification                                                │
+│ We'll send 2 small deposits (< $1 each) to verify your     │
+│ account. This takes 1-2 business days.                      │
+│                                                             │
+│ ☑ I confirm this account belongs to me                     │
+│                                                             │
+│ [Cancel] [Add Bank Account]                                 │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**6.3 Bank Account Verification**  
+- User submits bank details  
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/payout-methods  
+Body: {  
+  "type": "BANK_ACCOUNT",  
+  "country": "US",  
+  "currency": "USD",  
+  "bank_account": {  
+    "account_holder_name": "John Doe",  
+    "routing_number": "021000021",  
+    "account_number": "1234567890",  
+    "account_type": "CHECKING",  
+    "bank_name": "Chase Bank"  
+  }  
+}  
+```
+
+- Backend creates payout method via Stripe:  
+```go
+// Create Stripe bank account token
+token, err := stripe.Token.New(&stripe.TokenParams{
+    BankAccount: &stripe.BankAccountParams{
+        Country: stripe.String("US"),
+        Currency: stripe.String("USD"),
+        AccountHolderName: stripe.String("John Doe"),
+        AccountHolderType: stripe.String("individual"),
+        RoutingNumber: stripe.String("021000021"),
+        AccountNumber: stripe.String("1234567890"),
+    },
+})
+
+// Attach to Stripe Connect account
+ba, err := stripe.BankAccount.New(&stripe.BankAccountParams{
+    Account: stripe.String(connectAccountID),
+    Token: stripe.String(token.ID),
+})
+
+// Initiate micro-deposit verification
+verification, err := stripe.BankAccount.Verify(
+    ba.ID,
+    connectAccountID,
+    nil,
+)
+```
+
+- Store payout method:  
+```sql
+INSERT INTO payout_methods (  
+  id,  
+  user_id,  
+  type,  
+  provider,  
+  provider_account_id,  
+  currency,  
+  country,  
+  account_details_encrypted,  
+  status,  
+  is_default,  
+  created_at  
+) VALUES (  
+  'payout-uuid',  
+  'user-uuid',  
+  'BANK_ACCOUNT',  
+  'STRIPE',  
+  'ba_1234567890',  
+  'USD',  
+  'US',  
+  pgp_sym_encrypt(  
+    jsonb_build_object(  
+      'account_holder_name', 'John Doe',  
+      'routing_number', '021000021',  
+      'last4', '7890',  
+      'bank_name', 'Chase Bank'  
+    )::text,  
+    'encryption_key'  
+  ),  
+  'PENDING_VERIFICATION',  
+  true,  
+  NOW()  
+);  
+```
+
+- Response:  
+```json
+{  
+  "success": true,  
+  "data": {  
+    "payout_method_id": "payout-uuid",  
+    "status": "PENDING_VERIFICATION",  
+    "verification": {  
+      "method": "MICRO_DEPOSITS",  
+      "estimated_arrival": "2-3 business days"  
+    }  
+  },  
+  "message": "Bank account added. Verify it once you receive the micro-deposits."  
+}  
+```
+
+**6.4 Micro-Deposit Verification**  
+- After 1-2 business days, user receives 2 small deposits  
+- User returns to verify:  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ Verify Your Bank Account                                    │
+│                                                             │
+│ We sent 2 small deposits to your account ending in 7890.    │
+│ Enter the exact amounts to verify.                          │
+│                                                             │
+│ Deposit Amount 1 *                                          │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [$] [0.32]                                            │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Deposit Amount 2 *                                          │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [$] [0.45]                                            │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Didn't receive deposits?                                    │
+│ • Check your account statement                              │
+│ • Wait up to 3 business days                                │
+│ • [Resend Deposits]                                         │
+│                                                             │
+│ [Verify Amounts]                                            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Frontend calls:  
+```typescript
+POST https://api.skillsier.com/v1/payout-methods/payout-uuid/verify  
+Body: {  
+  "amount_1": 32,  // in cents  
+  "amount_2": 45   // in cents  
+}  
+```
+
+- Backend verifies via Stripe:  
+```go
+ba, err := stripe.BankAccount.Verify(
+    bankAccountID,
+    connectAccountID,
+    &stripe.BankAccountVerifyParams{
+        Amounts: []*int64{stripe.Int64(32), stripe.Int64(45)},
+    },
+)
+```
+
+- Update payout method status:  
+```sql
+UPDATE payout_methods  
+SET status = 'VERIFIED',  
+    verified_at = NOW(),  
+    updated_at = NOW()  
+WHERE id = 'payout-uuid';  
+```
+
+**6.5 Alternative: PayPal/Payoneer**  
+- User selects PayPal/Payoneer  
+- Redirect to OAuth flow  
+- Connect account  
+- No verification needed (instant)  
+
+**6.6 Alternative: Cryptocurrency**  
+- User selects Cryptocurrency  
+- Show wallet address form:  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Cryptocurrency Wallet                              │
+│                                                             │
+│ Network *                                                   │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [Ethereum (ERC-20) ▼]                                 │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ Other options: Polygon, BSC, Solana, etc.                   │
+│                                                             │
+│ Cryptocurrency *                                            │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [USDC ▼]                                              │   │
+│ └───────────────────────────────────────────────────────┘   │
+│ Stablecoins recommended: USDC, USDT, DAI                    │
+│                                                             │
+│ Wallet Address *                                            │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ [0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb]          │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ⚠️ Important:                                               │
+│ • Double-check your wallet address                         │
+│ • Wrong address = permanent loss of funds                   │
+│ • We cannot reverse crypto transactions                     │
+│                                                             │
+│ Verify Ownership (Sign message with wallet)                │
+│ [Connect Wallet] or [Sign Manually]                        │
+│                                                             │
+│ [Cancel] [Add Wallet]                                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Wallet ownership verification via signed message  
+- No micro-deposits needed  
+- Instant verification  
+
+**6.7 Update Onboarding**  
+```sql
+UPDATE users  
+SET onboarding_step = 7,  
+    profile_completion_score = 85,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+---
+
+### Step 7: Job Preferences & Alerts
+
+**7.1 Navigate to Preferences**  
+- User continues to: `/app/(onboarding)/freelancer/preferences`  
+- Progress: "Step 7 of 8" (87.5% complete)  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back] Set Job Preferences [7/8]                         │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ███████████████████████████████████░░░░░░░░░░░ 87.5%      │
+│                                                             │
+│ Tell us what kind of work you're looking for                │
+│                                                             │
+│ Job Categories *                                            │
+│ Select the categories you're interested in                  │
+│                                                             │
+│ ☑ Web Development                                           │
+│ ☑ Mobile Development                                        │
+│ ☐ Design & Creative                                         │
+│ ☐ Writing & Translation                                     │
+│ ☐ Sales & Marketing                                         │
+│ ☐ Admin & Customer Support                                  │
+│ ☐ Data Science & Analytics                                  │
+│ ☐ Engineering & Architecture                                │
+│                                                             │
+│ Project Types                                               │
+│ ☑ Hourly projects                                           │
+│ ☑ Fixed-price projects                                      │
+│ ☐ Long-term contracts (3+ months)                           │
+│                                                             │
+│ Availability *                                              │
+│ ● Full-time (40+ hours/week)                                │
+│ ○ Part-time (20-39 hours/week)                              │
+│ ○ As needed (< 20 hours/week)                               │
+│                                                             │
+│ Can you start a new project immediately?                    │
+│ ● Yes, available now                                        │
+│ ○ Available in 1-2 weeks                                    │
+│ ○ Available in 3-4 weeks                                    │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Create Job Alerts                                           │
+│ Get notified when jobs matching your criteria are posted    │
+│                                                             │
+│ Alert Frequency                                             │
+│ ● Real-time (as jobs are posted)                            │
+│ ○ Daily digest (once per day)                               │
+│ ○ Weekly digest (once per week)                             │
+│                                                             │
+│ Notification Channels                                       │
+│ ☑ Email                                                     │
+│ ☑ Push notifications (mobile app)                           │
+│ ☑ In-app notifications                                      │
+│ ☐ SMS (for high-priority matches only)                      │
+│                                                             │
+│ [Save Preferences] [Finish Setup →]                         │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**7.2 Save Preferences**  
+- User clicks "Save Preferences"  
+- Frontend calls:  
+```typescript
+PATCH https://api.skillsier.com/v1/users/{user_id}/preferences  
+Body: {  
+  "job_categories": ["web-development", "mobile-development"],  
+  "project_types": ["HOURLY", "FIXED_PRICE", "LONG_TERM"],  
+  "availability": "FULL_TIME",  
+  "available_from": "2025-11-10",  
+  "alert_frequency": "REAL_TIME",  
+  "notification_channels": {  
+    "email": true,  
+    "push": true,  
+    "in_app": true,  
+    "sms": false  
+  }  
+}  
+```
+
+**7.3 Create Job Alerts**  
+- Backend creates saved searches for job alerts:  
+```typescript
+POST https://api.skillsier.com/v1/alerts/create  
+Body: {  
+  "user_id": "user-uuid",  
+  "name": "My Job Alerts",  
+  "criteria": {  
+    "categories": ["web-development", "mobile-development"],  
+    "skills": ["react", "nodejs", "typescript"],  
+    "budget_min": 50,  
+    "budget_max": 150,  
+    "project_types": ["HOURLY", "FIXED_PRICE"],  
+    "experience_level": ["INTERMEDIATE", "EXPERT"]  
+  },  
+  "frequency": "REAL_TIME",  
+  "channels": ["EMAIL", "PUSH", "IN_APP"]  
+}  
+```
+
+**7.4 Update Backend**  
+```sql
+-- Update user preferences  
+UPDATE users  
+SET job_categories = ARRAY['web-development', 'mobile-development'],  
+    project_types = ARRAY['HOURLY', 'FIXED_PRICE', 'LONG_TERM'],  
+    availability = 'FULL_TIME',  
+    available_from = '2025-11-10',  
+    onboarding_step = 8,  
+    profile_completion_score = 95,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+
+-- Create job alert  
+INSERT INTO job_alerts (  
+  id,  
+  user_id,  
+  name,  
+  criteria,  
+  frequency,  
+  channels,  
+  is_active,  
+  created_at  
+) VALUES (  
+  'alert-uuid',  
+  'user-uuid',  
+  'My Job Alerts',  
+  jsonb_build_object(  
+    'categories', ARRAY['web-development', 'mobile-development'],  
+    'skills', ARRAY['react', 'nodejs', 'typescript'],  
+    'budget_min', 50,  
+    'budget_max', 150  
+  ),  
+  'REAL_TIME',  
+  ARRAY['EMAIL', 'PUSH', 'IN_APP'],  
+  true,  
+  NOW()  
+);  
+```
+
+- Publish event:  
+```json
+{  
+  "event_type": "user.preferences.updated.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "categories": ["web-development", "mobile-development"],  
+    "availability": "FULL_TIME",  
+    "alert_created": true  
+  }  
+}  
+```
+
+---
+
+### Step 8: Onboarding Complete
+
+**8.1 Finalize Onboarding**  
+- User clicks "Finish Setup"  
+- Mark onboarding as complete:  
+```sql
+UPDATE users  
+SET onboarding_completed = true,  
+    onboarding_step = 9,  
+    profile_completion_score = 100,  
+    profile_indexed = false, -- Trigger re-indexing  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+**8.2 Show Success Screen**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                   🎉 You're All Set!                        │
+│                                                             │
+│ Your professional profile is ready to attract clients.       │
+│                                                             │
+│ ✓ Profile complete (100%)                                   │
+│ ✓ Skills verified                                           │
+│ ✓ Portfolio showcased                                       │
+│ ✓ Identity verified (pending)                               │
+│ ✓ Payout method added                                       │
+│ ✓ Job alerts configured                                     │
+│                                                             │
+│ What's next?                                                │
+│                                                             │
+│ 1. Browse available jobs matching your skills               │
+│ 2. Apply to projects that interest you                      │
+│ 3. Get invited by clients who view your profile             │
+│ 4. Start earning on Skillsier!                              │
+│                                                             │
+│ [Browse Jobs] [View My Profile] [Go to Dashboard →]        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**8.3 Trigger Profile Indexing**  
+- Publish event to index freelancer profile in search:  
+```json
+{  
+  "event_type": "profile.index_requested.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "profile_type": "FREELANCER",  
+    "completion_score": 100,  
+    "priority": "HIGH"  
+  }  
+}  
+```
+
+- search-be indexes profile for job recommendations and client searches  
+
+**8.4 Send Welcome Email**  
+```typescript
+POST https://api.skillsier.com/v1/notifications/send  
+Body: {  
+  "user_id": "user-uuid",  
+  "type": "ONBOARDING_COMPLETE",  
+  "channels": ["EMAIL"],  
+  "data": {  
+    "template": "freelancer_welcome",  
+    "subject": "Welcome to Skillsier! Your profile is live",  
+    "user_name": "John",  
+    "profile_url": "https://skillsier.com/profile/johndoe",  
+    "cta_text": "Browse Jobs",  
+    "cta_url": "https://skillsier.com/jobs/search"  
+  }  
+}  
+```
+
+**8.5 Redirect to Dashboard**  
+- Navigate to: `/app/(dashboard)`  
+- Show personalized dashboard with:  
+  - Recommended jobs (based on skills and preferences)  
+  - Profile optimization tips  
+  - Quick actions (apply to jobs, update portfolio, etc.)  
+  - Earnings tracker (currently $0)  
+  - Job invitations (if any)  
+
+---
+
+#### Branches & Edge Cases
+
+**Profile Setup:**  
+- **AI writing fails:** Fallback to manual entry, show examples  
+- **Video upload fails:** Allow skip, can add later from profile  
+- **Plagiarism detected:** Show warning, suggest rewriting, block save if 90%+ match  
+- **Language not in list:** Allow custom entry, requires admin approval  
+
+**Skills:**  
+- **No skills selected:** Block progression, min 3 required  
+- **Custom skill requested:** Create pending skill, requires admin approval  
+- **Certification upload fails:** Allow skip, can add later  
+- **Certification validation:** Auto-verify via API if possible (Credly, Acclaim)  
+
+**Portfolio:**  
+- **File too large:** Show compression option or cloud link alternative  
+- **Storage limit reached:** Suggest removing old items or upgrading  
+- **Copyright concerns:** User must confirm permission to showcase client work  
+- **No portfolio items:** Show warning, profile less competitive, allow skip  
+
+**KYC:**  
+- **Document rejected:** Specific feedback (blurry, expired, wrong type), allow resubmission  
+- **Selfie doesn't match:** Request retry, provide guidance  
+- **Address mismatch:** Explain issue, request correct proof  
+- **Processing timeout:** Auto-escalate to manual review after 48 hours  
+- **Skip KYC:** Allowed but limited access (can browse, cannot withdraw funds)  
+
+**Payout:**  
+- **Bank verification fails:** Max 3 attempts, then support escalation  
+- **PayPal connection error:** Retry or choose alternative method  
+- **Crypto wallet invalid:** Real-time validation, show error immediately  
+- **Multiple payout methods:** Allowed, user sets default  
+- **Skip payout:** Allowed but warned, must add before first payment  
+
+**Preferences:**  
+- **No categories selected:** Block save, min 1 required  
+- **Alert frequency:** Can change anytime from settings  
+- **Too many alerts:** Auto-throttle if >50 matches per day  
+
+**General:**  
+- **Mobile experience:** Simplified flow, one step per screen  
+- **Save progress:** Auto-save every 30 seconds  
+- **Resume later:** Link in email/dashboard to continue  
+- **Session timeout:** Progress preserved, resume after re-login  
+- **Network errors:** Retry logic, offline queue for mobile  
+
+---
+
+### UI Components (Mobile)
+
+**Mobile Profile Setup:**  
+```
+┌──────────────────────────────┐
+│  <  Professional Profile 1/8 │
+├──────────────────────────────┤
+│                              │
+│ ═══════════░░░░░░░░░░░ 12%  │
+│                              │
+│ Professional Headline *      │
+│ ┌──────────────────────────┐ │
+│ │ Full-Stack Developer     │ │
+│ │ React & Node.js Expert   │ │
+│ └──────────────────────────┘ │
+│ 52/80                        │
+│                              │
+│ 💡 Include top skills        │
+│                              │
+│ [Continue →]                 │
+│                              │
+└──────────────────────────────┘
+```
+
+**Mobile Skills Selection:**  
+```
+┌──────────────────────────────┐
+│  <  Select Skills       2/8  │
+├──────────────────────────────┤
+│                              │
+│ ██████████░░░░░░░░░░░░░ 25%  │
+│                              │
+│ [🔍 Search skills]           │
+│                              │
+│ Popular:                     │
+│ [React] [Node.js] [Python]   │
+│ [JavaScript] [TypeScript]    │
+│                              │
+│ Selected (5):                │
+│ 1. React        [Expert ▼]  │
+│ 2. Node.js      [Expert ▼]  │
+│ 3. TypeScript   [Inter ▼]   │
+│ 4. PostgreSQL   [Inter ▼]   │
+│ 5. AWS          [Inter ▼]   │
+│                              │
+│ [Continue →]                 │
+│                              │
+└──────────────────────────────┘
+```
+
+---
+
+#### Notifications
+
+**Profile Completed:**  
+- **Email:** "Profile creation complete! Start browsing jobs."  
+- **Push:** "Your profile is live ✓"  
+
+**Skills Added:**  
+- **In-app:** "5 skills added to your profile"  
+
+**Portfolio Item Added:**  
+- **In-app:** "Portfolio item saved"  
+
+**KYC Submitted:**  
+- **Email:** "Identity verification submitted. We'll review within 24-48 hours."  
+- **Push:** "Verification submitted"  
+
+**KYC Approved:**  
+- **Email:** "Congratulations! You're verified ✓"  
+  - Benefits of verification  
+  - Next steps  
+- **Push:** "You're verified!"  
+- **In-app:** Badge added to profile  
+
+**KYC Rejected:**  
+- **Email:** "Verification needs attention: [reason]"  
+  - Specific issue  
+  - How to fix  
+  - Resubmit link  
+- **Push:** "Action required for verification"  
+
+**Payout Method Added:**  
+- **Email:** "Payout method added: [type]"  
+- **In-app:** "✓ Payout method saved"  
+
+**Bank Verification Pending:**  
+- **Email:** "Verify your bank account when you receive micro-deposits"  
+- **In-app:** Reminder banner  
+
+**Bank Verified:**  
+- **Email:** "Bank account verified ✓"  
+- **Push:** "Bank account ready"  
+
+**Job Alert Created:**  
+- **Email:** "You'll receive alerts for matching jobs"  
+- **In-app:** "✓ Job alerts active"  
+
+**First Job Match:**  
+- **Email:** "5 jobs match your profile!"  
+- **Push:** "New jobs for you"  
+- **In-app:** Badge on Jobs tab  
+
+**Onboarding Complete:**  
+- **Email:** "Welcome to Skillsier! Your journey begins"  
+  - Profile summary  
+  - Next steps  
+  - Resources  
+- **Push:** "Profile complete! Start earning"  
+
+---
+
+#### Analytics
+
+**Events to Track:**  
+- `onboarding.freelancer.started`  
+- `onboarding.freelancer.step_completed` (step: profile | skills | rates | portfolio | kyc | payout | preferences)  
+- `profile.headline.added`  
+- `profile.summary.added` (ai_assisted: boolean)  
+- `profile.language.added` (language, proficiency)  
+- `profile.location.set` (city, country)  
+- `profile.video.uploaded`  
+- `skills.added` (skill_ids, count, primary_count)  
+- `certification.added` (skill_id, issuer)  
+- `rate.set` (hourly_rate, currency, accepts_fixed_price)  
+- `portfolio.item.added` (project_type, skills_count, has_images)  
+- `portfolio.github.connected`  
+- `kyc.started` (type: individual | business)  
+- `kyc.document.uploaded` (document_type)  
+- `kyc.selfie.uploaded`  
+- `kyc.submitted`  
+- `kyc.approved` (review_time_hours, automated: boolean)  
+- `kyc.rejected` (reason)  
+- `payout_method.added` (type: bank | paypal | payoneer | crypto)  
+- `payout_method.verified` (verification_time_hours)  
+- `preferences.saved` (categories_count, availability)  
+- `alert.created` (frequency, channels)  
+- `onboarding.freelancer.completed` (duration_minutes, steps_skipped)  
+
+**Metrics to Track:**  
+- Onboarding completion rate (by step)  
+- Average time to complete onboarding  
+- Drop-off rate by step  
+- Profile completion score distribution  
+- KYC submission rate  
+- KYC approval rate  
+- Time to first payout method  
+- Time to first job application  
+- Skills per freelancer (avg, median)  
+- Portfolio items per freelancer (avg)  
+- AI writing assistant usage rate  
+
+---
+
+### Accessibility
+
+[Same accessibility requirements as ONB-2]
+
+---
+
+### Performance
+
+**SLO Targets:**  
+- Page load: <2s (p95)  
+- Skills autocomplete: <300ms (p95)  
+- File upload (10MB): <15s (p95)  
+- Profile save: <500ms (p95)  
+- KYC submission: <1s (p95)  
+
+---
+
+### Security
+
+**Data Protection:**  
+- PII encrypted at rest (name, DOB, address, ID numbers)  
+- KYC documents encrypted with AES-256  
+- Bank account details encrypted (PCI DSS compliant)  
+- Access logs for sensitive data  
+
+**Input Validation:**  
+- XSS prevention on all text inputs  
+- File type validation (magic numbers, not just extension)  
+- File size limits enforced  
+- Malware scanning on uploads  
+
+---
+
+#### Sources
+
+**Backend:**  
+- `users-be.user-stories.md` — Freelancer profile, skills, rates  
+- `admin-be.user-stories.md` — KYC/KYB verification  
+- `financial-be.user-stories.md` — Payout methods  
+- `search-be.user-stories.md` — Profile indexing, job alerts  
+- `communications-be.user-stories.md` — Notifications  
+
+**Frontend:**  
+- `combined-fe-folder-structure.md` — Route paths  
+- `/app/(onboarding)/freelancer/*` routes  
+- `/app/(auth)/kyc/*` routes  
+- `/app/(billing)/payout-methods` routes  
+- `packages/lib/src/features/onboarding/`  
+- `packages/lib/src/features/profile/`  
+- `packages/lib/src/features/kyc/`  
+- `packages/lib/src/features/billing/`  
+
+---
+
+## Journey: ONB-4 (Post-Signup Profile Completion)
+
+**Goal:** Guide users with incomplete profiles to progressively complete their profiles through non-intrusive prompts, gamification, and rewards, increasing profile quality and platform engagement  
+
+**Actor:** Any User (Client or Freelancer) with incomplete profile (profile_completion_score < 100)  
+
+**Trigger:**  
+- User returns to platform after initial registration  
+- User completes basic onboarding (ONB-1, ONB-2, or ONB-3) but skipped optional steps  
+- User logs in with profile_completion_score < 70  
+- User accesses key platform features (dashboard, job search, proposals)  
+
+**Preconditions:**  
+- User has registered account (AUTH-1 complete)  
+- User has verified email (AUTH-4 complete)  
+- User has selected role (ONB-1 complete)  
+- User profile_completion_score < 100  
+- User account_status = 'ACTIVE'  
+
+**Primary Screens:**  
+**Web Routes:**  
+- `/app/(dashboard)` — Dashboard with profile completion widget  
+- `/app/(onboarding)/checklist` — Dedicated profile completion checklist  
+- `/app/(profile)/edit` — Profile editor (contextual to checklist items)  
+- `/app/(dashboard)/settings/profile` — Profile settings  
+- `/app/(profile)/completion` — Profile completion celebration  
+
+**Mobile Routes:**  
+- `app/(tabs)/(authenticated)/(dashboard)/index.tsx` — Dashboard with widget  
+- `app/(tabs)/(authenticated)/(onboarding)/checklist.tsx` — Checklist screen  
+- `app/(tabs)/(authenticated)/(profile)/edit/index.tsx` — Profile editor  
+- `app/(tabs)/(authenticated)/(onboarding)/complete.tsx` — Celebration screen  
+
+**System Touchpoints:**  
+- **users-be:** Profile completion tracking, checklist management  
+  - `GET /v1/users/{id}/profile-completion` — Get completion status  
+  - `GET /v1/users/{id}/checklist` — Get remaining checklist items  
+  - `POST /v1/users/{id}/checklist/{item}/complete` — Mark item complete  
+  - `POST /v1/users/{id}/checklist/dismiss` — Dismiss widget  
+  - `GET /v1/users/{id}/profile-optimization` — Get optimization suggestions  
+- **subscriptions-be:** Reward allocation (bonus connects)  
+  - `POST /v1/subscriptions/{id}/bonus-connects` — Award bonus connects  
+- **communications-be:** Reminder notifications  
+  - `POST /v1/notifications/send` — Send profile completion reminders  
+- **search-be:** Profile indexing on completion  
+  - `POST /v1/search/profiles/index` — Re-index profile  
+
+**Key Components:**  
+- **Shared Components:**  
+  - `packages/lib/src/features/profile/hooks/use-profile-completion.ts` — Completion logic  
+  - `packages/lib/src/features/profile/hooks/use-checklist.ts` — Checklist state  
+  - `packages/lib/src/features/profile/components/ProfileCompletionWidget.tsx` — Dashboard widget  
+  - `packages/lib/src/features/profile/components/ChecklistItem.tsx` — Individual item  
+  - `packages/lib/src/features/profile/components/ProfileOptimizationTips.tsx` — Suggestions  
+  - `packages/lib/src/features/profile/components/CompletionCelebration.tsx` — Celebration modal  
+- **Web-Specific:**  
+  - `apps/web/app/(dashboard)/page.tsx` — Dashboard with widget  
+  - `apps/web/app/(onboarding)/checklist/page.tsx` — Checklist page  
+- **Mobile-Specific:**  
+  - `apps/mobile/app/(tabs)/(authenticated)/(dashboard)/index.tsx` — Dashboard  
+  - `apps/mobile/app/(tabs)/(authenticated)/(onboarding)/checklist.tsx` — Checklist  
+
+---
+
+#### Flow Steps
+
+### Step 1: Calculate Profile Completion Score
+
+**1.1 Profile Completion Algorithm**  
+The profile_completion_score (0-100) is calculated based on completed profile elements, weighted by importance:
+
+**Freelancer Profile Scoring:**  
+```typescript
+const FREELANCER_WEIGHTS = {
+  // Core Identity (25 points)
+  profile_photo: 5,
+  professional_headline: 5,
+  professional_summary: 10,
+  location: 3,
+  timezone: 2,
+  
+  // Professional Details (40 points)
+  skills: 15,              // min 5 skills required
+  hourly_rate: 10,         // or minimum_budget
+  experience: 8,           // work history
+  education: 5,            // degrees/certifications
+  languages: 2,            // min 1 language
+  
+  // Verification & Trust (20 points)
+  email_verified: 5,
+  phone_verified: 5,
+  kyc_verified: 10,
+  
+  // Portfolio & Proof (10 points)
+  portfolio_items: 7,      // min 3 items
+  video_intro: 3,
+  
+  // Payment Setup (5 points)
+  payout_method: 5,
+};
+
+// Total: 100 points
+```
+
+**Client Profile Scoring:**  
+```typescript
+const CLIENT_WEIGHTS = {
+  // Core Identity (20 points)
+  profile_photo: 5,
+  company_name: 5,
+  company_description: 8,
+  location: 2,
+  
+  // Company Details (25 points)
+  organization_size: 5,
+  industry: 5,
+  company_website: 5,
+  company_logo: 5,
+  vat_tax_id: 5,          // if applicable
+  
+  // Verification & Trust (30 points)
+  email_verified: 10,
+  phone_verified: 5,
+  payment_method_verified: 15,
+  
+  // Activity (15 points)
+  first_job_posted: 15,
+  
+  // Plan & Billing (10 points)
+  plan_selected: 5,
+  billing_address: 5,
+};
+
+// Total: 100 points
+```
+
+**1.2 Calculate Score on Backend**  
+```go
+// Profile completion calculation
+func CalculateProfileCompletion(user *User, profile *Profile) int {
+    score := 0
+    
+    if user.UserType == "FREELANCER" {
+        // Core identity
+        if profile.AvatarURL != "" { score += 5 }
+        if profile.ProfessionalHeadline != "" { score += 5 }
+        if len(profile.ProfessionalSummary) >= 100 { score += 10 }
+        if profile.LocationCity != "" { score += 3 }
+        if profile.Timezone != "" { score += 2 }
+        
+        // Professional details
+        skillCount := len(profile.Skills)
+        if skillCount >= 5 { score += 15 }
+        else if skillCount >= 3 { score += 10 }
+        else if skillCount >= 1 { score += 5 }
+        
+        if profile.HourlyRate > 0 || profile.MinimumProjectBudget > 0 { score += 10 }
+        if len(profile.WorkExperience) >= 1 { score += 8 }
+        if len(profile.Education) >= 1 { score += 5 }
+        if len(profile.Languages) >= 1 { score += 2 }
+        
+        // Verification
+        if user.EmailVerified { score += 5 }
+        if user.PhoneVerified { score += 5 }
+        if user.KYCStatus == "APPROVED" { score += 10 }
+        
+        // Portfolio
+        portfolioCount := len(profile.PortfolioItems)
+        if portfolioCount >= 3 { score += 7 }
+        else if portfolioCount >= 1 { score += 3 }
+        
+        if profile.VideoIntroURL != "" { score += 3 }
+        
+        // Payment setup
+        if len(user.PayoutMethods) >= 1 && user.PayoutMethods[0].Status == "VERIFIED" {
+            score += 5
+        }
+    } else if user.UserType == "CLIENT" {
+        // Client scoring logic (similar structure)
+        // ... implementation
+    }
+    
+    return score
+}
+```
+
+**1.3 Store Score in Database**  
+```sql
+UPDATE users  
+SET profile_completion_score = 65,  
+    profile_completion_last_calculated = NOW(),  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+```
+
+---
+
+### Step 2: Display Profile Completion Widget (Dashboard)
+
+**2.1 Dashboard Widget Placement**  
+- Widget appears prominently on dashboard if score < 100  
+- Position: Top of page (above other widgets)  
+- Dismissible: User can close but reappears after 7 days  
+- Persistent: Shows on every dashboard visit until 100% or dismissed  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Dashboard                                    [Settings] [?] │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
+│ ┃ 📋 Complete Your Profile                          [X] ┃ │
+│ ┃                                                         ┃ │
+│ ┃ Your profile is 65% complete                           ┃ │
+│ ┃ ████████████████████████████░░░░░░░░░░░░░ 65%         ┃ │
+│ ┃                                                         ┃ │
+│ ┃ Complete your profile to unlock:                       ┃ │
+│ ┃ ✓ Higher ranking in search results                     ┃ │
+│ ┃ ✓ More job invitations from clients                    ┃ │
+│ ┃ ✓ Verified badge on your profile                       ┃ │
+│ ┃ ✓ 10 bonus Connects                                    ┃ │
+│ ┃                                                         ┃ │
+│ ┃ Missing items (7):                                     ┃ │
+│ ┃ ☐ Add profile photo                                    ┃ │
+│ ┃ ☐ Add 2 more skills (3/5)                              ┃ │
+│ ┃ ☐ Add portfolio items (0/3)                            ┃ │
+│ ┃ ☐ Verify phone number                                  ┃ │
+│ ┃ ☐ Complete KYC verification                            ┃ │
+│ ┃ ☐ Add payout method                                    ┃ │
+│ ┃ ☐ Record video introduction                            ┃ │
+│ ┃                                                         ┃ │
+│ ┃ [View Full Checklist] [Start Completing →]            ┃ │
+│ ┃                                                         ┃ │
+│ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
+│                                                             │
+│ [Rest of dashboard content...]                              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Mobile Layout:**  
+```
+┌──────────────────────────────┐
+│ Dashboard          ☰    ?    │
+├──────────────────────────────┤
+│                              │
+│ ┏━━━━━━━━━━━━━━━━━━━━━━━━┓  │
+│ ┃ 📋 Complete Profile [X]┃  │
+│ ┃                        ┃  │
+│ ┃ 65% complete           ┃  │
+│ ┃ ██████████░░░░░ 65%    ┃  │
+│ ┃                        ┃  │
+│ ┃ Unlock:                ┃  │
+│ ┃ ✓ Higher ranking       ┃  │
+│ ┃ ✓ More invitations     ┃  │
+│ ┃ ✓ Verified badge       ┃  │
+│ ┃ ✓ 10 bonus Connects    ┃  │
+│ ┃                        ┃  │
+│ ┃ Missing (7):           ┃  │
+│ ┃ ☐ Profile photo        ┃  │
+│ ┃ ☐ 2 more skills        ┃  │
+│ ┃ ☐ Portfolio items      ┃  │
+│ ┃ ☐ Phone verification   ┃  │
+│ ┃ [+ 3 more]             ┃  │
+│ ┃                        ┃  │
+│ ┃ [Complete Now →]       ┃  │
+│ ┃                        ┃  │
+│ ┗━━━━━━━━━━━━━━━━━━━━━━━━┛  │
+│                              │
+│ [Dashboard content...]       │
+│                              │
+└──────────────────────────────┘
+```
+
+**2.2 Widget Behavior**  
+- **Expandable/Collapsible:** User can collapse to show just progress bar  
+- **Dismissible:** Click [X] to dismiss  
+  - Show confirmation: "Hide completion widget? It will return in 7 days."  
+  - Options: [Hide for 7 days] [Hide permanently] [Cancel]  
+- **Priority Items:** Show top 3-5 most impactful items  
+- **Dynamic Updates:** Progress bar updates in real-time as items are completed  
+- **CTA Button:** "Start Completing" → Navigate to checklist or first incomplete item  
+
+**2.3 Backend API Call**  
+```typescript
+GET https://api.skillsier.com/v1/users/{user_id}/profile-completion  
+Headers: {  
+  "Authorization": "Bearer {jwt_token}"  
+}  
+
+Response: {  
+  "success": true,  
+  "data": {  
+    "user_id": "user-uuid",  
+    "completion_score": 65,  
+    "tier": "GOOD",  // POOR (<50), FAIR (50-69), GOOD (70-89), EXCELLENT (90-99), COMPLETE (100)  
+    "last_updated": "2025-11-10T14:00:00Z",  
+    "checklist": {  
+      "total_items": 10,  
+      "completed_items": 3,  
+      "remaining_items": 7,  
+      "items": [  
+        {  
+          "id": "profile_photo",  
+          "category": "IDENTITY",  
+          "title": "Add profile photo",  
+          "description": "Upload a professional photo to build trust",  
+          "completed": false,  
+          "points": 5,  
+          "priority": "HIGH",  
+          "estimated_time_minutes": 2,  
+          "action_url": "/app/(profile)/edit#photo"  
+        },  
+        {  
+          "id": "skills",  
+          "category": "PROFESSIONAL",  
+          "title": "Add 2 more skills",  
+          "description": "Add at least 5 skills to increase visibility",  
+          "completed": false,  
+          "progress": {  
+            "current": 3,  
+            "required": 5  
+          },  
+          "points": 5,  // Partial points (15 total for 5 skills)  
+          "priority": "HIGH",  
+          "estimated_time_minutes": 5,  
+          "action_url": "/app/(profile)/edit#skills"  
+        },  
+        {  
+          "id": "portfolio",  
+          "category": "PROOF",  
+          "title": "Add portfolio items",  
+          "description": "Showcase your work with 3+ portfolio items",  
+          "completed": false,  
+          "progress": {  
+            "current": 0,  
+            "required": 3  
+          },  
+          "points": 7,  
+          "priority": "MEDIUM",  
+          "estimated_time_minutes": 15,  
+          "action_url": "/app/(profile)/portfolio/add"  
+        }  
+        // ... more items  
+      ]  
+    },  
+    "rewards": {  
+      "available": [  
+        {  
+          "type": "BONUS_CONNECTS",  
+          "amount": 10,  
+          "threshold": 100,  
+          "description": "Get 10 free Connects when you reach 100%"  
+        },  
+        {  
+          "type": "VERIFIED_BADGE",  
+          "threshold": 100,  
+          "description": "Earn a verified profile badge"  
+        },  
+        {  
+          "type": "FEATURED_PLACEMENT",  
+          "duration_days": 7,  
+          "threshold": 100,  
+          "description": "Get featured in search for 7 days"  
+        }  
+      ],  
+      "claimed": []  
+    },  
+    "next_milestone": {  
+      "score": 70,  
+      "tier": "GOOD",  
+      "points_needed": 5,  
+      "reward": "Profile visibility boost"  
+    }  
+  }  
+}  
+```
+
+---
+
+### Step 3: Full Checklist View
+
+**3.1 Navigate to Checklist**  
+- User clicks "View Full Checklist" or "Start Completing"  
+- Navigate to: `/app/(onboarding)/checklist`  
+- Display comprehensive checklist with all items  
+
+**Web Layout:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ [← Back to Dashboard] Complete Your Profile                │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│ ████████████████████████████░░░░░░░░░░░░░ 65%             │
+│ 3 of 10 items complete                                     │
+│                                                             │
+│ Complete all items to unlock exclusive rewards! 🎁          │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Core Identity (25 points) - 3/5 complete                   │
+│                                                             │
+│ ✓ Professional headline                       +5 points    │
+│   Added: "Full-Stack Developer | React Expert"             │
+│   Completed 2 hours ago                                    │
+│                                                             │
+│ ☐ Add profile photo                           +5 points    │
+│   Upload a professional photo to build trust               │
+│   Profiles with photos get 40% more views                  │
+│   Estimated time: 2 minutes                                │
+│   [Upload Photo →]                                          │
+│                                                             │
+│ ✓ Professional summary                        +10 points   │
+│   425 characters - Great detail!                           │
+│   Completed yesterday                                      │
+│                                                             │
+│ ✓ Location                                    +3 points    │
+│   New York, USA                                            │
+│   Completed 2 days ago                                     │
+│                                                             │
+│ ☐ Timezone (Optional)                         +2 points    │
+│   Help clients know when you're available                  │
+│   Currently: Not set                                       │
+│   [Set Timezone →]                                         │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Professional Details (40 points) - 1/6 complete            │
+│                                                             │
+│ ☐ Add 2 more skills                           +5 points    │
+│   Progress: 3/5 skills (Need 5 for full credit)            │
+│   Current skills: React, Node.js, TypeScript               │
+│   Suggested: PostgreSQL, AWS, Docker, GraphQL              │
+│   Estimated time: 5 minutes                                │
+│   [Add Skills →]                                           │
+│                                                             │
+│ ✓ Set hourly rate                             +10 points   │
+│   $85/hour                                                 │
+│   Completed 1 day ago                                      │
+│                                                             │
+│ ☐ Add work experience                         +8 points    │
+│   Show your professional background                        │
+│   Add at least 1 position                                  │
+│   Estimated time: 10 minutes                               │
+│   [Add Experience →]                                       │
+│                                                             │
+│ ☐ Add education                                +5 points   │
+│   Include degrees, certifications, bootcamps               │
+│   Estimated time: 5 minutes                                │
+│   [Add Education →]                                        │
+│                                                             │
+│ ☐ Add languages                                +2 points   │
+│   Current: English (Native)                                │
+│   Add more languages you speak                             │
+│   Estimated time: 2 minutes                                │
+│   [Add Language →]                                         │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Verification & Trust (20 points) - 0/3 complete            │
+│                                                             │
+│ ☐ Verify phone number                         +5 points    │
+│   Add an extra layer of security                           │
+│   Increases client trust by 30%                            │
+│   Estimated time: 3 minutes                                │
+│   [Verify Phone →]                                         │
+│                                                             │
+│ ☐ Complete KYC verification                   +10 points   │
+│   Verify your identity to access premium features          │
+│   Required for higher-value projects                       │
+│   Estimated time: 10 minutes                               │
+│   Status: Not started                                      │
+│   [Start Verification →]                                   │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Portfolio & Proof (10 points) - 0/2 complete               │
+│                                                             │
+│ ☐ Add portfolio items                         +7 points    │
+│   Progress: 0/3 items (Minimum 3 recommended)              │
+│   Showcase your best work                                  │
+│   Profiles with portfolios get 5x more invitations         │
+│   Estimated time: 15 minutes per item                      │
+│   [Add Portfolio Item →]                                   │
+│                                                             │
+│ ☐ Record video introduction                   +3 points    │
+│   Stand out with a 60-second video                         │
+│   Introduce yourself and your skills                       │
+│   Estimated time: 5 minutes                                │
+│   [Record Video →]                                         │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ Payment Setup (5 points) - 0/1 complete                    │
+│                                                             │
+│ ☐ Add payout method                           +5 points    │
+│   Set up how you want to receive payments                  │
+│   Options: Bank, PayPal, Payoneer, Crypto                  │
+│   Estimated time: 5 minutes                                │
+│   [Add Payout Method →]                                    │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ 🎁 Rewards Waiting for You:                                │
+│                                                             │
+│ At 100% completion:                                         │
+│ ✓ 10 Bonus Connects (worth $20)                            │
+│ ✓ Verified Profile Badge                                   │
+│ ✓ Featured in Search for 7 Days                            │
+│ ✓ Priority Support Access                                  │
+│ ✓ Profile Visibility Boost (+50%)                          │
+│                                                             │
+│ You're 35 points away from unlocking all rewards! 🚀       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**3.2 Checklist Features**  
+- **Categorized Items:** Grouped by category with completion counts  
+- **Visual Hierarchy:**  
+  - ✓ Completed items: Strikethrough, muted color, collapse by default  
+  - ☐ Incomplete items: Bold, prominent, expandable details  
+  - 🔒 Locked items: Grayed out with unlock conditions  
+- **Progress Indicators:** For multi-step items (e.g., "3/5 skills")  
+- **Impact Metrics:** "Profiles with photos get 40% more views"  
+- **Time Estimates:** Help users prioritize ("Estimated time: 2 minutes")  
+- **Direct Actions:** Each item has a CTA button to complete it  
+- **Smart Sorting:**  
+  - High priority items first  
+  - Quick wins (< 5 min) highlighted  
+  - Items blocking other features flagged  
+
+**3.3 Item States**  
+```typescript
+interface ChecklistItem {
+  id: string;
+  category: 'IDENTITY' | 'PROFESSIONAL' | 'VERIFICATION' | 'PROOF' | 'PAYMENT';
+  title: string;
+  description: string;
+  completed: boolean;
+  points: number;
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+  estimated_time_minutes: number;
+  action_url: string;
+  impact_metric?: string;  // "40% more views"
+  progress?: {
+    current: number;
+    required: number;
+  };
+  dependencies?: string[];  // Other items that must be completed first
+  blocked_by?: string[];    // Items blocked by this one
+  completion_date?: string;
+  completion_method?: 'USER' | 'SYSTEM';  // Some items auto-complete
+}
+```
+
+---
+
+### Step 4: Complete Checklist Items
+
+**4.1 Item Completion Flow**  
+- User clicks action button (e.g., "[Upload Photo →]")  
+- Navigate to relevant page with context preserved  
+- Highlight specific field/section to complete  
+- Show inline help and examples  
+- Auto-save progress  
+- Mark item complete on backend  
+- Update progress bar in real-time  
+- Show mini-celebration for each item  
+
+**4.2 Example: Upload Profile Photo**  
+- User clicks "[Upload Photo →]"  
+- Navigate to `/app/(profile)/edit#photo`  
+- Profile editor loads with photo section highlighted  
+- Show contextual help:  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Edit Profile                                     [Save]     │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
+│ ┃ 💡 Tip: Upload your profile photo                      ┃ │
+│ ┃                                                         ┃ │
+│ ┃ A professional photo helps build trust with clients.   ┃ │
+│ ┃ Profiles with photos get 40% more views!               ┃ │
+│ ┃                                                         ┃ │
+│ ┃ Tips for a great profile photo:                        ┃ │
+│ ┃ ✓ Professional headshot                                ┃ │
+│ ┃ ✓ Clear, well-lit face photo                           ┃ │
+│ ┃ ✓ Neutral background                                   ┃ │
+│ ┃ ✓ Friendly, approachable expression                    ┃ │
+│ ┃                                                         ┃ │
+│ ┃ [Got it]                                               ┃ │
+│ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
+│                                                             │
+│ Profile Photo * (from checklist)                           │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │                                                       │   │
+│ │          [👤 Current: Default avatar]                │   │
+│ │                                                       │   │
+│ │              [Upload New Photo]                       │   │
+│ │                                                       │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ Accepted: JPG, PNG (max 5MB)                               │
+│                                                             │
+│ [Professional headline]                                     │
+│ [Professional summary...]                                   │
+│                                                             │
+│ [Cancel] [Save Changes]                                     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- User uploads photo  
+- Frontend validates file (size, type, dimensions)  
+- Upload to storage-be  
+- Update profile with photo URL  
+- Frontend calls:  
+```typescript
+PATCH https://api.skillsier.com/v1/users/{user_id}/profile  
+Body: {  
+  "avatar_url": "https://cdn.skillsier.com/avatars/user-uuid.jpg"  
+}  
+
+// Mark checklist item complete  
+POST https://api.skillsier.com/v1/users/{user_id}/checklist/profile_photo/complete  
+```
+
+- Backend updates:  
+```sql
+UPDATE users  
+SET avatar_url = 'https://cdn.skillsier.com/avatars/user-uuid.jpg',  
+    profile_completion_score = profile_completion_score + 5,  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+
+-- Log completion  
+INSERT INTO profile_completion_history (  
+  user_id,  
+  item_id,  
+  item_category,  
+  points_earned,  
+  completed_at  
+) VALUES (  
+  'user-uuid',  
+  'profile_photo',  
+  'IDENTITY',  
+  5,  
+  NOW()  
+);  
+```
+
+- Publish event:  
+```json
+{  
+  "event_type": "profile.checklist.item_completed.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "item_id": "profile_photo",  
+    "points_earned": 5,  
+    "new_total_score": 70,  
+    "completed_at": "2025-11-10T15:00:00Z"  
+  }  
+}  
+```
+
+**4.3 Mini-Celebration**  
+- Show toast notification:  
+```
+┌─────────────────────────────────────┐
+│ ✓ Profile photo added!              │
+│ +5 points · 70% complete            │
+│                                     │
+│ [🎉 animation]                      │
+│                                     │
+│ Next: Add 2 more skills             │
+│ [Continue →]                        │
+└─────────────────────────────────────┘
+```
+
+- Confetti animation (subtle)  
+- Progress bar animates to new value  
+- Item marked complete with checkmark  
+- Badge/reward preview if threshold reached  
+
+---
+
+### Step 5: Progressive Disclosure & Contextual Prompts
+
+**5.1 Smart Prompts Based on User Actions**  
+The system shows contextual prompts at strategic moments:
+
+**A. After Job Search (Freelancer):**  
+- User searches for jobs but profile incomplete  
+- Show banner:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 💡 Boost your visibility!                            [X]   │
+│                                                             │
+│ Complete your profile to appear higher in search results.   │
+│ Freelancers with complete profiles get 3x more invitations. │
+│                                                             │
+│ Missing: Profile photo, Portfolio items, Phone verification │
+│                                                             │
+│ [Complete Profile] [Remind Me Later]                        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**B. After First Proposal (Freelancer):**  
+- User submits first proposal  
+- Show modal after submission:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Proposal Submitted! ✓                                [X]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Increase your chances of getting hired:                     │
+│                                                             │
+│ ☐ Add portfolio items showing similar work                 │
+│   Clients are 4x more likely to hire freelancers with      │
+│   relevant portfolio items.                                 │
+│   [Add Portfolio →]                                         │
+│                                                             │
+│ ☐ Verify your phone number                                 │
+│   Verified freelancers are seen as more trustworthy.        │
+│   [Verify Phone →]                                         │
+│                                                             │
+│ [Maybe Later] [Complete Now]                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**C. After Job Post (Client):**  
+- Client posts first job  
+- Show prompt to add payment method:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Job Posted Successfully! 🎉                          [X]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Next step: Add a payment method                             │
+│                                                             │
+│ You'll need a verified payment method to hire freelancers.  │
+│ Add it now to be ready when you find the perfect candidate. │
+│                                                             │
+│ [Add Payment Method] [I'll Do This Later]                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**D. On Profile View (By Others):**  
+- Track when others view your profile  
+- If profile incomplete, send notification:  
+```
+Email Subject: "Someone viewed your profile! Make it count."
+
+Hi John,
+
+A client viewed your profile today, but your profile is only 65% complete.
+
+Complete these items to make a stronger impression:
+- Add portfolio items (0/3)
+- Verify phone number
+- Add video introduction
+
+Freelancers with complete profiles get 5x more job invitations.
+
+[Complete Your Profile]
+```
+
+**5.2 Prompt Timing Rules**  
+- **Frequency:** Max 1 prompt per session  
+- **Cooldown:** Min 24 hours between similar prompts  
+- **Relevance:** Only show prompts related to current activity  
+- **Dismissal:** Remember dismissals, don't re-show for 7 days  
+- **Priority:** High-impact items prompted first  
+
+---
+
+### Step 6: Gamification & Rewards
+
+**6.1 Milestone Rewards**  
+Users receive rewards at specific completion thresholds:
+
+**25% Complete:**  
+- **Reward:** Profile visibility +10%  
+- **Notification:** "You've reached 25% profile completion! Your profile is now more visible in search."  
+
+**50% Complete:**  
+- **Reward:** 2 Bonus Connects (Clients) or Featured in "New Freelancers" (Freelancers)  
+- **Notification:** "Halfway there! Here are 2 bonus Connects to help you get started."  
+
+**75% Complete:**  
+- **Reward:** 5 Bonus Connects or Premium feature trial (7 days)  
+- **Notification:** "You're almost there! 5 bonus Connects added to your account."  
+
+**100% Complete:**  
+- **Reward:** 10 Bonus Connects + Verified Badge + Featured Placement (7 days) + Priority Support  
+- **Celebration Modal:**  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   🎉 Congratulations! 🎉                    │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│        Your profile is 100% complete!                       │
+│                                                             │
+│               [🏆 Animated trophy icon]                     │
+│                                                             │
+│ You've unlocked exclusive rewards:                          │
+│                                                             │
+│ ✓ 10 Bonus Connects (worth $20)                            │
+│ ✓ Verified Profile Badge                                   │
+│ ✓ Featured in Search for 7 Days                            │
+│ ✓ Priority Support Access                                  │
+│ ✓ Profile Visibility Boost (+50%)                          │
+│                                                             │
+│ Your profile is now optimized to attract clients!           │
+│                                                             │
+│ [View My Profile] [Share Achievement] [Continue]           │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- Confetti animation  
+- Sound effect (if enabled)  
+- Social sharing options  
+
+**6.2 Award Rewards (Backend)**  
+```typescript
+POST https://api.skillsier.com/v1/users/{user_id}/rewards/claim  
+Body: {  
+  "reward_type": "PROFILE_COMPLETION",  
+  "threshold": 100,  
+  "rewards": [  
+    {  
+      "type": "BONUS_CONNECTS",  
+      "amount": 10  
+    },  
+    {  
+      "type": "BADGE",  
+      "badge_id": "verified_profile"  
+    },  
+    {  
+      "type": "FEATURE_PLACEMENT",  
+      "duration_days": 7  
+    },  
+    {  
+      "type": "SUPPORT_TIER",  
+      "tier": "PRIORITY",  
+      "duration_days": 30  
+    },  
+    {  
+      "type": "VISIBILITY_BOOST",  
+      "multiplier": 1.5,  
+      "duration_days": 30  
+    }  
+  ]  
+}  
+```
+
+- Backend processes rewards:  
+```sql
+-- Award bonus connects  
+UPDATE subscriptions  
+SET connects_remaining = connects_remaining + 10,  
+    updated_at = NOW()  
+WHERE user_id = 'user-uuid' AND status = 'ACTIVE';  
+
+-- Award badge  
+INSERT INTO user_badges (  
+  user_id,  
+  badge_id,  
+  badge_type,  
+  earned_at,  
+  source  
+) VALUES (  
+  'user-uuid',  
+  'verified_profile',  
+  'ACHIEVEMENT',  
+  NOW(),  
+  'PROFILE_COMPLETION'  
+);  
+
+-- Enable featured placement  
+INSERT INTO featured_placements (  
+  user_id,  
+  placement_type,  
+  start_date,  
+  end_date,  
+  source  
+) VALUES (  
+  'user-uuid',  
+  'SEARCH_FEATURED',  
+  NOW(),  
+  NOW() + INTERVAL '7 days',  
+  'PROFILE_COMPLETION_REWARD'  
+);  
+
+-- Update user profile  
+UPDATE users  
+SET profile_completion_score = 100,  
+    profile_completion_rewards_claimed = true,  
+    profile_visibility_multiplier = 1.5,  
+    profile_indexed = false,  -- Trigger re-indexing  
+    updated_at = NOW()  
+WHERE id = 'user-uuid';  
+
+-- Log reward  
+INSERT INTO reward_history (  
+  user_id,  
+  reward_type,  
+  reward_source,  
+  reward_details,  
+  claimed_at  
+) VALUES (  
+  'user-uuid',  
+  'PROFILE_COMPLETION',  
+  'ONBOARDING',  
+  jsonb_build_object(  
+    'threshold', 100,  
+    'rewards', ARRAY['bonus_connects', 'verified_badge', 'featured_placement']  
+  ),  
+  NOW()  
+);  
+```
+
+- Publish events:  
+```json
+{  
+  "event_type": "profile.completed.v1",  
+  "aggregate_id": "user-uuid",  
+  "payload": {  
+    "user_id": "user-uuid",  
+    "completion_score": 100,  
+    "rewards_claimed": [  
+      "BONUS_CONNECTS",  
+      "VERIFIED_BADGE",  
+      "FEATURED_PLACEMENT"  
+    ],  
+    "completed_at": "2025-11-10T16:00:00Z"  
+  }  
+}  
+```
+
+---
+
+### Step 7: Profile Optimization Suggestions
+
+**7.1 Beyond 100% - Continuous Improvement**  
+Even at 100% completion, show optimization suggestions:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Profile Optimization Tips                            [X]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Your profile is 100% complete! 🎉                          │
+│                                                             │
+│ Here are some ways to make it even better:                  │
+│                                                             │
+│ 💡 Add more portfolio items                                │
+│    You have 3 items. Top freelancers have 5-10.            │
+│    [Add Portfolio Item]                                     │
+│                                                             │
+│ 💡 Get skill endorsements                                   │
+│    Ask past clients to endorse your skills.                 │
+│    [Request Endorsements]                                   │
+│                                                             │
+│ 💡 Take skills tests                                        │
+│    Prove your expertise with verified skills tests.         │
+│    [Browse Tests]                                           │
+│                                                             │
+│ 💡 Update your hourly rate                                  │
+│    Your rate ($85/hr) is below market average ($95/hr).    │
+│    [Update Rate]                                            │
+│                                                             │
+│ 💡 Add more languages                                       │
+│    Bilingual freelancers get 20% more opportunities.        │
+│    [Add Language]                                           │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**7.2 AI-Powered Suggestions**  
+- Analyze user profile vs. top performers  
+- Suggest improvements based on:  
+  - Industry benchmarks  
+  - Similar successful profiles  
+  - Recent job posting trends  
+  - Skill demand data  
+
+---
+
+#### Branches & Edge Cases
+
+**Profile Already Complete:**  
+- If score = 100, show congratulations message instead of checklist  
+- Redirect to optimization tips  
+- Show achievement badge prominently  
+
+**User Dismisses Widget:**  
+- Store dismissal preference:  
+```sql
+UPDATE user_preferences  
+SET profile_completion_widget_dismissed_at = NOW(),  
+    profile_completion_widget_dismissed_count = profile_completion_widget_dismissed_count + 1  
+WHERE user_id = 'user-uuid';  
+```
+- Re-show after 7 days or when score drops significantly  
+- Send reminder email after 3 days if still incomplete  
+
+**Skip Specific Items:**  
+- User can mark items as "Not Applicable" or "Skip"  
+- Show impact warning:  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Skip this item?                                      [X]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Skipping "Add portfolio items" will:                        │
+│                                                             │
+│ ⚠️ Reduce your profile visibility by 20%                   │
+│ ⚠️ Lower your chances of getting job invitations           │
+│ ⚠️ You won't receive the "Verified Profile" badge          │
+│                                                             │
+│ Are you sure you want to skip?                              │
+│                                                             │
+│ [No, I'll Complete It] [Yes, Skip]                         │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Partial Completion:**  
+- Auto-save progress on all forms  
+- If user navigates away, save draft  
+- Show "Resume" button on dashboard widget  
+- Send reminder after 24 hours if abandoned  
+
+**Return User:**  
+- Resume from last incomplete item  
+- Highlight new items added since last visit  
+- Show progress comparison: "You've made progress! +15% since last login"  
+
+**Mobile vs Web Sync:**  
+- Completion progress synced in real-time across devices  
+- WebSocket updates when item completed on other device  
+- Show toast: "Profile updated on another device"  
+
+**Dependencies:**  
+- Some items require others to be completed first  
+- Example: Can't verify KYC without basic profile info  
+- Show lock icon: "🔒 Complete profile photo first"  
+
+**Time-Based Items:**  
+- Some items may require waiting (e.g., KYC review)  
+- Show status: "⏳ Verification in progress (24-48 hours)"  
+- Don't penalize score while waiting  
+- Show estimated completion time  
+
+**External Factors:**  
+- KYC rejected → Show clear reason and next steps  
+- Payment method failed → Offer alternatives  
+- Portfolio upload error → Suggest compression or external link  
+
+**Network Errors:**  
+- If update fails, show error and retry option  
+- Cache progress locally (mobile)  
+- Resume when connection restored  
+- Show: "⚠️ Update failed. Changes saved locally."  
+
+**A/B Testing:**  
+- Test different reward structures  
+- Test prompt timing and frequency  
+- Test gamification elements  
+- Track conversion rates by variant  
+
+---
+
+### UI Components
+
+**Mobile Checklist View:**  
+```
+┌──────────────────────────────┐
+│  <  Complete Profile    ?    │
+├──────────────────────────────┤
+│                              │
+│ 65% complete                 │
+│ ██████████░░░░░ 65%          │
+│ 3 of 10 items                │
+│                              │
+│ 🎁 Unlock rewards at 100%    │
+│                              │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━  │
+│                              │
+│ Core Identity (3/5)          │
+│                              │
+│ ✓ Professional headline      │
+│   +5 pts · 2h ago            │
+│                              │
+│ ☐ Add profile photo          │
+│   +5 pts · 2 min             │
+│   📷 Upload photo            │
+│   [Upload →]                 │
+│                              │
+│ [▼ Show more (2 items)]      │
+│                              │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━  │
+│                              │
+│ Professional (1/6)           │
+│                              │
+│ ☐ Add 2 more skills          │
+│   +5 pts · 5 min             │
+│   Progress: 3/5 skills       │
+│   [Add Skills →]             │
+│                              │
+│ [▼ Show more (5 items)]      │
+│                              │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━  │
+│                              │
+│ [More categories...]         │
+│                              │
+└──────────────────────────────┘
+```
+
+---
+
+#### Notifications
+
+**Profile Completion Milestones:**  
+- **Email:** "You've reached [25/50/75/100]% profile completion!"  
+  - Summary of progress  
+  - Rewards earned  
+  - Next steps  
+  - CTA to continue  
+- **Push:** "[X]% complete! Keep going to unlock rewards."  
+- **In-app:** Toast notification with confetti  
+
+**Reminder Notifications:**  
+- **Email (Day 1 after dismissal):** "Complete your profile to get more opportunities"  
+- **Email (Day 3):** "Your profile is [X]% complete. Finish it to unlock rewards!"  
+- **Email (Day 7):** "Final reminder: Complete your profile"  
+- **Push (if enabled):** "Complete your profile for 10 bonus Connects"  
+
+**Contextual Prompts:**  
+- **After job search:** "Boost visibility by completing your profile"  
+- **After proposal:** "Increase chances by adding portfolio items"  
+- **After profile view:** "Someone viewed your profile! Make it stand out."  
+
+**Weekly Digest:**  
+- **Email (if incomplete):** "Weekly summary: Your profile is [X]% complete"  
+  - Quick wins highlighted  
+  - Time required  
+  - Potential impact  
+
+---
+
+#### Analytics
+
+**Events to Track:**  
+- `profile_completion.widget.viewed` (score, tier, location)  
+- `profile_completion.widget.dismissed` (score, dismiss_type: temporary | permanent)  
+- `profile_completion.checklist.viewed` (score, items_remaining)  
+- `profile_completion.item.clicked` (item_id, category, priority)  
+- `profile_completion.item.completed` (item_id, points_earned, new_score, time_to_complete)  
+- `profile_completion.item.skipped` (item_id, reason)  
+- `profile_completion.milestone.reached` (milestone: 25 | 50 | 75 | 100)  
+- `profile_completion.reward.claimed` (reward_type, threshold)  
+- `profile_completion.celebration.viewed` (score)  
+- `profile_completion.optimization.viewed` (suggestions_count)  
+- `profile_completion.prompt.shown` (prompt_type, context, score)  
+- `profile_completion.prompt.actioned` (prompt_type, action: complete | dismiss)  
+- `profile_completion.reminder.sent` (channel, day_since_dismissal)  
+- `profile_completion.reminder.clicked` (channel, score)  
+
+**Metrics to Track:**  
+- Completion rate by cohort (week 1, month 1, month 3)  
+- Average time to 100% completion  
+- Drop-off points (which items cause abandonment)  
+- Most/least completed items  
+- Reward claim rate  
+- Prompt effectiveness (conversion by type)  
+- Score distribution (25/50/75/100 percentiles)  
+- Item completion order (which items done first)  
+- Resume rate after dismissal  
+- Cross-device completion patterns  
+
+**Funnels:**  
+1. Registration → 25% → 50% → 75% → 100%  
+2. Widget View → Checklist View → Item Click → Item Complete  
+3. Prompt Shown → Prompt Clicked → Item Completed  
+4. Milestone Reached → Reward Claimed  
+
+---
+
+### Accessibility
+
+[Similar requirements as previous journeys]  
+- Keyboard navigation for checklist  
+- Screen reader announces progress updates  
+- ARIA live regions for score changes  
+- High contrast mode support  
+- Focus management when navigating between items  
+
+---
+
+### Performance
+
+**SLO Targets:**  
+- Profile completion API: <300ms (p95)  
+- Checklist load: <500ms (p95)  
+- Item completion (mark complete): <200ms (p95)  
+- Real-time progress update: <100ms (p95)  
+- Reward claim: <1s (p95)  
+
+**Caching:**  
+- Profile completion score: 5-minute cache  
+- Checklist items: Session cache  
+- Refresh on item completion  
+
+---
+
+### Security
+
+**Data Protection:**  
+- Completion history is private (user only)  
+- Reward claims are audited  
+- Cannot manipulate score client-side  
+- Rate limiting on completion marking (prevent abuse)  
+
+**Validation:**  
+- Server-side validation of all completions  
+- Cannot mark item complete without actually completing it  
+- Check for gaming/manipulation patterns  
+
+---
+
+#### Sources
+
+**Backend:**  
+- `users-be.user-stories.md` — Profile management, completion tracking  
+- `users-be.database-design.md` — profile_completion_score, checklist tracking  
+- `subscriptions-be.user-stories.md` — Bonus connects rewards  
+- `communications-be.user-stories.md` — Reminder notifications  
+- `search-be.user-stories.md` — Profile visibility, indexing  
+
+**Frontend:**  
+- `combined-fe-folder-structure.md` — Route paths  
+  - `/app/(dashboard)` — Dashboard with widget  
+  - `/app/(onboarding)/checklist` — Checklist page  
+  - `/app/(profile)/edit` — Profile editor  
+- `packages/lib/src/features/profile/` — Profile completion logic  
+- `packages/ui/src/components/` — Widget components  
+
+---
+
+## Journey: ONB-5 (Guided Tutorials & Tooltips)
+
+**Goal:** Guide first-time users through platform features using interactive tutorials, contextual tooltips, and progressive disclosure to reduce learning curve and increase feature adoption  
+
+**Actor:** Any User (Client or Freelancer) accessing features for the first time  
+
+**Trigger:**  
+- User accesses a major feature for the first time  
+- User clicks help icon (?) in any interface  
+- User explicitly requests tutorial replay from help menu  
+- User navigates to complex workflow (job posting, contract creation, etc.)  
+- System detects user struggling (e.g., multiple failed form submissions)  
+
+**Preconditions:**  
+- User has registered account  
+- User has completed basic onboarding (ONB-1)  
+- User is authenticated  
+- Feature has an associated tutorial defined  
+- Tutorial not previously completed or dismissed permanently  
+
+**Primary Screens:**  
+**Web Routes:**  
+- **Overlay on all pages** — Tutorial spotlight with dimmed background  
+- `/help/tutorials` — Tutorial library (all available tutorials)  
+- `/help/tutorials/[feature]` — Specific tutorial replay  
+- Settings: `/app/(dashboard)/settings/tutorials` — Tutorial preferences  
+
+**Mobile Routes:**  
+- **Modal/Bottom sheet on all screens** — Mobile-optimized tutorials  
+- `app/(tabs)/(authenticated)/help/tutorials.tsx` — Tutorial library  
+- `app/(tabs)/(authenticated)/help/tutorials/[feature].tsx` — Specific tutorial  
+- Settings: `app/(tabs)/(authenticated)/settings/tutorials.tsx` — Tutorial preferences  
+
+**System Touchpoints:**  
+- **users-be:** Tutorial completion tracking  
+  - `GET /v1/users/{id}/tutorials` — Get tutorial completion status  
+  - `POST /v1/users/{id}/tutorials/{tutorial_id}/start` — Mark tutorial started  
+  - `POST /v1/users/{id}/tutorials/{tutorial_id}/complete` — Mark completed  
+  - `POST /v1/users/{id}/tutorials/{tutorial_id}/skip` — Mark skipped  
+  - `POST /v1/users/{id}/tutorials/reset` — Reset all tutorials  
+  - `PATCH /v1/users/{id}/tutorial-preferences` — Update preferences  
+- **communications-be:** Tutorial tips and suggestions  
+  - `POST /v1/notifications/send` — Send tutorial tips  
+- **analytics:** Track tutorial effectiveness  
+  - `POST /v1/analytics/events` — Log tutorial events  
+
+**Key Components:**  
+- **Shared Components:**  
+  - `packages/lib/src/features/tutorials/hooks/use-tutorial.ts` — Tutorial state logic  
+  - `packages/lib/src/features/tutorials/hooks/use-tutorial-spotlight.ts` — Spotlight effect  
+  - `packages/lib/src/features/tutorials/components/TutorialOverlay.tsx` — Main overlay  
+  - `packages/lib/src/features/tutorials/components/TutorialTooltip.tsx` — Tooltip component  
+  - `packages/lib/src/features/tutorials/components/TutorialProgress.tsx` — Progress dots  
+  - `packages/lib/src/features/tutorials/components/TutorialVideo.tsx` — Video player  
+  - `packages/lib/src/features/tutorials/context/TutorialContext.tsx` — Global state  
+- **Web-Specific:**  
+  - `apps/web/components/tutorials/TutorialSpotlight.tsx` — Desktop spotlight  
+  - `apps/web/components/tutorials/HelpButton.tsx` — Help (?) button  
+- **Mobile-Specific:**  
+  - `apps/mobile/components/tutorials/TutorialBottomSheet.tsx` — Mobile bottom sheet  
+  - `apps/mobile/components/tutorials/TutorialGestures.tsx` — Swipe gestures  
+
+---
+
+### Tutorial System Architecture
+
+**Tutorial Definition Structure:**  
+```typescript
+interface Tutorial {
+  id: string;  // e.g., "job_posting_tutorial"
+  feature: string;  // e.g., "JOB_POSTING"
+  title: string;
+  description: string;
+  user_type: 'CLIENT' | 'FREELANCER' | 'BOTH';
+  trigger_conditions: {
+    first_access: boolean;  // Show on first feature access
+    on_demand: boolean;  // Available in help menu
+    auto_trigger: boolean;  // Auto-show or require user opt-in
+  };
+  steps: TutorialStep[];
+  estimated_duration_seconds: number;
+  video_url?: string;  // Optional video tutorial
+  created_at: string;
+  updated_at: string;
+  version: string;  // Tutorial version for tracking updates
+}
+
+interface TutorialStep {
+  id: string;
+  order: number;
+  type: 'SPOTLIGHT' | 'TOOLTIP' | 'MODAL' | 'VIDEO' | 'INTERACTIVE';
+  title: string;
+  content: string;  // Markdown or HTML
+  target_selector?: string;  // CSS selector for spotlight
+  position?: 'top' | 'right' | 'bottom' | 'left' | 'center';
+  action_required?: {
+    type: 'CLICK' | 'INPUT' | 'NAVIGATION';
+    validation?: string;  // Validate user action
+  };
+  skip_allowed: boolean;
+  next_button_text?: string;  // Default: "Next"
+  prev_button_text?: string;  // Default: "Back"
+}
+
+interface TutorialProgress {
+  user_id: string;
+  tutorial_id: string;
+  status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'SKIPPED';
+  current_step: number;
+  started_at?: string;
+  completed_at?: string;
+  skipped_at?: string;
+  completion_percentage: number;
+  attempts: number;  // How many times user started this tutorial
+}
+```
+
+---
+
+### Available Tutorials
+
+**Client Tutorials:**  
+1. **JOB_POSTING** — How to Post a Job (5 steps, 2 min)  
+2. **PROPOSAL_REVIEW** — Reviewing Proposals (6 steps, 3 min)  
+3. **HIRING_PROCESS** — Hiring a Freelancer (7 steps, 4 min)  
+4. **CONTRACT_MANAGEMENT** — Managing Contracts (5 steps, 3 min)  
+5. **PAYMENT_SETUP** — Setting Up Payments (4 steps, 2 min)  
+6. **WORKROOM** — Using the Workroom (6 steps, 3 min)  
+7. **MESSAGING** — Communicating with Freelancers (4 steps, 2 min)  
+
+**Freelancer Tutorials:**  
+1. **JOB_SEARCH** — Finding the Right Jobs (5 steps, 2 min)  
+2. **PROPOSAL_SUBMISSION** — Writing Winning Proposals (8 steps, 5 min)  
+3. **CONTRACT_ACCEPTANCE** — Accepting and Starting Work (6 steps, 3 min)  
+4. **TIME_TRACKING** — Tracking Your Time (5 steps, 3 min)  
+5. **MILESTONE_SUBMISSION** — Submitting Deliverables (4 steps, 2 min)  
+6. **PROFILE_OPTIMIZATION** — Optimizing Your Profile (7 steps, 4 min)  
+7. **EARNINGS_WITHDRAWAL** — Getting Paid (5 steps, 3 min)  
+
+**Common Tutorials (Both):**  
+1. **DASHBOARD_OVERVIEW** — Platform Dashboard Tour (5 steps, 2 min)  
+2. **NOTIFICATIONS** — Managing Notifications (3 steps, 1 min)  
+3. **HELP_CENTER** — Finding Help and Support (4 steps, 2 min)  
+
+---
+
+#### Flow Steps
+
+### Step 1: Tutorial Trigger Detection
+
+**1.1 Feature Access Detection**  
+When user navigates to a feature, check if tutorial should be shown:
+
+```typescript
+// Frontend tutorial detection
+const useTutorialTrigger = (feature: string) => {
+  const { user, tutorialProgress } = useAuth();
+  const { startTutorial } = useTutorial();
+  
+  useEffect(() => {
+    const checkTutorialStatus = async () => {
+      const response = await fetch(
+        `/v1/users/${user.id}/tutorials?feature=${feature}`
+      );
+      const { tutorials } = await response.json();
+      
+      const tutorial = tutorials.find(t => t.feature === feature);
+      
+      if (!tutorial) return;
+      
+      if (tutorial.trigger_conditions.first_access) {
+        const progress = tutorialProgress[tutorial.id];
+        
+        if (!progress || progress.status === 'NOT_STARTED') {
+          if (tutorial.trigger_conditions.auto_trigger) {
+            setTimeout(() => startTutorial(tutorial.id), 2000);
+          } else {
+            showTutorialPrompt(tutorial);
+          }
+        }
+      }
+    };
+    
+    checkTutorialStatus();
+  }, [feature, user.id]);
+};
+```
+
+**1.2 Tutorial Opt-in Prompt**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 💡 New to Job Posting?                               [X]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Take a 2-minute tour to learn how to create effective      │
+│ job posts and attract top freelancers.                      │
+│                                                             │
+│ [⏱️ 2 minutes] [📹 Includes video] [📱 Mobile-friendly]    │
+│                                                             │
+│ [Take Tour] [No Thanks]                                     │
+│                                                             │
+│ ☐ Don't show this again                                    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Step 2: Tutorial Flow - Job Posting Example
+
+**2.1 Welcome Modal (Step 1/5)**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   ┌───────────────────────────────────────────────────┐    │
+│   │ Welcome to Job Posting! 🎉            [Skip Tour] │    │
+│   ├───────────────────────────────────────────────────┤    │
+│   │                                                   │    │
+│   │ Let's learn how to post your first job in 5       │    │
+│   │ simple steps.                                      │    │
+│   │                                                   │    │
+│   │ ⏱️ Estimated time: 2 minutes                      │    │
+│   │                                                   │    │
+│   │ You'll learn:                                      │    │
+│   │ • How to write an effective job title            │    │
+│   │ • Selecting the right skills                      │    │
+│   │ • Setting competitive budgets                     │    │
+│   │ • Attracting top freelancers                      │    │
+│   │                                                   │    │
+│   │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━      │    │
+│   │ ●○○○○                                  Step 1/5  │    │
+│   │                                                   │    │
+│   │                        [Let's Start →]           │    │
+│   │                                                   │    │
+│   └───────────────────────────────────────────────────┘    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**2.2 Spotlight on Job Title (Step 2/5)**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ [Dimmed background]                                         │
+│                                                             │
+│ ┌─────────────────────────────────────────┐ ┌────────────┐ │
+│ │ Job Title *                             │ │ Job Title  │ │
+│ │ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │ │            │ │
+│ │ ┃ [Senior React Developer        ]    ┃ │ │ Start with │ │
+│ │ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │ │ a clear,   │ │
+│ │ [Spotlight highlighting the input]      │ │ specific   │ │
+│ └─────────────────────────────────────────┘ │ job title. │ │
+│                                             │            │ │
+│ [Rest of page dimmed]                       │ ✅ Good:   │ │
+│                                             │ "Senior    │ │
+│                                             │  React Dev"│ │
+│                                             │            │ │
+│                                             │ ❌ Avoid:  │ │
+│                                             │ "Developer │ │
+│                                             │  Needed"   │ │
+│                                             │            │ │
+│                                             │ ━━━━━━━━━━ │ │
+│                                             │ ●●○○○  2/5│ │
+│                                             │            │ │
+│                                             │ [← Back]   │ │
+│                                             │ [Next →]   │ │
+│                                             │            │ │
+│                                             └────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**2.3 Interactive Step - Skills Selection (Step 3/5)**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│ [Dimmed background]                                         │
+│                                                             │
+│ ┌─────────────────────────────────────────┐ ┌────────────┐ │
+│ │ Skills Required *                       │ │ Select     │ │
+│ │ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │ │ Skills     │ │
+│ │ ┃ [🔍 Search skills]                  ┃ │ │            │ │
+│ │ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │ │ Add 3-5 key│ │
+│ │                                         │ │ skills for │ │
+│ │ Popular: [React] [Node.js] [TypeScript]│ │ your job.  │ │
+│ │                                         │ │            │ │
+│ │ Selected: [React ×]                    │ │ Try adding │ │
+│ │          [Node.js ×]                   │ │ at least 2 │ │
+│ │          [+ Add skill]                 │ │ more!      │ │
+│ │ [Spotlight on skills selector]          │ │            │ │
+│ └─────────────────────────────────────────┘ │ ⚠️ Need 1  │ │
+│                                             │ more skill │ │
+│                                             │ to continue│ │
+│                                             │            │ │
+│                                             │ ━━━━━━━━━━ │ │
+│                                             │ ●●●○○  3/5│ │
+│                                             │            │ │
+│                                             │ [← Back]   │ │
+│                                             │ [Next] 🔒  │ │
+│                                             │            │ │
+│                                             └────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- User MUST add at least 3 skills before proceeding  
+- "Next" button disabled until validation passes  
+- Live feedback: "Need 1 more skill to continue"  
+
+**2.4 Video Tutorial (Step 4/5)**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   ┌───────────────────────────────────────────────────┐    │
+│   │ Writing Great Job Descriptions 📹     [Skip Tour] │    │
+│   ├───────────────────────────────────────────────────┤    │
+│   │                                                   │    │
+│   │ Watch this 1-minute video to learn:               │    │
+│   │ • How to write compelling descriptions           │    │
+│   │ • What information freelancers need               │    │
+│   │ • Examples of effective job posts                │    │
+│   │                                                   │    │
+│   │ ┌─────────────────────────────────────────────┐  │    │
+│   │ │  [▶️ Video Player]                          │  │    │
+│   │ │                                             │  │    │
+│   │ │  [Video controls: play, pause, volume]     │  │    │
+│   │ │  ━━━━━━━━━━━○─────────── 0:32 / 1:05      │  │    │
+│   │ │                                             │  │    │
+│   │ └─────────────────────────────────────────────┘  │    │
+│   │                                                   │    │
+│   │ [Transcript] [Captions: On ▼]                    │    │
+│   │                                                   │    │
+│   │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━      │    │
+│   │ ●●●●○                                  Step 4/5  │    │
+│   │                                                   │    │
+│   │ [← Back] [Skip Video] [Next (after video) →]    │    │
+│   │                                                   │    │
+│   └───────────────────────────────────────────────────┘    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**2.5 Completion Modal (Step 5/5)**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   ┌───────────────────────────────────────────────────┐    │
+│   │ You're Ready to Post Jobs! 🎉        [Finish]    │    │
+│   ├───────────────────────────────────────────────────┤    │
+│   │                                                   │    │
+│   │ Great work! You've learned:                       │    │
+│   │                                                   │    │
+│   │ ✅ How to write effective job titles             │    │
+│   │ ✅ Selecting the right skills                     │    │
+│   │ ✅ Writing compelling descriptions                │    │
+│   │ ✅ Setting competitive budgets                    │    │
+│   │                                                   │    │
+│   │ 📚 Additional Resources:                          │    │
+│   │ • [Full Video Tutorial] (5 minutes)              │    │
+│   │ • [Job Posting Best Practices]                    │    │
+│   │ • [Browse Successful Job Examples]               │    │
+│   │                                                   │    │
+│   │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━      │    │
+│   │ ●●●●●                       Tutorial Complete!   │    │
+│   │                                                   │    │
+│   │          [Finish & Continue Posting →]           │    │
+│   │                                                   │    │
+│   │ ☐ Don't show tutorials automatically             │    │
+│   │                                                   │    │
+│   └───────────────────────────────────────────────────┘    │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Step 3: Contextual Tooltips (Always-On Help)
+
+**3.1 Persistent Tooltip System**  
+Even after tutorial completion, tooltips remain available:
+
+```typescript
+// Tooltip component usage
+<Tooltip
+  content="Add 3-5 key skills that freelancers need for this project"
+  position="right"
+  trigger="hover"
+  persistent={true}
+>
+  <label>
+    Skills Required * 
+    <InfoIcon className="ml-1 text-gray-400" />
+  </label>
+</Tooltip>
+```
+
+**Visual Tooltip:**  
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│ Skills Required * ⓘ ←──┐                                   │
+│ ┌──────────────────────┐│                                   │
+│ │ [React ×] [Node.js ×]││                                   │
+│ └──────────────────────┘│                                   │
+│                         │                                   │
+│        ┌────────────────┴──────────────────────────┐        │
+│        │ Add 3-5 key skills                        │        │
+│        │                                           │        │
+│        │ This helps match you with qualified       │        │
+│        │ freelancers who have the right expertise. │        │
+│        │                                           │        │
+│        │ 💡 Tip: Be specific! "React" is better   │        │
+│        │ than just "JavaScript"                    │        │
+│        └───────────────────────────────────────────┘        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**3.2 Smart Tooltip Triggers**  
+- **Hover (Desktop):** Show on mouse hover  
+- **Tap (Mobile):** Show on info icon tap  
+- **Focus:** Show when input field focused  
+- **Error:** Show automatically when validation fails  
+- **First-time:** Auto-show first time field is accessed  
+
+**3.3 Tooltip Categories**  
+```typescript
+enum TooltipType {
+  HELP = 'help',           // General help text
+  TIP = 'tip',             // Best practice tips
+  WARNING = 'warning',     // Important warnings
+  ERROR = 'error',         // Error explanations
+  EXAMPLE = 'example',     // Usage examples
+  KEYBOARD = 'keyboard'    // Keyboard shortcuts
+}
+```
+
+---
+
+### Step 4: Help Center Integration
+
+**4.1 Help Button (Always Visible)**  
+- Position: Bottom-right corner (floating button)  
+- Icon: "?" in circle  
+- Color: Brand primary color  
+- Behavior: Opens help menu on click  
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ [Page content]                                              │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                             │
+│                                                       ┌────┐│
+│                                                       │ ?  ││
+│                                                       └────┘│
+│                                                      [Float]│
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4.2 Help Menu Options**  
+Click help button to show menu:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                                                             │
+│                                                  ┌─────────┐│
+│                                                  │ Help ▼  ││
+│                                                  ├─────────┤│
+│                                                  │ 🎓 Take │ │
+│                                                  │   Tour  │ │
+│                                                  ├─────────┤│
+│                                                  │ 📚 Help │ │
+│                                                  │  Center │ │
+│                                                  ├─────────┤│
+│                                                  │ 💬 Chat │ │
+│                                                  │ Support │ │
+│                                                  ├─────────┤│
+│                                                  │ 📹 Video│ │
+│                                                  │Tutorial │ │
+│                                                  ├─────────┤│
+│                                                  │ ⌨️  Keys│ │
+│                                                  │Shortcuts│ │
+│                                                  ├─────────┤│
+│                                                  │ 🔄 Reset│ │
+│                                                  │Tutorial │ │
+│                                                  └─────────┘│
+│                                                      [?]    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**4.3 Tutorial Library**  
+Navigate to: `/help/tutorials`
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ [← Back to Help] Tutorials                          [?]     │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ Learn how to use Skillsier with interactive tutorials       │
+│                                                             │
+│ [🔍 Search tutorials...]                    [Filter: All ▼]│
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ For Clients                                                 │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ 📝 How to Post a Job                         ✓ Done  │   │
+│ │ Learn to create effective job posts                   │   │
+│ │ ⏱️ 2 minutes · 5 steps · Completed 2 days ago        │   │
+│ │ [Replay Tutorial]                                     │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ 👀 Reviewing Proposals                       Not Started│
+│ │ Find the best freelancer for your project              │   │
+│ │ ⏱️ 3 minutes · 6 steps · Includes video               │   │
+│ │ [Start Tutorial]                                      │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ 🤝 Hiring a Freelancer                       In Progress│
+│ │ Complete the hiring process smoothly                   │   │
+│ │ ⏱️ 4 minutes · 7 steps · 3/7 complete                 │   │
+│ │ [Continue Tutorial]                                   │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+│ [View All Client Tutorials (7) →]                          │
+│                                                             │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│                                                             │
+│ For Everyone                                                │
+│                                                             │
+│ ┌───────────────────────────────────────────────────────┐   │
+│ │ 🏠 Dashboard Overview                         Not Started│
+│ │ Learn your way around the platform                     │   │
+│ │ ⏱️ 2 minutes · 5 steps                                 │   │
+│ │ [Start Tutorial]                                      │   │
+│ └───────────────────────────────────────────────────────┘   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Step 5: Keyboard Shortcuts Tutorial
+
+**5.1 Keyboard Shortcuts Overlay**  
+Press `?` or `Shift+/` to show shortcuts:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Keyboard Shortcuts                                   [X]    │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ General                                                     │
+│ ├─ ? or Shift+/          Show this help                    │
+│ ├─ G then D              Go to Dashboard                    │
+│ ├─ G then J              Go to Jobs                         │
+│ ├─ G then P              Go to Proposals                    │
+│ ├─ G then M              Go to Messages                     │
+│ ├─ /                     Focus search                       │
+│ └─ Esc                   Close modal/dialog                │
+│                                                             │
+│ Navigation                                                  │
+│ ├─ ←→                    Navigate tabs                      │
+│ ├─ ↑↓                    Navigate items in list             │
+│ ├─ Enter                 Open selected item                 │
+│ └─ Cmd/Ctrl+K            Command palette                    │
+│                                                             │
+│ Actions                                                     │
+│ ├─ N                     New (context-dependent)            │
+│ ├─ C                     Compose message                    │
+│ ├─ R                     Reply                              │
+│ ├─ S                     Save/Submit                        │
+│ └─ Cmd/Ctrl+Enter        Quick submit                       │
+│                                                             │
+│ 💡 Tip: Most shortcuts work on both Mac and Windows        │
+│    (Cmd on Mac = Ctrl on Windows)                          │
+│                                                             │
+│ [Print] [Close]                                             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Step 6: Progressive Tutorial Updates
+
+**6.1 Feature Updates Notification**  
+When features change, notify users with new tutorials:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 🆕 New Tutorial Available                            [X]   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ We've updated the Job Posting feature with new options!    │
+│                                                             │
+│ Learn about:                                                │
+│ • AI-powered job description assistant                      │
+│ • Enhanced skill matching                                   │
+│ • Budget recommendations                                    │
+│                                                             │
+│ ⏱️ 2 minutes                                                │
+│                                                             │
+│ [Take Updated Tour] [View What's New] [Dismiss]            │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**6.2 Tutorial Versioning**  
+```typescript
+// Track tutorial versions
+interface TutorialVersion {
+  tutorial_id: string;
+  version: string;  // e.g., "1.2"
+  changes: string[];
+  release_date: string;
+  force_replay: boolean;  // Force users to replay after update
+}
+
+// Backend checks if user needs update
+GET /v1/users/{user_id}/tutorials/updates
+
+Response: {
+  "updates_available": [
+    {
+      "tutorial_id": "job_posting_tutorial",
+      "current_version": "1.0",
+      "new_version": "1.2",
+      "changes": [
+        "Added AI description assistant",
+        "Enhanced skill matching",
+        "Budget recommendations"
+      ],
+      "force_replay": false
+    }
+  ]
+}
+```
+
+---
+
+### Step 7: Mobile-Specific Tutorial Adaptations
+
+**7.1 Mobile Bottom Sheet Tutorial**  
+```
+┌──────────────────────────────┐
+│ [Page content]               │
+│                              │
+│ [User interacting]           │
+│                              │
+│ ┌────────────────────────────┤
+│ │ How to Post a Job  [Skip] ││
+│ ├────────────────────────────┤│
+│ │                            ││
+│ │ Start with a clear job     ││
+│ │ title.                     ││
+│ │                            ││
+│ │ ✅ Good:                   ││
+│ │ "Senior React Developer"   ││
+│ │                            ││
+│ │ ❌ Avoid:                  ││
+│ │ "Developer Needed"         ││
+│ │                            ││
+│ │ ━━━━━━━━━━━━━━━━━━━━━━━   ││
+│ │ ●●○○○          Step 2/5   ││
+│ │                            ││
+│ │ [← Back]        [Next →]  ││
+│ │                            ││
+│ └────────────────────────────┘│
+│                              │
+└──────────────────────────────┘
+```
+
+**7.2 Mobile Gesture Support**  
+- Swipe right: Previous step  
+- Swipe left: Next step  
+- Swipe down: Dismiss tutorial  
+- Tap outside: Pause tutorial (show resume prompt)  
+
+**7.3 Mobile-Optimized Features**  
+- Larger touch targets (min 44x44px)  
+- Shorter text (25% less than desktop)  
+- Portrait-optimized layouts  
+- Reduced steps (combine where possible)  
+- Native bottom sheet animations  
+- Haptic feedback on step completion  
+
+---
+
+#### Branches & Edge Cases
+
+**Tutorial Already Completed:**  
+- Show "Replay" option instead of "Start"  
+- Badge: "✓ Completed 2 days ago"  
+- Option: "What's New?" if tutorial updated  
+
+**User Skips Tutorial:**  
+- Track skip event  
+- Show: "You can replay this anytime from the help menu"  
+- Don't auto-show again unless feature significantly updated  
+- Option in settings: "Show skipped tutorials again"  
+
+**User Dismisses Mid-Tutorial:**  
+- Save progress (current step)  
+- Show resume option on next visit  
+- Auto-resume if user returns within 1 hour  
+- Otherwise, offer to restart or resume  
+
+**Multiple Tutorial Requests:**  
+- Queue tutorials, don't overlap  
+- Show: "Complete current tutorial first"  
+- Allow force-exit current to start another  
+
+**Tutorial Conflicts with User Actions:**  
+- Pause tutorial if user clicks outside spotlight  
+- Show: "Tutorial paused. Continue when ready?"  
+- Options: [Resume] [Skip Step] [Exit Tutorial]  
+
+**Network Errors:**  
+- Cache tutorial content locally  
+- Allow offline completion tracking  
+- Sync progress when reconnected  
+
+**Screen Size Variations:**  
+- Adjust tooltip positions for small screens  
+- Collapse step content on mobile  
+- Use scrollable content in modals  
+
+**Accessibility Conflicts:**  
+- Keyboard users can tab through tutorial navigation  
+- Screen readers announce tutorial steps  
+- High contrast mode supported  
+- Respects reduced motion preferences  
+
+**Rapid Feature Access:**  
+- Don't show tutorial if user completes action within 5 seconds  
+- User clearly knows what they're doing  
+- Still available on-demand in help menu  
+
+**Tutorial Loops:**  
+- Prevent infinite loops (tutorial triggering tutorial)  
+- Max 1 tutorial active at a time  
+- Tutorial trigger cooldown: 10 seconds between tutorials  
+
+**Legacy Users:**  
+- Users registered before tutorial system  
+- Set all tutorials to "NOT_STARTED" on first login  
+- Offer "Quick Start Guide" compiling all tutorials  
+
+**Admin Force Tutorial:**  
+- Admins can force-show tutorial for critical updates  
+- User must complete (skip still allowed)  
+- Show importance: "Important Update - Please Review"  
+
+---
+
+### UI Components
+
+**Mobile Tutorial Indicator:**  
+```
+┌──────────────────────────────┐
+│  <  Post a Job          ?    │
+├──────────────────────────────┤
+│                              │
+│ [Tutorial active indicator]  │
+│ ━━●━━━━━━━━━━━━━━━━━━━ 2/5  │
+│ [Pulsing dot]                │
+│                              │
+│ Job Title *                  │
+│ ┌──────────────────────────┐ │
+│ │ [                      ] │ │
+│ └──────────────────────────┘ │
+│                              │
+│ [Tutorial tooltip below]     │
+│                              │
+└──────────────────────────────┘
+```
+
+**Desktop Spotlight Effect:**  
+```css
+.tutorial-spotlight {
+  position: relative;
+  z-index: 9999;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  animation: spotlight-pulse 2s ease-in-out infinite;
+}
+
+@keyframes spotlight-pulse {
+  0%, 100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.8); }
+  50% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75), 0 0 20px rgba(59, 130, 246, 0.5); }
+}
+```
+
+---
+
+#### Notifications
+
+**Tutorial Reminder:**  
+- **Email (Day 3 after skip):** "Complete your [Feature] tutorial to get the most out of Skillsier"  
+- **Push:** "Learn [Feature] in 2 minutes"  
+- **In-app:** Banner suggesting incomplete tutorials  
+
+**Tutorial Completion:**  
+- **In-app:** "Tutorial complete! ✓" toast notification  
+- **No email** (too spammy)  
+- **Badge unlocked** (if applicable)  
+
+**New Feature Tutorial:**  
+- **Email:** "New feature: [Feature Name]. Take the tour to learn how to use it."  
+- **Push:** "🆕 New tutorial available"  
+- **In-app:** Badge on help icon  
+
+**Tutorial Tips (Weekly Digest):**  
+- **Email:** "This week's tip: [Feature] tutorial"  
+- Only if user hasn't completed many tutorials  
+- Max 1 email per week  
+
+---
+
+#### Analytics
+
+**Events to Track:**  
+- `tutorial.prompted` (tutorial_id, feature, user_type)  
+- `tutorial.started` (tutorial_id, source: auto | manual | prompt)  
+- `tutorial.step.viewed` (tutorial_id, step_number, step_type)  
+- `tutorial.step.completed` (tutorial_id, step_number, time_spent_seconds)  
+- `tutorial.step.skipped` (tutorial_id, step_number, reason)  
+- `tutorial.completed` (tutorial_id, total_time_seconds, steps_completed, steps_skipped)  
+- `tutorial.abandoned` (tutorial_id, last_step, completion_percentage)  
+- `tutorial.replayed` (tutorial_id, replay_count)  
+- `tutorial.video.played` (tutorial_id, video_url)  
+- `tutorial.video.completed` (tutorial_id, watch_percentage)  
+- `tooltip.viewed` (field_name, tooltip_type, page)  
+- `tooltip.clicked` (field_name, action)  
+- `help.button.clicked` (page, action)  
+- `help.menu.opened` (page)  
+- `help.center.visited` (source)  
+- `tutorial.library.visited` (filter, search_query)  
+- `keyboard.shortcuts.viewed`  
+
+**Metrics to Track:**  
+- Tutorial completion rate by feature  
+- Average time to complete tutorials  
+- Drop-off rate by step  
+- Most/least completed tutorials  
+- Tutorial effectiveness (feature adoption after tutorial)  
+- Tooltip interaction rate  
+- Help button click rate  
+- Tutorial replay rate  
+- Video completion rate  
+- User feedback scores (thumbs up/down)  
+
+**A/B Tests:**  
+- Auto-trigger vs opt-in prompts  
+- Tutorial length (5 steps vs 3 steps)  
+- Video vs text-only tutorials  
+- Tooltip positioning  
+- Help button placement  
+
+---
+
+### Accessibility
+
+**Keyboard Navigation:**  
+- Tab: Navigate through tutorial buttons  
+- Enter/Space: Activate buttons  
+- Esc: Close/skip tutorial  
+- Arrow keys: Previous/Next step  
+- Shift+?: Show keyboard shortcuts  
+
+**Screen Reader:**  
+- Announce tutorial start: "Tutorial started: How to Post a Job, Step 1 of 5"  
+- Announce step changes: "Step 2 of 5: Job Title"  
+- Read tooltip content aloud  
+- Announce spotlight target: "Focus on Job Title input"  
+- Skip link: "Skip tutorial"  
+
+**ARIA Attributes:**  
+```jsx
+<div
+  role="dialog"
+  aria-labelledby="tutorial-title"
+  aria-describedby="tutorial-content"
+  aria-live="polite"
+>
+  <h2 id="tutorial-title">How to Post a Job</h2>
+  <div id="tutorial-content">
+    <p>Step 1 of 5: Welcome</p>
+  </div>
+  <div role="navigation" aria-label="Tutorial navigation">
+    <button aria-label="Previous step">Back</button>
+    <button aria-label="Next step">Next</button>
+    <button aria-label="Exit tutorial">Skip Tour</button>
+  </div>
+</div>
+```
+
+**Visual Accessibility:**  
+- High contrast mode supported  
+- Spotlight has 3:1 contrast ratio  
+- Tooltips use accessible colors  
+- Text size adjustable (respects browser settings)  
+- Reduced motion: No spotlight pulse animation  
+
+---
+
+### Performance
+
+**SLO Targets:**  
+- Tutorial load: <500ms (p95)  
+- Step transition: <100ms (p95)  
+- Tooltip render: <50ms (p95)  
+- Video load: <2s (p95)  
+- Help menu open: <200ms (p95)  
+
+**Optimization:**  
+- Lazy load tutorial content (fetch on trigger)  
+- Cache tutorial definitions (24-hour TTL)  
+- Preload next step content  
+- Compress video tutorials (H.264, 720p max)  
+- Use CDN for video hosting  
+- Progressive video loading (adaptive bitrate)  
+- Local storage for progress (sync to backend async)  
+
+---
+
+### Security
+
+**Data Privacy:**  
+- Tutorial progress is private (user only)  
+- No sensitive data in tutorial content  
+- Tutorial tracking anonymized for analytics  
+
+**Access Control:**  
+- Users can only access tutorials for their role  
+- Tutorial definitions cached client-side (public)  
+- Progress updates authenticated (JWT required)  
+
+**Rate Limiting:**  
+- Tutorial start: 10 per hour per user  
+- Progress update: 100 per hour per user  
+- Help menu access: Unlimited  
+
+---
+
+#### Sources
+
+**Backend:**  
+- `users-be.user-stories.md` — Tutorial completion tracking  
+- `users-be.database-design.md` — tutorial_progress table  
+- `communications-be.user-stories.md` — Tutorial notifications  
+
+**Frontend:**  
+- `combined-fe-folder-structure.md` — Route paths  
+  - `/help/tutorials` routes  
+  - Tutorial overlay components  
+- `packages/lib/src/features/tutorials/` — Tutorial logic  
+- `packages/ui/src/components/` — UI components  
+
+---
 
 # Section B: Dashboard & Home
 
@@ -3783,7 +11745,7 @@ The Client Dashboard provides a central hub for clients to manage their hiring a
 - `/(tabs)/dashboard/index.tsx` - Main dashboard
 - `/(tabs)/dashboard/analytics.tsx` - Analytics view
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend Services:**
 - **users-be/user**: `GET /v1/users/me` - User profile and role
@@ -3802,7 +11764,7 @@ The Client Dashboard provides a central hub for clients to manage their hiring a
 - **Redis**: Dashboard data caching (TTL: 5 minutes)
 - **Analytics**: Track dashboard interactions
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 1. **Dashboard Load**
    - User navigates to dashboard
@@ -3915,7 +11877,7 @@ The Client Dashboard provides a central hub for clients to manage their hiring a
     - Each update triggers specific widget refresh
     - Toast notifications for important events
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **No Active Jobs:**
 - Show empty state illustration
@@ -4042,7 +12004,7 @@ The Client Dashboard provides a central hub for clients to manage their hiring a
 - Retry buttons
 - Error message specific to widget failure
 
-### Notifications
+#### Notifications
 
 **On Dashboard Load:**
 - None (silent load)
@@ -4082,7 +12044,7 @@ The Client Dashboard provides a central hub for clients to manage their hiring a
 - Payment scheduled/processed
 - Freelancer accepted invite
 
-### Analytics
+#### Analytics
 
 **Events to Track:**
 - `client_dashboard.viewed` - { user_id, time_spent, widgets_visible }
@@ -4173,7 +12135,7 @@ The Client Dashboard provides a central hub for clients to manage their hiring a
 - WebSocket connection: 1 per user
 - Refresh action: Max 10/minute
 
-### Sources
+#### Sources
 
 - **combined-fe-folder-strucure.md**: `/(dashboard)/page.tsx`, `/(tabs)/dashboard/`
 - **users-be.database-design.md**: users, profiles, user_preferences tables
@@ -4218,7 +12180,7 @@ The Notifications Center aggregates all system notifications in one place, allow
 - `/(tabs)/dashboard/notifications.tsx` - Notifications list
 - `/notifications/[id]/index.tsx` - Notification detail
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend Services:**
 - **communications-be/notification**: 
@@ -4237,7 +12199,7 @@ The Notifications Center aggregates all system notifications in one place, allow
 - **FCM/APNS**: Push notifications (mobile)
 - **SendGrid**: Email notifications
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 1. **Open Notifications Center**
    - User clicks notification bell icon in header
@@ -4335,7 +12297,7 @@ The Notifications Center aggregates all system notifications in one place, allow
       - Play notification sound (if enabled)
       - Send push notification (mobile, if app in background)
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **No Notifications:**
 - Show empty state illustration
@@ -4453,7 +12415,7 @@ The Notifications Center aggregates all system notifications in one place, allow
 - **Grouped**: Expandable item showing count
 - **Priority**: Red border, alert icon, stays at top
 
-### Notifications
+#### Notifications
 
 **In-App (Toast):**
 - New notification arrives while user on platform
@@ -4487,7 +12449,7 @@ The Notifications Center aggregates all system notifications in one place, allow
 - System-level notification (depends on OS)
 - Click notification → Focus browser tab, navigate to target
 
-### Analytics
+#### Analytics
 
 **Events to Track:**
 - `notifications.viewed` - { user_id, filter, count_displayed }
@@ -4580,7 +12542,7 @@ The Notifications Center aggregates all system notifications in one place, allow
 - Auto-delete notifications after 30 days (configurable per type)
 - User can request full deletion of notification history
 
-### Sources
+#### Sources
 
 - **combined-fe-folder-strucure.md**: `/(dashboard)/notifications/`, `/(tabs)/dashboard/notifications.tsx`
 - **communications-be**: notifications table, notification types, preferences
@@ -4619,7 +12581,7 @@ The Activity Feed provides a chronological timeline of all user actions, system 
 - `/(tabs)/dashboard/activity.tsx` - Activity feed (mobile)
 - `/activity/[id]/index.tsx` - Activity detail
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend Services:**
 - **utility/activity**: 
@@ -4642,7 +12604,7 @@ The Activity Feed provides a chronological timeline of all user actions, system 
 - **Elasticsearch** (optional): Full-text search on activity feed
 - **Redis**: Cache recent activities (TTL: 5 min)
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 1. **Open Activity Feed**
    - User navigates to activity feed page
@@ -4746,7 +12708,7 @@ The Activity Feed provides a chronological timeline of all user actions, system 
     - Frontend receives update via WebSocket (or polls every 30 seconds)
     - New activity item prepended to timeline with animation (slide-in from top)
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **No Activities:**
 - Show empty state illustration
@@ -4865,13 +12827,13 @@ The Activity Feed provides a chronological timeline of all user actions, system 
 - **Clickable**: Hover effect, cursor pointer
 - **Non-clickable**: Muted styling (if related entity deleted)
 
-### Notifications
+#### Notifications
 
 **Activity Feed Updates:**
 - No notifications sent for activity feed updates
 - Updates happen in real-time or when user refreshes feed
 
-### Analytics
+#### Analytics
 
 **Events to Track:**
 - `activity_feed.viewed` - { user_id, filter, count_displayed }
@@ -4956,7 +12918,7 @@ The Activity Feed provides a chronological timeline of all user actions, system 
 - Auto-archive activities older than 2 years (move to cold storage)
 - User can request full deletion of activity history (GDPR)
 
-### Sources
+#### Sources
 
 - **combined-fe-folder-strucure.md**: `/(dashboard)/activity/`, `/(tabs)/dashboard/activity.tsx`
 - **utility/activity**: Activity logging service
@@ -9731,7 +17693,7 @@ Interview Scheduled | Hired
 - `(mobile)/(app)/proposals/submit/[jobId]/attachments.tsx` — Upload files
 - `(mobile)/(app)/proposals/drafts/[draftId]/index.tsx` — Draft editor
 
-### System Touchpoints
+#### System Touchpoints
 - **proposals-be:**
   - `proposal/entity.go` — Core proposal entity
   - `cover_letter/entity.go` — Cover letter management
@@ -9777,7 +17739,7 @@ Interview Scheduled | Hired
 - **events:**
   - Publish: `proposal.created.v1`, `proposal.draft.saved.v1`, `proposal.updated.v1`, `proposal.submitted.v1`, `cover_letter.created.v1`, `cover_letter.updated.v1`, `proposal.milestone.created.v1`, `proposal.milestone.updated.v1`, `proposal.milestone.reordered.v1`, `proposal.milestone.removed.v1`, `question.answered.v1`, `answer.updated.v1`
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 **A1: Start Proposal Creation**
 1. User views job detail page and clicks "Submit Proposal" button
@@ -10825,7 +18787,7 @@ Interview Scheduled | Hired
 └────────────────────────────┘
 ```
 
-### Notifications
+#### Notifications
 
 **Draft Auto-Saved:**
 - **In-app:** Toast: "Draft saved automatically" (subtle, doesn't interrupt)
@@ -10854,7 +18816,7 @@ Interview Scheduled | Hired
 - **Email (7 days before expiry):** "Your draft proposal for '[Job Title]' will expire in 7 days. Complete and submit soon."
 - **In-app:** Banner on draft: "⚠️ Expires in 7 days"
 
-### Analytics
+#### Analytics
 
 **Events to Track:**
 - `proposal_submission.started` - { job_id, user_id, source }
@@ -11018,7 +18980,7 @@ Interview Scheduled | Hired
 - GDPR compliance: User can request full data export/deletion
 - Connects deduction is transactional (all-or-nothing, no partial deductions)
 
-### Sources
+#### Sources
 
 **Backend:** proposals-be.user-stories.md (Proposal domain, CoverLetter domain, Attachment domain, QuestionAnswer domain, Milestone domain, Connect domain), proposals-be.database-design.md (proposals table, cover_letters table, attachments table, question_answers table, milestones table, connects table), proposals-be-folder-structure.md (proposal/, cover_letter/, attachment/, question_answer/, milestone/, connect/)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/proposals/submit/[jobId] route, (mobile)/(app)/proposals/submit routes, hooks/proposals/use-proposal-submission.ts, hooks/proposals/use-cover-letter.ts, hooks/proposals/use-milestones.ts, hooks/proposals/use-attachments.ts, components/proposals/submission/)
@@ -15266,14 +23228,14 @@ track('conversation_attachment_uploaded', {
 - `/app/(tabs)/contracts/[contractId]/amendments/create` — Create amendment
 - `/app/(tabs)/contracts/[contractId]/amendments/[amendmentId]` — Amendment detail
 
-### System Touchpoints
+#### System Touchpoints
 
 - **contracts-be:** `/amendment/*` — Amendment domain
 - **financial-be:** `/escrow/*` — Budget adjustments, escrow modifications
 - **communications-be:** `/notifications/*` — Amendment notifications
 - **utility-be:** `/audit/*` — Amendment audit trail
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 1. **Identify need for amendment:**
    - Freelancer realizes project scope increased
@@ -15457,7 +23419,7 @@ track('conversation_attachment_uploaded', {
        - Nov 11, 2:32 PM — End date extended to Dec 14
        - Nov 11, 2:33 PM — Deliverables 4 & 5 added
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Client rejects amendment:**
    - Client clicks "Reject Amendment"
@@ -15642,7 +23604,7 @@ track('conversation_attachment_uploaded', {
      - Suggest dispute resolution
      - Escalate to support
 
-### Notifications
+#### Notifications
 
 **Freelancer:**
 - **Email + Push:** "Client approved your amendment! Changes applied."
@@ -15660,7 +23622,7 @@ track('conversation_attachment_uploaded', {
 - **Email (legal):** "Contract version updated to v2 (Amendment #1 applied)"
 - **Email (monthly):** "Amendment history report" (for compliance)
 
-### Analytics
+#### Analytics
 
 - contracts.amendments.proposed (contract\_id, amendment\_type, budget\_impact, timeline\_impact)
 - contracts.amendments.approved (amendment\_id, approver\_role, time\_to\_approve\_hours)
@@ -15688,7 +23650,7 @@ track('conversation_attachment_uploaded', {
 - contracts.amendments.impact\_previewed (contract\_id, amendment\_type, proposed\_changes)
 - contracts.amendments.delegation\_used (amendment\_id, delegator\_id, delegatee\_id)
 
-### Sources
+#### Sources
 
 **Backend:** contracts-be.user-stories.md (Section 8: Contract Changes Domain — Amendments & Extensions), contracts-be.database-design.md (Section 9: Contract Amendments table)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/contracts/[contractId]/amendments routes), hooks/use-contract-amendments.ts
@@ -15717,14 +23679,14 @@ track('conversation_attachment_uploaded', {
 - `/app/(tabs)/contracts/[contractId]/workroom` — Workroom with activity
 - `/app/(tabs)/contracts/[contractId]/activity` — Activity feed
 
-### System Touchpoints
+#### System Touchpoints
 
 - **contracts-be:** `/workroom/*`, `/activity/*` — Workroom management
 - **communications-be:** `/notifications/*`, `/realtime/*` — Real-time notifications, WebSocket
 - **storage-be:** `/files/*` — File activity tracking
 - **utility-be:** `/audit/*` — Activity audit trail
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 1. **Access workroom:**
    - Freelancer navigates to `/app/(dashboard)/contracts/[contractId]/workroom`
@@ -15888,7 +23850,7 @@ track('conversation_attachment_uploaded', {
    - Preferences saved
    - Confirmation: "Notification preferences updated"
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Empty activity feed:**
    - New contract with no activity yet
@@ -16031,7 +23993,7 @@ track('conversation_attachment_uploaded', {
     - Tooltip tour explaining activity feed features
     - "This is your activity feed. Stay updated on all contract events."
 
-### Notifications
+#### Notifications
 
 **Real-time (via WebSocket):**
 - **Push (both):** New activity appears instantly in feed
@@ -16048,7 +24010,7 @@ track('conversation_attachment_uploaded', {
 **Reminder Notifications:**
 - **Email + Push:** "Reminder: Milestone awaiting your approval"
 
-### Analytics
+#### Analytics
 
 - contracts.workroom.activity\_feed\_viewed (contract\_id, view\_duration\_seconds)
 - contracts.workroom.activity\_clicked (activity\_id, activity\_type, viewer\_role)
@@ -16075,7 +24037,7 @@ track('conversation_attachment_uploaded', {
 - contracts.workroom.activity\_digest\_sent (user\_id, contract\_id, activity\_count, digest\_frequency)
 - contracts.workroom.activity\_pagination\_triggered (contract\_id, page\_number, activities\_loaded)
 
-### Sources
+#### Sources
 
 **Backend:** contracts-be.user-stories.md (Workroom & Activity domain), communications-be (Real-time notifications, WebSocket)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/contracts/[contractId]/workroom, activity routes)
@@ -16106,14 +24068,14 @@ track('conversation_attachment_uploaded', {
 - `/app/(tabs)/contracts/templates` — Template library
 - `/app/(tabs)/contracts/templates/[templateId]` — Template preview
 
-### System Touchpoints
+#### System Touchpoints
 
 - **contracts-be:** `/template/*` — Template management domain
 - **contracts-be:** `/contract/*` — Contract creation from templates
 - **storage-be:** `/files/*` — Template documents
 - **utility-be:** `/audit/*` — Template usage tracking
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 1. **Browse template library:**
    - Client navigates to `/app/(dashboard)/contracts/templates`
@@ -16364,7 +24326,7 @@ track('conversation_attachment_uploaded', {
    - Cloned template saved
    - User navigates to template edit page to customize
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Template not found:**
    - User clicks deleted/unpublished template link
@@ -16517,7 +24479,7 @@ track('conversation_attachment_uploaded', {
     - Advanced templates include SOW generator
     - Automatically creates detailed SOW based on contract details
 
-### Notifications
+#### Notifications
 
 **Client:**
 - **Email:** "Your custom template 'SaaS MVP Development' has been created"
@@ -16532,7 +24494,7 @@ track('conversation_attachment_uploaded', {
 - **Email:** "Template 'X' has been updated to v2"
 - **Push:** "Recommended template based on your activity"
 
-### Analytics
+#### Analytics
 
 - contracts.templates.library\_viewed (view\_duration\_seconds, templates\_displayed)
 - contracts.templates.template\_previewed (template\_id, preview\_source, user\_role)
@@ -16561,7 +24523,7 @@ track('conversation_attachment_uploaded', {
 - contracts.templates.template\_notification\_sent (template\_id, notification\_type, recipient\_id)
 - contracts.templates.template\_usage\_limit\_reached (template\_id, limit\_type, user\_id)
 
-### Sources
+#### Sources
 
 **Backend:** contracts-be.user-stories.md (Section 7: Template Management Domain), contracts-be.database-design.md (Section 8: Contract Templates table)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/contracts/templates routes), hooks/use-contract-templates.ts
@@ -16598,7 +24560,7 @@ track('conversation_attachment_uploaded', {
 - `/app/(tabs)/wallet/topup` — Add funds
 - `/app/(tabs)/wallet/withdraw` — Withdraw
 
-### System Touchpoints
+#### System Touchpoints
 
 - **financial-be:** `/wallet/*`, `/balance/*`, `/transactions/*` — Wallet management
 - **payment-be:** `/payments/*`, `/payouts/*` — Payment processing (Stripe, PayPal, Wire)
@@ -16606,7 +24568,7 @@ track('conversation_attachment_uploaded', {
 - **communications-be:** `/notifications/*` — Financial notifications
 - **utility-be:** `/audit/*` — Financial audit trail
 
-### Flow Steps (Happy Path)
+#### Flow Steps (Happy Path)
 
 1. **View wallet dashboard:**
    - User navigates to `/app/(dashboard)/wallet`
@@ -16832,7 +24794,7 @@ track('conversation_attachment_uploaded', {
    - Nov 10: Email: "Your withdrawal has arrived in your bank account ****5678"
    - Transaction status updated: ⏳ Pending → ✅ Completed
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Insufficient balance for withdrawal:**
    - Freelancer tries to withdraw $3,000 (but only has $2,450)
@@ -16972,7 +24934,7 @@ track('conversation_attachment_uploaded', {
     - If wallet inactive for >12 months → Monthly fee ($5)
     - Email warning before first fee
 
-### Notifications
+#### Notifications
 
 **Deposit (Client):**
 - **Email + Push:** "Successfully added $500 to your wallet"
@@ -16995,7 +24957,7 @@ track('conversation_attachment_uploaded', {
 - **Push:** "Payment released from escrow (+$500)"
 - **Email:** "Milestone approved. Funds available in your wallet."
 
-### Analytics
+#### Analytics
 
 - wallet.dashboard\_viewed (user\_role, available\_balance, escrow\_balance)
 - wallet.balance\_details\_viewed (balance\_type, view\_duration\_seconds)
@@ -17027,7 +24989,7 @@ track('conversation_attachment_uploaded', {
 - wallet.inactivity\_fee\_charged (fee\_amount, months\_inactive)
 - wallet.overdraft\_protection\_triggered (attempted\_transaction\_amount, available\_balance)
 
-### Sources
+#### Sources
 
 **Backend:** financial-be.user-stories.md (Wallet domain), payment-be (Payment processing), contracts-be (Escrow management)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/wallet routes), hooks/use-wallet.ts, hooks/use-transactions.ts
@@ -17056,7 +25018,7 @@ track('conversation_attachment_uploaded', {
 - `(tabs)/(dashboard)/invoices/[invoiceId]/pay/` — Pay invoice
 - `(tabs)/(dashboard)/contracts/[contractId]/invoices/` — Contract invoices
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend Microservices:**
 - `financial-be/invoice` — Invoice CRUD, generation, PDF
@@ -17076,7 +25038,7 @@ track('conversation_attachment_uploaded', {
 - `contracts_db.milestones` — Milestone data
 - `contracts_db.timesheets` — Timesheet data
 
-### Flow Steps
+#### Flow Steps
 
 #### System-Generated Invoice (Milestone/Timesheet)
 
@@ -17242,7 +25204,7 @@ track('conversation_attachment_uploaded', {
    - Returns signed URL from `storage-be`
    - Browser downloads invoice
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Payment failure:**
    - Payment gateway returns error
@@ -17385,7 +25347,7 @@ track('conversation_attachment_uploaded', {
     - Edit if needed
     - Then send
 
-### Notifications
+#### Notifications
 
 **Invoice Generated:**
 - **Email (Client):** "New invoice INV-001234 for $500 from [Freelancer Name]"
@@ -17411,7 +25373,7 @@ track('conversation_attachment_uploaded', {
 - **Email (Admin):** "Invoice dispute requires review"
 - **Push (Freelancer):** "Invoice disputed"
 
-### Analytics
+#### Analytics
 
 - invoice.generated (invoice_id, contract_id, amount, currency, invoice_type, generated_by)
 - invoice.viewed (invoice_id, viewer_role, view_duration_seconds)
@@ -17430,7 +25392,7 @@ track('conversation_attachment_uploaded', {
 - invoice.currency_converted (invoice_id, from_currency, to_currency, exchange_rate)
 - invoice.recurring_created (invoice_id, schedule_frequency, next_invoice_date)
 
-### Sources
+#### Sources
 
 **Backend:** financial-be.user-stories.md (Invoice domain, Payment domain), contracts-be.user-stories.md (Contract/Milestone/Timesheet reference)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/financial/invoices routes), hooks/use-invoices.ts, hooks/use-payment.ts
@@ -17462,7 +25424,7 @@ track('conversation_attachment_uploaded', {
 - `(tabs)/(dashboard)/financial/payout-methods/add/` — Add payout method
 - `(tabs)/(dashboard)/wallet/withdraw/` — Request payout
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend Microservices:**
 - `financial-be/payment_method` — Payment method CRUD
@@ -17480,7 +25442,7 @@ track('conversation_attachment_uploaded', {
 - `financial_db.wallets` — Wallet balances
 - `users_db.kyc_verifications` — KYC status
 
-### Flow Steps
+#### Flow Steps
 
 #### Add Payment Method (Client)
 
@@ -17744,7 +25706,7 @@ track('conversation_attachment_uploaded', {
    - Verification flow (micro-deposits or instant)
    - Once verified → Can be used for payouts
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Card declined:**
    - During 3D Secure or initial authorization
@@ -17865,7 +25827,7 @@ track('conversation_attachment_uploaded', {
     - Display: Gross: $1,000, Tax: -$300, Net: $700
     - Tax withheld transferred to tax authority
 
-### Notifications
+#### Notifications
 
 **Payment Method Added:**
 - **Email:** "New payment method added to your account"
@@ -17890,7 +25852,7 @@ track('conversation_attachment_uploaded', {
 **Card Expiring Soon:**
 - **Email (30 days before):** "Your payment method expires soon. Please update."
 
-### Analytics
+#### Analytics
 
 - payment_method.added (method_type, user_role, is_default, verification_required)
 - payment_method.verified (method_id, method_type, verification_method, verification_time_seconds)
@@ -17910,7 +25872,7 @@ track('conversation_attachment_uploaded', {
 - auto_withdrawal.enabled (threshold_amount, frequency, payout_method_id)
 - auto_withdrawal.executed (payout_amount, trigger_reason)
 
-### Sources
+#### Sources
 
 **Backend:** financial-be.user-stories.md (Payment Method, Payout Method, Payout domains), users-be.user-stories.md (KYC)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/financial/payment-methods, payout-methods routes), hooks/use-payment-methods.ts, hooks/use-payout.ts
@@ -17938,7 +25900,7 @@ track('conversation_attachment_uploaded', {
 - `(tabs)/(dashboard)/financial/tax/` — Tax center
 - `(tabs)/(dashboard)/financial/tax/forms/` — Tax forms list
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend Microservices:**
 - `financial-be/tax` — Tax calculation, forms, reporting
@@ -17956,7 +25918,7 @@ track('conversation_attachment_uploaded', {
 - `financial_db.tax_documents` — Generated documents (1099)
 - `financial_db.transactions` — Earnings data
 
-### Flow Steps
+#### Flow Steps
 
 #### Tax Profile Setup (Freelancer)
 
@@ -18183,7 +26145,7 @@ track('conversation_attachment_uploaded', {
    - If approved → Status: `VERIFIED`
    - If rejected → Email with reason, request resubmission
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Missing tax profile:**
    - User has earnings > $600
@@ -18276,7 +26238,7 @@ track('conversation_attachment_uploaded', {
     - "Estimated tax calculator"
     - "Tax deductions for freelancers" guide
 
-### Notifications
+#### Notifications
 
 **Tax Profile Required:**
 - **Email:** "Please complete your tax profile to continue earning"
@@ -18298,7 +26260,7 @@ track('conversation_attachment_uploaded', {
 **Backup Withholding Activated:**
 - **Email:** "Backup withholding (24%) is now in effect. Update your tax information."
 
-### Analytics
+#### Analytics
 
 - tax_profile.created (user_country, tax_id_type, vat_registered)
 - tax_profile.updated (updated_fields[], update_reason)
@@ -18320,7 +26282,7 @@ track('conversation_attachment_uploaded', {
 - tin_verification.requested (tin_type, verification_status)
 - tin_verification.failed (failure_reason, retry_available)
 
-### Sources
+#### Sources
 
 **Backend:** financial-be.user-stories.md (Tax domain), users-be.user-stories.md (Compliance/Tax Profile)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/financial/tax routes), hooks/use-tax.ts, components/tax-forms/
@@ -18345,14 +26307,14 @@ track('conversation_attachment_uploaded', {
 - `financial/connects/purchase` — Purchase screen
 - `financial/connects/history` — Usage history
 
-### System Touchpoints
+#### System Touchpoints
 
 - **subscriptions-be:** Connect packages, balance, purchases, transactions
 - **financial-be:** Payment processing for connect purchases
 - **proposals-be:** Connect reservation and consumption
 - **notifications-be:** Low balance alerts, purchase confirmations
 
-### Flow Steps
+#### Flow Steps
 
 1. **View balance:**
    - Navigate to `(dashboard)/financial/connects`
@@ -18433,7 +26395,7 @@ track('conversation_attachment_uploaded', {
    - Export CSV
    - BE: `GET /v1/connects/transactions?page=1&limit=50&type=PURCHASE`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Insufficient funds:**
    - Payment method declined
@@ -18542,7 +26504,7 @@ track('conversation_attachment_uploaded', {
     - Purchased connects do NOT roll over beyond 12 months
     - Clear messaging on purchase screen
 
-### Notifications
+#### Notifications
 
 **Low Balance Warning:**
 - **Email:** "You have 8 connects left. Purchase more to continue submitting proposals."
@@ -18571,7 +26533,7 @@ track('conversation_attachment_uploaded', {
 - **Email:** "1 connect refunded for job #12345"
 - **In-app:** Transaction notification
 
-### Analytics
+#### Analytics
 
 - connect.balance.viewed (available_count, reserved_count, low_balance)
 - connect.package.viewed (package_id, package_tier)
@@ -18588,7 +26550,7 @@ track('conversation_attachment_uploaded', {
 - connect.transactions.viewed (filter_type, date_range)
 - connect.promo_code.applied (promo_code, discount_amount)
 
-### Sources
+#### Sources
 
 **Backend:** subscriptions-be.user-stories.md (Connects domain), proposals-be.user-stories.md (Connect reservation/consumption), financial-be.user-stories.md (Payment processing)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/financial/connects routes), hooks/use-connects.ts, components/connects/
@@ -18612,14 +26574,14 @@ track('conversation_attachment_uploaded', {
 - `financial/transactions/filters` — Filter screen
 - `financial/transactions/detail/[id]` — Transaction detail
 
-### System Touchpoints
+#### System Touchpoints
 
 - **financial-be:** Transaction ledger, exports
 - **contracts-be:** Contract/invoice references
 - **subscriptions-be:** Subscription/connect transactions
 - **storage-be:** Export file generation and storage
 
-### Flow Steps
+#### Flow Steps
 
 1. **View transactions:**
    - Navigate to `(dashboard)/financial/transactions`
@@ -18738,7 +26700,7 @@ track('conversation_attachment_uploaded', {
    - Filter-aware (changes based on applied filters)
    - Click card to filter to that type
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Large export:**
    - Export with > 10,000 transactions
@@ -18839,7 +26801,7 @@ track('conversation_attachment_uploaded', {
     - Not shared with other party
     - Searchable
 
-### Notifications
+#### Notifications
 
 **Export Ready:**
 - **Email:** "Your financial export is ready to download [Download Link]"
@@ -18858,7 +26820,7 @@ track('conversation_attachment_uploaded', {
 - **Email:** "We noticed unusual activity on your account [Details]"
 - **Push:** "Account activity alert"
 
-### Analytics
+#### Analytics
 
 - transaction.history.viewed (filter_count, date_range_days)
 - transaction.detail.viewed (transaction_id, transaction_type)
@@ -18872,7 +26834,7 @@ track('conversation_attachment_uploaded', {
 - transaction.note.added (transaction_id, note_length)
 - transaction.bulk_action (action_type, transaction_count)
 
-### Sources
+#### Sources
 
 **Backend:** financial-be.user-stories.md (Transaction ledger, exports), storage-be.user-stories.md (Export file storage)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/financial/transactions routes), hooks/use-transactions.ts, components/transactions/
@@ -18897,7 +26859,7 @@ track('conversation_attachment_uploaded', {
 - `financial/disputes/[id]` — Dispute detail
 - `financial/disputes/new` — Create dispute
 
-### System Touchpoints
+#### System Touchpoints
 
 - **financial-be:** Chargeback handling, dispute management
 - **disputes-be:** Dispute resolution workflow
@@ -18905,7 +26867,7 @@ track('conversation_attachment_uploaded', {
 - **notifications-be:** Alerts for all parties
 - **storage-be:** Evidence upload
 
-### Flow Steps
+#### Flow Steps
 
 1. **Client initiates dispute:**
    - Navigate to invoice detail
@@ -19025,7 +26987,7 @@ track('conversation_attachment_uploaded', {
    - Transaction records updated
    - Dispute archived
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Insufficient balance (freelancer):**
    - Dispute resolved in client's favor
@@ -19123,7 +27085,7 @@ track('conversation_attachment_uploaded', {
     - Platform applies ToS governing law
     - Note: "Resolution per ToS Section X"
 
-### Notifications
+#### Notifications
 
 **Dispute Filed:**
 - **Email (respondent):** "A dispute has been filed against you [View & Respond]"
@@ -19160,7 +27122,7 @@ track('conversation_attachment_uploaded', {
 **Funds Released:**
 - **Email:** "Dispute resolved - funds released"
 
-### Analytics
+#### Analytics
 
 - dispute.filed (dispute_type, amount, initiator_role)
 - dispute.responded (response_time_hours, response_type)
@@ -19178,7 +27140,7 @@ track('conversation_attachment_uploaded', {
 - dispute.admin_review.started (admin_id, days_open)
 - dispute.fraud_flagged (flag_reason, user_id)
 
-### Sources
+#### Sources
 
 **Backend:** financial-be.user-stories.md (Chargeback domain), disputes-be.user-stories.md (Dispute resolution), contracts-be.user-stories.md (Invoice/contract references)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/financial/disputes routes), hooks/use-disputes.ts, components/disputes/
@@ -19203,14 +27165,14 @@ track('conversation_attachment_uploaded', {
 - `contracts/[id]/escrow` — Contract escrow detail
 - `financial/holds` — Holds list
 
-### System Touchpoints
+#### System Touchpoints
 
 - **financial-be:** Escrow management, holds
 - **contracts-be:** Contract lifecycle, milestones
 - **disputes-be:** Dispute-related holds
 - **notifications-be:** Balance and release notifications
 
-### Flow Steps
+#### Flow Steps
 
 1. **Client funds escrow (fixed-price):**
    - Client accepts proposal and creates contract
@@ -19332,7 +27294,7 @@ track('conversation_attachment_uploaded', {
     - Email to client: "Funded milestone inactive"
     - After 90 days: Auto-refund to client with notification
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Insufficient escrow:**
    - Freelancer completes work
@@ -19428,7 +27390,7 @@ track('conversation_attachment_uploaded', {
     - Single fee calculation
     - Efficiency for high-volume
 
-### Notifications
+#### Notifications
 
 **Escrow Funded:**
 - **Email (freelancer):** "Great news! Your contract has been funded. Start work now."
@@ -19458,7 +27420,7 @@ track('conversation_attachment_uploaded', {
 **Hold Expiring:**
 - **Email (freelancer, 2 days before):** "Your payment hold will be released on [date]"
 
-### Analytics
+#### Analytics
 
 - escrow.funded (contract_id, amount, funding_type)
 - escrow.milestone_funded (milestone_id, amount)
@@ -19472,7 +27434,7 @@ track('conversation_attachment_uploaded', {
 - escrow.timeout_refund (contract_id, refund_amount, days_inactive)
 - escrow.audit_requested (user_id, contract_count)
 
-### Sources
+#### Sources
 
 **Backend:** financial-be.user-stories.md (Escrow domain), contracts-be.user-stories.md (Contract-escrow integration), disputes-be.user-stories.md (Dispute holds)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/financial/escrow routes), hooks/use-escrow.ts, components/escrow/
@@ -23414,7 +31376,7 @@ This section covers the comprehensive search system including job search, talent
   - "Skip Tutorial" option
   - Don't show again checkbox
 
-### Notifications
+#### Notifications
 
 **Saved Search Match:**
 - **Email (configurable frequency):** "5 new jobs match your saved search 'React Remote $5K+'"
@@ -23435,7 +31397,7 @@ This section covers the comprehensive search system including job search, talent
 **Search Limit Warning:**
 - **In-app (modal):** "You've used 4/5 saved searches. Upgrade for unlimited."
 
-### Analytics
+#### Analytics
 
 - search.query.executed (query_text, filter_count, result_count, latency_ms, user_authenticated)
 - search.query.zero_results (query_text, filters_applied, suggestions_shown)
@@ -23463,7 +31425,7 @@ This section covers the comprehensive search system including job search, talent
 - search.error (error_type, query_text)
 - search.export.requested (format, date_range, item_count)
 
-### Sources
+#### Sources
 
 **Backend:** search-be.user-stories.md (Query domain, Indexing domain, Facets domain, Personalization domain), taxonomy-be.user-stories.md (Skill mapping)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/search routes, hooks/search/use-search.ts, hooks/search/use-filters.ts, hooks/search/use-autocomplete.ts, components/search/)
@@ -23921,7 +31883,7 @@ This section covers the comprehensive search system including job search, talent
   - "Exclude talent outside budget range"
 - Advanced: Boolean NOT operators in advanced search
 
-### Notifications
+#### Notifications
 
 **New Talent Matches Saved Search:**
 - **Email (configurable frequency):** "3 new freelancers match your search '[Search Name]'"
@@ -23950,7 +31912,7 @@ This section covers the comprehensive search system including job search, talent
 **Talent Search Limit Warning:**
 - **In-app (banner):** "You've used 9/10 monthly invitations. Upgrade for unlimited."
 
-### Analytics
+#### Analytics
 
 - talent_search.query.executed (query_text, filter_count, result_count, latency_ms)
 - talent_search.query.zero_results (query_text, filters_applied)
@@ -23978,7 +31940,7 @@ This section covers the comprehensive search system including job search, talent
 - talent_search.tutorial.started (user_id)
 - talent_search.tutorial.completed (user_id, steps_completed)
 
-### Sources
+#### Sources
 
 **Backend:** search-be.user-stories.md (Talent search domain), users-be.user-stories.md (Freelancer profiles), recommendations-be.user-stories.md (Matching algorithm), contracts-be.user-stories.md (Success stats)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/search/talent routes, hooks/search/use-talent-search.ts, components/talent-search/)
@@ -24485,7 +32447,7 @@ This section covers the comprehensive search system including job search, talent
   - Bulk import with mapping to Skillsier format
 - Speeds up onboarding process
 
-### Notifications
+#### Notifications
 
 **Portfolio Liked:**
 - **Email (weekly digest):** "Your portfolio received 47 new likes this week"
@@ -24518,7 +32480,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email:** "[User] shared a portfolio collection with you: '[Collection Name]'"
 - **In-app:** Notification with collection link
 
-### Analytics
+#### Analytics
 
 - portfolio.search.executed (query_text, filter_count, result_count)
 - portfolio.category.browsed (category_name)
@@ -24545,7 +32507,7 @@ This section covers the comprehensive search system including job search, talent
 - portfolio.imported (source_platform, imported_count)
 - portfolio.engagement_spike (portfolio_id, view_count_24h, like_count_24h)
 
-### Sources
+#### Sources
 
 **Backend:** search-be.user-stories.md (Portfolio search domain), storage-be.user-stories.md (Media management), social-be.user-stories.md (Likes, comments), users-be.user-stories.md (Freelancer profiles)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/search/portfolios routes, (public)/portfolios routes, hooks/search/use-portfolio-search.ts, components/portfolio/)
@@ -25017,7 +32979,7 @@ This section covers the comprehensive search system including job search, talent
   - Admin reviews and adjusts algorithm if pattern found
 - Transparency: "Our AI is designed to be fair and unbiased. Learn more."
 
-### Notifications
+#### Notifications
 
 **New Recommendations Available:**
 - **Email (configurable frequency):** "5 new job recommendations match your profile"
@@ -25038,7 +33000,7 @@ This section covers the comprehensive search system including job search, talent
 **New Feature Announcement:**
 - **Email (one-time):** "New: AI-powered talent recommendations now available!"
 
-### Analytics
+#### Analytics
 
 - personalization.enabled (user_id, from_page)
 - personalization.disabled (user_id, reason)
@@ -25063,7 +33025,7 @@ This section covers the comprehensive search system including job search, talent
 - recommendations.cold_start (user_id, fallback_used)
 - recommendations.staleness (user_id, avg_recommendation_age_days)
 
-### Sources
+#### Sources
 
 **Backend:** recommendations-be.user-stories.md (Recommendation engine, Personalization domain), ml-be.user-stories.md (ML models), analytics-be.user-stories.md (Behavior tracking), users-be.user-stories.md (Profile data)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/recommendations routes, (dashboard)/search/personalization routes, hooks/recommendations/use-recommendations.ts, hooks/recommendations/use-personalization.ts, components/recommendations/)
@@ -28923,7 +36885,7 @@ This section covers the comprehensive search system including job search, talent
 - `(mobile)/(app)/settings/developer/oauth-apps/[appId]/scopes/index.tsx` — Scopes
 - `(mobile)/(app)/settings/developer/oauth-apps/[appId]/logs/index.tsx` — Logs
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend:** users-be (oauth_app domain)  
 **APIs:**
@@ -28948,7 +36910,7 @@ This section covers the comprehensive search system including job search, talent
 - oauth_app.scopes_updated.v1
 - oauth_app.authorization_revoked.v1
 
-### Flow Steps
+#### Flow Steps
 
 #### A) Create OAuth App
 
@@ -29157,7 +37119,7 @@ This section covers the comprehensive search system including job search, talent
 8. Send email: "OAuth app deleted: {app_name}"
 9. Send email to all authorized users: "Access revoked for {app_name} (app deleted by developer)"
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **B1: Invalid Redirect URI**
 - If redirect URI not HTTPS (in production):
@@ -29212,7 +37174,7 @@ This section covers the comprehensive search system including job search, talent
   - Link to upgrade plan or optimize requests
   - Display: current usage vs limit
 
-### Notifications
+#### Notifications
 
 **OAuth App Created:**
 - **Email:** "OAuth app created: {name}. Client ID: {client_id}. Keep your client secret secure."
@@ -29249,7 +37211,7 @@ This section covers the comprehensive search system including job search, talent
 **App Not Used (30 days):**
 - **Email:** "Your OAuth app '{name}' hasn't been used in 30 days. Consider removing it if no longer needed."
 
-### Analytics
+#### Analytics
 
 - developer.oauth_apps.list_viewed (user_id)
 - developer.oauth_app.created (user_id, app_id, scopes[], redirect_uri_count)
@@ -29267,7 +37229,7 @@ This section covers the comprehensive search system including job search, talent
 - developer.oauth.token_refreshed (user_id, app_id, token_id)
 - developer.oauth.token_revoked (user_id, app_id, token_id, reason)
 
-### Sources
+#### Sources
 
 **Backend:** users-be.user-stories.md (OAuth domain), users-be.database-design.md (oauth_apps table, oauth_tokens table, oauth_authorizations table)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/developer/oauth-apps routes, (mobile)/(app)/settings/developer/oauth-apps routes, hooks/developer/use-oauth-apps.ts, components/developer/oauth/)
@@ -29304,7 +37266,7 @@ This section covers the comprehensive search system including job search, talent
 - `(mobile)/(app)/settings/developer/webhooks/[webhookId]/security/index.tsx` — Security
 - `(mobile)/(app)/settings/developer/webhooks/[webhookId]/transform/index.tsx` — Transform
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend:** users-be (webhook domain), communications-be (webhook delivery)  
 **APIs:**
@@ -29345,7 +37307,7 @@ This section covers the comprehensive search system including job search, talent
 - message.sent.v1
 - (Any event from the platform's event catalog)
 
-### Flow Steps
+#### Flow Steps
 
 #### A) Create Webhook
 
@@ -29776,7 +37738,7 @@ This section covers the comprehensive search system including job search, talent
 7. Redirect to webhooks list
 8. Send email: "Webhook deleted: {URL}"
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **B1: Webhook URL Not Reachable**
 - If URL doesn't respond during test ping:
@@ -29875,7 +37837,7 @@ This section covers the comprehensive search system including job search, talent
     - Grace period: old secret valid for 24 hours
     - After 24h: old secret invalid
 
-### Notifications
+#### Notifications
 
 **Webhook Created:**
 - **Email:** "Webhook created: {URL}. Subscribed to {X} events. Keep your secret secure."
@@ -29927,7 +37889,7 @@ This section covers the comprehensive search system including job search, talent
 **Webhook Inactive (30 Days):**
 - **Email:** "Your webhook {URL} hasn't received events in 30 days. Remove if no longer needed."
 
-### Analytics
+#### Analytics
 
 - developer.webhooks.list_viewed (user_id)
 - developer.webhook.created (user_id, webhook_id, events[], url_domain)
@@ -29950,7 +37912,7 @@ This section covers the comprehensive search system including job search, talent
 - developer.webhook.delivery_failed (user_id, webhook_id, delivery_id, event_type, failure_reason, http_status)
 - developer.webhook.delivery_permanently_failed (user_id, webhook_id, delivery_id, event_type, retry_count)
 
-### Sources
+#### Sources
 
 **Backend:** users-be.user-stories.md (Webhook domain), communications-be.user-stories.md (Webhook delivery), communications-be.database-design.md (webhooks table, webhook_deliveries table)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/developer/webhooks routes, (mobile)/(app)/settings/developer/webhooks routes, hooks/developer/use-webhooks.ts, components/developer/webhooks/)
@@ -29977,7 +37939,7 @@ This section covers the comprehensive search system including job search, talent
 - `(mobile)/(app)/settings/developer/sandbox/index.tsx` — API sandbox
 - `(mobile)/(app)/settings/developer/sandbox/collections/index.tsx` — Collections list
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend:** All microservices (via API Gateway), users-be (sandbox environment management)  
 **APIs:**
@@ -29997,7 +37959,7 @@ This section covers the comprehensive search system including job search, talent
 
 **Plus all Skillsier API endpoints** (for testing)
 
-### Flow Steps
+#### Flow Steps
 
 #### A) Access API Sandbox
 
@@ -30289,7 +38251,7 @@ This section covers the comprehensive search system including job search, talent
    - Fields modified: {count}
    - Similarity score: {percentage}%
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **B1: Invalid API Key**
 - If selected API key is invalid or expired:
@@ -30360,7 +38322,7 @@ This section covers the comprehensive search system including job search, talent
   - Disable request execution
   - Show progress indicator
 
-### Notifications
+#### Notifications
 
 **Request Executed:**
 - **In-app:** Toast: "Request executed in {X}ms" (only if user has notifications enabled)
@@ -30388,7 +38350,7 @@ This section covers the comprehensive search system including job search, talent
 **Code Snippet Copied:**
 - **In-app:** Toast: "Code snippet copied to clipboard"
 
-### Analytics
+#### Analytics
 
 - developer.sandbox.accessed (user_id)
 - developer.sandbox.request_executed (user_id, method, endpoint, status_code, response_time_ms, environment)
@@ -30406,7 +38368,7 @@ This section covers the comprehensive search system including job search, talent
 - developer.sandbox.test_data_cleared (user_id)
 - developer.sandbox.history_viewed (user_id, requests_count)
 
-### Sources
+#### Sources
 
 **Backend:** users-be.user-stories.md (Sandbox domain)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/developer/sandbox routes, (mobile)/(app)/settings/developer/sandbox routes, hooks/developer/use-sandbox.ts, components/developer/sandbox/)
@@ -30437,12 +38399,12 @@ This section covers the comprehensive search system including job search, talent
 **Mobile:**
 - `(mobile)/(app)/settings/developer/docs/index.tsx` — Docs home (mobile-friendly)
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend:** Static content + dynamic examples from all microservices  
 **APIs:** All Skillsier API endpoints (for documentation and live examples)
 
-### Flow Steps
+#### Flow Steps
 
 #### A) Access API Documentation Home
 
@@ -30987,7 +38949,7 @@ This section covers the comprehensive search system including job search, talent
      - `{job_id}` replaced with example UUID
      - User can edit variables inline
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **B1: Not Logged In**
 - If user not authenticated:
@@ -31024,7 +38986,7 @@ This section covers the comprehensive search system including job search, talent
   - Show debugging tips
   - Link to troubleshooting guide
 
-### Notifications
+#### Notifications
 
 **Documentation Updated:**
 - **Email (opt-in):** "API Documentation Updated: [Changes Summary]"
@@ -31038,7 +39000,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (opt-in):** "New API Feature: [Feature Name]"
 - **Changelog:** Entry added
 
-### Analytics
+#### Analytics
 
 - developer.docs.home_viewed (user_id)
 - developer.docs.page_viewed (user_id, page_path, time_on_page_seconds)
@@ -31050,7 +39012,7 @@ This section covers the comprehensive search system including job search, talent
 - developer.docs.changelog_viewed (user_id, date_range)
 - developer.docs.external_link_clicked (user_id, url, page_path)
 
-### Sources
+#### Sources
 
 **Backend:** Static documentation content, dynamically generated API reference  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/developer/docs routes, components/developer/docs/)
@@ -31077,7 +39039,7 @@ This section covers the comprehensive search system including job search, talent
 **Mobile:**
 - `(mobile)/(app)/settings/developer/usage/index.tsx` — Usage dashboard (mobile)
 
-### System Touchpoints
+#### System Touchpoints
 
 **Backend:** users-be (developer domain, api_usage)  
 **APIs:**
@@ -31092,7 +39054,7 @@ This section covers the comprehensive search system including job search, talent
 - developer.api.request (all API requests)
 - developer.webhook.delivered (webhook deliveries)
 
-### Flow Steps
+#### Flow Steps
 
 #### A) View Usage Analytics Dashboard
 
@@ -31462,7 +39424,7 @@ This section covers the comprehensive search system including job search, talent
    - File available for 7 days
 5. Success toast: "Export complete. Download your file."
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 **B1: No Usage Data Yet**
 - If user has created API keys but no requests yet:
@@ -31504,7 +39466,7 @@ This section covers the comprehensive search system including job search, talent
   - Show alert: "Webhook endpoint {URL} appears to be unreachable. {X} consecutive failures."
   - Suggest: Check endpoint health, review logs
 
-### Notifications
+#### Notifications
 
 **Usage Alert Triggered:**
 - **Email:** "Skillsier API Alert: [Alert Name]. [Details]. [Action Link]"
@@ -31529,7 +39491,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email:** "New error type detected: {error_code}. First seen: {timestamp}."
 - **In-app:** Notification with link to error details
 
-### Analytics
+#### Analytics
 
 - developer.usage.dashboard_viewed (user_id)
 - developer.usage.date_range_changed (user_id, start_date, end_date)
@@ -31545,7 +39507,7 @@ This section covers the comprehensive search system including job search, talent
 - developer.usage.keys_compared (user_id, key_ids[], date_range)
 - developer.usage.endpoint_drilldown (user_id, endpoint, date_range)
 
-### Sources
+#### Sources
 
 **Backend:** users-be.user-stories.md (API usage domain), users-be.database-design.md (api_usage_logs table)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/developer/usage routes, hooks/developer/use-api-usage.ts, components/developer/usage/)
@@ -31652,7 +39614,7 @@ This section covers the comprehensive search system including job search, talent
 - Auto-refresh toggle in settings
 - Timestamp of last update displayed
 
-### Notifications
+#### Notifications
 
 **System Alert Triggered:**
 - **Email (CRITICAL/HIGH):** "System Alert: {alert_type}. {details}. Action required."
@@ -31666,7 +39628,7 @@ This section covers the comprehensive search system including job search, talent
 - **In-app:** Toast: "Anomaly detected in {metric}. Review recommended."
 - **Email:** "Unusual Activity Alert: {metric} {change_description}"
 
-### Analytics
+#### Analytics
 
 - admin.dashboard.viewed (admin_id)
 - admin.system_health.viewed (admin_id)
@@ -31679,7 +39641,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.report.generated (admin_id, report_type, date_range)
 - admin.dashboard.refresh (admin_id, auto_refresh_enabled)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (system health, metrics, alerts), utility/analytics (metrics aggregation)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin routes, hooks/admin/use-system-health.ts, components/admin/system/)
@@ -31859,7 +39821,7 @@ This section covers the comprehensive search system including job search, talent
   - Suggest filters to focus on high-priority
   - Option to enable "Express Review" mode (simplified UI)
 
-### Notifications
+#### Notifications
 
 **New Report in Queue:**
 - **In-app (moderators):** "New moderation report: {content_type}. Priority: {priority}."
@@ -31883,7 +39845,7 @@ This section covers the comprehensive search system including job search, talent
 **AI Model Feedback:**
 - **In-app (data science team):** "Moderation feedback collected: {count} false positives/negatives this week."
 
-### Analytics
+#### Analytics
 
 - moderation.dashboard.viewed (moderator_id)
 - moderation.queue.viewed (moderator_id, filters_applied[])
@@ -31900,7 +39862,7 @@ This section covers the comprehensive search system including job search, talent
 - moderation.appeal.submitted (user_id, report_id, appeal_reason)
 - moderation.ai_feedback.provided (moderator_id, report_id, feedback_type)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (moderation domain), communications-be.user-stories.md (message flagging), reviews-be.user-stories.md (review moderation)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/moderation routes, hooks/admin/use-moderation.ts, components/admin/moderation/)
@@ -32097,7 +40059,7 @@ This section covers the comprehensive search system including job search, talent
   - System restores account access
   - Sends notification: "Your account has been reinstated."
 
-### Notifications
+#### Notifications
 
 **Warning Issued:**
 - **Email:** "Warning: Your Skillsier account. {reason}. Further violations may result in suspension."
@@ -32127,7 +40089,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email:** "Good news! Your Skillsier account has been reinstated. [Login now]"
 - **In-app:** Welcome back message with updated guidelines
 
-### Analytics
+#### Analytics
 
 - admin.users.dashboard.viewed (admin_id)
 - admin.users.searched (admin_id, search_type, search_value)
@@ -32144,7 +40106,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.users.verification.granted (admin_id, user_id, verification_type)
 - admin.users.verification.removed (admin_id, user_id, removal_reason)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (user_management domain), users-be.user-stories.md (user profile, account status)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/users routes, hooks/admin/use-user-management.ts, components/admin/users/)
@@ -32343,7 +40305,7 @@ This section covers the comprehensive search system including job search, talent
   - Optional comment field
   - Responses tracked for agent performance
 
-### Notifications
+#### Notifications
 
 **Ticket Created (to Agent):**
 - **Email:** "New Support Ticket #{ticket_id}: {subject}. [View ticket]"
@@ -32376,7 +40338,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email:** "Ticket #{ticket_id} reopened by user. [View ticket]"
 - **In-app:** Notification: "Ticket reopened."
 
-### Analytics
+#### Analytics
 
 - admin.support.dashboard.viewed (agent_id)
 - admin.support.queue.viewed (agent_id, filters[])
@@ -32392,7 +40354,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.support.satisfaction.survey_completed (user_id, ticket_id, rating, comment)
 - admin.support.sla.breached (ticket_id, breach_duration_hours)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (support ticketing domain), communications-be.user-stories.md (notifications)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/support routes, hooks/admin/use-support-tickets.ts, components/admin/support/)
@@ -32569,7 +40531,7 @@ This section covers the comprehensive search system including job search, talent
   - Notification sent to admins
   - Incident logged
 
-### Notifications
+#### Notifications
 
 **Configuration Changed:**
 - **Email (admins):** "System configuration updated: {setting_name}. Old: {old_value}, New: {new_value}. [View change]"
@@ -32593,7 +40555,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (admins/devs):** "URGENT: Feature flag {flag_name} rolled back. Reason: {reason}. [View incident]"
 - **In-app:** Alert banner
 
-### Analytics
+#### Analytics
 
 - admin.config.dashboard.viewed (admin_id)
 - admin.config.feature_flags.viewed (admin_id)
@@ -32610,7 +40572,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.config.integration.tested (admin_id, integration_name, test_result)
 - admin.config.audit_trail.exported (admin_id, date_range, format)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (config, feature flags), utility/feature-flags (feature flag service)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/config routes, hooks/admin/use-system-config.ts, components/admin/config/)
@@ -32818,7 +40780,7 @@ This section covers the comprehensive search system including job search, talent
   - Notify user: "Your account will be deleted in 30 days due to inactivity. [Keep account]"
   - If no response: Proceed with deletion
 
-### Notifications
+#### Notifications
 
 **Privacy Request Submitted (to Compliance Team):**
 - **Email:** "New privacy request #{request_id}: {request_type} from {user_email}. [Review now]"
@@ -32841,7 +40803,7 @@ This section covers the comprehensive search system including job search, talent
 **Consent Updated (to User):**
 - **Email:** "Your consent preferences have been updated. [Review settings]"
 
-### Analytics
+#### Analytics
 
 - admin.compliance.dashboard.viewed (officer_id)
 - admin.compliance.privacy_requests.viewed (officer_id, filters[])
@@ -32859,7 +40821,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.compliance.legal_hold.lifted (officer_id, user_id)
 - admin.compliance.sla.breached (request_id, breach_duration_days)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (compliance, privacy requests), users-be.user-stories.md (user data access, deletion)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/compliance routes, hooks/admin/use-compliance.ts, components/admin/compliance/)
@@ -32886,7 +40848,7 @@ This section covers the comprehensive search system including job search, talent
 - `admin/analytics` — Analytics dashboard (read-only)
 - `admin/analytics/reports` — Reports list
 
-### System Touchpoints
+#### System Touchpoints
 
 - **admin-be:** Analytics data, report generation, KPIs aggregation
 - **jobs-be:** Job analytics (views, applications, performance)
@@ -32897,7 +40859,7 @@ This section covers the comprehensive search system including job search, talent
 - **storage-be:** Report file storage and retrieval
 - **notifications-be:** Report completion notifications
 
-### Flow Steps
+#### Flow Steps
 
 1. **View analytics dashboard:**
    - Navigate to `(dashboard)/admin/analytics`
@@ -33062,7 +41024,7 @@ This section covers the comprehensive search system including job search, talent
    - Auto-refresh every 30 seconds
    - BE: `GET /v1/admin/analytics/kpis?refresh=true`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Report generation timeout:**
    - Large reports may take time
@@ -33161,7 +41123,7 @@ This section covers the comprehensive search system including job search, talent
     - Save custom layout
     - Reset to default layout
 
-### Notifications
+#### Notifications
 
 **Report Generated:**
 - **Email:** "Your {report_type} report for {period} is ready. [Download now]"
@@ -33187,7 +41149,7 @@ This section covers the comprehensive search system including job search, talent
 - **Push:** "System health alert"
 - **PagerDuty:** Integration for critical alerts (if configured)
 
-### Analytics
+#### Analytics
 
 - admin.analytics.dashboard.viewed (admin_id, role)
 - admin.analytics.platform.viewed (admin_id, period, filters)
@@ -33201,7 +41163,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.analytics.drill_down.clicked (admin_id, metric, detail_view)
 - admin.analytics.dashboard.customized (admin_id, widgets_added[], widgets_removed[])
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (reporting, metrics), jobs-be.user-stories.md (job analytics), contracts-be.user-stories.md (contract analytics)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/analytics routes, hooks/admin/use-analytics.ts, components/admin/analytics/)
@@ -33229,7 +41191,7 @@ This section covers the comprehensive search system including job search, talent
 - `admin/users` — Users list (read-only)
 - `admin/users/[userId]` — User details (read-only)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **admin-be:** User management, role assignment, moderation actions
 - **users-be:** User data, profile, account status, verification
@@ -33240,7 +41202,7 @@ This section covers the comprehensive search system including job search, talent
 - **proposals-be:** Proposal submission restrictions
 - **contracts-be:** Contract restrictions
 
-### Flow Steps
+#### Flow Steps
 
 1. **View users list:**
    - Navigate to `(dashboard)/admin/users`
@@ -33494,7 +41456,7 @@ This section covers the comprehensive search system including job search, talent
      }
      ```
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **User has active contracts:**
    - Cannot ban if active contracts exist
@@ -33590,7 +41552,7 @@ This section covers the comprehensive search system including job search, talent
     - Admin reviews and processes
     - Linked from privacy requests module
 
-### Notifications
+#### Notifications
 
 **Profile Updated:**
 - **Email:** "Your profile has been updated by an admin. [View changes]"
@@ -33624,7 +41586,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email:** "⚠️ Some features have been restricted on your account. [Learn more]"
 - **In-app:** Banner notification
 
-### Analytics
+#### Analytics
 
 - admin.users.list.viewed (admin_id, filters[], result_count)
 - admin.users.user.viewed (admin_id, user_id, user_type)
@@ -33642,7 +41604,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.users.flagged.viewed (admin_id, filters[], result_count)
 - admin.users.appeal.reviewed (admin_id, user_id, appeal_type, decision)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (user management, roles), users-be.user-stories.md (user data, moderation)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/users routes, hooks/admin/use-user-management.ts, components/admin/users/)
@@ -33669,7 +41631,7 @@ This section covers the comprehensive search system including job search, talent
 - `admin/support` — Tickets list (read-only)
 - `admin/support/tickets/[ticketId]` — Ticket details (read-only)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **admin-be:** Ticket management, agent assignment, SLA tracking
 - **communications-be:** Ticket messages, email notifications
@@ -33677,7 +41639,7 @@ This section covers the comprehensive search system including job search, talent
 - **notifications-be:** Ticket status notifications
 - **storage-be:** Attachment uploads
 
-### Flow Steps
+#### Flow Steps
 
 1. **View support dashboard:**
    - Navigate to `(dashboard)/admin/support`
@@ -33951,7 +41913,7 @@ This section covers the comprehensive search system including job search, talent
     - View agent performance details
     - BE: `GET /v1/admin/support/agents`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **SLA breach:**
    - Ticket not resolved within SLA
@@ -34050,7 +42012,7 @@ This section covers the comprehensive search system including job search, talent
     - Agent response auto-translated for user
     - Translation disclaimer shown
 
-### Notifications
+#### Notifications
 
 **Ticket Assigned:**
 - **Email:** "You've been assigned ticket #{ticket_id}: {subject}. [View ticket]"
@@ -34083,7 +42045,7 @@ This section covers the comprehensive search system including job search, talent
 **Ticket Auto-Closed (to User):**
 - **Email:** "Your ticket #{ticket_id} has been automatically closed. You can submit a new ticket if you need further assistance."
 
-### Analytics
+#### Analytics
 
 - admin.support.dashboard.viewed (agent_id)
 - admin.support.tickets.viewed (agent_id, filters[], result_count)
@@ -34100,7 +42062,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.support.canned_response.used (agent_id, response_id, ticket_id)
 - admin.support.agents.viewed (manager_id)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (support tickets, agents, KPIs)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/support routes, hooks/admin/use-support.ts, components/admin/support/)
@@ -34128,7 +42090,7 @@ This section covers the comprehensive search system including job search, talent
 **Mobile:**
 - Not available (SUPER_ADMIN only, desktop required)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **admin-be:** System configuration, feature flags
 - **auth-be:** Security settings, session parameters
@@ -34137,7 +42099,7 @@ This section covers the comprehensive search system including job search, talent
 - **storage-be:** Storage quotas, CDN settings
 - **All backend services:** Feature flag checks, config overrides
 
-### Flow Steps
+#### Flow Steps
 
 1. **View settings overview:**
    - Navigate to `(dashboard)/admin/settings`
@@ -34410,7 +42372,7 @@ This section covers the comprehensive search system including job search, talent
      - Edit details or click "Delete"
    - BE: `POST /v1/admin/settings/announcements`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Feature flag rollback:**
    - Feature causes issues
@@ -34498,7 +42460,7 @@ This section covers the comprehensive search system including job search, talent
     - Confirm: "This will update production config"
     - Audit log tracks push
 
-### Notifications
+#### Notifications
 
 **Configuration Changed:**
 - **Email (to all admins):** "System configuration updated by {admin_name}. Changes: {summary}. [View audit log]"
@@ -34529,7 +42491,7 @@ This section covers the comprehensive search system including job search, talent
 - **Banner:** Displayed on dashboard
 - **In-app:** Modal (if configured)
 
-### Analytics
+#### Analytics
 
 - admin.settings.viewed (admin_id, section)
 - admin.settings.general.updated (admin_id, fields_updated[])
@@ -34545,7 +42507,7 @@ This section covers the comprehensive search system including job search, talent
 - admin.settings.config.backed_up (admin_id, backup_size_mb)
 - admin.settings.config.restored (admin_id, backup_id)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (system configuration, feature flags)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/admin/settings routes, hooks/admin/use-settings.ts, components/admin/settings/)
@@ -34575,14 +42537,14 @@ This section covers the comprehensive search system including job search, talent
 - `subscriptions/plans` — Plan comparison
 - `subscriptions/upgrade` — Upgrade flow
 
-### System Touchpoints
+#### System Touchpoints
 
 - **subscriptions-be:** Plan catalog, pricing, features, limits
 - **financial-be:** Payment processing for subscriptions
 - **entitlements-be:** Feature access validation
 - **notifications-be:** Plan change notifications
 
-### Flow Steps
+#### Flow Steps
 
 1. **View plans:**
    - Navigate to `(public)/pricing` or `(dashboard)/subscriptions/plans`
@@ -34677,7 +42639,7 @@ This section covers the comprehensive search system including job search, talent
      }
      ```
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Annual vs Monthly pricing:**
    - Toggle billing cycle
@@ -34780,7 +42742,7 @@ This section covers the comprehensive search system including job search, talent
     - Highlights new features
     - Lists deprecated features (if downgrading)
 
-### Notifications
+#### Notifications
 
 **Plan Viewed:**
 - **Analytics:** Track plan_viewed event (plan_id, tier, billing_cycle)
@@ -34796,7 +42758,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (3 days before):** "Your Pro trial ends in 3 days. Subscribe to keep your features."
 - **Push (1 day before):** "Pro trial ends tomorrow"
 
-### Analytics
+#### Analytics
 
 - subscriptions.plans.viewed (user_id, plans_compared[], source)
 - subscriptions.plan.compared (user_id, plan_ids[], feature_clicked)
@@ -34807,7 +42769,7 @@ This section covers the comprehensive search system including job search, talent
 - subscriptions.faq.clicked (user_id, question)
 - subscriptions.recommendation.shown (user_id, recommended_plan, reason)
 
-### Sources
+#### Sources
 
 **Backend:** subscriptions-be.user-stories.md (plan catalog, pricing, proration)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/subscriptions routes, hooks/subscriptions/use-plans.ts, components/subscriptions/plan-comparison.tsx)
@@ -34835,7 +42797,7 @@ This section covers the comprehensive search system including job search, talent
 - `subscriptions/confirm` — Confirmation
 - `subscriptions/success` — Success
 
-### System Touchpoints
+#### System Touchpoints
 
 - **subscriptions-be:** Subscription creation, plan changes, proration
 - **financial-be:** Payment processing, invoicing
@@ -34843,7 +42805,7 @@ This section covers the comprehensive search system including job search, talent
 - **notifications-be:** Subscription confirmations, receipts
 - **auth-be:** Role/permission updates for plan features
 
-### Flow Steps
+#### Flow Steps
 
 1. **Select plan:**
    - From pricing page, click "Subscribe to Plus" or "Upgrade to Plus"
@@ -34940,7 +42902,7 @@ This section covers the comprehensive search system including job search, talent
    - Tutorial overlays for new features
    - Notification: "Your featured profile badge is now visible"
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Payment failure:**
    - Payment declined
@@ -35052,7 +43014,7 @@ This section covers the comprehensive search system including job search, talent
     - Must upgrade/downgrade existing
     - OR: Wait until current expires
 
-### Notifications
+#### Notifications
 
 **Subscription Created:**
 - **Email:** "Welcome to Plus! Here's what you can do now... [Receipt attached]"
@@ -35078,7 +43040,7 @@ This section covers the comprehensive search system including job search, talent
 **Subscription Paused:**
 - **Email:** "Subscription paused until Feb 1. See you soon!"
 
-### Analytics
+#### Analytics
 
 - subscriptions.subscribe.initiated (user_id, plan_id, billing_cycle, source)
 - subscriptions.subscribe.completed (user_id, plan_id, amount_paid, promo_code)
@@ -35089,7 +43051,7 @@ This section covers the comprehensive search system including job search, talent
 - subscriptions.pause.requested (user_id, pause_duration)
 - subscriptions.seats.added (user_id, additional_seats, total_cost)
 
-### Sources
+#### Sources
 
 **Backend:** subscriptions-be.user-stories.md (subscription creation, payment, proration)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/subscriptions/subscribe routes, hooks/subscriptions/use-subscribe.ts, components/subscriptions/subscribe-form.tsx)
@@ -35119,14 +43081,14 @@ This section covers the comprehensive search system including job search, talent
 - `subscriptions/change-plan` — Change plan
 - `subscriptions/cancel` — Cancel
 
-### System Touchpoints
+#### System Touchpoints
 
 - **subscriptions-be:** Subscription management, plan changes, cancellation
 - **financial-be:** Billing history, payment methods, invoices
 - **entitlements-be:** Usage tracking, limits
 - **notifications-be:** Subscription change notifications
 
-### Flow Steps
+#### Flow Steps
 
 1. **View subscription dashboard:**
    - Navigate to `(dashboard)/subscriptions`
@@ -35305,7 +43267,7 @@ This section covers the comprehensive search system including job search, talent
    - Confirmation: "Subscription cancelled. You have access until Dec 7."
    - Email: "Subscription cancelled. Access until Dec 7."
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Past due subscription:**
    - Payment failed, subscription past due
@@ -35422,7 +43384,7 @@ This section covers the comprehensive search system including job search, talent
     - VAT removed from future invoices
     - Email: "Your tax status has been updated. Future invoices will exclude VAT."
 
-### Notifications
+#### Notifications
 
 **Plan Changed:**
 - **Email:** "Your plan has been changed to Pro. [Details] [Receipt]"
@@ -35457,7 +43419,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email:** "Welcome back! Your subscription has been reactivated."
 - **Push:** "Subscription reactivated"
 
-### Analytics
+#### Analytics
 
 - subscriptions.dashboard.viewed (user_id, subscription_id, plan_id)
 - subscriptions.usage.viewed (user_id, period_start, period_end)
@@ -35470,7 +43432,7 @@ This section covers the comprehensive search system including job search, talent
 - subscriptions.invoice.previewed (user_id, next_bill_date)
 - subscriptions.refund.requested (user_id, amount, reason)
 
-### Sources
+#### Sources
 
 **Backend:** subscriptions-be.user-stories.md (subscription management, billing, cancellation)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/subscriptions routes, hooks/subscriptions/use-subscription.ts, components/subscriptions/subscription-card.tsx)
@@ -35495,14 +43457,14 @@ This section covers the comprehensive search system including job search, talent
 - Feature screens with upgrade CTAs
 - `subscriptions/features` — Feature list
 
-### System Touchpoints
+#### System Touchpoints
 
 - **entitlements-be:** Feature access validation, limits checking
 - **subscriptions-be:** Plan features, usage limits
 - **notifications-be:** Upgrade prompts, limit warnings
 - **auth-be:** Permission verification
 
-### Flow Steps
+#### Flow Steps
 
 1. **Check feature access:**
    - User attempts to use feature (e.g., AI Proposal Assistant)
@@ -35623,7 +43585,7 @@ This section covers the comprehensive search system including job search, talent
    - Banner: "You've used your weekly boost. Upgrade to Plus for 5 boosts/week."
    - Countdown: "Next boost available in 4 days"
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Grandfathered features:**
    - User on legacy plan with features no longer offered
@@ -35723,7 +43685,7 @@ This section covers the comprehensive search system including job search, talent
     - Notification: "Your subscription has been updated. Refresh to access new features."
     - Auto-refresh entitlements on next API call
 
-### Notifications
+#### Notifications
 
 **Limit Warning (80%):**
 - **Push:** "You've used 16 of 20 job posts this month"
@@ -35749,7 +43711,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (3 days):** "Your Pro trial ends in 3 days. Subscribe to keep your features."
 - **Push (1 day):** "Pro trial ends tomorrow"
 
-### Analytics
+#### Analytics
 
 - entitlements.checked (user_id, feature_key, has_access)
 - entitlements.paywall.shown (user_id, feature_key, plan_required, source)
@@ -35761,7 +43723,7 @@ This section covers the comprehensive search system including job search, talent
 - entitlements.feature.requested (user_id, feature_key, user_plan)
 - entitlements.temporary_grant.used (user_id, feature_key, grant_duration)
 
-### Sources
+#### Sources
 
 **Backend:** subscriptions-be.user-stories.md (entitlements, usage limits, feature gates), entitlements-be (if separate service)  
 **Frontend:** combined-fe-folder-structure.md (hooks/entitlements/use-entitlements.ts, components/paywalls/, middleware for feature checks)
@@ -35789,14 +43751,14 @@ This section covers the comprehensive search system including job search, talent
 - `agency/setup` — Setup
 - `agency` — Dashboard
 
-### System Touchpoints
+#### System Touchpoints
 
 - **agencies-be:** Agency creation, team management
 - **subscriptions-be:** Seat billing, team plan management
 - **auth-be:** Role and permission management
 - **notifications-be:** Team invitations, role changes
 
-### Flow Steps
+#### Flow Steps
 
 1. **Initiate agency creation:**
    - Navigate to `(dashboard)/agency/create`
@@ -35909,7 +43871,7 @@ This section covers the comprehensive search system including job search, talent
    - BE: `GET /v1/agencies/{agency_id}`
    - BE: `GET /v1/agencies/{agency_id}/members`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Insufficient plan:**
    - User on BASIC attempts to create agency
@@ -36031,7 +43993,7 @@ This section covers the comprehensive search system including job search, talent
       - Top performer: Sarah Smith (12 projects won)
     - Export reports
 
-### Notifications
+#### Notifications
 
 **Agency Created:**
 - **Email (Owner):** "Your agency 'Acme Digital' has been created! [Get started]"
@@ -36056,7 +44018,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (Old Owner):** "You've transferred ownership of Acme Digital to John Doe"
 - **Email (New Owner):** "You're now the owner of Acme Digital Agency"
 
-### Analytics
+#### Analytics
 
 - agencies.created (user_id, agency_id, agency_type, company_size)
 - agencies.setup.completed (agency_id, members_invited, seats_allocated)
@@ -36067,7 +44029,7 @@ This section covers the comprehensive search system including job search, talent
 - agencies.deleted (agency_id, reason)
 - agencies.seat.added (agency_id, additional_seats, total_cost)
 
-### Sources
+#### Sources
 
 **Backend:** agencies-be.user-stories.md (agency creation, team management, roles)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/agency routes, hooks/agency/use-agency.ts, components/agency/agency-form.tsx)
@@ -36096,14 +44058,14 @@ This section covers the comprehensive search system including job search, talent
 - `agency/members/[memberId]` — Details
 - `agency/roles` — Roles
 
-### System Touchpoints
+#### System Touchpoints
 
 - **agencies-be:** Member management, invitations, roles
 - **auth-be:** Permission updates, access control
 - **subscriptions-be:** Seat management, billing
 - **notifications-be:** Invitation emails, role change notifications
 
-### Flow Steps
+#### Flow Steps
 
 1. **View members:**
    - Navigate to `(dashboard)/agency/members`
@@ -36309,7 +44271,7 @@ This section covers the comprehensive search system including job search, talent
       }
       ```
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Invitation already sent:**
    - User tries to invite same email again
@@ -36410,7 +44372,7 @@ This section covers the comprehensive search system including job search, talent
     - Member cannot change Admin role
     - Only Owner can change Admin roles
 
-### Notifications
+#### Notifications
 
 **Member Invited:**
 - **Email (Invitee):** "You've been invited to join Acme Digital Agency as an Admin. [Accept Invitation]"
@@ -36442,7 +44404,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (Owner):** "You've reached your seat limit. Add more seats to continue growing your team."
 - **Banner:** Dashboard banner
 
-### Analytics
+#### Analytics
 
 - agencies.member.invited (agency_id, invitee_email, role, invited_by)
 - agencies.member.joined (agency_id, member_id, role, invited_by)
@@ -36454,7 +44416,7 @@ This section covers the comprehensive search system including job search, talent
 - agencies.invitation.expired (agency_id, invitee_email, invite_sent_at)
 - agencies.bulk_invite.sent (agency_id, total_invites, valid_count, invalid_count)
 
-### Sources
+#### Sources
 
 **Backend:** agencies-be.user-stories.md (member management, roles, permissions)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/agency/members routes, hooks/agency/use-members.ts, components/agency/member-card.tsx)
@@ -36482,7 +44444,7 @@ This section covers the comprehensive search system including job search, talent
 - `agency/projects/[projectId]/team` — Team
 - `agency/projects/[projectId]/activity` — Activity
 
-### System Touchpoints
+#### System Touchpoints
 
 - **agencies-be:** Project management, team assignments
 - **contracts-be:** Contract details, milestones
@@ -36490,7 +44452,7 @@ This section covers the comprehensive search system including job search, talent
 - **communications-be:** Team chat, comments
 - **notifications-be:** Assignment notifications, updates
 
-### Flow Steps
+#### Flow Steps
 
 1. **View agency projects:**
    - Navigate to `(dashboard)/agency/projects`
@@ -36678,7 +44640,7 @@ This section covers the comprehensive search system including job search, talent
    - Email to client (if completed)
    - Publish event: `agency.project.status.changed.v1`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Project from won proposal:**
    - Agency submits team proposal
@@ -36824,7 +44786,7 @@ This section covers the comprehensive search system including job search, talent
       - Most productive team members
       - Project profitability
 
-### Notifications
+#### Notifications
 
 **Member Assigned:**
 - **Email (Member):** "You've been assigned to E-commerce Website Redesign as Developer. [View project]"
@@ -36850,7 +44812,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (Project Lead):** "⚠️ Project is $500 over budget"
 - **Banner:** Project dashboard banner
 
-### Analytics
+#### Analytics
 
 - agencies.project.created (agency_id, project_id, client_id, team_size, budget)
 - agencies.project.member.assigned (agency_id, project_id, member_id, role, assigned_by)
@@ -36861,7 +44823,7 @@ This section covers the comprehensive search system including job search, talent
 - agencies.project.completed (agency_id, project_id, duration_days, budget_variance)
 - agencies.project.archived (agency_id, project_id, archived_by)
 
-### Sources
+#### Sources
 
 **Backend:** agencies-be.user-stories.md (project management, team assignments), contracts-be (contract details)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/agency/projects routes, hooks/agency/use-projects.ts, components/agency/project-card.tsx)
@@ -36888,7 +44850,7 @@ This section covers the comprehensive search system including job search, talent
 - `agency/billing/revenue-split` — Revenue split
 - `agency/billing/payouts` — Payout history
 
-### System Touchpoints
+#### System Touchpoints
 
 - **agencies-be:** Agency billing, revenue split configuration
 - **financial-be:** Payment processing, invoices, payouts
@@ -36896,7 +44858,7 @@ This section covers the comprehensive search system including job search, talent
 - **users-be:** Team member details
 - **notifications-be:** Payment notifications
 
-### Flow Steps
+#### Flow Steps
 
 1. **View billing dashboard:**
    - Navigate to `(dashboard)/agency/billing`
@@ -37067,7 +45029,7 @@ This section covers the comprehensive search system including job search, talent
    - Export CSV
    - BE: `GET /v1/agencies/{agency_id}/payouts?page=1&limit=50`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Revenue split validation:**
    - Total must equal 100%
@@ -37210,7 +45172,7 @@ This section covers the comprehensive search system including job search, talent
       - Withdrawable: $6,500
     - Agency can withdraw excess to business bank account
 
-### Notifications
+#### Notifications
 
 **Revenue Split Updated:**
 - **Email (Team):** "Revenue split updated for E-commerce Website project. Your share: 30% ($4,500)."
@@ -37236,7 +45198,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (Agency):** "Invoice INV-2025-001 is overdue by 5 days. Send reminder to ABC Corp?"
 - **Banner:** Dashboard banner for overdue invoices
 
-### Analytics
+#### Analytics
 
 - agency.billing.dashboard.viewed (agency_id)
 - agency.revenue.split.configured (agency_id, project_id, member_count, agency_fee_pct)
@@ -37248,7 +45210,7 @@ This section covers the comprehensive search system including job search, talent
 - agency.invoice.sent (agency_id, client_id, invoice_id)
 - agency.invoice.paid (agency_id, client_id, amount, days_to_pay)
 
-### Sources
+#### Sources
 
 **Backend:** agencies-be.user-stories.md (billing, revenue split), financial-be (payouts, invoices), contracts-be (payments)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/agency/billing routes, hooks/agency/use-billing.ts, components/agency/revenue-split-chart.tsx)
@@ -37278,7 +45240,7 @@ This section covers the comprehensive search system including job search, talent
 - `verification/documents` — Document upload
 - `verification/selfie` — Liveness check
 
-### System Touchpoints
+#### System Touchpoints
 
 - **admin-be:** KYC/KYB processing, identity verification
 - **users-be:** User profile, verification status
@@ -37286,7 +45248,7 @@ This section covers the comprehensive search system including job search, talent
 - **notifications-be:** Status updates
 - **financial-be:** Payment method verification
 
-### Flow Steps
+#### Flow Steps
 
 1. **Check verification requirement:**
    - User tries to: Post job / Submit proposal / Withdraw funds
@@ -37556,7 +45518,7 @@ This section covers the comprehensive search system including job search, talent
     - Status: `KYB_PENDING_REVIEW`
     - Publish event: `kyb.submitted.v1`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Document quality issues:**
    - Photo is blurry, glare, or text unreadable
@@ -37684,7 +45646,7 @@ This section covers the comprehensive search system including job search, talent
     - Additional cost for manual reviews
     - Faster processing (5-10 min for automated)
 
-### Notifications
+#### Notifications
 
 **Verification Submitted:**
 - **Email:** "Identity verification submitted. We'll review within 24-48 hours."
@@ -37706,7 +45668,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (30 days):** "Your verification expires on April 15. Renew now to avoid restrictions."
 - **Email (7 days):** "Final reminder: Verification expires in 7 days."
 
-### Analytics
+#### Analytics
 
 - kyc.started (user_type, country)
 - kyc.personal_info.submitted (country)
@@ -37721,7 +45683,7 @@ This section covers the comprehensive search system including job search, talent
 - kyb.submitted (country, business_type)
 - kyb.approved (country, review_time)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (identity verification, KYC/KYB), users-be (verification status), storage-be (document storage)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/account/verification routes, apps/mobile/app/(auth)/kyc/, hooks/kyc/use-verification.ts)
@@ -37749,14 +45711,14 @@ This section covers the comprehensive search system including job search, talent
 - `screening/consent` — Consent form
 - `screening/status` — Status tracking
 
-### System Touchpoints
+#### System Touchpoints
 
 - **admin-be:** Background check processing, screening
 - **users-be:** User profile, screening status
 - **jobs-be:** Job screening requirements
 - **notifications-be:** Status updates
 
-### Flow Steps
+#### Flow Steps
 
 1. **View screening requirements:**
    - User views job posting
@@ -37966,7 +45928,7 @@ This section covers the comprehensive search system including job search, talent
       - Admin reviews dispute
       - May re-run check or request additional info
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Screening provider integration:**
    - Partner with:
@@ -38094,7 +46056,7 @@ This section covers the comprehensive search system including job search, talent
    - Secure storage of sensitive data
    - Auto-delete after retention period (7 years)
 
-### Notifications
+#### Notifications
 
 **Screening Started:**
 - **Email:** "Background check started. Expected completion: 3-5 days. [Track status]"
@@ -38114,7 +46076,7 @@ This section covers the comprehensive search system including job search, talent
 **Employer Response Pending:**
 - **Email:** "We're waiting for a response from Tech Corp. We'll notify you when verified."
 
-### Analytics
+#### Analytics
 
 - screening.started (check_type, country, user_type)
 - screening.consent.given (check_types_selected)
@@ -38126,7 +46088,7 @@ This section covers the comprehensive search system including job search, talent
 - screening.expired (check_type)
 - screening.badge.viewed (viewer_type)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (background checks, screening), users-be (screening status)  
 **Frontend:** combined-fe-folder-structure.md ((dashboard)/account/screening routes, hooks/screening/use-background-check.ts)
@@ -38150,14 +46112,14 @@ This section covers the comprehensive search system including job search, talent
 **Mobile:**
 - Not applicable (admin-only feature)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **admin-be:** Sanctions screening, policy enforcement
 - **users-be:** User data, account status
 - **financial-be:** Transaction monitoring
 - **notifications-be:** Compliance alerts
 
-### Flow Steps
+#### Flow Steps
 
 1. **Automatic sanctions screening:**
    - On account creation:
@@ -38442,7 +46404,7 @@ This section covers the comprehensive search system including job search, talent
     - Compliance officer reviews and files
     - Audit trail for regulators
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **False positives:**
    - Common name matches sanctions list
@@ -38586,7 +46548,7 @@ This section covers the comprehensive search system including job search, talent
     - Updated daily via API
     - Cached for performance, refreshed every 24 hours
 
-### Notifications
+#### Notifications
 
 **Sanctions Screening Complete:**
 - No notification (transparent to user if clear)
@@ -38615,7 +46577,7 @@ This section covers the comprehensive search system including job search, talent
 - **Email (User):** "Additional verification required. Please provide documents within 14 days. [Upload now]"
 - **Push:** "Action required"
 
-### Analytics
+#### Analytics
 
 - sanctions.screening.performed (user_country, result)
 - sanctions.hit.flagged (list, confidence, user_country)
@@ -38629,7 +46591,7 @@ This section covers the comprehensive search system including job search, talent
 - compliance.edd.initiated (reason, user_type)
 - compliance.transaction.flagged (reason, amount, country)
 
-### Sources
+#### Sources
 
 **Backend:** admin-be.user-stories.md (sanctions screening, policy enforcement), users-be (account status), financial-be (transaction monitoring)  
 **Frontend:** combined-fe-folder-structure.md ((admin)/compliance routes, (dashboard)/account/compliance, hooks/compliance/use-sanctions.ts)
@@ -38652,12 +46614,12 @@ This section covers the comprehensive search system including job search, talent
 - `settings/security/biometric` — Biometric settings
 - `(auth)/login` — Login with biometric
 
-### System Touchpoints
+#### System Touchpoints
 
 - **users-be:** Device trust, authentication
 - **Local:** Device biometric API (Face ID, Touch ID)
 
-### Flow Steps
+#### Flow Steps
 
 1. **Onboarding setup:**
    - After successful registration/login
@@ -38755,7 +46717,7 @@ This section covers the comprehensive search system including job search, talent
    - Success: Proceed
    - Too many failures: Lock account temporarily
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Device change:**
    - User gets new phone
@@ -38806,11 +46768,11 @@ This section covers the comprehensive search system including job search, talent
      - Force password login only
      - Or block app entirely (strictest policy)
 
-### Notifications
+#### Notifications
 
 None (local feature)
 
-### Analytics
+#### Analytics
 
 - biometric.setup.prompted (device_type)
 - biometric.enabled (device_type, biometric_type)
@@ -38820,7 +46782,7 @@ None (local feature)
 - biometric.disabled (reason, device_type)
 - biometric.device.revoked (reason)
 
-### Sources
+#### Sources
 
 **Frontend:** combined-fe-folder-structure.md (apps/mobile/app/settings/security/biometric.tsx, hooks/use-biometric.ts)
 
@@ -38840,13 +46802,13 @@ None (local feature)
 - `notifications` — Notification center
 - Push notification (system UI)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **communications-be:** Push notification service
 - **APNS** (Apple Push Notification Service) for iOS
 - **FCM** (Firebase Cloud Messaging) for Android
 
-### Flow Steps
+#### Flow Steps
 
 1. **Request permission:**
    - On first app launch or during onboarding
@@ -38984,7 +46946,7 @@ None (local feature)
     - If user engages: Full permission granted
     - If user dismisses: Stop sending
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Token refresh:**
    - APNS/FCM tokens can expire or change
@@ -39098,11 +47060,11 @@ None (local feature)
    - google-services.json in app
    - Test with Firebase Console
 
-### Notifications
+#### Notifications
 
 None (this IS the notification feature)
 
-### Analytics
+#### Analytics
 
 - push.permission.requested (device_type, result)
 - push.device.registered (device_type, platform)
@@ -39114,7 +47076,7 @@ None (this IS the notification feature)
 - push.token.refreshed (device_type)
 - push.token.invalid (device_type, error_code)
 
-### Sources
+#### Sources
 
 **Backend:** communications-be.user-stories.md (push notifications), users-be (preferences)  
 **Frontend:** combined-fe-folder-structure.md (apps/mobile/services/push/index.ts, settings/notifications, hooks/usePushNotifications.ts)
@@ -39136,12 +47098,12 @@ None (this IS the notification feature)
 - `offline/settings` — Offline settings
 - Banner: "You're offline. Changes will sync when online."
 
-### System Touchpoints
+#### System Touchpoints
 
 - **Local:** AsyncStorage, SQLite, filesystem
 - **Multiple BE services:** Synced when online
 
-### Flow Steps
+#### Flow Steps
 
 1. **Detect offline mode:**
    - App monitors network status
@@ -39296,7 +47258,7 @@ None (this IS the notification feature)
       - Display reason: "Send message failed: Server error"
       - Button: "Retry"
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Partial connectivity:**
    - Weak signal
@@ -39411,7 +47373,7 @@ None (this IS the notification feature)
     - Filesystem for files (uploads)
     - Encrypted storage for sensitive data
 
-### Notifications
+#### Notifications
 
 **Sync Complete:**
 - **Push (if app in background):** "All changes synced ✓"
@@ -39423,7 +47385,7 @@ None (this IS the notification feature)
 **Offline Action Queued:**
 - **In-app:** Toast: "Message queued. Will send when online."
 
-### Analytics
+#### Analytics
 
 - offline.mode.entered (trigger)
 - offline.mode.exited (duration_offline)
@@ -39436,7 +47398,7 @@ None (this IS the notification feature)
 - offline.conflict.resolved (resolution_type)
 - offline.content.downloaded (content_types[], size_mb)
 
-### Sources
+#### Sources
 
 **Frontend:** combined-fe-folder-structure.md (apps/mobile/app/offline/, stores/offline-queue-store.ts, services/sync/index.ts, hooks/useNetworkStatus.ts)
 
@@ -39456,13 +47418,13 @@ None (this IS the notification feature)
 - Push notification (system UI)
 - Deep link handler (invisible navigation)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **communications-be:** Push notification registration, delivery
 - **notifications-be:** Notification events, preferences
 - **All services:** Deep link content resolution
 
-### Flow Steps
+#### Flow Steps
 
 1. **Request notification permission:**
    - On app launch (first time)
@@ -39623,7 +47585,7 @@ None (this IS the notification feature)
       - Android: Notification dot
     - BE: Badge count calculated client-side based on unread counts
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Permission denied:**
    - User denies notification permission
@@ -39751,7 +47713,7 @@ None (this IS the notification feature)
     - User sees image in notification
     - More engaging
 
-### Notifications
+#### Notifications
 
 **Push Delivered:**
 - Device receives push
@@ -39760,7 +47722,7 @@ None (this IS the notification feature)
 **Deep Link Opened:**
 - Analytics event: `deep_link.opened`
 
-### Analytics
+#### Analytics
 
 - push.permission.requested (screen)
 - push.permission.granted (granted)
@@ -39774,7 +47736,7 @@ None (this IS the notification feature)
 - universal_link.opened (url, authenticated)
 - badge.updated (badge_count)
 
-### Sources
+#### Sources
 
 **Frontend:** combined-fe-folder-structure.md (apps/mobile/lib/push-notifications.ts, hooks/usePushNotifications.ts, services/notifications/)
 
@@ -39794,13 +47756,13 @@ None (this IS the notification feature)
 - `settings/security/biometric-auth` — Manage biometric settings
 - Biometric prompt (system UI)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **users-be:** Device trust registration
 - **auth:** Token validation
 - Local device secure storage
 
-### Flow Steps
+#### Flow Steps
 
 1. **Check biometric availability:**
    - On app launch
@@ -39947,7 +47909,7 @@ None (this IS the notification feature)
    - Success: Login normally
    - Offer to re-enable biometric
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Biometric not available:**
    - Device doesn't support biometrics
@@ -40046,7 +48008,7 @@ None (this IS the notification feature)
     - Always provide password alternative
     - Ensure password login is equally easy
 
-### Notifications
+#### Notifications
 
 **Biometric Enabled:**
 - **Email:** "Biometric authentication enabled on [Device Name]"
@@ -40059,7 +48021,7 @@ None (this IS the notification feature)
 - **Email:** "Your device trust was revoked. Please login again."
 - **Push:** "Security alert: Device trust revoked"
 
-### Analytics
+#### Analytics
 
 - biometric.availability.checked (available, biometric_type)
 - biometric.setup.offered (screen)
@@ -40074,7 +48036,7 @@ None (this IS the notification feature)
 - biometric.disabled (reason)
 - biometric.settings.updated (enabled_for[])
 
-### Sources
+#### Sources
 
 **Frontend:** combined-fe-folder-structure.md (apps/mobile/services/biometric/, hooks/useBiometricAuth.ts, apps/mobile/app/onboarding/biometric/, apps/mobile/app/settings/security/biometric-auth.tsx)
 
@@ -40096,14 +48058,14 @@ None (this IS the notification feature)
 - `portfolio/add` (with camera option) — Capture portfolio media
 - Camera interface (full-screen)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **storage-be:** Upload and store media files
 - **users-be:** Update profile with photo
 - **portfolio-be:** Add portfolio items
 - Device camera API
 
-### Flow Steps
+#### Flow Steps
 
 1. **Request camera permission:**
    - User taps "Add Photo" or "Capture"
@@ -40279,7 +48241,7 @@ None (this IS the notification feature)
     - User taps "Use Video"
     - Upload video (same flow as photos, but larger file)
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Permission denied:**
    - User denies camera permission
@@ -40383,7 +48345,7 @@ None (this IS the notification feature)
       - Save to device (yes/no)
     - Save preferences
 
-### Notifications
+#### Notifications
 
 **Upload Success:**
 - **In-app:** "Photo uploaded successfully"
@@ -40394,7 +48356,7 @@ None (this IS the notification feature)
 **Large File Warning:**
 - **In-app:** "Large file detected. Use Wi-Fi for faster upload."
 
-### Analytics
+#### Analytics
 
 - camera.permission.requested (trigger)
 - camera.permission.granted (granted)
@@ -40412,7 +48374,7 @@ None (this IS the notification feature)
 - video.trimmed (original_duration, trimmed_duration)
 - video.uploaded (file_size, duration, resolution)
 
-### Sources
+#### Sources
 
 **Frontend:** combined-fe-folder-structure.md (apps/mobile/services/camera/, hooks/useCamera.ts, components/mobile/CameraCapture/, apps/mobile/app/camera/)
 
@@ -40442,12 +48404,12 @@ _Non-authenticated public-facing pages for discovery, signup, and information_
 **Mobile:**
 - Same content, optimized layout
 
-### System Touchpoints
+#### System Touchpoints
 
 - **Static content:** No backend calls (or minimal CMS integration)
 - **analytics-be:** Track page views, conversions
 
-### Flow Steps
+#### Flow Steps
 
 1. **Load homepage:**
    - User navigates to `skillsier.com` or `app.skillsier.com`
@@ -40563,7 +48525,7 @@ _Non-authenticated public-facing pages for discovery, signup, and information_
    - Language selector (if multi-language)
    - Copyright notice
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Returning visitor:**
    - User has visited before
@@ -40630,11 +48592,11 @@ _Non-authenticated public-facing pages for discovery, signup, and information_
     - Popup: "Wait! Get 10% off your first project"
     - Capture email for lead gen
 
-### Notifications
+#### Notifications
 
 None (public page, no authentication)
 
-### Analytics
+#### Analytics
 
 - landing_page.viewed (source, referrer)
 - landing_page.cta_clicked (cta_type, button_text)
@@ -40643,7 +48605,7 @@ None (public page, no authentication)
 - landing_page.category_clicked (category)
 - landing_page.signup_initiated (user_type)
 
-### Sources
+#### Sources
 
 **Frontend:** Public marketing site (could be separate from main app, or within apps/web/app/(public)/)
 
@@ -40666,12 +48628,12 @@ None (public page, no authentication)
 **Mobile:**
 - Same routes, responsive layout
 
-### System Touchpoints
+#### System Touchpoints
 
 - **search-be:** Public job search endpoint
 - **jobs-be:** Public job detail endpoint (limited data)
 
-### Flow Steps
+#### Flow Steps
 
 1. **Navigate to job search:**
    - User clicks "Find Work" or "Browse Jobs"
@@ -40788,7 +48750,7 @@ None (public page, no authentication)
         - "Check back later for new jobs"
       - Link: "Clear all filters"
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Limited job details (public):**
    - Some job info hidden from public:
@@ -40859,11 +48821,11 @@ None (public page, no authentication)
     - Loading indicator at bottom
     - Better UX on mobile
 
-### Notifications
+#### Notifications
 
 None (unauthenticated users)
 
-### Analytics
+#### Analytics
 
 - public.jobs.viewed (page, filters_applied)
 - public.job.detail_viewed (job_id, referrer)
@@ -40874,7 +48836,7 @@ None (unauthenticated users)
 - public.jobs.sorted (sort_option)
 - public.signup.prompted (trigger)
 
-### Sources
+#### Sources
 
 **Frontend:** apps/web/app/(public)/jobs/, combined-fe-folder-structure.md
 
@@ -40896,13 +48858,13 @@ None (unauthenticated users)
 **Mobile:**
 - Same routes, responsive layout
 
-### System Touchpoints
+#### System Touchpoints
 
 - **search-be:** Public freelancer search
 - **users-be:** Public profile endpoint (limited data)
 - **portfolio-be:** Public portfolio items
 
-### Flow Steps
+#### Flow Steps
 
 1. **Navigate to freelancer directory:**
    - User clicks "Find Talent" or "Browse Freelancers"
@@ -41039,7 +49001,7 @@ None (unauthenticated users)
       - Share on LinkedIn, Twitter
     - Shareable URL: `skillsier.com/freelancers/janedoe`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Limited data (public):**
    - Some profile details hidden:
@@ -41111,11 +49073,11 @@ None (unauthenticated users)
       - Scam
     - Submit report
 
-### Notifications
+#### Notifications
 
 None (unauthenticated users)
 
-### Analytics
+#### Analytics
 
 - public.freelancers.viewed (page, filters_applied)
 - public.freelancer.profile_viewed (freelancer_id, referrer)
@@ -41126,7 +49088,7 @@ None (unauthenticated users)
 - public.portfolio.item_viewed (freelancer_id, item_id)
 - public.signup.prompted (trigger)
 
-### Sources
+#### Sources
 
 **Frontend:** apps/web/app/(public)/freelancers/, combined-fe-folder-structure.md
 
@@ -41149,11 +49111,11 @@ None (unauthenticated users)
 **Mobile:**
 - Same routes, responsive layout (stacked cards)
 
-### System Touchpoints
+#### System Touchpoints
 
 - **Static content:** No backend calls (or subscription-be for plan details)
 
-### Flow Steps
+#### Flow Steps
 
 1. **Navigate to pricing page:**
    - User clicks "Pricing" in navigation
@@ -41306,7 +49268,7 @@ None (unauthenticated users)
     - Smooth transition
     - URL updates: `/pricing?type=client`
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Annual billing discount:**
    - Toggle: "Monthly" / "Annually"
@@ -41366,11 +49328,11 @@ None (unauthenticated users)
     - Toggle easily accessible
     - Comparison table scrollable (horizontal)
 
-### Notifications
+#### Notifications
 
 None (public page)
 
-### Analytics
+#### Analytics
 
 - pricing.page.viewed (user_type, referrer)
 - pricing.toggle.switched (from_type, to_type)
@@ -41381,7 +49343,7 @@ None (public page)
 - pricing.faq.expanded (question)
 - pricing.calculator.used (inputs, calculated_savings)
 
-### Sources
+#### Sources
 
 **Frontend:** apps/web/app/(public)/pricing/, combined-fe-folder-structure.md
 
@@ -41405,11 +49367,11 @@ None (public page)
 **Mobile:**
 - Same routes, responsive layout
 
-### System Touchpoints
+#### System Touchpoints
 
 - **Static content:** No backend calls (or CMS integration)
 
-### Flow Steps
+#### Flow Steps
 
 1. **Navigate to about page:**
    - User clicks "About" or "About Us"
@@ -41529,7 +49491,7 @@ None (public page)
       - **Contact:**
         - Press contact email: press@skillsier.com
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Investor relations:**
    - Link: "Investor Relations"
@@ -41591,11 +49553,11 @@ None (public page)
       - "Ready to Join Skillsier?"
       - Buttons: "Sign Up as Freelancer" / "Post a Job"
 
-### Notifications
+#### Notifications
 
 None (public page)
 
-### Analytics
+#### Analytics
 
 - about.page.viewed (page_type, referrer)
 - about.team.viewed ()
@@ -41604,7 +49566,7 @@ None (public page)
 - about.press.viewed ()
 - about.cta.clicked (cta_type)
 
-### Sources
+#### Sources
 
 **Frontend:** apps/web/app/(public)/about/, combined-fe-folder-structure.md
 
@@ -41629,12 +49591,12 @@ None (public page)
 **Mobile:**
 - Same routes, responsive layout
 
-### System Touchpoints
+#### System Touchpoints
 
 - **Static content:** Legal documents (may be in CMS or static files)
 - **users-be:** GDPR requests (data export, deletion)
 
-### Flow Steps
+#### Flow Steps
 
 1. **Navigate to Terms of Service:**
    - User clicks "Terms of Service" in footer
@@ -41787,7 +49749,7 @@ None (public page)
         - Link to Terms
         - Acknowledge button
 
-### Branches & Edge Cases
+#### Branches & Edge Cases
 
 1. **Multiple language versions:**
    - Legal docs translated
@@ -41845,7 +49807,7 @@ None (public page)
       - Allow rejection
     - Avoid pre-ticked boxes
 
-### Notifications
+#### Notifications
 
 **Legal Update:**
 - **Email:** "We've updated our [Terms/Privacy]. Please review."
@@ -41858,7 +49820,7 @@ None (public page)
 - **Email:** "Your data export is ready. [Download Link]" (expires in 7 days)
 - Or: "Your data has been deleted as requested."
 
-### Analytics
+#### Analytics
 
 - legal.page.viewed (document_type, referrer)
 - legal.section.viewed (document_type, section_name, scroll_depth)
@@ -41868,7 +49830,7 @@ None (public page)
 - legal.pdf.downloaded (document_type)
 - legal.dmca.submitted ()
 
-### Sources
+#### Sources
 
 **Frontend:** apps/web/app/(public)/legal/, combined-fe-folder-structure.md
 
