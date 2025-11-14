@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package skillsier.storage.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/storage/v1;storagev1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// FileDeleted event
+// Topic: storage.file_deleted
+// Owner: storage-be
+message FileDeleted {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string file_id = 2;
+  string user_id = 3;
+  string deleted_by_user_id = 4;
+  string file_name = 5;
+  int64 file_size_bytes = 6;
+  string deletion_reason = 7;
+  bool soft_delete = 8;
+  google.protobuf.Timestamp permanent_deletion_date = 9;
+  bool recoverable = 10;
+  google.protobuf.Timestamp deleted_at = 11;
+}

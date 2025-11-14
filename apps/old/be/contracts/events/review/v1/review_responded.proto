@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package skillsier.review.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/review/v1;reviewv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// ReviewResponded event
+// Topic: review.review_responded
+// Owner: review-be
+message ReviewResponded {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string response_id = 2;
+  string review_id = 3;
+  string responder_id = 4;
+  string response_text = 5;
+  google.protobuf.Timestamp responded_at = 6;
+}

@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package skillsier.admin.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/admin/v1;adminv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// UserBanned event
+// Topic: admin.user_banned
+// Owner: admin-be
+message UserBanned {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Ban details
+  string action_id = 2;
+  string target_user_id = 3;
+  string target_username = 4;
+  string admin_user_id = 5;
+  string admin_username = 6;
+  
+  // Reason
+  string ban_reason_category = 7;
+  string ban_reason_details = 8;
+  repeated string specific_violations = 9;
+  skillsier.common.v1.ViolationSeverity violation_severity = 10;
+  
+  // Ban scope
+  bool is_permanent = 11;
+  bool ip_banned = 12;
+  bool device_banned = 13;
+  bool email_banned = 14;
+  
+  // Evidence
+  int32 evidence_count = 15;
+  
+  // Appeal
+  bool can_appeal = 16;
+  google.protobuf.Timestamp appeal_deadline = 17;
+  
+  // Notification
+  bool notification_sent = 18;
+  
+  // Affected
+  int32 active_contracts_terminated = 19;
+  double funds_held = 20;
+  
+  // Compliance
+  bool reported_to_authorities = 21;
+  
+  google.protobuf.Timestamp banned_at = 22;
+}

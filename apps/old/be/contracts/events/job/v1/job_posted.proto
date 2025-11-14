@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package skillsier.job.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/job/v1;jobv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// JobPosted event
+// Topic: job.job_posted
+// Owner: job-be
+message JobPosted {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Job identification
+  string job_id = 2;
+  string client_id = 3;
+  string client_username = 4;
+  
+  // Job basics
+  string job_title = 5;
+  string job_description = 6;
+  skillsier.common.v1.JobType job_type = 7;
+  
+  // Budget
+  skillsier.common.v1.Money budget_amount = 8;
+  bool budget_is_flexible = 9;
+  
+  // Duration & timeline
+  skillsier.common.v1.DurationType duration_type = 10;
+  int32 duration_weeks = 11;
+  google.protobuf.Timestamp expected_start_date = 12;
+  google.protobuf.Timestamp deadline_date = 13;
+  
+  // Requirements
+  skillsier.common.v1.ExperienceLevel experience_level = 14;
+  repeated string required_skills = 15;
+  repeated string preferred_skills = 16;
+  
+  // Categorization
+  string category_id = 17;
+  string subcategory_id = 18;
+  repeated string tags = 19;
+  
+  // Location
+  repeated string allowed_countries = 20;
+  repeated string allowed_timezones = 21;
+  bool remote_allowed = 22;
+  
+  // Visibility
+  skillsier.common.v1.JobVisibility visibility = 23;
+  repeated string invited_freelancer_ids = 24;
+  
+  // Screening
+  int32 screening_questions_count = 25;
+  
+  // Posted
+  google.protobuf.Timestamp posted_at = 26;
+  
+  // AI/ML data
+  int32 matching_profiles_count = 27;
+  skillsier.common.v1.CompetitionLevel competition_level = 28;
+}

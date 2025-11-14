@@ -648,6 +648,637 @@ Our event schemas achieve:
   }
 - completed_at (google.protobuf.Timestamp)
 ```
+### 1.8 UserOrgCreated
+
+**Topic**: `user.org_created`  
+**Owner**: users-be  
+**Consumers**: admin-be, jobs-be, contracts-be, financial-be  
+**Partition Key**: `org_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Org details
+- org_id (string)
+- org_name (string)
+- org_type (enum: PERSONAL, COMPANY, AGENCY)
+- created_by_user_id (string)
+- created_at (google.protobuf.Timestamp)
+// Business
+- industry (string)
+- company_size (int32)
+- website (string)
+- billing_country (string)
+- vat_registered (bool)
+- tax_id (string)
+- payment_verified (bool)
+```
+
+
+### 1.9 UserOrgUpdated
+
+**Topic**: `user.org_updated`  
+**Owner**: users-be  
+**Consumers**: admin-be, jobs-be, contracts-be, financial-be  
+**Partition Key**: `org_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Org update
+- org_id (string)
+- changed_fields (repeated string)
+- previous_values (map<string, string>)
+- updated_at (google.protobuf.Timestamp)
+// Controls
+- update_channel (string)           // API, WEB, ADMIN
+- approver_user_id (string)
+- requires_reindex (bool)
+```
+
+
+### 1.10 UserOrgMemberAdded
+
+**Topic**: `user.org_member_added`  
+**Owner**: users-be  
+**Consumers**: subscriptions-be, admin-be  
+**Partition Key**: `org_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Membership
+- org_id (string)
+- user_id (string)
+- role (enum: OWNER, ADMIN, MEMBER, BILLING, VIEWER)
+- added_at (google.protobuf.Timestamp)
+// SSO / Billing
+- sso_provisioned (bool)
+- sso_provider (string)
+- seat_billed (bool)
+- seat_type (string)                // Creator, Reviewer, Billing
+```
+
+
+### 1.11 UserOrgMemberRemoved
+
+**Topic**: `user.org_member_removed`  
+**Owner**: users-be  
+**Consumers**: subscriptions-be, admin-be  
+**Partition Key**: `org_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Removal
+- org_id (string)
+- user_id (string)
+- removed_reason (string)
+- removed_at (google.protobuf.Timestamp)
+// Offboarding
+- seat_released (bool)
+- data_export_requested (bool)
+- access_revoked_all_tools (bool)
+```
+
+
+### 1.12 UserSecurityFindingOpened
+
+**Topic**: `user.security_finding_opened`  
+**Owner**: users-be  
+**Consumers**: admin-be (security ops)  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Security finding
+- user_id (string)
+- finding_id (string)
+- finding_type (enum: DEVICE_RISK, IP_REPUTATION, VELOCITY, SESSION_ANOMALY, GEO_MISMATCH)
+- severity (enum: LOW, MEDIUM, HIGH, CRITICAL)
+- indicators (map<string, string>)
+- opened_at (google.protobuf.Timestamp)
+// Risk
+- rule_id (string)
+- risk_score (double)
+- auto_hold_applied (bool)
+- hold_reason (string)
+```
+
+
+### 1.13 UserSecurityFindingResolved
+
+**Topic**: `user.security_finding_resolved`  
+**Owner**: users-be  
+**Consumers**: admin-be (security ops)  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Resolution
+- user_id (string)
+- finding_id (string)
+- resolution (string)               // false_positive, mitigated, accepted_risk
+- resolved_at (google.protobuf.Timestamp)
+// Ops
+- resolved_by (string)
+- mitigation_steps (string)
+- user_notified (bool)
+```
+
+
+### 1.14 UserComplianceStatusUpdated
+
+**Topic**: `user.compliance_status_updated`  
+**Owner**: users-be  
+**Consumers**: financial-be, admin-be, contracts-be  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Compliance
+- user_id (string)
+- kyc_status (enum: PENDING, VERIFIED, REJECTED, EXPIRED)
+- kyb_status (enum: KYB_NA, KYB_PENDING, KYB_VERIFIED, KYB_REJECTED, KYB_EXPIRED)
+- tax_status (enum: UNKNOWN, COLLECTED, MISSING, EXEMPT)
+- changed_at (google.protobuf.Timestamp)
+// Provider context
+- provider (string)                 // sumsub, trulioo, persona
+- case_id (string)
+- rejection_reason (string)
+- next_review_date (google.protobuf.Timestamp)
+```
+
+
+### 1.15 UserRiskSignalEmitted
+
+**Topic**: `user.risk_signal_emitted`  
+**Owner**: users-be  
+**Consumers**: admin-be[risk], financial-be[risk], search-be  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Risk signal
+- user_id (string)
+- signal_type (enum: DEVICE, IP_REPUTATION, BEHAVIOR_VELOCITY, GEO_MISMATCH, PAYMENT_ANOMALY)
+- signal_score (double)
+- signal_details (map<string, string>)
+- signaled_at (google.protobuf.Timestamp)
+// Model
+- model_name (string)
+- model_version (string)
+- model_confidence (double)
+```
+
+
+### 1.16 UserProfileDepthUpdated
+
+**Topic**: `user.profile_depth_updated`  
+**Owner**: users-be  
+**Consumers**: search-be, reviews-be, subscriptions-be  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Profile depth
+- user_id (string)
+- profile_completion_percentage (int32)
+- missing_sections (repeated string)
+- updated_at (google.protobuf.Timestamp)
+// Quality
+- quality_score (double)
+- trust_score (double)
+- ready_for_boost (bool)
+```
 
 ---
 
@@ -920,6 +1551,486 @@ Our event schemas achieve:
 - flagged_at (google.protobuf.Timestamp)
 - auto_flagged (bool) - by AI
 - ai_confidence_score (double) - if auto-flagged
+```
+
+### 2.7 JobTemplateCreated
+
+**Topic**: `job.template_created`  
+**Owner**: jobs-be  
+**Consumers**: search-be  
+**Partition Key**: `template_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Template
+- template_id (string)
+- owner_user_id (string)
+- title (string)
+- description (string)
+- tags (repeated string)
+- created_at (google.protobuf.Timestamp)
+// Catalog
+- category_id (string)
+- subcategory_id (string)
+- skills (repeated string)
+- language (string)
+```
+
+
+### 2.8 JobTemplateUpdated
+
+**Topic**: `job.template_updated`  
+**Owner**: jobs-be  
+**Consumers**: search-be  
+**Partition Key**: `template_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Update
+- template_id (string)
+- changed_fields (repeated string)
+- updated_at (google.protobuf.Timestamp)
+// Search
+- requires_reindex (bool)
+- updater_user_id (string)
+```
+
+
+### 2.9 JobScreeningComplianceFailed
+
+**Topic**: `job.screening_compliance_failed`  
+**Owner**: jobs-be  
+**Consumers**: admin-be  
+**Partition Key**: `job_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Screening result
+- job_id (string)
+- failure_codes (repeated string)   // PII_FOUND, PROHIBITED_ITEM, DISCRIMINATORY_TEXT
+- reviewed (bool)
+- failed_at (google.protobuf.Timestamp)
+// AI review
+- ai_confidence_score (double)
+- model_name (string)
+- reviewer_user_id (string)
+```
+
+
+### 2.10 JobScreeningCompliancePassed
+
+**Topic**: `job.screening_compliance_passed`  
+**Owner**: jobs-be  
+**Consumers**: admin-be  
+**Partition Key**: `job_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Screening pass
+- job_id (string)
+- checks (repeated string)          // profanity, PII, safety
+- passed_at (google.protobuf.Timestamp)
+// Validation
+- ruleset_version (string)
+- overall_confidence (double)
+```
+
+
+### 2.11 JobSourcingModeChanged
+
+**Topic**: `job.sourcing_mode_changed`  
+**Owner**: jobs-be  
+**Consumers**: search-be  
+**Partition Key**: `job_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Mode
+- job_id (string)
+- from_mode (enum: OPEN, PRIVATE, INVITE_ONLY)
+- to_mode (enum: OPEN, PRIVATE, INVITE_ONLY)
+- reason (string)
+- changed_at (google.protobuf.Timestamp)
+// Notify
+- notify_watchers (bool)
+```
+
+
+### 2.12 JobBudgetControlUpdated
+
+**Topic**: `job.budget_control_updated`  
+**Owner**: jobs-be  
+**Consumers**: admin-be, financial-be  
+**Partition Key**: `job_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Budget controls
+- job_id (string)
+- budget_caps_enabled (bool)
+- max_daily_spend (double)
+- max_total_spend (double)
+- updated_at (google.protobuf.Timestamp)
+// Finance
+- currency (string)
+- approver_user_id (string)
+```
+
+
+### 2.13 JobVisibilityStateChanged
+
+**Topic**: `job.visibility_state_changed`  
+**Owner**: jobs-be  
+**Consumers**: search-be, proposals-be  
+**Partition Key**: `job_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Visibility
+- job_id (string)
+- from_state (enum: PUBLIC, PRIVATE, INVITE_ONLY, REMOVED)
+- to_state (enum: PUBLIC, PRIVATE, INVITE_ONLY, REMOVED)
+- reason (string)
+- changed_at (google.protobuf.Timestamp)
+// Indexing
+- purge_from_cache (bool)
+- deindex (bool)
 ```
 
 ---
@@ -1233,6 +2344,550 @@ Our event schemas achieve:
 - flag_details (string)
 - flagged_at (google.protobuf.Timestamp)
 ```
+
+### 3.10 ProposalNegotiationStarted
+
+**Topic**: `proposal.negotiation_started`  
+**Owner**: proposals-be  
+**Consumers**: contracts-be  
+**Partition Key**: `proposal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Negotiation
+- proposal_id (string)
+- job_id (string)
+- started_by_user_id (string)
+- started_at (google.protobuf.Timestamp)
+- negotiation_channel (string)      // chat, call, external
+- nda_required (bool)
+```
+
+
+### 3.11 ProposalNegotiationUpdated
+
+**Topic**: `proposal.negotiation_updated`  
+**Owner**: proposals-be  
+**Consumers**: contracts-be  
+**Partition Key**: `proposal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Negotiation update
+- proposal_id (string)
+- round_number (int32)
+- changes_summary (string)
+- updated_at (google.protobuf.Timestamp)
+// Price
+- client_offer (double)
+- freelancer_counter (double)
+- currency (string)
+```
+
+
+### 3.12 ProposalNegotiationConcluded
+
+**Topic**: `proposal.negotiation_concluded`  
+**Owner**: proposals-be  
+**Consumers**: contracts-be  
+**Partition Key**: `proposal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Outcome
+- proposal_id (string)
+- outcome (enum: ACCEPTED, REJECTED, WITHDRAWN)
+- concluded_at (google.protobuf.Timestamp)
+// Terms
+- final_rate (double)
+- currency (string)
+- rounds (int32)
+```
+
+
+### 3.13 ProposalInviteSent
+
+**Topic**: `proposal.invite_sent`  
+**Owner**: proposals-be  
+**Consumers**: communications-be  
+**Partition Key**: `job_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Invite
+- invitation_id (string)
+- job_id (string)
+- freelancer_id (string)
+- message (string)
+- sent_at (google.protobuf.Timestamp)
+// Assist
+- premium_invite (bool)
+- suggested_rate_min (double)
+- suggested_rate_max (double)
+- currency (string)
+```
+
+
+### 3.14 ProposalInviteAccepted
+
+**Topic**: `proposal.invite_accepted`  
+**Owner**: proposals-be  
+**Consumers**: jobs-be, communications-be  
+**Partition Key**: `proposal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Accepted
+- invitation_id (string)
+- proposal_id (string)
+- accepted_at (google.protobuf.Timestamp)
+// Flow
+- fast_track (bool)
+```
+
+
+### 3.15 ProposalInviteDeclined
+
+**Topic**: `proposal.invite_declined`  
+**Owner**: proposals-be  
+**Consumers**: jobs-be  
+**Partition Key**: `proposal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Declined
+- invitation_id (string)
+- proposal_id (string)
+- reason (string)
+- declined_at (google.protobuf.Timestamp)
+// Feedback
+- feedback_provided (bool)
+```
+
+
+### 3.16 ProposalInviteFlowAbandoned
+
+**Topic**: `proposal.invite_flow_abandoned`  
+**Owner**: proposals-be  
+**Consumers**: communications-be  
+**Partition Key**: `proposal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Abandoned
+- proposal_id (string)
+- last_step (string)
+- abandoned_at (google.protobuf.Timestamp)
+// Telemetry
+- seconds_in_flow (int32)
+- device_type (string)
+```
+
+
+### 3.17 ProposalRateCardUpdated
+
+**Topic**: `proposal.rate_card_updated`  
+**Owner**: proposals-be  
+**Consumers**: contracts-be, financial-be  
+**Partition Key**: `proposal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Pricing change
+- proposal_id (string)
+- from_rate (double)
+- to_rate (double)
+- currency (string)
+- updated_at (google.protobuf.Timestamp)
+// Governance
+- justification (string)
+- client_acknowledged (bool)
+```
+
 
 ---
 
@@ -1788,6 +3443,346 @@ Our event schemas achieve:
 - custom_fields (map<string, string>)
 ```
 
+### 4.10 ContractSOWCreated
+
+**Topic**: `contract.sow_created`  
+**Owner**: contracts-be  
+**Consumers**: admin-be, financial-be  
+**Partition Key**: `contract_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// SOW
+- contract_id (string)
+- sow_id (string)
+- scope_summary (string)
+- deliverables (repeated string)
+- created_at (google.protobuf.Timestamp)
+// Approvals
+- version (string)
+- author_user_id (string)
+- approval_workflow_id (string)
+```
+
+
+### 4.11 ContractSOWUpdated
+
+**Topic**: `contract.sow_updated`  
+**Owner**: contracts-be  
+**Consumers**: admin-be, financial-be  
+**Partition Key**: `contract_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Update
+- contract_id (string)
+- sow_id (string)
+- changed_fields (repeated string)
+- updated_at (google.protobuf.Timestamp)
+// Controls
+- rebaseline_schedule (bool)
+- budget_changed (bool)
+```
+
+
+### 4.12 ContractSOWApproved
+
+**Topic**: `contract.sow_approved`  
+**Owner**: contracts-be  
+**Consumers**: financial-be  
+**Partition Key**: `contract_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Approval
+- contract_id (string)
+- sow_id (string)
+- approved_by_user_id (string)
+- approved_at (google.protobuf.Timestamp)
+// Policy
+- approval_policy (string)
+- approval_chain (string)
+```
+
+
+### 4.13 ContractFinancialHoldPlaced
+
+**Topic**: `contract.financial_hold_placed`  
+**Owner**: contracts-be  
+**Consumers**: financial-be, admin-be  
+**Partition Key**: `contract_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Hold
+- contract_id (string)
+- reason (string)
+- placed_by (string)
+- placed_at (google.protobuf.Timestamp)
+// Scope
+- hold_amount (double)
+- currency (string)
+- scope (string)                    // payouts, escrow, both
+```
+
+
+### 4.14 ContractFinancialHoldReleased
+
+**Topic**: `contract.financial_hold_released`  
+**Owner**: contracts-be  
+**Consumers**: financial-be, admin-be  
+**Partition Key**: `contract_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Release
+- contract_id (string)
+- released_by (string)
+- released_at (google.protobuf.Timestamp)
+// Reason
+- release_reason (string)
+```
+
 ---
 
 ## 5. Payment Events (payment/v1)
@@ -2190,6 +4185,419 @@ Our event schemas achieve:
 - platform_fee_refunded (double)
 ```
 
+### 5.9 LedgerJournalPosted
+
+**Topic**: `payment.ledger_journal_posted`  
+**Owner**: financial-be  
+**Consumers**: admin-be, exports  
+**Partition Key**: `journal_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Journal
+- journal_id (string)
+- entry_type (enum: DEBIT, CREDIT)
+- account_id (string)
+- amount { value (double), currency (string) }
+- posted_at (google.protobuf.Timestamp)
+// References
+- contract_id (string)
+- invoice_id (string)
+- transaction_id (string)
+- gl_code (string)
+- cost_center (string)
+```
+
+
+### 5.10 FeeScheduleUpdated
+
+**Topic**: `payment.fee_schedule_updated`  
+**Owner**: financial-be  
+**Consumers**: subscriptions-be, admin-be  
+**Partition Key**: `fee_schedule_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Fee schedule
+- fee_schedule_id (string)
+- changes (map<string, string>)
+- effective_at (google.protobuf.Timestamp)
+// Governance
+- approver_user_id (string)
+- region (string)
+- customer_segment (string)
+```
+
+
+### 5.11 FxRateUpdated
+
+**Topic**: `payment.fx_rate_updated`  
+**Owner**: financial-be  
+**Consumers**: pricing services  
+**Partition Key**: `ccy_pair`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// FX rate
+- ccy_pair (string)                  // USD/EUR
+- rate (double)
+- as_of (google.protobuf.Timestamp)
+// Source
+- source (string)                    // ECB, XE
+- spread_bps (double)
+- intraday_volatility (double)
+```
+
+
+### 5.12 FinancialRiskAlertEmitted
+
+**Topic**: `payment.risk_alert_emitted`  
+**Owner**: financial-be  
+**Consumers**: admin-be[risk]  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Risk alert
+- account_id (string)
+- alert_type (enum: CHARGEBACK_RATE, VELOCITY, COUNTRY_ANOMALY, AMOUNT_SPIKE)
+- risk_score (double)
+- details (map<string, string>)
+- alerted_at (google.protobuf.Timestamp)
+// Model
+- model_name (string)
+- model_version (string)
+```
+
+
+### 5.13 ChargebackCreated
+
+**Topic**: `payment.chargeback_created`  
+**Owner**: financial-be  
+**Consumers**: contracts-be, subscriptions-be, admin-be  
+**Partition Key**: `chargeback_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Chargeback
+- chargeback_id (string)
+- transaction_id (string)
+- amount { value (double), currency (string) }
+- reason (string)
+- created_at (google.protobuf.Timestamp)
+// Scheme
+- scheme (string)                    // Visa, MC
+- case_number (string)
+- stage (string)                     // inquiry, chargeback, representment
+```
+
+
+### 5.14 ChargebackUpdated
+
+**Topic**: `payment.chargeback_updated`  
+**Owner**: financial-be  
+**Consumers**: contracts-be, subscriptions-be, admin-be  
+**Partition Key**: `chargeback_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Update
+- chargeback_id (string)
+- status (enum: OPEN, WON, LOST, REPRESENTED, CLOSED)
+- updated_at (google.protobuf.Timestamp)
+// SLA
+- evidence_strength_score (double)
+- next_action_due (google.protobuf.Timestamp)
+```
+
 ---
 
 ## 6. Review Events (review/v1)
@@ -2416,6 +4824,536 @@ Our event schemas achieve:
 - ai_confidence_score (double)
 - detected_issues (repeated string)
 ```
+
+### 6.6 ReviewDoubleBlindWindowOpened
+
+**Topic**: `review.double_blind_window_opened`  
+**Owner**: reviews-be  
+**Consumers**: communications-be  
+**Partition Key**: `contract_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- contract_id (string)
+- window_opened_at (google.protobuf.Timestamp)
+- window_expires_at (google.protobuf.Timestamp)
+// Settings
+- allowed_edits (int32)
+- reminders_enabled (bool)
+```
+
+
+### 6.7 ReviewDoubleBlindWindowClosed
+
+**Topic**: `review.double_blind_window_closed`  
+**Owner**: reviews-be  
+**Consumers**: communications-be  
+**Partition Key**: `contract_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- contract_id (string)
+- closed_at (google.protobuf.Timestamp)
+// State
+- both_reviews_submitted (bool)
+```
+
+
+### 6.8 ReviewWeightingSchemaUpdated
+
+**Topic**: `review.weighting_schema_updated`  
+**Owner**: reviews-be  
+**Consumers**: admin-be  
+**Partition Key**: `schema_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- schema_id (string)
+- weights (map<string, double>)
+- updated_at (google.protobuf.Timestamp)
+// Governance
+- reason (string)
+- approver_user_id (string)
+```
+
+
+### 6.9 ReviewPublicResponseAdded
+
+**Topic**: `review.public_response_added`  
+**Owner**: reviews-be  
+**Consumers**: admin-be  
+**Partition Key**: `review_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- review_id (string)
+- responder_id (string)
+- response_text (string)
+- added_at (google.protobuf.Timestamp)
+// Editing
+- length (int32)
+- edited (bool)
+```
+
+
+### 6.10 ReviewPrivateFeedbackSubmitted
+
+**Topic**: `review.private_feedback_submitted`  
+**Owner**: reviews-be  
+**Consumers**: admin-be  
+**Partition Key**: `review_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- review_id (string)
+- submitted_by_user_id (string)
+- feedback (string)
+- submitted_at (google.protobuf.Timestamp)
+// Tags
+- tags (repeated string)
+```
+
+
+### 6.11 ReputationScoreUpdated
+
+**Topic**: `review.reputation_score_updated`  
+**Owner**: reviews-be  
+**Consumers**: admin-be, search-be  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- user_id (string)
+- new_score (double)
+- previous_score (double)
+- updated_at (google.protobuf.Timestamp)
+// Context
+- reason (string)
+- contracts_count (int32)
+```
+
+
+### 6.12 EligibilityTopRatedUpdated
+
+**Topic**: `review.eligibility_top_rated_updated`  
+**Owner**: reviews-be  
+**Consumers**: admin-be  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- user_id (string)
+- eligible (bool)
+- reason (string)
+- updated_at (google.protobuf.Timestamp)
+// Metrics
+- jss (double)
+- earnings_total (double)
+```
+
+
+### 6.13 ReviewAbuseAutoFlagged
+
+**Topic**: `review.abuse_auto_flagged`  
+**Owner**: reviews-be  
+**Consumers**: admin-be  
+**Partition Key**: `review_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- review_id (string)
+- signals (repeated string)
+- ai_confidence_score (double)
+- flagged_at (google.protobuf.Timestamp)
+// Model
+- model_name (string)
+- model_version (string)
+```
+
 
 ---
 
@@ -2718,6 +5656,673 @@ Our event schemas achieve:
 - action_blocked (string)
 - upgrade_suggested (bool)
 - suggested_plan_id (string)
+```
+
+
+### 7.8 SubscriptionsEntitlementUpdated
+
+**Topic**: `subscription.entitlement_updated`  
+**Owner**: subscriptions-be  
+**Consumers**: jobs-be, users-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- entitlement_key (string)
+- new_value (string)
+- effective_at (google.protobuf.Timestamp)
+// Governance
+- reason (string)
+- approver_user_id (string)
+```
+
+
+### 7.9 ConnectsDebited
+
+**Topic**: `subscription.connects_debited`  
+**Owner**: subscriptions-be  
+**Consumers**: proposals-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- proposal_id (string)
+- connects (int32)
+- debited_at (google.protobuf.Timestamp)
+// Pricing
+- package_id (string)
+- pricing_tier (string)
+```
+
+
+### 7.10 ConnectsRefunded
+
+**Topic**: `subscription.connects_refunded`  
+**Owner**: subscriptions-be  
+**Consumers**: proposals-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- proposal_id (string)
+- connects (int32)
+- refunded_at (google.protobuf.Timestamp)
+// Reason
+- reason (string)
+```
+
+
+### 7.11 ConnectsExpired
+
+**Topic**: `subscription.connects_expired`  
+**Owner**: subscriptions-be  
+**Consumers**: proposals-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- expired_connects (int32)
+- expired_at (google.protobuf.Timestamp)
+// Options
+- auto_topup_available (bool)
+```
+
+
+### 7.12 BillingSeatAllocated
+
+**Topic**: `subscription.billing_seat_allocated`  
+**Owner**: subscriptions-be  
+**Consumers**: admin-be  
+**Partition Key**: `org_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- org_id (string)
+- user_id (string)
+- seat_type (string)
+- allocated_at (google.protobuf.Timestamp)
+// Billing
+- billing_cycle (string)             // monthly, annual
+- seat_price (double)
+- currency (string)
+```
+
+
+### 7.13 BillingSeatDeallocated
+
+**Topic**: `subscription.billing_seat_deallocated`  
+**Owner**: subscriptions-be  
+**Consumers**: admin-be  
+**Partition Key**: `org_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- org_id (string)
+- user_id (string)
+- seat_type (string)
+- deallocated_at (google.protobuf.Timestamp)
+// Refund
+- prorated_refund (bool)
+- refund_amount (double)
+- currency (string)
+```
+
+
+### 7.14 BillingSeatOverageIncurred
+
+**Topic**: `subscription.billing_seat_overage_incurred`  
+**Owner**: subscriptions-be  
+**Consumers**: admin-be  
+**Partition Key**: `org_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- org_id (string)
+- overage_count (int32)
+- incurred_at (google.protobuf.Timestamp)
+// Cost
+- overage_cost (double)
+- currency (string)
+```
+
+
+### 7.15 BillingInvoiceExported
+
+**Topic**: `subscription.billing_invoice_exported`  
+**Owner**: subscriptions-be  
+**Consumers**: admin-be  
+**Partition Key**: `invoice_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- invoice_id (string)
+- export_format (enum: CSV, PDF, JSON)
+- exported_at (google.protobuf.Timestamp)
+// Jobs
+- export_job_id (string)
+- destination (string)               // s3 path, gcs
+```
+
+
+### 7.16 UsageCounterIncremented
+
+**Topic**: `subscription.usage_counter_incremented`  
+**Owner**: subscriptions-be  
+**Consumers**: admin-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- usage_key (string)
+- increment_by (int32)
+- new_value (int32)
+- occurred_at (google.protobuf.Timestamp)
+// Units
+- unit (string)                      // messages, jobs, API calls
+```
+
+
+### 7.17 UsageLimitReached
+
+**Topic**: `subscription.usage_limit_reached`  
+**Owner**: subscriptions-be  
+**Consumers**: admin-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- usage_key (string)
+- limit (int32)
+- reached_at (google.protobuf.Timestamp)
+// Action
+- hard_blocked (bool)
+- suggested_upgrade_plan_id (string)
 ```
 
 ---
@@ -3200,6 +6805,671 @@ Our event schemas achieve:
 - custom_fields (map<string, string>)
 ```
 
+### 8.6 InAppRead
+
+**Topic**: `message.in_app_read`  
+**Owner**: communications-be  
+**Consumers**: reviews-be  
+**Partition Key**: `notification_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Read
+- notification_id (string)
+- user_id (string)
+- read_at (google.protobuf.Timestamp)
+// UX
+- surface (string)                   // bell, inbox, toast
+- action_taken (bool)
+```
+
+
+### 8.7 QueueEnqueued
+
+**Topic**: `message.queue_enqueued`  
+**Owner**: communications-be  
+**Consumers**: admin-be  
+**Partition Key**: `message_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- message_id (string)
+- channel (enum: IN_APP, EMAIL, SMS, PUSH)
+- enqueued_at (google.protobuf.Timestamp)
+// Queue
+- queue_name (string)
+- priority (int32)
+```
+
+
+### 8.8 QueueDequeued
+
+**Topic**: `message.queue_dequeued`  
+**Owner**: communications-be  
+**Consumers**: admin-be  
+**Partition Key**: `message_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- message_id (string)
+- dequeued_at (google.protobuf.Timestamp)
+- worker_id (string)
+// Delivery
+- attempts (int32)
+```
+
+
+### 8.9 DeliveryLogged
+
+**Topic**: `message.delivery_logged`  
+**Owner**: communications-be  
+**Consumers**: admin-be, reviews-be  
+**Partition Key**: `message_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- message_id (string)
+- channel (string)
+- status (enum: SENT, DELIVERED, OPENED, CLICKED, FAILED)
+- logged_at (google.protobuf.Timestamp)
+// Vendor
+- vendor (string)                    // sendgrid, fcm
+- vendor_response_code (string)
+```
+
+
+### 8.10 SystemMessagePublished
+
+**Topic**: `message.system_message_published`  
+**Owner**: communications-be  
+**Consumers**: admin-be  
+**Partition Key**: `message_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- message_id (string)
+- title (string)
+- body (string)
+- published_at (google.protobuf.Timestamp)
+// Audience
+- audience_segments (repeated string)
+- require_ack (bool)
+```
+
+
+### 8.11 CallStarted
+
+**Topic**: `message.call_started`  
+**Owner**: communications-be  
+**Consumers**: admin-be  
+**Partition Key**: `call_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Call
+- call_id (string)
+- conversation_id (string)
+- started_by_user_id (string)
+- started_at (google.protobuf.Timestamp)
+// Infra
+- provider (string)                  // agora, twilio
+- region (string)
+```
+
+
+### 8.12 CallEnded
+
+**Topic**: `message.call_ended`  
+**Owner**: communications-be  
+**Consumers**: admin-be  
+**Partition Key**: `call_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+// Call end
+- call_id (string)
+- duration_seconds (int32)
+- ended_at (google.protobuf.Timestamp)
+// QA
+- recording_available (bool)
+- quality_issue_detected (bool)
+```
+
+
+### 8.13 CallRecordingReady
+
+**Topic**: `message.call_recording_ready`  
+**Owner**: communications-be  
+**Consumers**: storage-be, admin-be  
+**Partition Key**: `call_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- call_id (string)
+- recording_url (string)
+- ready_at (google.protobuf.Timestamp)
+// Compliance
+- redaction_applied (bool)
+- transcript_url (string)
+```
+
+
+### 8.14 CalendarInviteSent
+
+**Topic**: `message.calendar_invite_sent`  
+**Owner**: communications-be  
+**Consumers**: users-be, admin-be  
+**Partition Key**: `invite_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- invite_id (string)
+- to_user_id (string)
+- start_time (google.protobuf.Timestamp)
+- end_time (google.protobuf.Timestamp)
+// Logistics
+- location (string)
+- conferencing_link (string)
+```
+
+
+### 8.15 CalendarResponseReceived
+
+**Topic**: `message.calendar_response_received`  
+**Owner**: communications-be  
+**Consumers**: users-be, admin-be  
+**Partition Key**: `invite_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- invite_id (string)
+- responder_user_id (string)
+- response (enum: ACCEPTED, DECLINED, TENTATIVE)
+- responded_at (google.protobuf.Timestamp)
+// Notes
+- comment (string)
+```
+
 ---
 
 ## 9. Storage Events (storage/v1)
@@ -3472,6 +7742,658 @@ Our event schemas achieve:
 - file_url (string)
 ```
 
+### 9.5 FilePolicyUpdated
+
+**Topic**: `storage.file_policy_updated`  
+**Owner**: storage-be  
+**Consumers**: admin-be, reviews-be  
+**Partition Key**: `policy_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- policy_id (string)
+- changes (map<string, string>)
+- updated_at (google.protobuf.Timestamp)
+// Governance
+- policy_version (string)
+- approver_user_id (string)
+```
+
+
+### 9.6 FilePolicyViolationDetected
+
+**Topic**: `storage.file_policy_violation_detected`  
+**Owner**: storage-be  
+**Consumers**: admin-be, security ops  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- violation_codes (repeated string)  // PII, MALWARE, COPYRIGHT
+- detected_at (google.protobuf.Timestamp)
+// Detection
+- ai_confidence (double)
+- scanner_engine (string)
+```
+
+
+### 9.7 FileLifecycleSoftDeleted
+
+**Topic**: `storage.file_lifecycle_soft_deleted`  
+**Owner**: storage-be  
+**Consumers**: search-be, admin-be  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- reason (string)
+- soft_deleted_at (google.protobuf.Timestamp)
+// Lifecycle
+- purge_at (google.protobuf.Timestamp)
+- legal_hold (bool)
+```
+
+
+### 9.8 FileLifecycleRestored
+
+**Topic**: `storage.file_lifecycle_restored`  
+**Owner**: storage-be  
+**Consumers**: search-be, admin-be  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- restored_at (google.protobuf.Timestamp)
+// Search
+- reindex_search (bool)
+```
+
+
+### 9.9 FileLegalHoldPlaced
+
+**Topic**: `storage.file_legal_hold_placed`  
+**Owner**: storage-be  
+**Consumers**: admin-be, legal tooling  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- hold_reason (string)
+- placed_at (google.protobuf.Timestamp)
+- case_reference (string)
+```
+
+
+### 9.10 FileLegalHoldRemoved
+
+**Topic**: `storage.file_legal_hold_removed`  
+**Owner**: storage-be  
+**Consumers**: admin-be, legal tooling  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- removed_at (google.protobuf.Timestamp)
+// Ops
+- removed_by (string)
+```
+
+
+### 9.11 FileLinkSignedUrlCreated
+
+**Topic**: `storage.file_link_signed_url_created`  
+**Owner**: storage-be  
+**Consumers**: admin-be, security ops  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- signed_url (string)
+- expires_at (google.protobuf.Timestamp)
+// Limits
+- scope (string)                     // read, download
+- max_downloads (int32)
+```
+
+
+### 9.12 FileLinkSignedUrlRevoked
+
+**Topic**: `storage.file_link_signed_url_revoked`  
+**Owner**: storage-be  
+**Consumers**: admin-be, security ops  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- revoked_at (google.protobuf.Timestamp)
+// Cause
+- revoked_by (string)
+- revoke_reason (string)
+```
+
+
+### 9.13 FileDownloadLogged
+
+**Topic**: `storage.file_download_logged`  
+**Owner**: storage-be  
+**Consumers**: admin-be  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- downloader_user_id (string)
+- downloaded_at (google.protobuf.Timestamp)
+// Network
+- ip_address (string)
+- location (string)
+```
+
+
+### 9.14 FilePreviewGenerated
+
+**Topic**: `storage.file_preview_generated`  
+**Owner**: storage-be  
+**Consumers**: search-be, admin-be  
+**Partition Key**: `file_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- file_id (string)
+- preview_url (string)
+- generated_at (google.protobuf.Timestamp)
+// Render
+- renderer (string)
+- pages (int32)
+```
+
 ---
 
 ## 10. Search Events (search/v1)
@@ -3718,6 +8640,400 @@ Our event schemas achieve:
 - custom_fields (map<string, string>)
 ```
 
+### 10.4 SearchTaxonomySynonymUpdated
+
+**Topic**: `search.taxonomy_synonym_updated`  
+**Owner**: search-be  
+**Consumers**: jobs-be, reviews-be  
+**Partition Key**: `term`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- term (string)
+- synonyms (repeated string)
+- updated_at (google.protobuf.Timestamp)
+// Taxonomy
+- taxonomy_version (string)
+- language (string)
+```
+
+
+### 10.5 SearchLTRSignalRecorded
+
+**Topic**: `search.ltr_signal_recorded`  
+**Owner**: search-be  
+**Consumers**: model pipeline  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- user_id (string)
+- signal_type (string)               // click, apply, bookmark
+- signal_value (double)
+- recorded_at (google.protobuf.Timestamp)
+// Context
+- surface (string)                   // search_results, job_page
+- experiment (string)
+```
+
+
+### 10.6 SearchFacetsSchemaUpdated
+
+**Topic**: `search.facets_schema_updated`  
+**Owner**: search-be  
+**Consumers**: admin-be  
+**Partition Key**: `index_name`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- index_name (string)
+- changed_facets (repeated string)
+- updated_at (google.protobuf.Timestamp)
+// Rollout
+- rollout_strategy (string)          // canary, blue-green
+```
+
+
+### 10.7 SearchPersonalizationProfileUpdated
+
+**Topic**: `search.personalization_profile_updated`  
+**Owner**: search-be  
+**Consumers**: recommendations  
+**Partition Key**: `user_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- user_id (string)
+- features (map<string, double>)
+- updated_at (google.protobuf.Timestamp)
+// ML
+- drift_score (double)
+- model_version (string)
+```
+
+
+### 10.8 SearchIndexDeDupePerformed
+
+**Topic**: `search.index_de_dupe_performed`  
+**Owner**: search-be  
+**Consumers**: admin-be  
+**Partition Key**: `index_name`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- index_name (string)
+- duplicates_removed (int32)
+- performed_at (google.protobuf.Timestamp)
+// Scale
+- docs_scanned (int32)
+- shards_touched (int32)
+```
+
+
+### 10.9 SearchIndexArchiveMarked
+
+**Topic**: `search.index_archive_marked`  
+**Owner**: search-be  
+**Consumers**: admin-be  
+**Partition Key**: `index_name`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- index_name (string)
+- reason (string)
+- marked_at (google.protobuf.Timestamp)
+// Ops
+- read_only (bool)
+- snapshot_taken (bool)
+```
 ---
 
 ## 11. Admin Events (admin/v1)
@@ -4481,6 +9797,1324 @@ Our event schemas achieve:
 // Extensions
 - custom_fields (map<string, string>)
 ```
+
+### 11.7 AdminCaseFraudReviewOpened
+
+**Topic**: `admin.case_fraud_review_opened`  
+**Owner**: admin-be  
+**Consumers**: financial-be, security ops  
+**Partition Key**: `case_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- case_id (string)
+- subject_user_id (string)
+- reason (string)
+- opened_at (google.protobuf.Timestamp)
+// Risk
+- risk_score (double)
+- intake_channel (string)            // user_report, automated, partner
+```
+
+
+### 11.8 AdminCaseFraudReviewUpdated
+
+**Topic**: `admin.case_fraud_review_updated`  
+**Owner**: admin-be  
+**Consumers**: financial-be  
+**Partition Key**: `case_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- case_id (string)
+- status (enum: OPEN, IN_PROGRESS, CLOSED)
+- notes (string)
+- updated_at (google.protobuf.Timestamp)
+// Owner
+- investigator_user_id (string)
+```
+
+
+### 11.9 AdminCaseFraudReviewClosed
+
+**Topic**: `admin.case_fraud_review_closed`  
+**Owner**: admin-be  
+**Consumers**: financial-be  
+**Partition Key**: `case_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- case_id (string)
+- outcome (string)                   // confirmed, inconclusive, false_positive
+- closed_at (google.protobuf.Timestamp)
+// Sanctions
+- sanctions_applied (bool)
+```
+
+
+### 11.10 AdminUserReportCreated
+
+**Topic**: `admin.user_report_created`  
+**Owner**: admin-be  
+**Consumers**: moderation services  
+**Partition Key**: `report_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- report_id (string)
+- reported_user_id (string)
+- reason (string)
+- created_at (google.protobuf.Timestamp)
+// Content
+- reported_content_type (string)     // job, message, file
+- reported_content_id (string)
+```
+
+
+### 11.11 AdminUserReportTriaged
+
+**Topic**: `admin.user_report_triaged`  
+**Owner**: admin-be  
+**Consumers**: moderation services  
+**Partition Key**: `report_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- report_id (string)
+- triage_result (enum: VALID, INVALID, NEEDS_MORE_INFO)
+- triaged_at (google.protobuf.Timestamp)
+// Ops
+- triaged_by (string)
+- historical_accuracy (int32)        // of the reporter
+```
+
+
+### 11.12 AdminUserReportActioned
+
+**Topic**: `admin.user_report_actioned`  
+**Owner**: admin-be  
+**Consumers**: affected services  
+**Partition Key**: `report_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- report_id (string)
+- action (enum: NO_ACTION, WARN, SUSPEND, BAN, REMOVE_CONTENT)
+- actioned_at (google.protobuf.Timestamp)
+// Link
+- action_ref (string)                // admin.user_suspended etc.
+```
+
+
+### 11.13 AdminUserReportDismissed
+
+**Topic**: `admin.user_report_dismissed`  
+**Owner**: admin-be  
+**Consumers**: affected services  
+**Partition Key**: `report_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- report_id (string)
+- dismissed_reason (string)
+- dismissed_at (google.protobuf.Timestamp)
+// Audit
+- dismissed_by (string)
+```
+
+
+### 11.14 AdminRiskHoldPlaced
+
+**Topic**: `admin.risk_hold_placed`  
+**Owner**: admin-be  
+**Consumers**: financial-be, contracts-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- reason (string)
+- placed_at (google.protobuf.Timestamp)
+// Finance
+- reserve_amount (double)
+- currency (string)
+```
+
+
+### 11.15 AdminRiskHoldReleased
+
+**Topic**: `admin.risk_hold_released`  
+**Owner**: admin-be  
+**Consumers**: financial-be, contracts-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- released_at (google.protobuf.Timestamp)
+// Ops
+- released_by (string)
+```
+
+
+### 11.16 AdminRiskReserveSet
+
+**Topic**: `admin.risk_reserve_set`  
+**Owner**: admin-be  
+**Consumers**: financial-be  
+**Partition Key**: `account_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- account_id (string)
+- reserve_amount (double)
+- currency (string)
+- effective_at (google.protobuf.Timestamp)
+// Policy
+- policy_ref (string)
+```
+
+
+### 11.17 AdminChargebackReviewRequested
+
+**Topic**: `admin.chargeback_review_requested`  
+**Owner**: admin-be  
+**Consumers**: financial-be  
+**Partition Key**: `chargeback_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- chargeback_id (string)
+- requested_by (string)
+- requested_at (google.protobuf.Timestamp)
+// Escalation
+- escalation_level (string)          // finance, legal
+```
+
+
+### 11.18 AdminConfigUpdated
+
+**Topic**: `admin.config_updated`  
+**Owner**: admin-be  
+**Consumers**: affected services  
+**Partition Key**: `config_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- config_id (string)
+- changes (map<string, string>)
+- updated_at (google.protobuf.Timestamp)
+// Release
+- environment (string)               // dev, stage, prod
+- rollout (string)                   // immediate, canary
+```
+
+
+### 11.19 AdminFeatureFlagUpdated
+
+**Topic**: `admin.feature_flag_updated`  
+**Owner**: admin-be  
+**Consumers**: subscriptions-be, search-be, jobs-be  
+**Partition Key**: `flag_key`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- flag_key (string)
+- enabled (bool)
+- audience (string)
+- updated_at (google.protobuf.Timestamp)
+// Experimentation
+- variant (string)                   // A/B/C
+- experiment_id (string)
+```
+
+
+### 11.20 AdminAuditActionLogged
+
+**Topic**: `admin.audit_action_logged`  
+**Owner**: admin-be  
+**Consumers**: compliance/tooling  
+**Partition Key**: `audit_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- audit_id (string)
+- actor_user_id (string)
+- action (string)
+- logged_at (google.protobuf.Timestamp)
+// Resource
+- resource_type (string)
+- resource_id (string)
+- ip_address (string)
+```
+
+
+### 11.21 AdminDataExportRequested
+
+**Topic**: `admin.data_export_requested`  
+**Owner**: admin-be  
+**Consumers**: storage/exports  
+**Partition Key**: `export_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- export_id (string)
+- scope (string)
+- requested_by (string)
+- requested_at (google.protobuf.Timestamp)
+// Data
+- data_class (string)                // PII, analytics
+- destination (string)               // s3 path
+```
+
+
+### 11.22 AdminDataExportApproved
+
+**Topic**: `admin.data_export_approved`  
+**Owner**: admin-be  
+**Consumers**: storage/exports  
+**Partition Key**: `export_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- export_id (string)
+- approved_by (string)
+- approved_at (google.protobuf.Timestamp)
+// Ticket
+- approval_ticket (string)
+```
+
+
+### 11.23 AdminDataExportGenerated
+
+**Topic**: `admin.data_export_generated`  
+**Owner**: admin-be  
+**Consumers**: delivery systems  
+**Partition Key**: `export_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- export_id (string)
+- file_url (string)
+- generated_at (google.protobuf.Timestamp)
+// File
+- file_size_bytes (int64)
+- checksum_sha256 (string)
+```
+
+
+### 11.24 AdminDataExportDelivered
+
+**Topic**: `admin.data_export_delivered`  
+**Owner**: admin-be  
+**Consumers**: audit  
+**Partition Key**: `export_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- export_id (string)
+- delivered_to (string)
+- delivered_at (google.protobuf.Timestamp)
+// Channel
+- delivery_channel (string)          // email, link
+```
+
+
+### 11.25 AdminDataExportRevoked
+
+**Topic**: `admin.data_export_revoked`  
+**Owner**: admin-be  
+**Consumers**: audit  
+**Partition Key**: `export_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- export_id (string)
+- reason (string)
+- revoked_at (google.protobuf.Timestamp)
+// Recall
+- recall_attempted (bool)
+```
+
+
+### 11.26 AdminTicketNoteAdded
+
+**Topic**: `admin.ticket_note_added`  
+**Owner**: admin-be  
+**Consumers**: affected services  
+**Partition Key**: `ticket_id`
+
+**Fields**:
+```protobuf
+// Base event metadata
+- event_id, event_timestamp, aggregate_id, event_version
+- event_source, correlation_id, causation_id
+- user_context, compliance_context, audit_metadata
+
+// Extended enterprise context (included in all events)
+// Tenant
+- tenant_context {
+    tenant_id (string)
+    org_id (string)
+    org_name (string)
+    plan_id (string)
+    plan_tier (string)
+  }
+// Request & tracing
+- request_context {
+    request_id (string)
+    trace_id (string)
+    span_id (string)
+    source_ip (string)
+    device_type (string)    // WEB, IOS, ANDROID, DESKTOP
+    app_version (string)
+    platform (string)       // web, mobile, api
+  }
+// Security
+- security_context {
+    auth_method (string)    // pwd, oauth, sso
+    mfa_used (bool)
+    mfa_method (string)     // totp, sms, webauthn
+    session_id (string)
+    elevated_session (bool)
+  }
+// Localization
+- localization {
+    locale (string)         // e.g., en-US, ar-EG
+    timezone (string)
+    currency (string)
+  }
+// Data governance
+- data_governance {
+    classification (string) // PUBLIC, CONFIDENTIAL, RESTRICTED
+    contains_pii (bool)
+    contains_financial (bool)
+    retention_bucket (string)
+    residency (string)      // EU, US, AE, etc.
+  }
+
+
+- ticket_id (string)
+- author_user_id (string)
+- note (string)
+- added_at (google.protobuf.Timestamp)
+// Notes
+- internal (bool)
+- attachments (repeated string)
+```
+
 
 ---
 

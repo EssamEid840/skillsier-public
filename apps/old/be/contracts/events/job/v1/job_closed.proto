@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package skillsier.job.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/job/v1;jobv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// JobClosed event
+// Topic: job.job_closed
+// Owner: job-be
+message JobClosed {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Job identification
+  string job_id = 2;
+  string client_id = 3;
+  
+  // Closure details
+  string close_reason = 4;
+  string close_details = 5;
+  string hired_freelancer_id = 6;
+  string proposal_id = 7;
+  int32 total_proposals_received = 8;
+  google.protobuf.Timestamp closed_at = 9;
+  int32 posted_duration_hours = 10;
+}

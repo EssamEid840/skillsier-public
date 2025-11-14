@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package skillsier.proposal.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/proposal/v1;proposalv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// BidPlaced event
+// Topic: proposal.bid_placed
+// Owner: proposal-be
+message BidPlaced {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Bid identification
+  string bid_id = 2;
+  string proposal_id = 3;
+  string job_id = 4;
+  string freelancer_id = 5;
+  skillsier.common.v1.Money bid_amount = 6;
+  skillsier.common.v1.BidType bid_type = 7;
+  double previous_bid_amount = 8;
+  google.protobuf.Timestamp placed_at = 9;
+  int32 bid_position = 10;
+  int32 total_bids_on_job = 11;
+}

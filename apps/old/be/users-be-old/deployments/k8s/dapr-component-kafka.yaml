@@ -1,0 +1,29 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: kafka-pubsub
+  namespace: skillsier
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+    - name: brokers
+      value: "kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    - name: authType
+      value: password
+    - name: saslUsername
+      value: "admin-user"
+    - name: saslPassword
+      secretKeyRef:
+        name: kafka-admin-credentials
+        key: password
+    - name: saslMechanism
+      value: "SCRAM-SHA-512"
+    - name: enableTls
+      value: "true"
+    - name: skipVerify
+      value: "false"
+    - name: consumerGroup
+      value: "users-be-group"
+scopes:
+  - users-be

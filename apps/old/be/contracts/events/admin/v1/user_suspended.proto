@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package skillsier.admin.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/admin/v1;adminv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// UserSuspended event
+// Topic: admin.user_suspended
+// Owner: admin-be
+message UserSuspended {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string action_id = 2;
+  string target_user_id = 3;
+  string admin_user_id = 4;
+  skillsier.common.v1.AdminActionType action_type = 5;
+  string suspension_reason = 6;
+  skillsier.common.v1.ViolationSeverity violation_severity = 7;
+  int32 suspension_duration_days = 8;
+  google.protobuf.Timestamp suspension_start_date = 9;
+  google.protobuf.Timestamp suspension_end_date = 10;
+  bool is_temporary = 11;
+  bool can_appeal = 12;
+  google.protobuf.Timestamp action_taken_at = 13;
+}

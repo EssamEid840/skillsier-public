@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package skillsier.user.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/user/v1;userv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// UserBanned event
+// Topic: user.user_banned
+// Owner: user-be
+message UserBanned {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // User identification
+  string user_id = 2;
+  string username = 3;
+  
+  // Ban details
+  string banned_by_user_id = 4;
+  string ban_reason = 5;
+  string ban_details = 6;
+  bool is_permanent = 7;
+  bool ip_banned = 8;
+  bool device_banned = 9;
+  bool can_appeal = 10;
+  google.protobuf.Timestamp banned_at = 11;
+  repeated string related_user_ids = 12;
+}

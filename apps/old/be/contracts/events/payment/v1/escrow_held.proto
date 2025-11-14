@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package skillsier.payment.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/payment/v1;paymentv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// EscrowHeld event
+// Topic: payment.escrow_held
+// Owner: payment-be
+message EscrowHeld {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Escrow identification
+  string escrow_id = 2;
+  string contract_id = 3;
+  string milestone_id = 4;
+  string client_id = 5;
+  string freelancer_id = 6;
+  skillsier.common.v1.Money amount = 7;
+  double platform_fee_deducted = 8;
+  double net_amount_held = 9;
+  int32 auto_release_after_days = 10;
+  google.protobuf.Timestamp auto_release_date = 11;
+  google.protobuf.Timestamp held_at = 12;
+  google.protobuf.Timestamp expected_release_date = 13;
+  string source_transaction_id = 14;
+}

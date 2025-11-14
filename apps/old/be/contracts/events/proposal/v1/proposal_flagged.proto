@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package skillsier.proposal.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/proposal/v1;proposalv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// ProposalFlagged event
+// Topic: proposal.proposal_flagged
+// Owner: proposal-be
+message ProposalFlagged {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Flag details
+  string flag_id = 2;
+  string proposal_id = 3;
+  string job_id = 4;
+  string flagged_by_user_id = 5;
+  skillsier.common.v1.FlagReason flag_reason = 6;
+  string flag_details = 7;
+  google.protobuf.Timestamp flagged_at = 8;
+}

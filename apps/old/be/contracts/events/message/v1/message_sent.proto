@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package skillsier.message.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/message/v1;messagev1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// MessageSent event
+// Topic: message.message_sent
+// Owner: message-be
+message MessageSent {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string message_id = 2;
+  string conversation_id = 3;
+  string sender_id = 4;
+  string recipient_id = 5;
+  skillsier.common.v1.MessageType message_type = 6;
+  string message_content = 7;
+  int32 attachments_count = 8;
+  skillsier.common.v1.MessageStatus message_status = 9;
+  google.protobuf.Timestamp sent_at = 10;
+  google.protobuf.Timestamp delivered_at = 11;
+  bool is_encrypted = 12;
+}

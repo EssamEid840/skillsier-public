@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package skillsier.proposal.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/proposal/v1;proposalv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// ProposalRejected event
+// Topic: proposal.proposal_rejected
+// Owner: proposal-be
+message ProposalRejected {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  // Proposal identification
+  string proposal_id = 2;
+  string job_id = 3;
+  string freelancer_id = 4;
+  string client_id = 5;
+  string rejection_reason = 6;
+  string rejection_feedback = 7;
+  google.protobuf.Timestamp rejected_at = 8;
+  bool connects_refunded = 9;
+}

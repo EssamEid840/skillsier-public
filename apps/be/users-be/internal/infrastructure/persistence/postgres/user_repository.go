@@ -1,4 +1,3 @@
-
 package postgres
 
 import (
@@ -307,7 +306,62 @@ func (r *UserRepository) UpdateBalance(ctx context.Context, id string, amount fl
 }
 
 // ============================================================================
-// UPDATE OPERATIONS - SECURITY & ACTIVITY
+// MISSING COMMAND-RELATED METHODS
+// ============================================================================
+
+func (r *UserRepository) UpdateSettings(ctx context.Context, id string, settings map[string]interface{}) error {
+	return r.db.WithContext(ctx).Model(&user.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"settings":   settings,
+			"updated_at": time.Now(),
+		}).Error
+}
+
+func (r *UserRepository) UpdateAvailability(ctx context.Context, id string, status user.AvailabilityStatus, hoursPerWeek int) error {
+	return r.db.WithContext(ctx).Model(&user.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"availability_status": status,
+			"hours_per_week":      hoursPerWeek,
+			"accepting_work":      status.IsAvailable(),
+			"updated_at":          time.Now(),
+		}).Error
+}
+
+func (r *UserRepository) AddWarning(ctx context.Context, id string, reason, issuedBy string) error {
+	var u user.User
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&u).Error; err != nil {
+		return err
+	}
+	
+	u.WarningCount++
+	u.UpdatedAt = time.Now()
+	u.LastModifiedBy = issuedBy
+	
+	timestamp := time.Now().Format(time.RFC3339)
+	if u.Notes == "" {
+		u.Notes = fmt.Sprintf("[%s] Warning: %s", timestamp, reason)
+	} else {
+		u.Notes = fmt.Sprintf("%s\n[%s] Warning: %s", u.Notes, timestamp, reason)
+	}
+	
+	return r.db.WithContext(ctx).Save(&u).Error
+}
+
+func (r *UserRepository) UpdateProfile(ctx context.Context, id, bio, tagline, title string) error {
+	return r.db.WithContext(ctx).Model(&user.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"bio":        bio,
+			"tagline":    tagline,
+			"title":      title,
+			"updated_at": time.Now(),
+		}).Error
+}
+
+// ============================================================================
+// SECURITY & ACTIVITY
 // ============================================================================
 
 func (r *UserRepository) RecordLogin(ctx context.Context, id, ipAddress, userAgent string) error {
@@ -370,7 +424,7 @@ func (r *UserRepository) UnlockAccount(ctx context.Context, id string) error {
 }
 
 // ============================================================================
-// UPDATE OPERATIONS - VERIFICATION
+// VERIFICATION
 // ============================================================================
 
 func (r *UserRepository) VerifyEmail(ctx context.Context, id string) error {
@@ -407,7 +461,7 @@ func (r *UserRepository) VerifyIdentity(ctx context.Context, id string) error {
 }
 
 // ============================================================================
-// UPDATE OPERATIONS - BADGES & ACHIEVEMENTS
+// BADGES & ACHIEVEMENTS
 // ============================================================================
 
 func (r *UserRepository) AssignBadge(ctx context.Context, id string, badge user.BadgeType) error {
@@ -467,7 +521,7 @@ func (r *UserRepository) SetTopRated(ctx context.Context, id string, topRated bo
 }
 
 // ============================================================================
-// UPDATE OPERATIONS - MODERATION
+// MODERATION
 // ============================================================================
 
 func (r *UserRepository) IncrementWarningCount(ctx context.Context, id string) error {
@@ -631,21 +685,221 @@ func (r *UserRepository) ExistsByUsername(ctx context.Context, username string) 
 	return count > 0, err
 }
 
-func (r *UserRepository) FindUnverifiedUsers(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
-	emailVerified := false
-	filter.EmailVerified = &emailVerified
+// ============================================================================
+// MISSING QUERY-RELATED METHODS  
+// ============================================================================
+
+func (r *UserRepository) GetTopRatedFreelancers(ctx context.Context, limit int) ([]*user.User, error) {
+	var users []*user.User
+	err := r.db.WithContext(ctx).
+		Where("user_type IN ? AND rating >= ?", 
+			[]user.UserType{user.UserTypeFreelancer, user.UserTypeBoth}, 4.0).
+		Order("rating DESC, total_reviews DESC").
+		Limit(limit).
+		Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) GetFeaturedUsers(ctx context.Context, userType user.UserType, limit int) ([]*user.User, error) {
+	var users []*user.User
+	query := r.db.WithContext(ctx).Where("is_featured = ?", true)
+	
+	if userType != "" {
+		query = query.Where("user_type = ?", userType)
+	}
+	
+	err := query.Order("rating DESC").Limit(limit).Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) GetOnlineUsers(ctx context.Context, userType user.UserType) ([]*user.User, error) {
+	var users []*user.User
+	query := r.db.WithContext(ctx).Where("is_online = ?", true)
+	
+	if userType != "" {
+		query = query.Where("user_type = ?", userType)
+	}
+	
+	err := query.Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) GetInactiveUsers(ctx context.Context, days int) ([]*user.User, error) {
+	var users []*user.User
+	threshold := time.Now().AddDate(0, 0, -days)
+	err := r.db.WithContext(ctx).
+		Where("last_login_at < ? OR last_login_at IS NULL", threshold).
+		Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) GetUsersWithWarnings(ctx context.Context) ([]*user.User, error) {
+	var users []*user.User
+	err := r.db.WithContext(ctx).Where("warning_count > ?", 0).Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) GetUsersByStatus(ctx context.Context, status user.AccountStatus, filter user.ListFilter) ([]*user.User, int64, error) {
+	filter.Status = &status
 	return r.List(ctx, filter)
 }
 
-func (r *UserRepository) FindPendingVerification(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
-	status := user.VerificationStatusPending
-	filter.VerificationStatus = &status
-	return r.List(ctx, filter)
-}
-
-func (r *UserRepository) FindVerifiedUsers(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
+func (r *UserRepository) GetVerifiedUsers(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
 	identityVerified := true
 	filter.IdentityVerified = &identityVerified
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) GetUnverifiedUsers(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
+	identityVerified := false
+	filter.IdentityVerified = &identityVerified
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) GetRecentlyActiveUsers(ctx context.Context, hours int, filter user.ListFilter) ([]*user.User, int64, error) {
+	threshold := time.Now().Add(-time.Duration(hours) * time.Hour)
+	filter.LastLoginAfter = &threshold
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) GetNewUsers(ctx context.Context, days int, filter user.ListFilter) ([]*user.User, int64, error) {
+	threshold := time.Now().AddDate(0, 0, -days)
+	filter.CreatedAfter = &threshold
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) CountUsersByType(ctx context.Context, userType user.UserType) (int64, error) {
+	return r.CountByUserType(ctx, userType)
+}
+
+func (r *UserRepository) CountUsersByStatus(ctx context.Context, status user.AccountStatus) (int64, error) {
+	return r.CountByStatus(ctx, status)
+}
+
+func (r *UserRepository) CountOnlineUsers(ctx context.Context) (int64, error) {
+	return r.CountOnline(ctx)
+}
+
+func (r *UserRepository) GetUsersByReferrer(ctx context.Context, referrerID string) ([]*user.User, error) {
+	return r.FindUsersByReferrer(ctx, referrerID)
+}
+
+// ============================================================================
+// BUSINESS QUERIES - FILTERING & SORTING
+// ============================================================================
+
+func (r *UserRepository) FindByUserType(ctx context.Context, userType user.UserType, filter user.ListFilter) ([]*user.User, int64, error) {
+	filter.UserType = &userType
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) FindByStatus(ctx context.Context, status user.AccountStatus, filter user.ListFilter) ([]*user.User, int64, error) {
+	filter.Status = &status
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) FindByCountry(ctx context.Context, country string, filter user.ListFilter) ([]*user.User, int64, error) {
+	filter.Country = country
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) FindByCity(ctx context.Context, city string, filter user.ListFilter) ([]*user.User, int64, error) {
+	filter.City = city
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) FindByLocation(ctx context.Context, city, country string, filter user.ListFilter) ([]*user.User, int64, error) {
+	filter.City = city
+	filter.Country = country
+	return r.List(ctx, filter)
+}
+
+// ============================================================================
+// BUSINESS QUERIES - SPECIAL LISTS
+// ============================================================================
+
+func (r *UserRepository) FindTopRatedFreelancers(ctx context.Context, limit int) ([]*user.User, error) {
+	var users []*user.User
+	err := r.db.WithContext(ctx).
+		Where("user_type IN ? AND rating >= ?", []user.UserType{user.UserTypeFreelancer, user.UserTypeBoth}, 4.5).
+		Order("rating DESC, total_reviews DESC").
+		Limit(limit).
+		Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) FindTopRatedClients(ctx context.Context, limit int) ([]*user.User, error) {
+	var users []*user.User
+	err := r.db.WithContext(ctx).
+		Where("user_type IN ? AND rating >= ?", []user.UserType{user.UserTypeClient, user.UserTypeBoth}, 4.5).
+		Order("rating DESC, total_reviews DESC").
+		Limit(limit).
+		Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) FindFeaturedUsers(ctx context.Context, userType user.UserType, limit int) ([]*user.User, error) {
+	var users []*user.User
+	query := r.db.WithContext(ctx).Where("is_featured = ?", true)
+	
+	if userType != "" {
+		query = query.Where("user_type = ?", userType)
+	}
+	
+	err := query.Order("rating DESC").Limit(limit).Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) FindRisingTalent(ctx context.Context, limit int) ([]*user.User, error) {
+	var users []*user.User
+	err := r.db.WithContext(ctx).
+		Where("is_rising_talent = ? AND user_type IN ?", true, []user.UserType{user.UserTypeFreelancer, user.UserTypeBoth}).
+		Order("created_at DESC").
+		Limit(limit).
+		Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) FindExpertVettedFreelancers(ctx context.Context, limit int) ([]*user.User, error) {
+	var users []*user.User
+	err := r.db.WithContext(ctx).
+		Where("is_expert_vetted = ? AND user_type IN ?", true, []user.UserType{user.UserTypeFreelancer, user.UserTypeBoth}).
+		Order("rating DESC").
+		Limit(limit).
+		Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) FindOnlineUsers(ctx context.Context, userType user.UserType) ([]*user.User, error) {
+	var users []*user.User
+	query := r.db.WithContext(ctx).Where("is_online = ?", true)
+	
+	if userType != "" {
+		query = query.Where("user_type = ?", userType)
+	}
+	
+	err := query.Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) FindRecentlyActive(ctx context.Context, hours int, filter user.ListFilter) ([]*user.User, int64, error) {
+	threshold := time.Now().Add(-time.Duration(hours) * time.Hour)
+	filter.LastLoginAfter = &threshold
+	return r.List(ctx, filter)
+}
+
+func (r *UserRepository) FindInactiveUsers(ctx context.Context, days int) ([]*user.User, error) {
+	var users []*user.User
+	threshold := time.Now().AddDate(0, 0, -days)
+	err := r.db.WithContext(ctx).
+		Where("last_login_at < ? OR last_login_at IS NULL", threshold).
+		Find(&users).Error
+	return users, err
+}
+
+func (r *UserRepository) FindNewUsers(ctx context.Context, days int, filter user.ListFilter) ([]*user.User, int64, error) {
+	threshold := time.Now().AddDate(0, 0, -days)
+	filter.CreatedAfter = &threshold
 	return r.List(ctx, filter)
 }
 
@@ -1182,50 +1436,116 @@ func (r *UserRepository) ExistsByReferralCode(ctx context.Context, code string) 
 	return count > 0, err
 }
 
-// ============================================================================
-// BUSINESS QUERIES - FILTERING & SORTING
-// ============================================================================
-
-func (r *UserRepository) FindByUserType(ctx context.Context, userType user.UserType, filter user.ListFilter) ([]*user.User, int64, error) {
-	filter.UserType = &userType
+func (r *UserRepository) FindUnverifiedUsers(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
+	emailVerified := false
+	filter.EmailVerified = &emailVerified
 	return r.List(ctx, filter)
 }
 
-func (r *UserRepository) FindByStatus(ctx context.Context, status user.AccountStatus, filter user.ListFilter) ([]*user.User, int64, error) {
-	filter.Status = &status
+func (r *UserRepository) FindPendingVerification(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
+	status := user.VerificationStatusPending
+	filter.VerificationStatus = &status
 	return r.List(ctx, filter)
 }
 
-func (r *UserRepository) FindByCountry(ctx context.Context, country string, filter user.ListFilter) ([]*user.User, int64, error) {
-	filter.Country = country
+func (r *UserRepository) FindVerifiedUsers(ctx context.Context, filter user.ListFilter) ([]*user.User, int64, error) {
+	identityVerified := true
+	filter.IdentityVerified = &identityVerified
 	return r.List(ctx, filter)
 }
 
-func (r *UserRepository) FindByCity(ctx context.Context, city string, filter user.ListFilter) ([]*user.User, int64, error) {
-	filter.City = city
-	return r.List(ctx, filter)
-}
-
-func (r *UserRepository) FindByLocation(ctx context.Context, city, country string, filter user.ListFilter) ([]*user.User, int64, error) {
-	filter.City = city
-	filter.Country = country
-	return r.List(ctx, filter)
-}
 
 // ============================================================================
-// BUSINESS QUERIES - SPECIAL LISTS
+// MISSING METHODS FOR SERVICE COMPATIBILITY
 // ============================================================================
 
-func (r *UserRepository) FindTopRatedFreelancers(ctx context.Context, limit int) ([]*user.User, error) {
+// GetStatistics retrieves comprehensive user statistics (alias for GetUserStatistics)
+func (r *UserRepository) GetStatistics(ctx context.Context) (*user.UserStatistics, error) {
+	return r.GetUserStatistics(ctx)
+}
+
+// ClearWarnings resets user's warning count
+func (r *UserRepository) ClearWarnings(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Model(&user.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"warning_count": 0,
+			"updated_at":    time.Now(),
+		}).Error
+}
+
+// ClearFlags resets user's flag count
+func (r *UserRepository) ClearFlags(ctx context.Context, id string) error {
+	return r.db.WithContext(ctx).Model(&user.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"flag_count":  0,
+			"updated_at": time.Now(),
+		}).Error
+}
+
+// IncrementWarnings increments warning count (alias for IncrementWarningCount)
+func (r *UserRepository) IncrementWarnings(ctx context.Context, id string) error {
+	return r.IncrementWarningCount(ctx, id)
+}
+
+// AddBadge assigns a badge to user (alias for AssignBadge with string conversion)
+func (r *UserRepository) AddBadge(ctx context.Context, id string, badgeType string) error {
+	badge := user.BadgeType(badgeType)
+	return r.AssignBadge(ctx, id, badge)
+}
+
+// RemoveBadge removes a badge from user (alias for RemoveBadge with string conversion)
+func (r *UserRepository) RemoveBadge(ctx context.Context, id string, badgeType string) error {
+	badge := user.BadgeType(badgeType)
+	return r.RemoveBadge(ctx, id, badge)
+}
+
+// FindByReferrer finds users referred by a specific user
+func (r *UserRepository) FindByReferrer(ctx context.Context, referrerID string) ([]*user.User, error) {
 	var users []*user.User
-	err := r.db.WithContext(ctx).
-		Where("user_type IN ? AND rating >= ?", []user.UserType{user.UserTypeFreelancer, user.UserTypeBoth}, 4.5).
-		Order("rating DESC, total_reviews DESC").
-		Limit(limit).
-		Find(&users).Error
+	err := r.db.WithContext(ctx).Where("referred_by = ?", referrerID).Find(&users).Error
 	return users, err
 }
 
+// AddConnects adds connects to user balance
+func (r *UserRepository) AddConnects(ctx context.Context, id string, amount int) error {
+	// Note: This assumes there's a connects_balance field in the User entity
+	// If not, you'll need to add it to the User struct
+	return r.db.WithContext(ctx).Model(&user.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"connects_balance": gorm.Expr("connects_balance + ?", amount),
+			"updated_at":       time.Now(),
+		}).Error
+}
+
+// DeductConnects deducts connects from user balance
+func (r *UserRepository) DeductConnects(ctx context.Context, id string, amount int) error {
+	return r.db.WithContext(ctx).Model(&user.User{}).
+		Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"connects_balance": gorm.Expr("connects_balance - ?", amount),
+			"updated_at":       time.Now(),
+		}).Error
+}
+
+// GetConnectsBalance gets user's connects balance
+func (r *UserRepository) GetConnectsBalance(ctx context.Context, id string) (int, error) {
+	var u user.User
+	err := r.db.WithContext(ctx).Where("id = ?", id).Select("connects_balance").First(&u).Error
+	if err != nil {
+		return 0, err
+	}
+	return u.ConnectsBalance, nil
+}
+
+// FindTopRatedFreelancers finds top rated freelancers (alias for GetTopRatedFreelancers)
+func (r *UserRepository) FindTopRatedFreelancers(ctx context.Context, limit int) ([]*user.User, error) {
+	return r.GetTopRatedFreelancers(ctx, limit)
+}
+
+// FindTopRatedClients finds top rated clients
 func (r *UserRepository) FindTopRatedClients(ctx context.Context, limit int) ([]*user.User, error) {
 	var users []*user.User
 	err := r.db.WithContext(ctx).
@@ -1236,18 +1556,7 @@ func (r *UserRepository) FindTopRatedClients(ctx context.Context, limit int) ([]
 	return users, err
 }
 
-func (r *UserRepository) FindFeaturedUsers(ctx context.Context, userType user.UserType, limit int) ([]*user.User, error) {
-	var users []*user.User
-	query := r.db.WithContext(ctx).Where("is_featured = ?", true)
-	
-	if userType != "" {
-		query = query.Where("user_type = ?", userType)
-	}
-	
-	err := query.Order("rating DESC").Limit(limit).Find(&users).Error
-	return users, err
-}
-
+// FindRisingTalent finds rising talent users
 func (r *UserRepository) FindRisingTalent(ctx context.Context, limit int) ([]*user.User, error) {
 	var users []*user.User
 	err := r.db.WithContext(ctx).
@@ -1258,45 +1567,12 @@ func (r *UserRepository) FindRisingTalent(ctx context.Context, limit int) ([]*us
 	return users, err
 }
 
-func (r *UserRepository) FindExpertVettedFreelancers(ctx context.Context, limit int) ([]*user.User, error) {
-	var users []*user.User
-	err := r.db.WithContext(ctx).
-		Where("is_expert_vetted = ? AND user_type IN ?", true, []user.UserType{user.UserTypeFreelancer, user.UserTypeBoth}).
-		Order("rating DESC").
-		Limit(limit).
-		Find(&users).Error
-	return users, err
-}
-
+// FindOnlineUsers finds online users (alias for GetOnlineUsers)
 func (r *UserRepository) FindOnlineUsers(ctx context.Context, userType user.UserType) ([]*user.User, error) {
-	var users []*user.User
-	query := r.db.WithContext(ctx).Where("is_online = ?", true)
-	
-	if userType != "" {
-		query = query.Where("user_type = ?", userType)
-	}
-	
-	err := query.Find(&users).Error
-	return users, err
+	return r.GetOnlineUsers(ctx, userType)
 }
 
-func (r *UserRepository) FindRecentlyActive(ctx context.Context, hours int, filter user.ListFilter) ([]*user.User, int64, error) {
-	threshold := time.Now().Add(-time.Duration(hours) * time.Hour)
-	filter.LastLoginAfter = &threshold
-	return r.List(ctx, filter)
-}
-
-func (r *UserRepository) FindInactiveUsers(ctx context.Context, days int) ([]*user.User, error) {
-	var users []*user.User
-	threshold := time.Now().AddDate(0, 0, -days)
-	err := r.db.WithContext(ctx).
-		Where("last_login_at < ? OR last_login_at IS NULL", threshold).
-		Find(&users).Error
-	return users, err
-}
-
-func (r *UserRepository) FindNewUsers(ctx context.Context, days int, filter user.ListFilter) ([]*user.User, int64, error) {
-	threshold := time.Now().AddDate(0, 0, -days)
-	filter.CreatedAfter = &threshold
-	return r.List(ctx, filter)
+// FindFeaturedUsers finds featured users (alias for GetFeaturedUsers)
+func (r *UserRepository) FindFeaturedUsers(ctx context.Context, userType user.UserType, limit int) ([]*user.User, error) {
+	return r.GetFeaturedUsers(ctx, userType, limit)
 }

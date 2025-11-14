@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package skillsier.subscription.v1;
+
+option go_package = "skillsier.dev/contracts/events/gen/go/subscription/v1;subscriptionv1";
+
+import "google/protobuf/timestamp.proto";
+import "skillsier/common/v1/metadata.proto";
+import "skillsier/common/v1/enums.proto";
+import "skillsier/common/v1/value_objects.proto";
+
+// SubscriptionCancelled event
+// Topic: subscription.subscription_cancelled
+// Owner: subscription-be
+message SubscriptionCancelled {
+  // Base event metadata (REQUIRED in ALL events)
+  skillsier.common.v1.BaseEventMetadata metadata = 1;
+  
+  string subscription_id = 2;
+  string user_id = 3;
+  string cancelled_by_user_id = 4;
+  string cancellation_reason = 5;
+  string cancellation_feedback = 6;
+  google.protobuf.Timestamp cancelled_at = 7;
+  google.protobuf.Timestamp effective_cancellation_date = 8;
+  bool immediate_cancellation = 9;
+  bool refund_issued = 10;
+  double refund_amount = 11;
+}
