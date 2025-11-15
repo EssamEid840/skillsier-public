@@ -1,8 +1,0 @@
-{
-  "extends": [
-    "@skillsier/config/eslint/base"
-  ],
-  "rules": {
-    "@typescript-eslint/no-explicit-any": "warn"
-  }
-}

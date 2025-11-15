@@ -1,7 +1,0 @@
-# ============================================
-# PNPM WORKSPACE CONFIG
-# ============================================
-# File: pnpm-workspace.yaml
-packages:
-  - 'apps/*'
-  - 'packages/*'

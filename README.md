@@ -1,2 +1,0 @@
-# skillsier-public
-  .
