@@ -54,12 +54,12 @@ func NewConsumer(cfg config.KafkaConfig) (*Consumer, error) {
 		case "SCRAM-SHA-256":
 			saramaConfig.Net.SASL.Mechanism = sarama.SASLTypeSCRAMSHA256
 			saramaConfig.Net.SASL.SCRAMClientGeneratorFunc = func() sarama.SCRAMClient {
-				return &SCRAMClient{HashGeneratorFcn: SHA256}
+				return &XDGSCRAMClient{HashGeneratorFcn: SHA256}
 			}
 		case "SCRAM-SHA-512":
 			saramaConfig.Net.SASL.Mechanism = sarama.SASLTypeSCRAMSHA512
 			saramaConfig.Net.SASL.SCRAMClientGeneratorFunc = func() sarama.SCRAMClient {
-				return &SCRAMClient{HashGeneratorFcn: SHA512}
+				return &XDGSCRAMClient{HashGeneratorFcn: SHA512}
 			}
 		case "PLAIN":
 			saramaConfig.Net.SASL.Mechanism = sarama.SASLTypePlaintext

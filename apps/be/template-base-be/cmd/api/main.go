@@ -2,70 +2,89 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"<module>/internal/config"
+	"<module>/internal/infrastructure/messaging/kafka"
+	"<module>/internal/infrastructure/persistence/postgres"
 	"<module>/internal/ioc"
+	httpInterface "<module>/internal/interfaces/http"
+	
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	// Load configuration
 	cfg := config.Load()
 
-	// Print startup banner
-	printBanner(cfg)
-
-	// Build dependency injection container
-	container, err := ioc.BuildContainer(cfg)
+	// Connect to database
+	db, err := postgres.NewConnection(cfg.Database)
 	if err != nil {
-		log.Fatalf("Failed to build DI container: %v", err)
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer container.Cleanup()
 
-	// Start outbox dispatcher (if enabled)
-	if cfg.Outbox.Enabled {
-		log.Println("Starting outbox dispatcher...")
-		go container.OutboxDispatcher.Start(context.Background())
+	// Run migrations
+	if err := postgres.AutoMigrate(db); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
 	}
+
+	// Wire repositories using DI
+	initialEntityRepo, outboxRepo := ioc.WireRepositories(db)
+
+	// Wire services using DI
+	initialEntityService := ioc.WireServices(initialEntityRepo, outboxRepo, db)
+
+	// Wire handlers using DI
+	initialEntityHandler, healthHandler := ioc.WireHandlers(initialEntityService)
+
+	// Initialize Kafka producer
+	producer, err := kafka.NewProducer(cfg.Kafka)
+	if err != nil {
+		log.Fatalf("Failed to create Kafka producer: %v", err)
+	}
+	defer producer.Close()
+
+	// Wire messaging (outbox dispatcher)
+	dispatcher := ioc.WireMessaging(db, producer, outboxRepo)
+	go dispatcher.Start(context.Background())
+
+	// Setup HTTP router
+	router := gin.Default()
+	httpInterface.RegisterRoutes(router, initialEntityHandler, healthHandler)
 
 	// Start HTTP server
 	srv := &http.Server{
-		Addr:         ":" + cfg.Server.Port,
-		Handler:      container.Router,
-		ReadTimeout:  cfg.Server.ReadTimeout,
-		WriteTimeout: cfg.Server.WriteTimeout,
-		IdleTimeout:  cfg.Server.IdleTimeout,
+		Addr:    ":" + cfg.Server.Port,
+		Handler: router,
 	}
 
-	// Start server in goroutine
 	go func() {
-		log.Printf("Starting HTTP server on port %s", cfg.Server.Port)
+		log.Printf("Starting server on port %s", cfg.Server.Port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Server failed to start: %v", err)
+			log.Fatalf("Failed to start server: %v", err)
 		}
 	}()
 
-	// Wait for interrupt signal for graceful shutdown
+	// Wait for interrupt signal
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-
 	log.Println("Shutting down server...")
 
-	// Graceful shutdown with timeout
-	ctx, cancel := context.WithTimeout(context.Background(), cfg.Server.ShutdownTimeout)
+	// Graceful shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown: %v", err)
+		log.Fatal("Server forced to shutdown:", err)
 	}
 
-	log.Println("Server exited gracefully")
+	log.Println("Server exited")
 }
 
 // printBanner prints startup information

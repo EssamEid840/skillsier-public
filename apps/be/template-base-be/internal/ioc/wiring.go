@@ -2,7 +2,7 @@ package ioc
 
 import (
 	"<module>/internal/application/initial_entity"
-	"<module>/internal/domain/initial_entity"
+	initialentitydomain "<module>/internal/domain/initial_entity"
 	"<module>/internal/infrastructure/messaging/kafka"
 	"<module>/internal/infrastructure/messaging/outbox"
 	"<module>/internal/infrastructure/persistence/postgres"
@@ -11,25 +11,23 @@ import (
 	"gorm.io/gorm"
 )
 
-// WireRepositories creates all repository implementations
-func WireRepositories(db *gorm.DB) (*postgres.InitialEntityRepository, *postgres.OutboxStore) {
+func WireRepositories(db *gorm.DB) (initialentitydomain.Repository, *postgres.OutboxRepository) {
 	initialEntityRepo := postgres.NewInitialEntityRepository(db)
-	outboxStore := postgres.NewOutboxStore(db)
+	outboxRepo := postgres.NewOutboxRepository(db)
 	
-	return initialEntityRepo, outboxStore
+	return initialEntityRepo, outboxRepo
 }
 
-// WireServices creates all application services with their dependencies
 func WireServices(
-	initialEntityRepo initial_entity.Repository,
-	outboxStore *postgres.OutboxStore,
+	initialEntityRepo initialentitydomain.Repository,
+	outboxRepo *postgres.OutboxRepository,
+	db *gorm.DB,
 ) *initial_entity.Service {
-	initialEntityService := initial_entity.NewService(initialEntityRepo, outboxStore)
+	initialEntityService := initial_entity.NewService(initialEntityRepo, outboxRepo, db)
 	
 	return initialEntityService
 }
 
-// WireHandlers creates all HTTP handlers with their dependencies
 func WireHandlers(
 	initialEntityService *initial_entity.Service,
 ) (*handlers.InitialEntityHandler, *handlers.HealthHandler) {
@@ -39,26 +37,12 @@ func WireHandlers(
 	return initialEntityHandler, healthHandler
 }
 
-// WireMessaging creates Kafka producer and outbox dispatcher
 func WireMessaging(
 	db *gorm.DB,
 	producer *kafka.Producer,
-	outboxStore *postgres.OutboxStore,
-	cfg interface{}, // Pass config for outbox settings
+	outboxRepo *postgres.OutboxRepository,
 ) *outbox.Dispatcher {
-	dispatcher := outbox.NewDispatcher(db, producer, outboxStore)
+	dispatcher := outbox.NewDispatcher(db, producer, outboxRepo)
 	
 	return dispatcher
 }
-
-// WireEventConsumers creates Kafka consumers for consuming events from other services
-// Uncomment and implement when you need to consume events
-/*
-func WireEventConsumers(
-	consumer *kafka.Consumer,
-	initialEntityService *initial_entity.Service,
-) {
-	// Example: Register handlers for events from other services
-	// consumer.Subscribe("other-service-events", handlers.HandleOtherServiceEvent)
-}
-*/
