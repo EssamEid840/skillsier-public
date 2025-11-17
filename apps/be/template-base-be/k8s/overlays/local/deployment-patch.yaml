@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <service>-be
+  namespace: <k8s_namespace>
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: <service>-be
+          env:
+            # Override for local development
+            - name: <SERVICE>_BE_APP_ENVIRONMENT
+              value: "development"
+            - name: <SERVICE>_BE_APP_LOG_LEVEL
+              value: "debug"
+            - name: <SERVICE>_BE_DATABASE_AUTO_MIGRATE
+              value: "true"
+            - name: <SERVICE>_BE_KAFKA_TLS_SKIP_VERIFY
+              value: "true"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"

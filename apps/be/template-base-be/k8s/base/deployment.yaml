@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <service>-be
+  namespace: <k8s_namespace>
+  labels:
+    app: <service>-be
+    version: v1
+    component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: <service>-be
+  template:
+    metadata:
+      labels:
+        app: <service>-be
+        version: v1
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "<service>-be"
+        dapr.io/app-port: "<service_port>"
+        dapr.io/config: "dapr-config"
+        dapr.io/log-level: "info"
+    spec:
+      serviceAccountName: <service>-be
+      containers:
+        - name: <service>-be
+          image: <docker_image>
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: <service_port>
+              protocol: TCP
+          env:
+            # Application configuration
+            - name: <SERVICE>_BE_APP_ENVIRONMENT
+              value: "production"
+            - name: <SERVICE>_BE_APP_PORT
+              value: "<service_port>"
+            - name: <SERVICE>_BE_APP_LOG_LEVEL
+              value: "info"
+            
+            # Database configuration
+            - name: <SERVICE>_BE_DATABASE_HOST
+              value: "<service>-be-postgres.<k8s_namespace>.svc.cluster.local"
+            - name: <SERVICE>_BE_DATABASE_PORT
+              value: "5432"
+            - name: <SERVICE>_BE_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: <service>-be-postgres
+                  key: POSTGRES_USER
+            - name: <SERVICE>_BE_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: <service>-be-postgres
+                  key: POSTGRES_PASSWORD
+            - name: <SERVICE>_BE_DATABASE_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: <service>-be-postgres
+                  key: POSTGRES_DB
+            - name: <SERVICE>_BE_DATABASE_SSL_MODE
+              value: "disable"
+            - name: <SERVICE>_BE_DATABASE_AUTO_MIGRATE
+              value: "false"
+            - name: <SERVICE>_BE_DATABASE_ALLOW_IN_PRODUCTION
+              value: "false"
+            
+            # Kafka configuration
+            - name: <SERVICE>_BE_KAFKA_BROKERS
+              value: "kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: <SERVICE>_BE_KAFKA_SECURITY_PROTOCOL
+              value: "SASL_SSL"
+            - name: <SERVICE>_BE_KAFKA_SASL_USERNAME
+              value: "admin-user"
+            - name: <SERVICE>_BE_KAFKA_SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-admin-credentials
+                  key: password
+            - name: <SERVICE>_BE_KAFKA_SASL_MECHANISM
+              value: "SCRAM-SHA-512"
+            - name: <SERVICE>_BE_KAFKA_TLS_SKIP_VERIFY
+              value: "false"
+            - name: <SERVICE>_BE_KAFKA_CONSUMER_GROUP
+              value: "<service>-be-group"
+            - name: <SERVICE>_BE_KAFKA_TOPIC_PREFIX
+              value: "<service>"
+            
+            # Keycloak configuration
+            - name: <SERVICE>_BE_KEYCLOAK_URL
+              value: "http://keycloak.keycloak.svc.cluster.local:8080"
+            - name: <SERVICE>_BE_KEYCLOAK_REALM
+              value: "<keycloak_realm>"
+            - name: <SERVICE>_BE_KEYCLOAK_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-<service>-be
+                  key: client-id
+            - name: <SERVICE>_BE_KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-<service>-be
+                  key: client-secret
+            
+            # Dapr configuration
+            - name: <SERVICE>_BE_DAPR_ENABLED
+              value: "true"
+            - name: <SERVICE>_BE_DAPR_PUBSUB_NAME
+              value: "kafka-pubsub"
+            - name: <SERVICE>_BE_DAPR_STATE_STORE_NAME
+              value: "statestore"
+            
+            # Outbox configuration
+            - name: <SERVICE>_BE_OUTBOX_ENABLED
+              value: "true"
+            - name: <SERVICE>_BE_OUTBOX_POLL_INTERVAL
+              value: "5s"
+            - name: <SERVICE>_BE_OUTBOX_BATCH_SIZE
+              value: "100"
+          
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: <service_port>
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: <service_port>
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: <service>-be
+  namespace: <k8s_namespace>

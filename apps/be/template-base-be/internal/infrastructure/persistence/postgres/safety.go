@@ -3,161 +3,182 @@ package postgres
 import (
 	"fmt"
 	"log"
-	"strings"
+	"os"
 
 	"gorm.io/gorm"
 
 	"<module>/internal/config"
-	"<module>/internal/domain/initial_entity"
 )
 
-// init registers all entity models for auto-migration
-func init() {
-	// Register domain entities here
-	// When you add a new entity, add it to this list:
-	Register(
-		&initial_entity.InitialEntity{},
-		// Add your new entities here, e.g.:
-		// &your_entity.YourEntity{},
-	)
+// runSafetyChecks performs pre-migration safety checks
+func runSafetyChecks(db *gorm.DB, cfg config.DatabaseConfig) error {
+	log.Println("→ Running pre-migration safety checks...")
 
-	// Register outbox table
-	Register(&OutboxEvent{})
+	// Check 1: Database connectivity
+	if err := Ping(db); err != nil {
+		return fmt.Errorf("database connectivity check failed: %w", err)
+	}
+	log.Println("  ✓ Database connectivity OK")
+
+	// Check 2: Sufficient disk space (if possible)
+	if err := checkDiskSpace(); err != nil {
+		log.Printf("  ⚠ Could not verify disk space: %v", err)
+	} else {
+		log.Println("  ✓ Disk space OK")
+	}
+
+	// Check 3: Check if tables exist (for first-time migration)
+	if err := checkTablesExist(db); err != nil {
+		log.Printf("  ℹ First-time migration detected: %v", err)
+	} else {
+		log.Println("  ✓ Existing tables detected")
+	}
+
+	// Check 4: Environment validation
+	if err := checkEnvironment(cfg); err != nil {
+		return fmt.Errorf("environment validation failed: %w", err)
+	}
+	log.Println("  ✓ Environment validation OK")
+
+	log.Println("✓ All safety checks passed")
+	return nil
 }
 
-// OutboxEvent represents the outbox table for reliable event publishing
-type OutboxEvent struct {
-	ID            string `gorm:"type:uuid;primary_key"`
-	AggregateID   string `gorm:"type:varchar(255);not null;index"`
-	AggregateType string `gorm:"type:varchar(100);not null"`
-	EventType     string `gorm:"type:varchar(100);not null;index"`
-	EventVersion  int    `gorm:"not null;default:1"`
-	Payload       []byte `gorm:"type:jsonb;not null"`
-	Metadata      []byte `gorm:"type:jsonb"`
-	Status        string `gorm:"type:varchar(20);not null;default:'pending';index"`
-	Topic         string `gorm:"type:varchar(100);not null"`
-	ErrorMessage  string `gorm:"type:text"`
-	PublishedAt   *int64 `gorm:"index"`
-	CreatedAt     int64  `gorm:"not null;index"`
-	UpdatedAt     int64  `gorm:"not null"`
-	RetryCount    int    `gorm:"default:0"`
-	NextRetryAt   *int64 `gorm:"index"`
-}
-
-// TableName returns the table name for GORM
-func (OutboxEvent) TableName() string {
-	return "outbox_events"
-}
-
-// AutoMigrate performs automatic database migrations based on registered entity models
-func AutoMigrate(db *gorm.DB, cfg config.DatabaseConfig) error {
-	migrationConfig := cfg.MigrationConfig
-
-	// Check if auto-migration is enabled
-	if !cfg.AutoMigrate || !migrationConfig.Enabled {
-		log.Println("⊗ Auto-migration is disabled")
-		return nil
-	}
-
-	// Production safety check
-	if err := checkProductionSafety(cfg); err != nil {
-		return fmt.Errorf("production safety check failed: %w", err)
-	}
-
-	// Pre-migration safety checks
-	if err := runSafetyChecks(db, cfg); err != nil {
-		return fmt.Errorf("safety checks failed: %w", err)
-	}
-
-	// Get registered models
-	models := GetRegisteredModels()
-	if len(models) == 0 {
-		log.Println("⚠ No entity models registered for auto-migration")
-		return nil
-	}
-
-	log.Printf("→ Starting auto-migration for %d entity models...", len(models))
-
-	// Print registered models
-	if migrationConfig.LogMigrationSummary {
-		PrintRegisteredModels()
-	}
-
-	// Track schema version before migration
-	versionBefore, err := GetSchemaVersion(db)
+// checkDiskSpace checks if there is sufficient disk space
+func checkDiskSpace() error {
+	// This is a simplified check - in production you might want to use
+	// platform-specific APIs to check actual disk space
+	
+	// For now, just check if we can create a temp file
+	tmpFile, err := os.CreateTemp("", "diskcheck")
 	if err != nil {
-		log.Printf("⚠ Could not get schema version before migration: %v", err)
-		versionBefore = 0
+		return fmt.Errorf("cannot write to disk: %w", err)
 	}
+	defer os.Remove(tmpFile.Name())
+	defer tmpFile.Close()
 
-	// Perform auto-migration
-	if err := db.AutoMigrate(models...); err != nil {
-		return fmt.Errorf("auto-migration failed: %w", err)
-	}
-
-	// Update schema version
-	versionAfter := versionBefore + 1
-	if err := SetSchemaVersion(db, versionAfter); err != nil {
-		log.Printf("⚠ Could not update schema version: %v", err)
-	}
-
-	// Log migration summary
-	if migrationConfig.LogMigrationSummary {
-		logMigrationSummary(db, models, versionBefore, versionAfter)
-	}
-
-	log.Printf("✓ Auto-migration completed successfully (schema version: %d → %d)", versionBefore, versionAfter)
-
-	return nil
-}
-
-// checkProductionSafety ensures auto-migration is safe to run in production
-func checkProductionSafety(cfg config.DatabaseConfig) error {
-	// Check if running in production
-	isProduction := strings.ToLower(cfg.SSLMode) == "require" || 
-		strings.ToLower(cfg.SSLMode) == "verify-ca" ||
-		strings.ToLower(cfg.SSLMode) == "verify-full"
-
-	if isProduction {
-		// In production, auto-migrate must be explicitly allowed
-		if !cfg.MigrationConfig.AllowInProduction {
-			return fmt.Errorf("auto-migration is disabled in production (set ALLOW_IN_PRODUCTION=true to override)")
-		}
-
-		log.Println("⚠ Running auto-migration in production environment!")
-
-		// Warn about destructive changes
-		if cfg.MigrationConfig.AllowDestructive {
-			log.Println("⚠ WARNING: Destructive schema changes are ALLOWED in production!")
-		}
+	// Try to write 1MB
+	data := make([]byte, 1024*1024)
+	if _, err := tmpFile.Write(data); err != nil {
+		return fmt.Errorf("disk write test failed: %w", err)
 	}
 
 	return nil
 }
 
-// logMigrationSummary logs what was migrated
-func logMigrationSummary(db *gorm.DB, models []interface{}, versionBefore, versionAfter int) {
-	log.Println("═══════════════════════════════════════════════════════════")
-	log.Println("               MIGRATION SUMMARY")
-	log.Println("═══════════════════════════════════════════════════════════")
-	log.Printf("Schema Version:    %d → %d", versionBefore, versionAfter)
-	log.Printf("Models Migrated:   %d", len(models))
-	log.Println("───────────────────────────────────────────────────────────")
-	log.Println("Tables:")
+// checkTablesExist checks if any tables exist in the database
+func checkTablesExist(db *gorm.DB) error {
+	var count int64
+	
+	// Query for any tables
+	err := db.Raw(`
+		SELECT COUNT(*) 
+		FROM information_schema.tables 
+		WHERE table_schema = 'public' 
+		AND table_type = 'BASE TABLE'
+	`).Scan(&count).Error
+	
+	if err != nil {
+		return fmt.Errorf("failed to check for existing tables: %w", err)
+	}
+
+	if count == 0 {
+		return fmt.Errorf("no tables exist (first-time migration)")
+	}
+
+	return nil
+}
+
+// checkEnvironment validates the environment configuration
+func checkEnvironment(cfg config.DatabaseConfig) error {
+	// Ensure required environment variables are set
+	if cfg.Host == "" {
+		return fmt.Errorf("database host not configured")
+	}
+
+	if cfg.Database == "" {
+		return fmt.Errorf("database name not configured")
+	}
+
+	if cfg.User == "" {
+		return fmt.Errorf("database user not configured")
+	}
+
+	if cfg.Password == "" {
+		return fmt.Errorf("database password not configured")
+	}
+
+	// Validate connection pool settings
+	if cfg.MaxOpenConns < 1 {
+		return fmt.Errorf("max_open_conns must be at least 1")
+	}
+
+	if cfg.MaxIdleConns < 1 {
+		return fmt.Errorf("max_idle_conns must be at least 1")
+	}
+
+	if cfg.MaxIdleConns > cfg.MaxOpenConns {
+		return fmt.Errorf("max_idle_conns cannot exceed max_open_conns")
+	}
+
+	return nil
+}
+
+// CheckDestructiveChanges checks if the migration would perform destructive changes
+// This is a placeholder - in a real implementation, you would compare the current schema
+// with the target schema to detect destructive changes
+func CheckDestructiveChanges(db *gorm.DB, models []interface{}) (bool, error) {
+	// TODO: Implement actual destructive change detection
+	// This would involve:
+	// 1. Getting the current schema from the database
+	// 2. Comparing it with the schema that would be created by the models
+	// 3. Detecting column drops, type changes, constraint changes, etc.
+	
+	// For now, we'll return false (no destructive changes detected)
+	return false, nil
+}
+
+// BackupSchema creates a backup of the current schema
+// This is a placeholder - in production, you would implement actual backup logic
+func BackupSchema(db *gorm.DB) error {
+	log.Println("  → Creating schema backup...")
+	
+	// TODO: Implement actual schema backup
+	// This could involve:
+	// 1. Exporting the schema using pg_dump
+	// 2. Storing it in a versioned location
+	// 3. Optionally backing up data as well
+	
+	log.Println("  ⚠ Schema backup not implemented (placeholder)")
+	return nil
+}
+
+// VerifyMigrationIntegrity verifies that the migration completed successfully
+func VerifyMigrationIntegrity(db *gorm.DB, models []interface{}) error {
+	log.Println("→ Verifying migration integrity...")
 
 	for _, model := range models {
 		tableName := getTableName(db, model)
-		log.Printf("  • %s (%T)", tableName, model)
+		
+		// Check if table exists
+		var exists bool
+		err := db.Raw(`
+			SELECT EXISTS (
+				SELECT FROM information_schema.tables 
+				WHERE table_schema = 'public' 
+				AND table_name = ?
+			)
+		`, tableName).Scan(&exists).Error
+		
+		if err != nil {
+			return fmt.Errorf("failed to verify table %s: %w", tableName, err)
+		}
+
+		if !exists {
+			return fmt.Errorf("table %s was not created", tableName)
+		}
 	}
 
-	log.Println("═══════════════════════════════════════════════════════════")
-}
-
-// getTableName gets the table name for a model
-func getTableName(db *gorm.DB, model interface{}) string {
-	stmt := &gorm.Statement{DB: db}
-	if err := stmt.Parse(model); err != nil {
-		return "unknown"
-	}
-	return stmt.Schema.Table
+	log.Println("✓ Migration integrity verified")
+	return nil
 }

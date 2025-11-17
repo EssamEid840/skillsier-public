@@ -119,6 +119,12 @@ template-<service>-be/
 │   └── README.md                                  # Migration usage notes (optional, primary method is auto-migrate)
 │
 ├── k8s/
+│   ├── db/
+│   │   ├── postgres-secret.yaml
+│   │   ├── postgres-statefulset.yaml
+│   │   ├── postgres-service.yaml
+│   │   └── postgres-nodeport.yaml
+│   │   └── postgres-networkpolicy.yaml
 │   ├── base/
 │   │   ├── deployment.yaml                        # Kubernetes Deployment with placeholders (<service>, <docker_image>, etc.)
 │   │   ├── service.yaml                           # Kubernetes Service (ClusterIP)
