@@ -75905,7 +75905,7 @@ Suggested tracking:
     ```json
     {
       "api_key_id": "key_abc123",
-      "api_key": "sk_example_do_not_copy_1234567890",
+      "api_key": "",
       "name": "Production API Key",
       "created_at": "2025-01-15T17:45:00Z",
       "permissions": ["messages.read", "messages.send", "conversations.read"],
@@ -75919,7 +75919,7 @@ Suggested tracking:
       ```
       ✅ API Key Generated
       
-      🔑 sk_example_do_not_copy_1234567890
+      🔑 
       
       [Copy to Clipboard]
       
@@ -75927,7 +75927,7 @@ Suggested tracking:
       You won't be able to see it again.
       
       Use this key in API requests:
-      Authorization: Bearer sk_example_do_not_copy_1234567890
+      Authorization: Bearer sk_live_K9v7N2pQ8xR4mT6hJ3cL...
       
       [I've Saved My Key]
       ```
@@ -75938,7 +75938,7 @@ Suggested tracking:
       ```
       GET https://api.skillsier.com/v1/messages?conversation_id=conv_xyz
       Headers:
-        Authorization: Bearer sk_example_do_not_copy_1234567890
+        Authorization: Bearer 
         Content-Type: application/json
       ```
     - Backend validates API key:
@@ -76618,7 +76618,7 @@ Suggested tracking:
 │ ┌────────────────────────────────────────────────────┐  │
 │ │ Production API Key                      ● ACTIVE   │  │
 │ │                                                     │  │
-│ │ sk_live_...S7yA (last 4 chars)                    │  │
+│ │ s (last 4 chars)                    │  │
 │ │ Created: Jan 15, 2025                              │  │
 │ │ Last Used: 2 minutes ago                           │  │
 │ │                                                     │  │
