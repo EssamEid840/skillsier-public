@@ -1,0 +1,31 @@
+{
+  "cli": {
+    "version": ">= 12.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "API_BASE_URL": "http://localhost:8080",
+        "AUTH_PROVIDER": "dev"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "API_BASE_URL": "https://api-staging.skillsier.com",
+        "AUTH_PROVIDER": "keycloak"
+      }
+    },
+    "production": {
+      "env": {
+        "API_BASE_URL": "https://api.skillsier.com",
+        "AUTH_PROVIDER": "keycloak"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

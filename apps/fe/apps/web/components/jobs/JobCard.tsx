@@ -1,6 +1,8 @@
-import Link from 'next/link';
+'use client';
+
+import { Card } from '@skillsier/ui';
 import type { Job } from '@skillsier/types';
-import { Card, CardHeader, CardTitle, CardContent } from '@skillsier/ui';
+import Link from 'next/link';
 
 interface JobCardProps {
   job: Job;
@@ -8,50 +10,35 @@ interface JobCardProps {
 
 export function JobCard({ job }: JobCardProps) {
   return (
-    <Link href={`/dashboard/jobs/${job.id}`}>
-      <Card className="transition-shadow hover:shadow-md">
-        <CardHeader>
-          <CardTitle className="text-lg">{job.title}</CardTitle>
-          <div className="flex gap-2">
-            <span className="text-xs text-secondary-600">{job.category}</span>
-            <span className="text-xs text-secondary-400">•</span>
-            <span className="text-xs text-secondary-600">
-              {job.proposalCount} proposals
-            </span>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4 line-clamp-2 text-sm text-secondary-600">
-            {job.description}
-          </p>
+    <Link href={`/(authenticated)/(dashboard)/jobs/${job.id}`}>
+      <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer">
+        <div className="flex items-start justify-between mb-3">
+          <h3 className="text-xl font-semibold text-gray-900">{job.title}</h3>
+          <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary-100 text-primary-700">
+            {job.status}
+          </span>
+        </div>
 
-          <div className="mb-4 flex flex-wrap gap-2">
-            {job.skills.slice(0, 4).map((skill) => (
-              <span
-                key={skill}
-                className="rounded-lg bg-secondary-100 px-2 py-1 text-xs"
-              >
-                {skill}
-              </span>
-            ))}
-            {job.skills.length > 4 && (
-              <span className="rounded-lg bg-secondary-100 px-2 py-1 text-xs">
-                +{job.skills.length - 4} more
+        <p className="text-gray-600 mb-4 line-clamp-2">{job.description}</p>
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 text-sm text-gray-500">
+            {job.budget && (
+              <span className="font-semibold text-primary-500">
+                ${job.budget.toLocaleString()}
               </span>
             )}
+            {job.createdAt && (
+              <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
+            )}
           </div>
-
-          <div className="flex items-center justify-between">
-            <div className="font-semibold text-primary">
-              {job.budgetType === 'HOURLY'
-                ? `$${job.budgetMin}-$${job.budgetMax}/hr`
-                : `$${job.budgetAmount}`}
-            </div>
-            <span className="text-xs text-secondary-500">
-              Posted {new Date(job.createdAt).toLocaleDateString()}
+          
+          {job.proposalCount !== undefined && (
+            <span className="text-sm text-gray-500">
+              {job.proposalCount} proposals
             </span>
-          </div>
-        </CardContent>
+          )}
+        </div>
       </Card>
     </Link>
   );
