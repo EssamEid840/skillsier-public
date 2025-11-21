@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-be
+  namespace: skillsier
+  labels:
+    app: users-be
+    version: v1
+    component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: users-be
+  template:
+    metadata:
+      labels:
+        app: users-be
+        version: v1
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "users-be"
+        dapr.io/app-port: "8080"
+        dapr.io/config: "dapr-config"
+        dapr.io/log-level: "info"
+    spec:
+      serviceAccountName: users-be
+      containers:
+        - name: users-be
+          image: skillsier/users-be:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            # Application configuration
+            - name: USERS_BE_APP_ENVIRONMENT
+              value: "production"
+            - name: USERS_BE_APP_PORT
+              value: "8080"
+            - name: USERS_BE_APP_LOG_LEVEL
+              value: "info"
+            
+            # Database configuration
+            - name: USERS_BE_DATABASE_HOST
+              value: "users-be-postgres.skillsier.svc.cluster.local"
+            - name: USERS_BE_DATABASE_PORT
+              value: "5432"
+            - name: USERS_BE_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: users-be-postgres
+                  key: POSTGRES_USER
+            - name: USERS_BE_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: users-be-postgres
+                  key: POSTGRES_PASSWORD
+            - name: USERS_BE_DATABASE_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: users-be-postgres
+                  key: POSTGRES_DB
+            - name: USERS_BE_DATABASE_SSL_MODE
+              value: "disable"
+            - name: USERS_BE_DATABASE_AUTO_MIGRATE
+              value: "false"
+            - name: USERS_BE_DATABASE_ALLOW_IN_PRODUCTION
+              value: "false"
+            
+            # Kafka configuration
+            - name: USERS_BE_KAFKA_BROKERS
+              value: "kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: USERS_BE_KAFKA_SECURITY_PROTOCOL
+              value: "SASL_SSL"
+            - name: USERS_BE_KAFKA_SASL_USERNAME
+              value: "admin-user"
+            - name: USERS_BE_KAFKA_SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-admin-credentials
+                  key: password
+            - name: USERS_BE_KAFKA_SASL_MECHANISM
+              value: "SCRAM-SHA-512"
+            - name: USERS_BE_KAFKA_TLS_SKIP_VERIFY
+              value: "false"
+            - name: USERS_BE_KAFKA_CONSUMER_GROUP
+              value: "users-be-group"
+            - name: USERS_BE_KAFKA_TOPIC_PREFIX
+              value: "users"
+            
+            # Keycloak configuration
+            - name: USERS_BE_KEYCLOAK_URL
+              value: "http://keycloak.keycloak.svc.cluster.local:8080"
+            - name: USERS_BE_KEYCLOAK_REALM
+              value: "skillsier"
+            - name: USERS_BE_KEYCLOAK_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-users-be
+                  key: client-id
+            - name: USERS_BE_KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-users-be
+                  key: client-secret
+            
+            # Dapr configuration
+            - name: USERS_BE_DAPR_ENABLED
+              value: "true"
+            - name: USERS_BE_DAPR_PUBSUB_NAME
+              value: "kafka-pubsub"
+            - name: USERS_BE_DAPR_STATE_STORE_NAME
+              value: "statestore"
+            
+            # Outbox configuration
+            - name: USERS_BE_OUTBOX_ENABLED
+              value: "true"
+            - name: USERS_BE_OUTBOX_POLL_INTERVAL
+              value: "5s"
+            - name: USERS_BE_OUTBOX_BATCH_SIZE
+              value: "100"
+          
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: users-be
+  namespace: skillsier

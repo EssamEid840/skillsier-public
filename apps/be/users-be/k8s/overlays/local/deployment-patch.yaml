@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-be
+  namespace: skillsier
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: users-be
+          env:
+            # Override for local development
+            - name: USERS_BE_APP_ENVIRONMENT
+              value: "development"
+            - name: USERS_BE_APP_LOG_LEVEL
+              value: "debug"
+            - name: USERS_BE_DATABASE_AUTO_MIGRATE
+              value: "true"
+            - name: USERS_BE_KAFKA_TLS_SKIP_VERIFY
+              value: "true"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
