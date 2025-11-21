@@ -1,0 +1,83 @@
+import type { JobDTO, JobListDTO } from '@skillsier/types';
+
+export const mockJobs: JobDTO[] = [
+  {
+    job_id: '1',
+    title: 'Senior Full-Stack Developer',
+    description: 'We are looking for an experienced full-stack developer to build a modern web application using React and Node.js.',
+    status: 'OPEN',
+    budget_type: 'HOURLY',
+    budget_min: 50,
+    budget_max: 100,
+    currency: 'USD',
+    duration: 'ONE_TO_THREE_MONTHS',
+    experience_level: 'EXPERT',
+    visibility: 'PUBLIC',
+    skills: ['React', 'Node.js', 'TypeScript', 'PostgreSQL'],
+    category: 'Web Development',
+    subcategory: 'Full-Stack',
+    client_id: 'client-1',
+    proposal_count: 12,
+    view_count: 145,
+    deadline: '2024-12-31T23:59:59Z',
+    created_at: '2024-11-01T10:00:00Z',
+    updated_at: '2024-11-15T14:30:00Z',
+    published_at: '2024-11-01T12:00:00Z',
+  },
+  {
+    job_id: '2',
+    title: 'Mobile App Developer (React Native)',
+    description: 'Looking for a React Native expert to build a cross-platform mobile application for iOS and Android.',
+    status: 'OPEN',
+    budget_type: 'FIXED',
+    budget_amount: 8000,
+    currency: 'USD',
+    duration: 'ONE_TO_FOUR_WEEKS',
+    experience_level: 'INTERMEDIATE',
+    visibility: 'PUBLIC',
+    skills: ['React Native', 'JavaScript', 'iOS', 'Android'],
+    category: 'Mobile Development',
+    client_id: 'client-2',
+    proposal_count: 8,
+    view_count: 89,
+    created_at: '2024-11-10T09:00:00Z',
+    updated_at: '2024-11-10T09:00:00Z',
+    published_at: '2024-11-10T10:00:00Z',
+  },
+  {
+    job_id: '3',
+    title: 'UI/UX Designer for SaaS Platform',
+    description: 'Need a talented designer to create modern, user-friendly interfaces for our B2B SaaS platform.',
+    status: 'OPEN',
+    budget_type: 'HOURLY',
+    budget_min: 40,
+    budget_max: 80,
+    currency: 'USD',
+    duration: 'THREE_TO_SIX_MONTHS',
+    experience_level: 'INTERMEDIATE',
+    visibility: 'PUBLIC',
+    skills: ['Figma', 'UI Design', 'UX Research', 'Prototyping'],
+    category: 'Design',
+    subcategory: 'UI/UX',
+    client_id: 'client-1',
+    proposal_count: 15,
+    view_count: 203,
+    created_at: '2024-11-05T11:00:00Z',
+    updated_at: '2024-11-12T16:20:00Z',
+    published_at: '2024-11-05T13:00:00Z',
+  },
+];
+
+export const mockJobListResponse: JobListDTO = {
+  jobs: mockJobs,
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 3,
+    total_pages: 1,
+  },
+};
+
+export const getMockJob = (jobId: string): JobDTO | undefined => {
+  return mockJobs.find(job => job.job_id === jobId);
+};

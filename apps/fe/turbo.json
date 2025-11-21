@@ -1,0 +1,39 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", ".expo/**"],
+      "env": [
+        "NODE_ENV",
+        "API_BASE_URL",
+        "NEXTAUTH_SECRET",
+        "NEXTAUTH_URL",
+        "AUTH_PROVIDER"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    },
+    "test:e2e": {
+      "cache": false,
+      "outputs": ["playwright-report/**", "test-results/**"]
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

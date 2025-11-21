@@ -1,0 +1,32 @@
+export enum JobStatus {
+  DRAFT = 'DRAFT',
+  OPEN = 'OPEN',
+  IN_PROGRESS = 'IN_PROGRESS',
+  CLOSED = 'CLOSED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum JobBudgetType {
+  HOURLY = 'HOURLY',
+  FIXED = 'FIXED',
+}
+
+export enum JobDuration {
+  LESS_THAN_WEEK = 'LESS_THAN_WEEK',
+  ONE_TO_FOUR_WEEKS = 'ONE_TO_FOUR_WEEKS',
+  ONE_TO_THREE_MONTHS = 'ONE_TO_THREE_MONTHS',
+  THREE_TO_SIX_MONTHS = 'THREE_TO_SIX_MONTHS',
+  MORE_THAN_SIX_MONTHS = 'MORE_THAN_SIX_MONTHS',
+}
+
+export enum ExperienceLevel {
+  ENTRY = 'ENTRY',
+  INTERMEDIATE = 'INTERMEDIATE',
+  EXPERT = 'EXPERT',
+}
+
+export enum JobVisibility {
+  PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
+  INVITE_ONLY = 'INVITE_ONLY',
+}

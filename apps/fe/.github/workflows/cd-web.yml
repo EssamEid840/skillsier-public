@@ -1,0 +1,38 @@
+name: CD - Web Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+      - 'packages/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build
+        run: pnpm --filter web build
+        env:
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+      
+      - name: Deploy to Vercel
+        run: echo "Deploy step - configure with Vercel CLI or deployment target"
