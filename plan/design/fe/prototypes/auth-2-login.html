@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skillsier - Log In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D90429',
+                        'primary-dark': '#B90524',
+                        'primary-light': '#FFF0F3',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 20px rgba(0, 0, 0, 0.03)',
+                        'card-hover': '0 10px 25px rgba(217, 4, 41, 0.15)',
+                        'button': '0 8px 20px rgba(217, 4, 41, 0.3)',
+                        'input': '0 2px 6px rgba(0,0,0,0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+        }
+
+        /* Gradient Background */
+        .auth-gradient {
+            background: linear-gradient(135deg, rgba(217, 4, 41, 0.95) 0%, rgba(141, 2, 31, 0.95) 100%), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            background-blend-mode: multiply;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Mobile Frame */
+        .mobile-frame {
+            width: 375px;
+            height: 812px;
+            border: 12px solid #111;
+            border-radius: 48px;
+            overflow: hidden;
+            position: relative;
+            background: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .mobile-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 32px;
+            background: #111;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 h-screen flex flex-col overflow-hidden">
+
+    <!-- Prototype Toolbar -->
+    <div class="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between z-50 sticky top-0">
+        <div class="flex items-center gap-3">
+            <img src="logo.png" alt="Skillsier Logo" class="w-8 h-8 object-contain">
+            <span class="font-bold text-gray-900">Skillsier Prototype - Login</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+                <button onclick="setView('desktop')" id="btn-desktop"
+                    class="px-4 py-1.5 rounded-md text-sm font-medium transition-all shadow-sm bg-white text-gray-900">Desktop</button>
+                <button onclick="setView('mobile')" id="btn-mobile"
+                    class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-500 hover:text-gray-900">Mobile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div id="main-container" class="flex-1 overflow-hidden relative">
+
+        <!-- DESKTOP VIEW -->
+        <div id="desktop-view" class="w-full h-full flex">
+            <!-- Left: Red Gradient Hero -->
+            <div class="w-5/12 auth-gradient text-white flex flex-col justify-center px-12 relative">
+                <div class="absolute top-20 right-20 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-20 left-20 w-80 h-80 bg-black opacity-10 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10">
+                    <h1 class="text-5xl font-bold mb-6 leading-tight">Welcome Back.</h1>
+                    <h2 class="text-3xl font-medium text-white/90 mb-8">Continue your journey.</h2>
+                    <p class="text-lg text-white/80 leading-relaxed max-w-md">
+                        Access your dashboard, manage your projects, and connect with the world's best talent.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Form -->
+            <div class="w-7/12 flex flex-col h-full overflow-y-auto bg-white">
+                <div class="flex-1 flex flex-col items-center py-16 px-8">
+                    <div class="max-w-md w-full">
+
+                        <!-- Logo & Header -->
+                        <div class="text-center mb-10">
+                            <div class="flex items-center justify-center gap-2 mb-6">
+                                <img src="logo.png" alt="Skillsier Logo" class="w-8 h-8 object-contain">
+                                <span class="text-2xl font-bold text-primary tracking-tight">skillsier</span>
+                            </div>
+                            <h2 class="text-3xl font-bold text-gray-900">Log in to your account</h2>
+                        </div>
+
+                        <!-- Form -->
+                        <form id="login-form" class="space-y-5" onsubmit="handleLogin(event)">
+                            <div class="relative">
+                                <input type="email" id="email"
+                                    class="w-full px-5 py-3.5 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary-light outline-none transition-all font-medium placeholder-gray-400 shadow-input"
+                                    placeholder="Email Address">
+                                <p id="email-error" class="hidden text-red-600 text-xs mt-1 ml-1">Invalid Email</p>
+                            </div>
+
+                            <div class="relative">
+                                <input type="password" id="password"
+                                    class="w-full px-5 py-3.5 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary-light outline-none transition-all font-medium placeholder-gray-400 shadow-input"
+                                    placeholder="Password">
+                                <p id="password-error" class="hidden text-red-600 text-xs mt-1 ml-1">Required</p>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input id="remember-me" type="checkbox"
+                                        class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer">
+                                    <label for="remember-me" class="ml-2 text-sm font-medium text-gray-600">Remember
+                                        me</label>
+                                </div>
+                                <a href="auth-3-forgot-password.html"
+                                    class="text-sm font-semibold text-primary hover:text-primary-dark">Forgot
+                                    password?</a>
+                            </div>
+
+                            <div class="flex items-center pt-2">
+                                <!-- Captcha Placeholder -->
+                                <div
+                                    class="w-full h-16 bg-gray-50 border border-gray-200 rounded-xl flex items-center px-4 gap-3 mb-2">
+                                    <div class="w-6 h-6 border-2 border-gray-300 rounded bg-white"></div>
+                                    <span class="text-sm text-gray-500">I am human</span>
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Recaptcha_Logo.svg"
+                                        class="h-8 ml-auto opacity-50" alt="Captcha">
+                                </div>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full py-4 rounded-full shadow-button text-base font-bold text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-primary-light transition-all transform hover:scale-[1.01] active:scale-[0.99]">
+                                Log In
+                            </button>
+                        </form>
+
+                        <script>
+                            function handleLogin(e) {
+                                e.preventDefault();
+                                let isValid = true;
+
+                                // Reset errors
+                                document.getElementById('email-error').classList.add('hidden');
+                                document.getElementById('password-error').classList.add('hidden');
+                                document.getElementById('email').classList.remove('border-red-500', 'bg-red-50');
+                                document.getElementById('password').classList.remove('border-red-500', 'bg-red-50');
+
+                                // Validate Email
+                                const email = document.getElementById('email');
+                                if (!email.value.includes('@')) {
+                                    document.getElementById('email-error').classList.remove('hidden');
+                                    email.classList.add('border-red-500', 'bg-red-50');
+                                    isValid = false;
+                                }
+
+                                // Validate Password
+                                const password = document.getElementById('password');
+                                if (!password.value) {
+                                    document.getElementById('password-error').classList.remove('hidden');
+                                    password.classList.add('border-red-500', 'bg-red-50');
+                                    isValid = false;
+                                }
+
+                                if (isValid) {
+                                    const btn = e.target.querySelector('button[type="submit"]');
+                                    btn.innerText = 'Logging in...';
+                                    btn.disabled = true;
+                                    setTimeout(() => {
+                                        window.location.href = 'onb-1-welcome.html';
+                                    }, 1500);
+                                }
+                            }
+                        </script>
+
+                        <!-- Divider -->
+                        <div class="relative my-8">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-100"></div>
+                            </div>
+                            <div class="relative flex justify-center text-xs uppercase tracking-wider"><span
+                                    class="px-3 bg-white text-gray-400 font-semibold">Or continue with</span></div>
+                        </div>
+
+                        <!-- Social Buttons -->
+                        <div class="flex justify-center">
+                            <button onclick="window.location.href='auth-8-social-login-mock.html'"
+                                class="w-full flex items-center justify-center gap-2 py-3 rounded-full border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all font-semibold text-gray-700 text-sm">
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5"
+                                    alt="Google">
+                                Log in with Google
+                            </button>
+                        </div>
+
+                        <p class="text-center text-sm text-gray-500 mt-8">
+                            Don't have an account? <a href="auth-1-registration.html"
+                                class="font-bold text-primary hover:text-primary-dark">Sign up</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOBILE VIEW -->
+        <div id="mobile-view" class="hidden w-full h-full bg-gray-100 flex items-center justify-center p-8">
+            <div class="mobile-frame flex flex-col">
+                <div class="mobile-notch"></div>
+
+                <!-- Mobile Header -->
+                <div class="pt-14 pb-2 px-6 flex justify-center">
+                    <div class="flex items-center gap-2">
+                        <img src="logo.png" alt="Skillsier Logo" class="w-8 h-8 object-contain">
+                        <span class="text-xl font-bold text-primary tracking-tight">skillsier</span>
+                    </div>
+                </div>
+
+                <!-- Mobile Content -->
+                <div class="flex-1 overflow-y-auto px-6 py-4 no-scrollbar">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Welcome Back</h2>
+                        <p class="text-gray-500 text-sm mt-1">Please enter your details.</p>
+                    </div>
+
+                    <form class="space-y-4" onsubmit="handleMobileLogin(event)">
+                        <div class="relative">
+                            <input type="email" id="m-email"
+                                class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary-light text-sm"
+                                placeholder="Email Address">
+                            <p id="m-email-error" class="hidden text-red-600 text-[10px] mt-1 ml-1">Invalid Email</p>
+                        </div>
+
+                        <div class="relative">
+                            <input type="password" id="m-password"
+                                class="w-full px-4 py-3.5 rounded-xl bg-gray-50 border-transparent focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary-light text-sm"
+                                placeholder="Password">
+                            <p id="m-password-error" class="hidden text-red-600 text-[10px] mt-1 ml-1">Required</p>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <input id="m-remember-me" type="checkbox"
+                                    class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer">
+                                <label for="m-remember-me" class="ml-2 text-xs font-medium text-gray-600">Remember
+                                    me</label>
+                            </div>
+                            <a href="auth-3-forgot-password.html" class="text-xs font-semibold text-primary">Forgot
+                                Password?</a>
+                        </div>
+
+                        <!-- Mobile Captcha -->
+                        <div
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl flex items-center px-3 gap-2 mb-4">
+                            <div class="w-5 h-5 border-2 border-gray-300 rounded bg-white"></div>
+                            <span class="text-xs text-gray-500">I am human</span>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full py-3.5 rounded-full bg-primary text-white font-bold shadow-button active:scale-95 transition-transform text-sm">Log
+                            In</button>
+                    </form>
+
+                    <script>
+                        function handleMobileLogin(e) {
+                            e.preventDefault();
+                            let isValid = true;
+
+                            // Reset errors
+                            document.getElementById('m-email-error').classList.add('hidden');
+                            document.getElementById('m-password-error').classList.add('hidden');
+                            document.getElementById('m-email').classList.remove('border', 'border-red-500', 'bg-red-50');
+                            document.getElementById('m-password').classList.remove('border', 'border-red-500', 'bg-red-50');
+
+                            // Validate Email
+                            const email = document.getElementById('m-email');
+                            if (!email.value.includes('@')) {
+                                document.getElementById('m-email-error').classList.remove('hidden');
+                                email.classList.add('border', 'border-red-500', 'bg-red-50');
+                                isValid = false;
+                            }
+
+                            // Validate Password
+                            const password = document.getElementById('m-password');
+                            if (!password.value) {
+                                document.getElementById('m-password-error').classList.remove('hidden');
+                                password.classList.add('border', 'border-red-500', 'bg-red-50');
+                                isValid = false;
+                            }
+
+                            if (isValid) {
+                                const btn = e.target.querySelector('button[type="submit"]');
+                                btn.innerText = 'Logging in...';
+                                setTimeout(() => {
+                                    window.location.href = 'onb-1-welcome.html';
+                                }, 1500);
+                            }
+                        }
+                    </script>
+
+                    <div class="relative my-8">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div class="relative flex justify-center text-xs"><span
+                                class="px-2 bg-white text-gray-400">OR</span></div>
+                    </div>
+
+                    <button onclick="window.location.href='auth-8-social-login-mock.html'"
+                        class="w-full flex items-center justify-center gap-2 py-3 rounded-full border border-gray-200 hover:bg-gray-50 transition-all font-semibold text-gray-700 text-sm">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                        Log in with Google
+                    </button>
+
+                    <p class="text-center text-xs text-gray-400 mt-8">Don't have an account? <a
+                            href="auth-1-registration.html" class="font-bold text-primary">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function setView(view) {
+            const desktopView = document.getElementById('desktop-view');
+            const mobileView = document.getElementById('mobile-view');
+            const btnDesktop = document.getElementById('btn-desktop');
+            const btnMobile = document.getElementById('btn-mobile');
+
+            // Save preference
+            localStorage.setItem('skillsier_prototype_view', view);
+
+            if (view === 'desktop') {
+                desktopView.classList.remove('hidden');
+                mobileView.classList.add('hidden');
+                btnDesktop.classList.replace('bg-white', 'bg-gray-800');
+                btnDesktop.classList.replace('text-gray-900', 'text-white');
+                btnMobile.classList.replace('bg-gray-800', 'bg-white');
+                btnMobile.classList.replace('text-white', 'text-gray-500');
+                // Reset styles for active state
+                btnDesktop.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all shadow-sm bg-gray-800 text-white";
+                btnMobile.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-500 hover:text-gray-900 bg-white";
+            } else {
+                desktopView.classList.add('hidden');
+                mobileView.classList.remove('hidden');
+                mobileView.classList.add('flex');
+                // Active Mobile
+                btnMobile.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all shadow-sm bg-gray-800 text-white";
+                btnDesktop.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-500 hover:text-gray-900 bg-white";
+            }
+        }
+
+        // Initialize view from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedView = localStorage.getItem('skillsier_prototype_view');
+            if (savedView) {
+                setView(savedView);
+            }
+        });
+    </script>
+</body>
+
+</html>

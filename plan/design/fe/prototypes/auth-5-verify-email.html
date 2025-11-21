@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skillsier - Verify Email</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D90429',
+                        'primary-dark': '#B90524',
+                        'primary-light': '#FFF0F3',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 20px rgba(0, 0, 0, 0.03)',
+                        'button': '0 8px 20px rgba(217, 4, 41, 0.3)',
+                        'input': '0 2px 6px rgba(0,0,0,0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+        }
+
+        /* Gradient Background */
+        .auth-gradient {
+            background: linear-gradient(135deg, rgba(217, 4, 41, 0.95) 0%, rgba(141, 2, 31, 0.95) 100%), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            background-blend-mode: multiply;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Mobile Frame */
+        .mobile-frame {
+            width: 375px;
+            height: 812px;
+            border: 12px solid #111;
+            border-radius: 48px;
+            overflow: hidden;
+            position: relative;
+            background: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .mobile-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 32px;
+            background: #111;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 h-screen flex flex-col overflow-hidden">
+
+    <!-- Prototype Toolbar -->
+    <div class="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between z-50 sticky top-0">
+        <div class="flex items-center gap-3">
+            <img src="logo.png" alt="Skillsier Logo" class="w-8 h-8 object-contain">
+            <span class="font-bold text-gray-900">Skillsier Prototype - Verify Email</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+                <button onclick="setView('desktop')" id="btn-desktop"
+                    class="px-4 py-1.5 rounded-md text-sm font-medium transition-all shadow-sm bg-white text-gray-900">Desktop</button>
+                <button onclick="setView('mobile')" id="btn-mobile"
+                    class="px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-500 hover:text-gray-900">Mobile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div id="main-container" class="flex-1 overflow-hidden relative">
+
+        <!-- DESKTOP VIEW -->
+        <div id="desktop-view" class="w-full h-full flex">
+            <!-- Left: Red Gradient Hero -->
+            <div class="w-5/12 auth-gradient text-white flex flex-col justify-center px-12 relative">
+                <div class="absolute top-20 right-20 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-20 left-20 w-80 h-80 bg-black opacity-10 rounded-full blur-3xl"></div>
+
+                <div class="relative z-10">
+                    <h1 class="text-5xl font-bold mb-6 leading-tight">Check your inbox.</h1>
+                    <p class="text-lg text-white/80 leading-relaxed max-w-md">
+                        We've sent a verification link to your email address. Please click the link to continue.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Content -->
+            <div class="w-7/12 flex flex-col h-full overflow-y-auto bg-white">
+                <div class="flex-1 flex flex-col items-center py-24 px-8">
+                    <div class="max-w-md w-full text-center">
+
+                        <!-- Icon -->
+                        <div
+                            class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-8 text-primary">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </div>
+
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">Verify your email</h2>
+                        <p class="text-gray-500 mb-8">
+                            We've sent an email to <span class="font-bold text-gray-900">jane.doe@example.com</span>.
+                            <a href="#" onclick="alert('Change email flow')"
+                                class="text-primary font-semibold ml-1 hover:underline">Change</a>
+                            <br>Click the link inside to get started.
+                        </p>
+
+                        <div class="space-y-4">
+                            <!-- Code Input Section -->
+                            <div class="mt-6 mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2 text-left">Enter 6-digit
+                                    code</label>
+                                <input type="text" id="code-input" maxlength="6"
+                                    class="w-full px-5 py-3.5 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary-light outline-none transition-all font-bold text-2xl tracking-[0.5em] text-center placeholder-gray-300"
+                                    placeholder="000000">
+                                <p id="code-error" class="hidden text-red-600 text-sm mt-1 text-left">Invalid code. Try
+                                    123456.</p>
+                            </div>
+
+                            <button onclick="handleVerify()"
+                                class="w-full py-4 rounded-full shadow-button text-base font-bold text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-primary-light transition-all transform hover:scale-[1.01] active:scale-[0.99]">
+                                Verify Email
+                            </button>
+
+                            <div class="relative flex py-2 items-center">
+                                <div class="flex-grow border-t border-gray-200"></div>
+                                <span class="flex-shrink-0 mx-4 text-gray-400 text-xs uppercase font-bold">Or</span>
+                                <div class="flex-grow border-t border-gray-200"></div>
+                            </div>
+
+                            <button id="resend-btn" onclick="startResendTimer()"
+                                class="w-full py-3 rounded-full border-2 border-gray-100 text-sm font-bold text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-all">
+                                Resend Email
+                            </button>
+
+                            <div class="text-center mt-4">
+                                <a href="#" class="text-sm font-semibold text-gray-500 hover:text-gray-900">Verify with
+                                    phone number instead</a>
+                            </div>
+
+                            <a href="auth-2-login.html"
+                                class="block text-sm font-semibold text-primary hover:text-primary-dark mt-4">
+                                Back to Log In
+                            </a>
+                        </div>
+
+                        <script>
+                            function handleVerify() {
+                                const code = document.getElementById('code-input').value;
+                                const error = document.getElementById('code-error');
+
+                                if (code === '123456') {
+                                    // Success
+                                    const btn = document.querySelector('button[onclick="handleVerify()"]');
+                                    btn.innerText = 'Verifying...';
+                                    setTimeout(() => {
+                                        window.location.href = 'onb-1-welcome.html';
+                                    }, 1000);
+                                } else {
+                                    error.classList.remove('hidden');
+                                    document.getElementById('code-input').classList.add('border-red-500', 'bg-red-50');
+                                }
+                            }
+
+                            document.getElementById('code-input').addEventListener('input', function (e) {
+                                // Allow only numbers
+                                this.value = this.value.replace(/[^0-9]/g, '');
+                                document.getElementById('code-error').classList.add('hidden');
+                                this.classList.remove('border-red-500', 'bg-red-50');
+                            });
+
+                            function startResendTimer() {
+                                const btn = document.getElementById('resend-btn');
+                                if (btn.disabled) return;
+
+                                btn.disabled = true;
+                                let timeLeft = 30;
+                                btn.innerText = `Resend in ${timeLeft}s`;
+                                btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+                                const timer = setInterval(() => {
+                                    timeLeft--;
+                                    btn.innerText = `Resend in ${timeLeft}s`;
+                                    if (timeLeft <= 0) {
+                                        clearInterval(timer);
+                                        btn.innerText = 'Resend Email';
+                                        btn.disabled = false;
+                                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                                    }
+                                }, 1000);
+                            }
+                        </script>
+
+                        <!-- Simulation Controls -->
+                        <div class="mt-16 p-6 bg-gray-50 rounded-xl border border-gray-200 text-left">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Prototype
+                                Simulation</h4>
+                            <div class="space-y-2">
+                                <a href="onb-1-welcome.html"
+                                    class="block w-full py-2 px-4 bg-green-600 text-white text-sm font-bold rounded-lg text-center hover:bg-green-700 transition-colors">
+                                    Simulate: Click "Verify Email" (Registration)
+                                </a>
+                                <a href="auth-7-reset-password.html"
+                                    class="block w-full py-2 px-4 bg-blue-600 text-white text-sm font-bold rounded-lg text-center hover:bg-blue-700 transition-colors">
+                                    Simulate: Click "Reset Password" (Forgot Pwd)
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOBILE VIEW -->
+        <div id="mobile-view" class="hidden w-full h-full bg-gray-100 flex items-center justify-center p-8">
+            <div class="mobile-frame flex flex-col">
+                <div class="mobile-notch"></div>
+
+                <!-- Mobile Header -->
+                <div class="pt-14 pb-2 px-6 flex justify-center">
+                    <div class="flex items-center gap-2">
+                        <img src="logo.png" alt="Skillsier Logo" class="w-8 h-8 object-contain">
+                        <span class="text-xl font-bold text-primary tracking-tight">skillsier</span>
+                    </div>
+                </div>
+
+                <!-- Mobile Content -->
+                <div class="flex-1 overflow-y-auto px-6 py-4 no-scrollbar flex flex-col justify-center">
+                    <div class="text-center mb-8">
+                        <div
+                            class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">Check your email</h2>
+                        <p class="text-gray-500 text-sm mt-2">
+                            We sent a link to <span class="font-bold text-gray-900">jane.doe@example.com</span>
+                            <a href="#" onclick="alert('Change email flow')"
+                                class="text-primary font-bold ml-1">Change</a>
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 w-full">
+                        <div class="mb-2">
+                            <input type="text" id="mobile-code-input" maxlength="6"
+                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary-light text-xl font-bold tracking-[0.5em] text-center"
+                                placeholder="000000">
+                            <p id="mobile-code-error" class="hidden text-red-600 text-xs mt-1 text-center">Invalid code.
+                                Try 123456.</p>
+                        </div>
+
+                        <button onclick="handleMobileVerify()"
+                            class="w-full py-3.5 rounded-full bg-primary text-white font-bold shadow-button active:scale-95 transition-transform text-sm">
+                            Verify Email
+                        </button>
+
+                        <button id="m-resend-btn" onclick="startMobileResendTimer()"
+                            class="w-full py-3 rounded-full border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-50">Resend
+                            Email</button>
+
+                        <a href="#" class="block text-center text-sm font-semibold text-gray-500 py-2">Verify with phone
+                            instead</a>
+                        <a href="auth-2-login.html" class="block text-center text-sm font-bold text-primary py-2">Back
+                            to Log In</a>
+                    </div>
+
+                    <script>
+                        function handleMobileVerify() {
+                            const code = document.getElementById('mobile-code-input').value;
+                            const error = document.getElementById('mobile-code-error');
+
+                            if (code === '123456') {
+                                const btn = document.querySelector('button[onclick="handleMobileVerify()"]');
+                                btn.innerText = 'Verifying...';
+                                setTimeout(() => {
+                                    window.location.href = 'onb-1-welcome.html';
+                                }, 1000);
+                            } else {
+                                error.classList.remove('hidden');
+                                document.getElementById('mobile-code-input').classList.add('border-red-500', 'bg-red-50');
+                            }
+                        }
+                        document.getElementById('mobile-code-input').addEventListener('input', function (e) {
+                            // Allow only numbers
+                            this.value = this.value.replace(/[^0-9]/g, '');
+                            document.getElementById('mobile-code-error').classList.add('hidden');
+                            this.classList.remove('border-red-500', 'bg-red-50');
+                        });
+
+                        function startMobileResendTimer() {
+                            const btn = document.getElementById('m-resend-btn');
+                            if (btn.disabled) return;
+
+                            btn.disabled = true;
+                            let timeLeft = 30;
+                            btn.innerText = `Resend in ${timeLeft}s`;
+                            btn.classList.add('opacity-50');
+
+                            const timer = setInterval(() => {
+                                timeLeft--;
+                                btn.innerText = `Resend in ${timeLeft}s`;
+                                if (timeLeft <= 0) {
+                                    clearInterval(timer);
+                                    btn.innerText = 'Resend Email';
+                                    btn.disabled = false;
+                                    btn.classList.remove('opacity-50');
+                                }
+                            }, 1000);
+                        }
+                    </script>
+
+                    <!-- Simulation Controls Mobile -->
+                    <div class="mt-12 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 text-center">
+                            Simulation</h4>
+                        <div class="space-y-2">
+                            <a href="onb-1-welcome.html"
+                                class="block w-full py-2.5 bg-green-600 text-white text-xs font-bold rounded-lg text-center">
+                                Verify Email Link
+                            </a>
+                            <a href="auth-7-reset-password.html"
+                                class="block w-full py-2.5 bg-blue-600 text-white text-xs font-bold rounded-lg text-center">
+                                Reset Password Link
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function setView(view) {
+            const desktopView = document.getElementById('desktop-view');
+            const mobileView = document.getElementById('mobile-view');
+            const btnDesktop = document.getElementById('btn-desktop');
+            const btnMobile = document.getElementById('btn-mobile');
+
+            // Save preference
+            localStorage.setItem('skillsier_prototype_view', view);
+
+            if (view === 'desktop') {
+                desktopView.classList.remove('hidden');
+                mobileView.classList.add('hidden');
+                btnDesktop.classList.replace('bg-white', 'bg-gray-800');
+                btnDesktop.classList.replace('text-gray-900', 'text-white');
+                btnMobile.classList.replace('bg-gray-800', 'bg-white');
+                btnMobile.classList.replace('text-white', 'text-gray-500');
+                // Reset styles for active state
+                btnDesktop.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all shadow-sm bg-gray-800 text-white";
+                btnMobile.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-500 hover:text-gray-900 bg-white";
+            } else {
+                desktopView.classList.add('hidden');
+                mobileView.classList.remove('hidden');
+                mobileView.classList.add('flex');
+                // Active Mobile
+                btnMobile.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all shadow-sm bg-gray-800 text-white";
+                btnDesktop.className = "px-4 py-1.5 rounded-md text-sm font-medium transition-all text-gray-500 hover:text-gray-900 bg-white";
+            }
+        }
+
+        // Initialize view from localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedView = localStorage.getItem('skillsier_prototype_view');
+            if (savedView) {
+                setView(savedView);
+            }
+        });
+    </script>
+</body>
+
+</html>
